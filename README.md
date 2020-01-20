@@ -1,5 +1,5 @@
 # Kinda Express King
-##### Project of the SoftServe IT Academy Java group KV-061
+##### Study project of the SoftServe IT Academy Java group KV-061
 
 ##### Concept: 
 BaaS for delivery services like Glovo, Uber or even for regular mail. Also, a simple web front-end should be provided as an example of a typical consumer's app.
