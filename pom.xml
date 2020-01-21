@@ -43,8 +43,10 @@
         <version.testng>7.0.0</version.testng>
         <version.mockito>3.1.0</version.mockito>
         <version.h2database>1.4.197</version.h2database>
-
-        <version.tomcat.embed.jasper>8.5.50</version.tomcat.embed.jasper>
+        
+        <version.tomcat.embed.core>7.0.91</version.tomcat.embed.core>
+        <version.tomcat.embed.jasper>7.0.91</version.tomcat.embed.jasper>
+        <version.tomcat.embed.logging.juli>7.0.91</version.tomcat.embed.logging.juli>
     </properties>
 
     <dependencies>
@@ -52,8 +54,18 @@
         <!-- Embedded Tomcat -->
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${version.tomcat.embed.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
             <version>${version.tomcat.embed.jasper}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-logging-juli</artifactId>
+            <version>${version.tomcat.embed.logging.juli}</version>
         </dependency>
 
         <!-- Spring -->
