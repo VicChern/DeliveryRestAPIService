@@ -25,6 +25,7 @@
         <version.surefire.plugin>3.0.0-M4</version.surefire.plugin>
         <version.failsafe.plugin>3.0.0-M4</version.failsafe.plugin>
         <version.build.helper.plugin>3.0.0</version.build.helper.plugin>
+        <version.appassembler.plugin>2.1.0</version.appassembler.plugin>
 
         <!-- Third-party versions -->
         <version.spring.core>5.2.0.RELEASE</version.spring.core>
@@ -42,9 +43,18 @@
         <version.testng>7.0.0</version.testng>
         <version.mockito>3.1.0</version.mockito>
         <version.h2database>1.4.197</version.h2database>
+
+        <version.tomcat.embed.jasper>8.5.50</version.tomcat.embed.jasper>
     </properties>
 
     <dependencies>
+
+        <!-- Embedded Tomcat -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <version>${version.tomcat.embed.jasper}</version>
+        </dependency>
 
         <!-- Spring -->
         <dependency>
@@ -233,6 +243,28 @@
                         --illegal-access=permit
                     </argLine>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>${version.appassembler.plugin}</version>
+                <configuration>
+                    <assembleDirectory>target</assembleDirectory>
+                    <programs>
+                        <program>
+                            <mainClass>com.softserve.itacademy.kek.EmbeddedTomcatApp</mainClass>
+                            <name>webapp</name>
+                        </program>
+                    </programs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
