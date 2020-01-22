@@ -33,6 +33,8 @@
         <version.spring.data.commons>2.2.0.RELEASE</version.spring.data.commons>
         <version.spring.security.core>5.2.0.RELEASE</version.spring.security.core>
         <version.spring.data.rest.core>3.2.0.RELEASE</version.spring.data.rest.core>
+        <version.spring.web>5.2.2.RELEASE</version.spring.web>
+        <version.spring.webmvc>5.2.2.RELEASE</version.spring.webmvc>
 
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
@@ -93,6 +95,16 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${version.spring.context}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${version.spring.web}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${version.spring.webmvc}</version>
         </dependency>
 
         <!-- Hibernate -->
