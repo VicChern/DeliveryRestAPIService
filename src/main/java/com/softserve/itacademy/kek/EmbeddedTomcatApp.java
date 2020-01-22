@@ -1,8 +1,12 @@
 package com.softserve.itacademy.kek;
 
+import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Objects;
@@ -25,15 +29,17 @@ public class EmbeddedTomcatApp {
         String appConfigPath = rootPath + "server.properties";
         Properties properties = new Properties();
         properties.load(new FileInputStream(appConfigPath));
-
         int port = Integer.parseInt(properties.getProperty("server.port", "8080"));
-        String contextPath = properties.getProperty("server.context", "\\");
-        String appBase = properties.getProperty("server.appBase", ".");
 
         tomcat = new Tomcat();
         tomcat.setPort(port);
-        tomcat.getHost().setAppBase(appBase);
-        tomcat.addWebapp(contextPath, appBase);
+        File base = new File("");
+        Context rootCtx = tomcat.addContext("", base.getAbsolutePath());
+        AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
+        actx.scan("com.softserve.itacademy.kek");
+        DispatcherServlet dispatcher = new DispatcherServlet(actx);
+        Tomcat.addServlet(rootCtx, "SpringMVC", dispatcher);
+        rootCtx.addServletMapping("/*", "SpringMVC");
     }
 
     /**
