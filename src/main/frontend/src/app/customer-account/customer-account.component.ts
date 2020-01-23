@@ -16,6 +16,9 @@ export class CustomerAccountComponent implements OnInit {
     this.customerAccount.address = 'Kyiv, Leipzigskay 15';
   }
 
+  update() {
+  }
+
 }
 
 export class CustomerAccount {

@@ -7,6 +7,7 @@
     <groupId>com.softserve.itacademy</groupId>
     <artifactId>project_kv_061</artifactId>
     <version>1.0</version>
+    <packaging>war</packaging>
 
     <name>Kinda Express King</name>
     <url>https://gitlab.com/kv.061.java/project_kv_061</url>
@@ -234,6 +235,70 @@
                     </argLine>
                 </configuration>
             </plugin>
+
+
+            <!--Frontend-->
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.8.0</version>
+
+                <configuration>
+                    <workingDirectory>src/main/frontend</workingDirectory>
+                </configuration>
+
+                <executions>
+
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v13.6.0</nodeVersion>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run buildProduction</arguments>
+                        </configuration>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+
+                    <!-- Add frontend folder to war package -->
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp/frontend</directory>
+                        </resource>
+                    </webResources>
+
+                </configuration>
+            </plugin>
+            <!--EndFrontend-->
+
+
+
         </plugins>
     </build>
 

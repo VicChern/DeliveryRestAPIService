@@ -1,129 +1,129 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-lg-6 mx-auto d-flex justify-content-center">
-      <div class="card" [hidden]="isRegistered">
-        <h3 class="card-header">Регистрация</h3>
-        <div class="card-body">
-          <!--https://angular.io/guide/form-validation#adding-to-template-driven-forms-->
-          <!--appIdentityRevealed  => see in shared/identity-revealed.directives.ts-->
-          <form class="form" #registrationForm="ngForm" appIdentityRevealed>
+<!--<div class="container-fluid">-->
+<!--  <div class="row">-->
+<!--    <div class="col-lg-6 mx-auto d-flex justify-content-center">-->
+<!--      <div class="card" [hidden]="isRegistered">-->
+<!--        <h3 class="card-header">Регистрация</h3>-->
+<!--        <div class="card-body">-->
+<!--          &lt;!&ndash;https://angular.io/guide/form-validation#adding-to-template-driven-forms&ndash;&gt;-->
+<!--          &lt;!&ndash;appIdentityRevealed  => see in shared/identity-revealed.directives.ts&ndash;&gt;-->
+<!--          <form class="form" #registrationForm="ngForm" appIdentityRevealed>-->
 
-            <!--NAME-->
-            <div class="form-group">
-              <!--<label for="name">Name</label>-->
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"> <i class="fa fa-user"></i> </span>
-                </div>
-                <input [(ngModel)]="customerAccount.name" id="name" name="name" type="text"
-                       class="form-control rounded-0" required placeholder="name" #name="ngModel" autofocus="autofocus">
-              </div>
-            </div>
+<!--            &lt;!&ndash;NAME&ndash;&gt;-->
+<!--            <div class="form-group">-->
+<!--              &lt;!&ndash;<label for="name">Name</label>&ndash;&gt;-->
+<!--              <div class="input-group">-->
+<!--                <div class="input-group-prepend">-->
+<!--                  <span class="input-group-text"> <i class="fa fa-user"></i> </span>-->
+<!--                </div>-->
+<!--                <input [(ngModel)]="customerAccount.name" id="name" name="name" type="text"-->
+<!--                       class="form-control rounded-0" required placeholder="name" #name="ngModel" autofocus="autofocus">-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <!--EMAIL-->
-            <div class="form-group">
-              <!--<label for="email">Email</label>-->
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
-                </div>
-                <input [(ngModel)]="customerAccount.email" id="email" name="email" type="email"
-                       class="form-control rounded-0" required placeholder="email" #email="ngModel"
-                       pattern="[a-zA-Z_0-9.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}" />
-              </div>
-              <div *ngIf="email.invalid && (email.touched)"
-                   class="alert alert-danger">
-                <div *ngIf="email.errors.required">
-                  Необходимо ввести email.
-                </div>
-                <div *ngIf="email.errors.pattern">
-                  Неверный формат email. Возможно вы забыли @.
-                </div>
-              </div>
-            </div>
+<!--            &lt;!&ndash;EMAIL&ndash;&gt;-->
+<!--            <div class="form-group">-->
+<!--              &lt;!&ndash;<label for="email">Email</label>&ndash;&gt;-->
+<!--              <div class="input-group">-->
+<!--                <div class="input-group-prepend">-->
+<!--                  <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>-->
+<!--                </div>-->
+<!--                <input [(ngModel)]="customerAccount.email" id="email" name="email" type="email"-->
+<!--                       class="form-control rounded-0" required placeholder="email" #email="ngModel"-->
+<!--                       pattern="[a-zA-Z_0-9.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}" />-->
+<!--              </div>-->
+<!--              <div *ngIf="email.invalid && (email.touched)"-->
+<!--                   class="alert alert-danger">-->
+<!--                <div *ngIf="email.errors.required">-->
+<!--                  Необходимо ввести email.-->
+<!--                </div>-->
+<!--                <div *ngIf="email.errors.pattern">-->
+<!--                  Неверный формат email. Возможно вы забыли @.-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <!--PHONE-->
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
-                </div>
-                <input [(ngModel)]="customerAccount.phone" id="phone" name="phone" type="text"
-                       class="form-control rounded-0" required placeholder="phone"/>
-              </div>
-            </div>
+<!--            &lt;!&ndash;PHONE&ndash;&gt;-->
+<!--            <div class="form-group">-->
+<!--              <div class="input-group">-->
+<!--                <div class="input-group-prepend">-->
+<!--                  <span class="input-group-text"> <i class="fa fa-phone"></i> </span>-->
+<!--                </div>-->
+<!--                <input [(ngModel)]="customerAccount.phone" id="phone" name="phone" type="text"-->
+<!--                       class="form-control rounded-0" required placeholder="phone"/>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <!--ADDRESS-->
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"> <i class="fa fa-address"></i> </span>
-                </div>
-                <input [(ngModel)]="customerAccount.address" id="address" name="address" type="text"
-                       class="form-control rounded-0" required placeholder="address"/>
-              </div>
-            </div>
+<!--            &lt;!&ndash;ADDRESS&ndash;&gt;-->
+<!--            <div class="form-group">-->
+<!--              <div class="input-group">-->
+<!--                <div class="input-group-prepend">-->
+<!--                  <span class="input-group-text"> <i class="fa fa-address"></i> </span>-->
+<!--                </div>-->
+<!--                <input [(ngModel)]="customerAccount.address" id="address" name="address" type="text"-->
+<!--                       class="form-control rounded-0" required placeholder="address"/>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <!--PASSWORD-->
-            <div class="form-group">
-              <!--<label for="password">Password</label>-->
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                </div>
-                <input [(ngModel)]="customerAccount.password" id="password" name="password" type="password"
-                       class="form-control rounded-0"  [minlength]="minPasswordLength"
-                       required placeholder="password" #password="ngModel">
-              </div>
-              <div *ngIf="password.invalid && (password.dirty || password.touched)"
-                   class="alert alert-danger">
-                Пароль должен быть не менее {{ minPasswordLength }} символов.
-              </div>
-            </div>
+<!--            &lt;!&ndash;PASSWORD&ndash;&gt;-->
+<!--            <div class="form-group">-->
+<!--              &lt;!&ndash;<label for="password">Password</label>&ndash;&gt;-->
+<!--              <div class="input-group">-->
+<!--                <div class="input-group-prepend">-->
+<!--                  <span class="input-group-text"> <i class="fa fa-lock"></i> </span>-->
+<!--                </div>-->
+<!--                <input [(ngModel)]="customerAccount.password" id="password" name="password" type="password"-->
+<!--                       class="form-control rounded-0"-->
+<!--                       required placeholder="password" #password="ngModel">-->
+<!--              </div>-->
+<!--              <div *ngIf="password.invalid && (password.dirty || password.touched)"-->
+<!--                   class="alert alert-danger">-->
+<!--&lt;!&ndash;                Пароль должен быть не менее {{ minPasswordLength }} символов.&ndash;&gt;-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <!--CONFIRM PASSWORD-->
-            <div class="form-group">
-              <!--<label for="confirm-password">Confirm password</label>-->
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                </div>
-                <input (ngModel)="customerAccount.password" id="confirm-password" name="confirmPassword" type="password"
-                       class="form-control rounded-0"  [minlength]="minPasswordLength"
-                       required placeholder="repeat password" #confirmPassword="ngModel"
-                       (keyup.enter)="registerUser()">
-              </div>
-              <div *ngIf="registrationForm.errors?.identityRevealed && (confirmPassword.dirty || confirmPassword.touched)"
-                   class="cross-validation-error-message alert alert-danger">
-                Пароли не совпадают.
-              </div>
-            </div>
+<!--            &lt;!&ndash;CONFIRM PASSWORD&ndash;&gt;-->
+<!--            <div class="form-group">-->
+<!--              &lt;!&ndash;<label for="confirm-password">Confirm password</label>&ndash;&gt;-->
+<!--              <div class="input-group">-->
+<!--                <div class="input-group-prepend">-->
+<!--                  <span class="input-group-text"> <i class="fa fa-lock"></i> </span>-->
+<!--                </div>-->
+<!--                <input (ngModel)="customerAccount.password" id="confirm-password" name="confirmPassword" type="password"-->
+<!--                       class="form-control rounded-0"  [minlength]="minPasswordLength"-->
+<!--                       required placeholder="repeat password" #confirmPassword="ngModel"-->
+<!--                       (keyup.enter)="registerUser()">-->
+<!--              </div>-->
+<!--              <div *ngIf="registrationForm.errors?.identityRevealed && (confirmPassword.dirty || confirmPassword.touched)"-->
+<!--                   class="cross-validation-error-message alert alert-danger">-->
+<!--                Пароли не совпадают.-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <!--NAME OR EMAIL ALREADY EXISTS-->
-            <!--<h5 [hidden]="!isRegistrationError" class="alert alert-danger">Такие имя или email уже существуют</h5>-->
+<!--            &lt;!&ndash;NAME OR EMAIL ALREADY EXISTS&ndash;&gt;-->
+<!--            &lt;!&ndash;<h5 [hidden]="!isRegistrationError" class="alert alert-danger">Такие имя или email уже существуют</h5>&ndash;&gt;-->
 
-            <!--BUTTON REGISTER-->
-            <button (click)="registerUser()" type="submit"
-                    [disabled]="name.invalid || email.invalid  || age.invalid || gender.invalid ||
-                                password.invalid || confirmPassword.invalid"
-                    class="btn btn-primary btn-block float-right register">Register</button>
-            <p class="text-center">Already registered?
-              <button data-toggle="modal" data-target="#loginModal"
-                      type="button" class="btn btn-link">Login</button>
-            </p>
-          </form>
-        </div> <!--end card-body -->
-      </div> <!--end card -->
+<!--            &lt;!&ndash;BUTTON REGISTER&ndash;&gt;-->
+<!--            <button (click)="registerUser()" type="submit"-->
+<!--                    [disabled]="name.invalid || email.invalid  || age.invalid || gender.invalid ||-->
+<!--                                password.invalid || confirmPassword.invalid"-->
+<!--                    class="btn btn-primary btn-block float-right register">Register</button>-->
+<!--            <p class="text-center">Already registered?-->
+<!--              <button data-toggle="modal" data-target="#loginModal"-->
+<!--                      type="button" class="btn btn-link">Login</button>-->
+<!--            </p>-->
+<!--          </form>-->
+<!--        </div> &lt;!&ndash;end card-body &ndash;&gt;-->
+<!--      </div> &lt;!&ndash;end card &ndash;&gt;-->
 
-      <!--&lt;!&ndash;SUCCESS REGISTRATION MESSAGE&ndash;&gt;-->
-      <!--<div class="success" [hidden]="!(!isRegistrationError&&isRegistered)">-->
-        <!--<h1 class="success title" style="color: green">Вы успешно зарегистрированы в системе!</h1>-->
-        <!--<div class="links d-flex justify-content-center align-items-center">-->
-          <!--<a routerLink="/">На главную страницу</a>-->
-          <!--<button class="btn btn-link go-back" (click)="goBack()">Назад</button>-->
-        <!--</div>-->
-      <!--</div>-->
+<!--      &lt;!&ndash;&lt;!&ndash;SUCCESS REGISTRATION MESSAGE&ndash;&gt;&ndash;&gt;-->
+<!--      &lt;!&ndash;<div class="success" [hidden]="!(!isRegistrationError&&isRegistered)">&ndash;&gt;-->
+<!--        &lt;!&ndash;<h1 class="success title" style="color: green">Вы успешно зарегистрированы в системе!</h1>&ndash;&gt;-->
+<!--        &lt;!&ndash;<div class="links d-flex justify-content-center align-items-center">&ndash;&gt;-->
+<!--          &lt;!&ndash;<a routerLink="/">На главную страницу</a>&ndash;&gt;-->
+<!--          &lt;!&ndash;<button class="btn btn-link go-back" (click)="goBack()">Назад</button>&ndash;&gt;-->
+<!--        &lt;!&ndash;</div>&ndash;&gt;-->
+<!--      &lt;!&ndash;</div>&ndash;&gt;-->
 
-    </div> <!--end col-lg-6 -->
-  </div> <!--end row -->
-</div> <!-- container-fluid -->
+<!--    </div> &lt;!&ndash;end col-lg-6 &ndash;&gt;-->
+<!--  </div> &lt;!&ndash;end row &ndash;&gt;-->
+<!--</div> &lt;!&ndash; container-fluid &ndash;&gt;-->
