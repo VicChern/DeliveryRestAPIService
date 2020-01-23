@@ -7,7 +7,6 @@
     <groupId>com.softserve.itacademy</groupId>
     <artifactId>project_kv_061</artifactId>
     <version>1.0</version>
-    <packaging>war</packaging>
 
     <name>Kinda Express King</name>
     <url>https://gitlab.com/kv.061.java/project_kv_061</url>
@@ -26,6 +25,7 @@
         <version.surefire.plugin>3.0.0-M4</version.surefire.plugin>
         <version.failsafe.plugin>3.0.0-M4</version.failsafe.plugin>
         <version.build.helper.plugin>3.0.0</version.build.helper.plugin>
+        <version.appassembler.plugin>2.1.0</version.appassembler.plugin>
 
         <!-- Third-party versions -->
         <version.spring.core>5.2.0.RELEASE</version.spring.core>
@@ -33,6 +33,9 @@
         <version.spring.data.commons>2.2.0.RELEASE</version.spring.data.commons>
         <version.spring.security.core>5.2.0.RELEASE</version.spring.security.core>
         <version.spring.data.rest.core>3.2.0.RELEASE</version.spring.data.rest.core>
+        <version.spring.web>5.2.2.RELEASE</version.spring.web>
+        <version.spring.webmvc>5.2.2.RELEASE</version.spring.webmvc>
+        <version.spring.test>5.2.2.RELEASE</version.spring.test>
 
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
@@ -43,9 +46,32 @@
         <version.testng>7.0.0</version.testng>
         <version.mockito>3.1.0</version.mockito>
         <version.h2database>1.4.197</version.h2database>
+        <version.hamcrest.all>1.3</version.hamcrest.all>
+        <version.slf4j.simple>1.6.2</version.slf4j.simple>
+
+        <version.tomcat.embed.core>7.0.91</version.tomcat.embed.core>
+        <version.tomcat.embed.jasper>7.0.91</version.tomcat.embed.jasper>
+        <version.tomcat.embed.logging.juli>7.0.91</version.tomcat.embed.logging.juli>
     </properties>
 
     <dependencies>
+
+        <!-- Embedded Tomcat -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${version.tomcat.embed.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <version>${version.tomcat.embed.jasper}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-logging-juli</artifactId>
+            <version>${version.tomcat.embed.logging.juli}</version>
+        </dependency>
 
         <!-- Spring -->
         <dependency>
@@ -72,6 +98,28 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${version.spring.context}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${version.spring.web}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${version.spring.webmvc}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${version.spring.test}</version>
+        </dependency>
+
+        <!-- JSON -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180813</version>
         </dependency>
 
         <!-- Hibernate -->
@@ -117,6 +165,18 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${version.h2database}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>${version.hamcrest.all}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${version.slf4j.simple}</version>
             <scope>test</scope>
         </dependency>
 
@@ -234,6 +294,28 @@
                         --illegal-access=permit
                     </argLine>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>${version.appassembler.plugin}</version>
+                <configuration>
+                    <assembleDirectory>target</assembleDirectory>
+                    <programs>
+                        <program>
+                            <mainClass>com.softserve.itacademy.kek.EmbeddedTomcatApp</mainClass>
+                            <name>webapp</name>
+                        </program>
+                    </programs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
 
