@@ -1,3 +1,55 @@
 .idea/
 target/
 *.iml
+
+
+
+# compiled output
+/src/main/frontend/dist
+/src/main/webapp/frontend
+/src/main/frontend/tmp
+/src/main/frontend/out-tsc
+# Only exists if Bazel was run
+/src/main/frontend/bazel-out
+
+# dependencies
+/src/main/frontend/node_modules
+/src/main/frontend/node
+
+
+# profiling files
+/src/main/frontend/chrome-profiler-events.json
+/src/main/frontend/speed-measure-plugin.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+
+
