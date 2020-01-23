@@ -15,12 +15,12 @@ import org.json.JSONObject;
 @RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController extends DefaultController {
 
-    // Build Response (temporary method)
-    private String getResponse(String id, String status) {
-        JSONObject response = new JSONObject();
-        response.put("userID", id);
-        response.put("status", status);
-        return response.toString();
+    // Build Response (stub, temporary method)
+    private String getJSON(String id, String status) {
+        JSONObject json = new JSONObject();
+        json.put("userID", id);
+        json.put("status", status);
+        return json.toString();
     }
 
     /**
@@ -30,10 +30,10 @@ public class UserController extends DefaultController {
      */
     @GetMapping
     public ResponseEntity<String> getUserList() {
-        JSONObject response = new JSONObject();
-        response.append("userID", "1").append("userID", "2").append("userID", "3");
-        response.put("status", "received");
-        return ResponseEntity.ok(response.toString());
+        JSONObject json = new JSONObject();
+        json.append("userID", "1").append("userID", "2").append("userID", "3");
+        json.put("status", "received");
+        return ResponseEntity.ok(json.toString());
     }
 
     /**
@@ -44,7 +44,7 @@ public class UserController extends DefaultController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<String> getUser(@PathVariable String id) {
-        return ResponseEntity.ok(getResponse(id, "received"));
+        return ResponseEntity.ok(getJSON(id, "received"));
     }
 
     /**
@@ -54,7 +54,7 @@ public class UserController extends DefaultController {
      */
     @PostMapping
     public ResponseEntity<String> addUser() {
-        return ResponseEntity.ok(getResponse("new", "added"));
+        return ResponseEntity.ok(getJSON("new", "added"));
     }
 
     /**
@@ -65,7 +65,7 @@ public class UserController extends DefaultController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyUser(@PathVariable String id) {
-        return ResponseEntity.ok(getResponse(id,"modified"));
+        return ResponseEntity.ok(getJSON(id, "modified"));
     }
 
     /**
@@ -76,6 +76,6 @@ public class UserController extends DefaultController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable String id) {
-        return ResponseEntity.ok(getResponse(id, "deleted"));
+        return ResponseEntity.ok(getJSON(id, "deleted"));
     }
 }
