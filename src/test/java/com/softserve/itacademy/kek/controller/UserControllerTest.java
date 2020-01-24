@@ -29,7 +29,7 @@ public class UserControllerTest {
     public void getUserListTest() throws Exception {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=ISO-8859-1"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.userID").value(Matchers.contains("1", "2", "3")))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -38,7 +38,7 @@ public class UserControllerTest {
     public void getUserTest() throws Exception {
         mockMvc.perform(get("/users/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=ISO-8859-1"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.userID").value("1"))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -47,7 +47,7 @@ public class UserControllerTest {
     public void addUserTest() throws Exception {
         mockMvc.perform(post("/users"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=ISO-8859-1"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.userID").value("new"))
                 .andExpect(jsonPath("$.status").value("added"));
     }
@@ -56,7 +56,7 @@ public class UserControllerTest {
     public void modifyUserTest() throws Exception {
         mockMvc.perform(put("/users/2"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=ISO-8859-1"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.userID").value("2"))
                 .andExpect(jsonPath("$.status").value("modified"));
     }
@@ -65,7 +65,7 @@ public class UserControllerTest {
     public void deleteUserTest() throws Exception {
         mockMvc.perform(delete("/users/3"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=ISO-8859-1"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.userID").value("3"))
                 .andExpect(jsonPath("$.status").value("deleted"));
     }
