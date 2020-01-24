@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.json.JSONObject;
 
+// TODO: Add logger
+
 @RestController
 @RequestMapping(path = "/users", produces = "application/json; charset=UTF-8")
 public class UserController extends DefaultController {

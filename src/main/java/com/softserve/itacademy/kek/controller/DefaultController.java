@@ -3,6 +3,8 @@ package com.softserve.itacademy.kek.controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
+// TODO: Add logger
+
 @RestController
 public class DefaultController {
 
