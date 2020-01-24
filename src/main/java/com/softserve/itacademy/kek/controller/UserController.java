@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.json.JSONObject;
 
 @RestController
-@RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController extends DefaultController {
 
     // Build Response (temporary method)
@@ -24,17 +24,24 @@ public class UserController extends DefaultController {
     }
 
     /**
+     * Entry point for /user
+     */
+    @GetMapping
+    public ResponseEntity<String> get() {
+        return ResponseEntity.ok("Hello KEK user!!!");
+    }
+    /**
      * Get information about users
      *
      * @return information about users (JSON)
      */
-    @GetMapping
-    public ResponseEntity<String> getUserList() {
-        JSONObject response = new JSONObject();
-        response.append("userID", "1").append("userID", "2").append("userID", "3");
-        response.put("status", "received");
-        return ResponseEntity.ok(response.toString());
-    }
+//    @GetMapping
+//    public ResponseEntity<String> getUserList() {
+//        JSONObject response = new JSONObject();
+//        response.append("userID", "1").append("userID", "2").append("userID", "3");
+//        response.put("status", "received");
+//        return ResponseEntity.ok(response.toString());
+//    }
 
     /**
      * Returns information about the requested user

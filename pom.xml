@@ -227,10 +227,12 @@
                         </goals>
                     </execution>
                 </executions>
+
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -319,6 +321,8 @@
             </plugin>
 
 
+
+
             <!--Frontend-->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
@@ -330,7 +334,6 @@
                 </configuration>
 
                 <executions>
-
                     <execution>
                         <id>install-node-and-npm</id>
                         <goals>
@@ -356,28 +359,71 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run buildProduction</arguments>
+                            <arguments>run build</arguments>
                         </configuration>
                         <phase>generate-resources</phase>
                     </execution>
+
+<!--                    <execution>-->
+<!--                        <id></id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal></goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+
+<!--                        </configuration>-->
+<!--                    </execution>-->
+
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.2.2</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <version>3.2.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>jar</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <includes>-->
+<!--                        <include>src/main/webapp/resources</include>-->
+<!--                    </includes>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
-                    <!-- Add frontend folder to war package -->
-                    <webResources>
-                        <resource>
-                            <directory>src/main/webapp/frontend</directory>
-                        </resource>
-                    </webResources>
 
-                </configuration>
-            </plugin>
-            <!--EndFrontend-->
+
+            <!-- Plugin to copy the content of /angular/dist/ directory to output directory (ie/ /target/transactionManager-1.0/) -->
+<!--            <plugin>-->
+<!--            <groupId>org.apache.maven.plugins</groupId>-->
+<!--            <artifactId>maven-resources-plugin</artifactId>-->
+<!--            <version>2.4.2</version>-->
+<!--            <executions>-->
+<!--                <execution>-->
+<!--                    <id>default-copy-resources</id>-->
+<!--                    <phase>process-resources</phase>-->
+<!--                    <goals>-->
+<!--                        <goal>copy-resources</goal>-->
+<!--                    </goals>-->
+<!--                    <configuration>-->
+<!--                        <overwrite>true</overwrite>-->
+<!--                        <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/</outputDirectory>-->
+<!--                        <resources>-->
+<!--                            <resource>-->
+<!--                                <directory>${project.basedir}/src/main/webapp/resources</directory>-->
+<!--                            </resource>-->
+<!--                        </resources>-->
+<!--                    </configuration>-->
+<!--                </execution>-->
+<!--            </executions>-->
+<!--            </plugin>-->
+
+
 
 
 
