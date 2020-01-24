@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.controller;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.json.JSONObject;
 
 @RestController
-@RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/users", produces = "application/json; charset=UTF-8")
 public class UserController extends DefaultController {
 
     // Build Response (stub, temporary method)
