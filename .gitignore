@@ -1,3 +1,26 @@
 .idea/
 target/
 *.iml
+
+
+
+# compiled output
+/src/main/frontend/dist
+/src/main/frontend/tmp
+/src/main/frontend/out-tsc
+
+
+# dependencies
+/src/main/frontend/node_modules
+/src/main/frontend/node
+
+
+# profiling files
+/src/main/frontend/chrome-profiler-events.json
+/src/main/frontend/speed-measure-plugin.json
+
+
+
+
+
+

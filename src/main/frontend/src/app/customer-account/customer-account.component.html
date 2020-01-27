@@ -1,0 +1,100 @@
+<br>
+<br>
+<h2 style="text-align: center">Customer Account</h2>
+<br>
+<br>
+<div class="container-fluid">
+  <div class="row ng-scope text-center">
+    <div class="col-lg-6 col-xl-5 d-flex justify-content-center">
+      <div class="card">
+        <div class="card-body">
+          <img class="center-block img-responsive img-circle img-thumbnail thumb96"
+               src="assets/images/soft_serve_label.png" alt="Customer label or user icon">
+          <br>
+          <br>
+          <br>
+          <h3 class="text-bold">{{customerAccount.name}}</h3>
+        </div>
+      </div>
+    </div><!-- end col-md-6 -->
+
+
+    <div class="col-lg-6 col-xl-5 d-flex justify-content-center">
+      <div class="card">
+        <!--UPDATE USER DATA MENU-->
+        <h3 class="card-header">Контактная информация</h3>
+        <div class="card-body">
+          <div class="">{{customerAccount.email}}</div>
+          <div class="">{{customerAccount.phone}}</div>
+          <div class="">{{customerAccount.address}}</div>
+        </div> <!-- end card-body -->
+      </div> <!--end card -->
+
+
+      <div class="card">
+        <!--UPDATE USER DATA MENU-->
+        <h3 class="card-header">Контактная информация</h3>
+        <div class="card-body">
+          <!--https://angular.io/guide/form-validation#adding-to-template-driven-forms-->
+          <form class="form">
+
+            <!--NAME-->
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                </div>
+                <input [(ngModel)]="customerAccount.name" id="name" name="name" type="text"
+                       class="form-control rounded-0" required autofocus placeholder="name">
+              </div>
+            </div>
+
+            <!--EMAIL-->
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                </div>
+                <input [(ngModel)]="customerAccount.email" id="email" name="email" type="email"
+                       class="form-control rounded-0" required placeholder="email"
+                       pattern="[a-zA-Z_0-9.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}" />
+              </div>
+            </div>
+
+            <!--PHONE-->
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+                </div>
+                <input [(ngModel)]="customerAccount.phone" id="phone" name="phone" type="text"
+                       class="form-control rounded-0" required placeholder="phone"/>
+              </div>
+            </div>
+
+            <!--ADDRESS-->
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"> <i class="fa fa-addr"></i> </span>
+                </div>
+                <input [(ngModel)]="customerAccount.address" id="address" name="address" type="text"
+                       class="form-control rounded-0" required placeholder="address"/>
+              </div>
+            </div>
+
+            <!--BUTTON REGISTER-->
+            <button (click)="update()" type="submit"
+                    class="btn btn-primary btn-block float-right register">Изменить</button>
+          </form>
+        </div> <!-- end card-body -->
+        <!--UPDATE USER DATA MENU-->
+      </div> <!--end card -->
+
+
+    </div><!-- end col-md-6 -->
+  </div><!-- end row -->
+</div><!-- end container-fluid -->
+
+
+
