@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -27,10 +28,9 @@ public class EmbeddedTomcatApp {
      * @throws IOException in case when the properties file is not found
      */
     public EmbeddedTomcatApp() throws IOException {
-        String rootPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
-        String appConfigPath = rootPath + "server.properties";
+        InputStream resourceStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("server.properties");
         Properties properties = new Properties();
-        properties.load(new FileInputStream(appConfigPath));
+        properties.load(resourceStream);
         int port = Integer.parseInt(properties.getProperty("server.port", "8080"));
 
         tomcat = new Tomcat();
