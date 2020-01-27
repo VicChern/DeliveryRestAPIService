@@ -6,7 +6,6 @@ target/
 
 # compiled output
 /src/main/frontend/dist
-/src/main/webapp/resources
 /src/main/frontend/tmp
 /src/main/frontend/out-tsc
 

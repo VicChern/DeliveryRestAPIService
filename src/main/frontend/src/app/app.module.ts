@@ -29,7 +29,7 @@ import {MapsService} from './maps.service';
     FormsModule,
     HttpClientModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyCoxz_wd2qNPzkd1o3CsX7zOrLpqPtFiao'
+      apiKey: 'YourApiKeyFromGoogle'
     })
   ],
 

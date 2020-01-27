@@ -24,24 +24,17 @@ public class UserController extends DefaultController {
     }
 
     /**
-     * Entry point for /user
-     */
-    @GetMapping
-    public ResponseEntity<String> get() {
-        return ResponseEntity.ok("Hello KEK user!!!");
-    }
-    /**
      * Get information about users
      *
      * @return information about users (JSON)
      */
-//    @GetMapping
-//    public ResponseEntity<String> getUserList() {
-//        JSONObject response = new JSONObject();
-//        response.append("userID", "1").append("userID", "2").append("userID", "3");
-//        response.put("status", "received");
-//        return ResponseEntity.ok(response.toString());
-//    }
+    @GetMapping
+    public ResponseEntity<String> getUserList() {
+        JSONObject response = new JSONObject();
+        response.append("userID", "1").append("userID", "2").append("userID", "3");
+        response.put("status", "received");
+        return ResponseEntity.ok(response.toString());
+    }
 
     /**
      * Returns information about the requested user
