@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.json.JSONObject;
 
 @RestController
-@RequestMapping(path = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController extends DefaultController {
 
     // Build Response (temporary method)
