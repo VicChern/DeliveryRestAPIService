@@ -17,12 +17,13 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/*.js", "/*.css", "/*.html","/assets/**").addResourceLocations("classpath:/WEB-INF/static");
+        registry.addResourceHandler("/*.js", "/*.css", "/*.html","/assets/**").addResourceLocations("classpath:/static");
 
     }
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+        configurer.enable("MainController");
 //        configurer.enable("DefaultController");
     }
 
