@@ -17,13 +17,13 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/*.js", "/*.css", "/*.html","/assets/**").addResourceLocations("classpath:/static");
+        registry.addResourceHandler("/*.js", "/*.css", "/*.html","/assets/**").addResourceLocations("classpath:/static/");
 
     }
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable("MainController");
+//        configurer.enable("MainController");
 //        configurer.enable("DefaultController");
     }
 
@@ -33,4 +33,5 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         parameterMap.put("charset", "UTF-8");
         configurer.defaultContentType(new MediaType(MediaType.APPLICATION_JSON, parameterMap));
     }
+
 }

@@ -37,6 +37,7 @@ public class EmbeddedTomcatApp {
         tomcat.setPort(port);
         File base = new File("");
         Context rootCtx = tomcat.addContext("", base.getAbsolutePath());
+        rootCtx.setDocBase("static");
         AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
         actx.scan("com.softserve.itacademy.kek");
         DispatcherServlet dispatcher = new DispatcherServlet(actx);
