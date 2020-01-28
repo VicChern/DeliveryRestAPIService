@@ -12,7 +12,7 @@ export class MapsService {
   // if we use ipapi service (https://ipapi.co/)
   getSomeTestCodeFromBack() {
     // return this.http.get<Location>('http://api/ipapi.com/api/check?access_key=');
-    return this.http.get<any>('./users/2');
+    return this.http.get<any>('./api/v1/users/4');
   }
 
 }

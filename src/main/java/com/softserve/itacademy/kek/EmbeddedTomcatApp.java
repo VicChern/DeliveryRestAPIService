@@ -31,16 +31,17 @@ public class EmbeddedTomcatApp {
         properties.load(resourceStream);
         int port = Integer.parseInt(properties.getProperty("server.port", "8080"));
 
+        final File base = new File("");
         tomcat = new Tomcat();
         tomcat.setPort(port);
-        File base = new File("");
-        Context rootCtx = tomcat.addContext("", base.getAbsolutePath());
-        rootCtx.setDocBase("static");
-        AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
+        final Context rootCtx = tomcat.addContext("", base.getAbsolutePath());
+        rootCtx.setDocBase("../../target-frontend");
+        final AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
         actx.scan("com.softserve.itacademy.kek");
-        DispatcherServlet dispatcher = new DispatcherServlet(actx);
+        final DispatcherServlet dispatcher = new DispatcherServlet(actx);
+        Tomcat.initWebappDefaults(rootCtx);
         Tomcat.addServlet(rootCtx, "SpringMVC", dispatcher);
-        rootCtx.addServletMapping("/*", "SpringMVC");
+        rootCtx.addServletMapping("/api/v1/*", "SpringMVC");
     }
 
     /**

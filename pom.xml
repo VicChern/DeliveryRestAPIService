@@ -26,6 +26,7 @@
         <version.failsafe.plugin>3.0.0-M4</version.failsafe.plugin>
         <version.build.helper.plugin>3.0.0</version.build.helper.plugin>
         <version.appassembler.plugin>2.1.0</version.appassembler.plugin>
+        <version.frontend.plugin>1.8.0</version.frontend.plugin>
 
         <!-- Third-party versions -->
         <version.spring.core>5.2.0.RELEASE</version.spring.core>
@@ -54,6 +55,8 @@
         <version.tomcat.embed.core>7.0.91</version.tomcat.embed.core>
         <version.tomcat.embed.jasper>7.0.91</version.tomcat.embed.jasper>
         <version.tomcat.embed.logging.juli>7.0.91</version.tomcat.embed.logging.juli>
+
+        <version.node>v13.6.0</version.node>
     </properties>
 
     <dependencies>
@@ -324,7 +327,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.8.0</version>
+                <version>${version.frontend.plugin}</version>
                 <configuration>
                     <workingDirectory>src/main/frontend</workingDirectory>
                 </configuration>
@@ -335,7 +338,7 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v13.6.0</nodeVersion>
+                            <nodeVersion>${version.node}</nodeVersion>
                         </configuration>
                     </execution>
                     <execution>
