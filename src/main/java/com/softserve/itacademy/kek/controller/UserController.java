@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 @RestController
 @RequestMapping(path = "/users", produces = "application/json; charset=UTF-8")
-public class UserController {
+public class UserController extends DefaultController{
 
     // Build Response (stub, temporary method)
     private String getJSON(String id, String status) {

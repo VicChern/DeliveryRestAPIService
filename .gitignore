@@ -9,6 +9,7 @@ target/
 /src/main/frontend/tmp
 /src/main/frontend/out-tsc
 /src/main/resources/static
+/tomcat.8080
 
 
 # dependencies

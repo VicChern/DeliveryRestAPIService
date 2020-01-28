@@ -229,12 +229,10 @@
                         </goals>
                     </execution>
                 </executions>
-
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>

@@ -30,11 +30,11 @@ export class MapComponent implements OnInit {
 
 
     // if we use ipapi service (https://ipapi.co/)
-    // this.mapService.getLocation().subscribe(data => {
-    //   console.log(data);
-    //   this.lat = data.latitude;
-    //   this.lng = data.longitude;
-    // });
+//     this.mapService.getLocation().subscribe(data => {
+//       console.log(data);
+//       this.lat = data.latitude;
+//       this.lng = data.longitude;
+//     });
   }
 }
 
