@@ -23,7 +23,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-//        configurer.enable("MainController");
 //        configurer.enable("DefaultController");
     }
 
