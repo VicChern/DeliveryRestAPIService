@@ -11,13 +11,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "obj_identity")
-public class Identity {
+public class Identity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idIdentity;
+    private Long idIdentity;
 
     @OneToOne
     @JoinColumn(name = "id_identity_type", insertable = false, updatable = false)
@@ -31,11 +33,11 @@ public class Identity {
     @Column(name = "payload", nullable = false)
     private String payload;
 
-    public int getIdIdentity() {
+    public Long getIdIdentity() {
         return idIdentity;
     }
 
-    public void setIdIdentity(int idIdentity) {
+    public void setIdIdentity(Long idIdentity) {
         this.idIdentity = idIdentity;
     }
 
