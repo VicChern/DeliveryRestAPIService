@@ -25,8 +25,9 @@ const routes: Routes = [
   },
 ];
 
+// add "useHash: true" to avoid 404 after reload
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {useHash: true})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
