@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "obj_global_properties")
@@ -20,9 +21,11 @@ public class GlobalProperties {
     @JoinColumn(name = "id_property_type", insertable = false, updatable = false)
     private PropertyType propertyType;
 
+    @Size(min = 1, max = 256)
     @Column(name = "key", unique = true, nullable = false)
-    private int key;
+    private String key;
 
+    @Size(min = 1, max = 4096)
     @Column(name = "value", nullable = false)
     private String value;
 
@@ -42,11 +45,11 @@ public class GlobalProperties {
         this.propertyType = propertyType;
     }
 
-    public int getKey() {
+    public String getKey() {
         return key;
     }
 
-    public void setKey(int key) {
+    public void setKey(String key) {
         this.key = key;
     }
 
