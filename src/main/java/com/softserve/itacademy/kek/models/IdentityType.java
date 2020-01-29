@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
@@ -15,6 +16,7 @@ public class IdentityType implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idIdentityType;
 
+    @Size(min = 1, max = 256)
     @Column(name = "name")
     private String name;
 

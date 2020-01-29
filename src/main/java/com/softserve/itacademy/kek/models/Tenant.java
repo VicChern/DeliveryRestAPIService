@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +29,7 @@ public class Tenant implements Serializable {
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;
 
+    @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false)
     private String name;
 
