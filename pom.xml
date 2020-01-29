@@ -33,6 +33,8 @@
         <version.spring.context>5.2.0.RELEASE</version.spring.context>
         <version.spring.data.commons>2.2.0.RELEASE</version.spring.data.commons>
         <version.spring.security.core>5.2.0.RELEASE</version.spring.security.core>
+        <version.spring.security.web>5.2.0.RELEASE</version.spring.security.web>
+        <version.spring.security.config>5.2.0.RELEASE</version.spring.security.config>
         <version.spring.data.rest.core>3.2.0.RELEASE</version.spring.data.rest.core>
         <version.spring.web>5.2.2.RELEASE</version.spring.web>
         <version.spring.webmvc>5.2.2.RELEASE</version.spring.webmvc>
@@ -101,6 +103,16 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
             <version>${version.spring.security.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${version.spring.security.web}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${version.spring.security.config}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
