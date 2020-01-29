@@ -18,9 +18,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "obj_tenant")
 public class Tenant implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idTenant;
+    private Long idTenant;
 
     @OneToOne
     @JoinColumn(name ="id_tenant_owner", insertable = false, updatable = false)
@@ -42,11 +43,11 @@ public class Tenant implements Serializable {
     @OneToMany(mappedBy = "tenant")
     private List<Address> addressList;
 
-    public int getIdTenant() {
+    public Long getIdTenant() {
         return idTenant;
     }
 
-    public void setIdTenant(int idTenant) {
+    public void setIdTenant(Long idTenant) {
         this.idTenant = idTenant;
     }
 

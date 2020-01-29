@@ -10,13 +10,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "obj_tenant_properties")
-public class TenantProperties {
+public class TenantProperties implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idProperty;
+    private Long idProperty;
 
     @ManyToOne
     @JoinColumn(name = "id_tenant", insertable = false, updatable = false)
@@ -34,11 +36,11 @@ public class TenantProperties {
     @Column(name = "value", nullable = false)
     private String value;
 
-    public int getIdProperty() {
+    public Long getIdProperty() {
         return idProperty;
     }
 
-    public void setIdProperty(int idProperty) {
+    public void setIdProperty(Long idProperty) {
         this.idProperty = idProperty;
     }
 

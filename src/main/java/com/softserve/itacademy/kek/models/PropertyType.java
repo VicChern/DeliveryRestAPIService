@@ -12,9 +12,10 @@ import java.io.Serializable;
 @Entity
 @Table(name = "def_property_type")
 public class PropertyType implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idPropertyType;
+    private Long idPropertyType;
 
     @Size(min = 1, max = 256)
     @Column(name = "name", unique = true, nullable = false)
@@ -24,11 +25,11 @@ public class PropertyType implements Serializable {
     @Column(name = "schema", nullable = false)
     private String schema;
 
-    public int getIdPropertyType() {
+    public Long getIdPropertyType() {
         return idPropertyType;
     }
 
-    public void setIdPropertyType(int idPropertyType) {
+    public void setIdPropertyType(Long idPropertyType) {
         this.idPropertyType = idPropertyType;
     }
 
