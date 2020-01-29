@@ -9,13 +9,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "obj_global_properties")
-public class GlobalProperties {
+public class GlobalProperties implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idProperty;
+    private Long idProperty;
 
     @OneToOne
     @JoinColumn(name = "id_property_type", insertable = false, updatable = false)
@@ -29,11 +31,11 @@ public class GlobalProperties {
     @Column(name = "value", nullable = false)
     private String value;
 
-    public int getIdProperty() {
+    public Long getIdProperty() {
         return idProperty;
     }
 
-    public void setIdProperty(int idProperty) {
+    public void setIdProperty(Long idProperty) {
         this.idProperty = idProperty;
     }
 
