@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "obj_identity")
@@ -26,6 +27,7 @@ public class Identity {
     @JoinColumn(name = "id_user", insertable = false, updatable = false)
     private User user;
 
+    @Size(min = 1, max = 4096)
     @Column(name = "payload", nullable = false)
     private String payload;
 

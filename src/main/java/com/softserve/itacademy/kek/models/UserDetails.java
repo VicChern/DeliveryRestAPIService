@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
@@ -20,9 +21,11 @@ public class UserDetails implements Serializable {
     @JoinColumn(name = "id_user")
     private User user;
 
+    @Size(max = 4096)
     @Column(name = "payload")
     private String payload;
 
+    @Size(max = 512)
     @Column(name = "image_url")
     private String imageUrl;
 

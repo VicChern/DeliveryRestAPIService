@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Entity
@@ -22,12 +23,15 @@ public class Address {
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
 
+    @Size(min = 1, max = 512)
     @Column(name = "address", nullable = false)
     private String address;
 
+    @Size(max = 1024)
     @Column(name = "notes")
     private String notes;
 
+    @Size(min = 1, max = 256)
     @Column(name = "alias", nullable = false)
     private String alias;
 

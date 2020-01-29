@@ -39,6 +39,8 @@
 
         <version.org.json>20180813</version.org.json>
 
+        <version.javax.validation>2.0.1.Final</version.javax.validation>
+
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
 
@@ -122,6 +124,13 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${version.org.json}</version>
+        </dependency>
+
+        <!-- Validation -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${version.javax.validation}</version>
         </dependency>
 
         <!-- Hibernate -->
