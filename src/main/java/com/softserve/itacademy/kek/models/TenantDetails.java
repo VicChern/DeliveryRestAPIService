@@ -1,27 +1,27 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "o2o_tenant_details")
-public class TenantDetails implements Serializable {
+public class TenantDetails {
 
     @Id
-    @Column(name = "id_tenant")
-    private Long id;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "id_tenant")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @OneToOne
+    @JoinColumn(name = "id_tenant")
     private Tenant tenant;
 
-    @Size(max = 4096)
     @Column(name = "payload")
     private String payload;
 
-    @Size(max = 512)
     @Column(name = "image_url")
     private String imageUrl;
 
@@ -47,31 +47,5 @@ public class TenantDetails implements Serializable {
 
     public void setTenant(Tenant tenant) {
         this.tenant = tenant;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TenantDetails that = (TenantDetails) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(tenant, that.tenant) &&
-                Objects.equals(payload, that.payload) &&
-                Objects.equals(imageUrl, that.imageUrl);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, tenant, payload, imageUrl);
-    }
-
-    @Override
-    public String toString() {
-        return "TenantDetails{" +
-                "id=" + id +
-                ", tenant=" + tenant +
-                ", payload='" + payload + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                '}';
     }
 }

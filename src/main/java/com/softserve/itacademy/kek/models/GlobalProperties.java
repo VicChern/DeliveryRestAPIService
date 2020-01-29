@@ -8,35 +8,29 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 @Table(name = "obj_global_properties")
-public class GlobalProperties implements Serializable {
-
+public class GlobalProperties {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idProperty;
+    private int idProperty;
 
     @OneToOne
     @JoinColumn(name = "id_property_type", insertable = false, updatable = false)
     private PropertyType propertyType;
 
-    @Size(min = 1, max = 256)
     @Column(name = "key", unique = true, nullable = false)
-    private String key;
+    private int key;
 
-    @Size(min = 1, max = 4096)
     @Column(name = "value", nullable = false)
     private String value;
 
-    public Long getIdProperty() {
+    public int getIdProperty() {
         return idProperty;
     }
 
-    public void setIdProperty(Long idProperty) {
+    public void setIdProperty(int idProperty) {
         this.idProperty = idProperty;
     }
 
@@ -48,11 +42,11 @@ public class GlobalProperties implements Serializable {
         this.propertyType = propertyType;
     }
 
-    public String getKey() {
+    public int getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(int key) {
         this.key = key;
     }
 
@@ -64,29 +58,5 @@ public class GlobalProperties implements Serializable {
         this.value = value;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GlobalProperties that = (GlobalProperties) o;
-        return Objects.equals(idProperty, that.idProperty) &&
-                Objects.equals(propertyType, that.propertyType) &&
-                Objects.equals(key, that.key) &&
-                Objects.equals(value, that.value);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(idProperty, propertyType, key, value);
-    }
-
-    @Override
-    public String toString() {
-        return "GlobalProperties{" +
-                "idProperty=" + idProperty +
-                ", propertyType=" + propertyType +
-                ", key='" + key + '\'' +
-                ", value='" + value + '\'' +
-                '}';
-    }
 }

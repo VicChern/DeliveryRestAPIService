@@ -1,27 +1,28 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 @Table(name = "o2o_user_details")
 public class UserDetails implements Serializable {
 
     @Id
-    @Column(name = "id_user")
-    private Long id;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "id_user")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @OneToOne
+    @JoinColumn(name = "id_user")
     private User user;
 
-    @Size(max = 4096)
     @Column(name = "payload")
     private String payload;
 
-    @Size(max = 512)
     @Column(name = "image_url")
     private String imageUrl;
 
@@ -49,29 +50,5 @@ public class UserDetails implements Serializable {
         this.user = user;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserDetails that = (UserDetails) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(user, that.user) &&
-                Objects.equals(payload, that.payload) &&
-                Objects.equals(imageUrl, that.imageUrl);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, user, payload, imageUrl);
-    }
-
-    @Override
-    public String toString() {
-        return "UserDetails{" +
-                "id=" + id +
-                ", user=" + user +
-                ", payload='" + payload + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                '}';
-    }
 }

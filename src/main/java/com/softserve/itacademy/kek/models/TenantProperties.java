@@ -9,17 +9,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 @Table(name = "obj_tenant_properties")
-public class TenantProperties implements Serializable {
-
+public class TenantProperties {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idProperty;
+    private int idProperty;
 
     @ManyToOne
     @JoinColumn(name = "id_tenant", insertable = false, updatable = false)
@@ -29,19 +25,17 @@ public class TenantProperties implements Serializable {
     @JoinColumn(name = "id_property_type", insertable = false, updatable = false)
     private PropertyType propertyType;
 
-    @Size(min = 1, max = 256)
     @Column(name = "key", nullable = false, unique = true)
     private String key;
 
-    @Size(min = 1, max = 4096)
     @Column(name = "value", nullable = false)
     private String value;
 
-    public Long getIdProperty() {
+    public int getIdProperty() {
         return idProperty;
     }
 
-    public void setIdProperty(Long idProperty) {
+    public void setIdProperty(int idProperty) {
         this.idProperty = idProperty;
     }
 
@@ -75,32 +69,5 @@ public class TenantProperties implements Serializable {
 
     public void setPropertyType(PropertyType propertyType) {
         this.propertyType = propertyType;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TenantProperties that = (TenantProperties) o;
-        return Objects.equals(idProperty, that.idProperty) &&
-                Objects.equals(tenant, that.tenant) &&
-                Objects.equals(propertyType, that.propertyType) &&
-                Objects.equals(key, that.key) &&
-                Objects.equals(value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idProperty, tenant, propertyType, key, value);
-    }
-
-    @Override
-    public String toString() {
-        return "TenantProperties{" +
-                "idProperty=" + idProperty +
-                ", propertyType=" + propertyType +
-                ", key='" + key + '\'' +
-                ", value='" + value + '\'' +
-                '}';
     }
 }

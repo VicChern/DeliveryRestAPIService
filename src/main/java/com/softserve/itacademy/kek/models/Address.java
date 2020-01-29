@@ -10,15 +10,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "obj_address")
-public class Address implements Serializable {
-
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAddress;
@@ -26,15 +22,12 @@ public class Address implements Serializable {
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
 
-    @Size(min = 1, max = 512)
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Size(max = 1024)
     @Column(name = "notes")
     private String notes;
 
-    @Size(min = 1, max = 256)
     @Column(name = "alias", nullable = false)
     private String alias;
 
@@ -110,33 +103,5 @@ public class Address implements Serializable {
         this.user = user;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Address address1 = (Address) o;
-        return Objects.equals(idAddress, address1.idAddress) &&
-                Objects.equals(guid, address1.guid) &&
-                Objects.equals(address, address1.address) &&
-                Objects.equals(notes, address1.notes) &&
-                Objects.equals(alias, address1.alias) &&
-                Objects.equals(tenant, address1.tenant) &&
-                Objects.equals(user, address1.user);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(idAddress, guid, address, notes, alias, tenant, user);
-    }
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "idAddress=" + idAddress +
-                ", guid=" + guid +
-                ", address='" + address + '\'' +
-                ", notes='" + notes + '\'' +
-                ", alias='" + alias + '\'' +
-                '}';
-    }
 }

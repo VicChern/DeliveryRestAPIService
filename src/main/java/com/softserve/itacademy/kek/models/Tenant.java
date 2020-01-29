@@ -10,19 +10,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "obj_tenant")
 public class Tenant implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idTenant;
+    private int idTenant;
 
     @OneToOne
     @JoinColumn(name ="id_tenant_owner", insertable = false, updatable = false)
@@ -31,7 +28,6 @@ public class Tenant implements Serializable {
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;
 
-    @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -44,11 +40,11 @@ public class Tenant implements Serializable {
     @OneToMany(mappedBy = "tenant")
     private List<Address> addressList;
 
-    public Long getIdTenant() {
+    public int getIdTenant() {
         return idTenant;
     }
 
-    public void setIdTenant(Long idTenant) {
+    public void setIdTenant(int idTenant) {
         this.idTenant = idTenant;
     }
 
@@ -102,35 +98,5 @@ public class Tenant implements Serializable {
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tenant tenant = (Tenant) o;
-        return Objects.equals(idTenant, tenant.idTenant) &&
-                Objects.equals(tenantOwner, tenant.tenantOwner) &&
-                Objects.equals(guid, tenant.guid) &&
-                Objects.equals(name, tenant.name) &&
-                Objects.equals(tenantDetails, tenant.tenantDetails) &&
-                Objects.equals(tenantPropertiesList, tenant.tenantPropertiesList) &&
-                Objects.equals(addressList, tenant.addressList);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idTenant, tenantOwner, guid, name, tenantDetails, tenantPropertiesList, addressList);
-    }
-
-    @Override
-    public String toString() {
-        return "Tenant{" +
-                "idTenant=" + idTenant +
-                ", tenantOwner=" + tenantOwner +
-                ", guid=" + guid +
-                ", name='" + name + '\'' +
-                ", tenantDetails=" + tenantDetails +
-                '}';
     }
 }
