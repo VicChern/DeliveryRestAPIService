@@ -11,11 +11,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "obj_address")
-public class Address {
+public class Address implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAddress;

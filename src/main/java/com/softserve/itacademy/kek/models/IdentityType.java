@@ -12,19 +12,20 @@ import java.io.Serializable;
 @Entity
 @Table(name = "def_identity_type")
 public class IdentityType implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idIdentityType;
+    private Long idIdentityType;
 
     @Size(min = 1, max = 256)
     @Column(name = "name")
     private String name;
 
-    public int getIdIdentityType() {
+    public Long getIdIdentityType() {
         return idIdentityType;
     }
 
-    public void setIdIdentityType(int idIdentityType) {
+    public void setIdIdentityType(Long idIdentityType) {
         this.idIdentityType = idIdentityType;
     }
 

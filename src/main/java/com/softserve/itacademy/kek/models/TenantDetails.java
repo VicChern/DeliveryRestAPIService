@@ -9,10 +9,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "o2o_tenant_details")
-public class TenantDetails {
+public class TenantDetails implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
