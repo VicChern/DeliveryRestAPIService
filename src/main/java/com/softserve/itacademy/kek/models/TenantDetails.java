@@ -1,13 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -16,9 +9,11 @@ import java.io.Serializable;
 public class TenantDetails implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @OneToOne
-    @JoinColumn(name = "id_tenant")
+    @Column(name = "id_tenant")
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "id_tenant")
     private Tenant tenant;
 
     @Size(max = 4096)

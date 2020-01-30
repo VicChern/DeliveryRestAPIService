@@ -33,6 +33,7 @@
         <version.spring.data.commons>2.2.0.RELEASE</version.spring.data.commons>
         <version.spring.security.core>5.2.0.RELEASE</version.spring.security.core>
         <version.spring.data.rest.core>3.2.0.RELEASE</version.spring.data.rest.core>
+        <version.spring.data.jpa>2.2.4.RELEASE</version.spring.data.jpa>
         <version.spring.web>5.2.2.RELEASE</version.spring.web>
         <version.spring.webmvc>5.2.2.RELEASE</version.spring.webmvc>
         <version.spring.test>5.2.2.RELEASE</version.spring.test>
@@ -117,6 +118,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${version.spring.test}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${version.spring.data.jpa}</version>
         </dependency>
 
         <!-- JSON -->
