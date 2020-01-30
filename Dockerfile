@@ -21,7 +21,7 @@ RUN mvn -f /project_kv_061/pom.xml clean package
 #install light weight jre just for start our .jar file
 FROM openjdk:11-jre
 
-#copy .jar from
+#copy .jar from target and start project_kv_061-1.0-jar-with-dependencies.jar
 COPY --from=build /project_kv_061/target/project_kv_061-1.0-jar-with-dependencies.jar /project_kv_061-1.0-jar-with-dependencies.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/project_kv_061-1.0-jar-with-dependencies.jar"]
