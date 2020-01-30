@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "def_property_type")
@@ -49,5 +50,27 @@ public class PropertyType implements Serializable {
         this.schema = schema;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PropertyType that = (PropertyType) o;
+        return Objects.equals(idPropertyType, that.idPropertyType) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(schema, that.schema);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(idPropertyType, name, schema);
+    }
+
+    @Override
+    public String toString() {
+        return "PropertyType{" +
+                "idPropertyType=" + idPropertyType +
+                ", name='" + name + '\'' +
+                ", schema='" + schema + '\'' +
+                '}';
+    }
 }
