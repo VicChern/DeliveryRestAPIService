@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.models;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "o2o_tenant_details")
@@ -46,5 +47,31 @@ public class TenantDetails implements Serializable {
 
     public void setTenant(Tenant tenant) {
         this.tenant = tenant;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TenantDetails that = (TenantDetails) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(tenant, that.tenant) &&
+                Objects.equals(payload, that.payload) &&
+                Objects.equals(imageUrl, that.imageUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tenant, payload, imageUrl);
+    }
+
+    @Override
+    public String toString() {
+        return "TenantDetails{" +
+                "id=" + id +
+                ", tenant=" + tenant +
+                ", payload='" + payload + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
     }
 }

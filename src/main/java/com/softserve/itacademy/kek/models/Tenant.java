@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -101,5 +102,35 @@ public class Tenant implements Serializable {
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tenant tenant = (Tenant) o;
+        return Objects.equals(idTenant, tenant.idTenant) &&
+                Objects.equals(tenantOwner, tenant.tenantOwner) &&
+                Objects.equals(guid, tenant.guid) &&
+                Objects.equals(name, tenant.name) &&
+                Objects.equals(tenantDetails, tenant.tenantDetails) &&
+                Objects.equals(tenantPropertiesList, tenant.tenantPropertiesList) &&
+                Objects.equals(addressList, tenant.addressList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idTenant, tenantOwner, guid, name, tenantDetails, tenantPropertiesList, addressList);
+    }
+
+    @Override
+    public String toString() {
+        return "Tenant{" +
+                "idTenant=" + idTenant +
+                ", tenantOwner=" + tenantOwner +
+                ", guid=" + guid +
+                ", name='" + name + '\'' +
+                ", tenantDetails=" + tenantDetails +
+                '}';
     }
 }
