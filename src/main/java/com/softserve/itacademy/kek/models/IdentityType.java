@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "def_identity_type")
@@ -37,5 +38,25 @@ public class IdentityType implements Serializable {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IdentityType that = (IdentityType) o;
+        return Objects.equals(idIdentityType, that.idIdentityType) &&
+                Objects.equals(name, that.name);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(idIdentityType, name);
+    }
+
+    @Override
+    public String toString() {
+        return "IdentityType{" +
+                "idIdentityType=" + idIdentityType +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

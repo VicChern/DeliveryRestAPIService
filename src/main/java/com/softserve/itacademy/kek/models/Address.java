@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -109,5 +110,33 @@ public class Address implements Serializable {
         this.user = user;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address1 = (Address) o;
+        return Objects.equals(idAddress, address1.idAddress) &&
+                Objects.equals(guid, address1.guid) &&
+                Objects.equals(address, address1.address) &&
+                Objects.equals(notes, address1.notes) &&
+                Objects.equals(alias, address1.alias) &&
+                Objects.equals(tenant, address1.tenant) &&
+                Objects.equals(user, address1.user);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(idAddress, guid, address, notes, alias, tenant, user);
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "idAddress=" + idAddress +
+                ", guid=" + guid +
+                ", address='" + address + '\'' +
+                ", notes='" + notes + '\'' +
+                ", alias='" + alias + '\'' +
+                '}';
+    }
 }
