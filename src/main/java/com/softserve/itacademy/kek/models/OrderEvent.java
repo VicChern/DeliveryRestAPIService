@@ -10,11 +10,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "obj_order_event")
-public class OrderEvent {
+public class OrderEvent implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,5 +90,21 @@ public class OrderEvent {
         this.payload = payload;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderEvent that = (OrderEvent) o;
+        return Objects.equals(idOrderEvent, that.idOrderEvent) &&
+                Objects.equals(idOrder, that.idOrder) &&
+                Objects.equals(idActor, that.idActor) &&
+                Objects.equals(idOrderEventType, that.idOrderEventType) &&
+                Objects.equals(guid, that.guid) &&
+                Objects.equals(payload, that.payload);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(idOrderEvent, idOrder, idActor, idOrderEventType, guid, payload);
+    }
 }

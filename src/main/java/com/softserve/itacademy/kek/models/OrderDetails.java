@@ -9,10 +9,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "o2o_order_details")
-public class OrderDetails {
+public class OrderDetails implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,5 +54,18 @@ public class OrderDetails {
         this.imageUrl = imageUrl;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderDetails that = (OrderDetails) o;
+        return Objects.equals(idOrder, that.idOrder) &&
+                Objects.equals(payload, that.payload) &&
+                Objects.equals(imageUrl, that.imageUrl);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(idOrder, payload, idOrder);
+    }
 }

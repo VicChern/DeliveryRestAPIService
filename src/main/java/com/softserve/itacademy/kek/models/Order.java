@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -38,7 +39,7 @@ public class Order implements Serializable {
     private OrderDetails orderDetails;
 
     @OneToMany(mappedBy = "idOrder")
-    private OrderEvent orderEvent;
+    private List<OrderEvent> orderEventList;
 
     public Long getIdOrder() {
         return idOrder;
@@ -80,11 +81,11 @@ public class Order implements Serializable {
         this.orderDetails = orderDetails;
     }
 
-    public OrderEvent getOrderEvent() {
-        return orderEvent;
+    public List<OrderEvent> getOrderEventList() {
+        return orderEventList;
     }
 
-    public void setOrderEvent(OrderEvent orderEvent) {
-        this.orderEvent = orderEvent;
+    public void setOrderEventList(List<OrderEvent> orderEventList) {
+        this.orderEventList = orderEventList;
     }
 }
