@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "obj_identity")
@@ -65,5 +66,28 @@ public class Identity implements Serializable {
         this.identityType = identityType;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Identity identity = (Identity) o;
+        return Objects.equals(idIdentity, identity.idIdentity) &&
+                Objects.equals(identityType, identity.identityType) &&
+                Objects.equals(user, identity.user) &&
+                Objects.equals(payload, identity.payload);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(idIdentity, identityType, user, payload);
+    }
+
+    @Override
+    public String toString() {
+        return "Identity{" +
+                "idIdentity=" + idIdentity +
+                ", identityType=" + identityType +
+                ", payload='" + payload + '\'' +
+                '}';
+    }
 }
