@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
-import com.softserve.itacademy.kek.configuration.PersistenceJPAConfig;
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,8 +14,8 @@ import java.util.stream.StreamSupport;
 
 //TODO: Add Logger
 //TODO: Run Tests with integration.properties
-@ContextConfiguration(classes = {PersistenceJPAConfig.class})
-public class UserRepositoryTestIT extends AbstractTestNGSpringContextTests{
+@ContextConfiguration(classes = {PersistenceTestConfig.class})
+public class UserRepositoryTestIT extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private UserRepository repository;
