@@ -58,7 +58,7 @@
         <version.tomcat.embed.core>7.0.91</version.tomcat.embed.core>
         <version.tomcat.embed.jasper>7.0.91</version.tomcat.embed.jasper>
         <version.tomcat.embed.logging.juli>7.0.91</version.tomcat.embed.logging.juli>
-
+        <version.tomcat.dbcp>9.0.30</version.tomcat.dbcp>
         <version.node>v13.6.0</version.node>
     </properties>
 
@@ -79,6 +79,11 @@
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-logging-juli</artifactId>
             <version>${version.tomcat.embed.logging.juli}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-dbcp</artifactId>
+            <version>${version.tomcat.dbcp}</version>
         </dependency>
 
         <!-- Spring -->
