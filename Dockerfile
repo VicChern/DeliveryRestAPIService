@@ -17,6 +17,7 @@ FROM openjdk:11-jre
 WORKDIR /project_kv_061
 
 #copy .jar from
+
 COPY --from=build /project_kv_061/target/project_kv_061-1.0-jar-with-dependencies.jar /project_kv_061-1.0-jar-with-dependencies.jar
 
 EXPOSE 8080
