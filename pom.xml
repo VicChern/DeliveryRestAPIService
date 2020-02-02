@@ -43,6 +43,8 @@
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
 
+        <version.google.cloud.storage>1.17.0</version.google.cloud.storage>
+
         <version.postgresql>42.2.8</version.postgresql>
         <version.hibernate.core>5.4.10.Final</version.hibernate.core>
 
@@ -151,6 +153,13 @@
             <groupId>com.auth0</groupId>
             <artifactId>auth0-spring-security-api</artifactId>
             <version>${version.auth0.spring.security.api}</version>
+        </dependency>
+
+        <!-- Google Cloud Storage -->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+            <version>${version.google.cloud.storage}</version>
         </dependency>
 
         <!-- Test dependencies -->
