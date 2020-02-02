@@ -46,6 +46,7 @@
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
         <version.mvc.auth.commons>1.2.0</version.mvc.auth.commons>
+        <version.mvc.auth.commons>1.2.0</version.mvc.auth.commons>
 
         <version.google.cloud.storage>1.17.0</version.google.cloud.storage>
 
@@ -185,12 +186,6 @@
             <version>${version.mvc.auth.commons}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>mvc-auth-commons</artifactId>
-            <version>${version.mvc.auth.commons}</version>
-        </dependency>
-
 
         <!-- Logger -->
         <dependency>
@@ -248,24 +243,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${version.slf4j.simple}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
 
