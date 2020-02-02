@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.configuration;
 
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -14,7 +13,6 @@ import java.util.Map;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.softserve.itacademy.kek", "com.softserve.itacademy.kek.configuration", "com.softserve.itacademy.kek.controller"})
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
@@ -32,4 +30,5 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         parameterMap.put("charset", "UTF-8");
         configurer.defaultContentType(new MediaType(MediaType.APPLICATION_JSON, parameterMap));
     }
+
 }
