@@ -1,11 +1,10 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.softserve.itacademy.kek.security.TokenAuthentication;
-
 import com.auth0.AuthenticationController;
 import com.auth0.IdentityVerificationException;
 import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
+import com.softserve.itacademy.kek.security.TokenAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

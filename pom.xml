@@ -50,6 +50,7 @@
         <version.google.cloud.storage>1.17.0</version.google.cloud.storage>
 
         <version.log4j>1.2.17</version.log4j>
+        <version.mvc.auth.commons>1.2.0</version.mvc.auth.commons>
 
         <version.postgresql>42.2.8</version.postgresql>
         <version.hibernate.core>5.4.10.Final</version.hibernate.core>
@@ -178,6 +179,12 @@
             <artifactId>auth0-spring-security-api</artifactId>
             <version>${version.auth0.spring.security.api}</version>
         </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>mvc-auth-commons</artifactId>
+            <version>${version.mvc.auth.commons}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>mvc-auth-commons</artifactId>
