@@ -1,17 +1,23 @@
 package com.softserve.itacademy.kek;
 
+import com.softserve.itacademy.kek.configuration.SecurityWebApplicationInitializer;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Properties;
+
+// TODO: Add logger
 
 public class EmbeddedTomcatApp {
     final Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
@@ -41,6 +47,10 @@ public class EmbeddedTomcatApp {
         final Context rootCtx = tomcat.addContext("", base.getAbsolutePath());
         rootCtx.setDocBase(properties.getProperty("doc.base", base.getAbsolutePath()));
         final AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
+
+        rootCtx.addServletContainerInitializer(new SpringServletContainerInitializer(),
+                Collections.singleton(SecurityWebApplicationInitializer.class));
+
         actx.scan("com.softserve.itacademy.kek");
         final DispatcherServlet dispatcher = new DispatcherServlet(actx);
         Tomcat.initWebappDefaults(rootCtx);
@@ -53,9 +63,7 @@ public class EmbeddedTomcatApp {
      */
     public void start() {
         try {
-            logger.info("Starting embedded tomcat");
             tomcat.start();
-            logger.info("Embedded tomcat started");
             tomcat.getServer().await();
         } catch (LifecycleException e) {
             e.printStackTrace();
