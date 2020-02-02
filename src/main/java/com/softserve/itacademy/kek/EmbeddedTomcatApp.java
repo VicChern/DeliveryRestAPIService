@@ -1,10 +1,12 @@
 package com.softserve.itacademy.kek;
 
-import com.softserve.itacademy.kek.security.SecurityWebApplicationInitializer;
+import com.softserve.itacademy.kek.configuration.SecurityWebApplicationInitializer;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -18,6 +20,7 @@ import java.util.Properties;
 // TODO: Add logger
 
 public class EmbeddedTomcatApp {
+    final Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
     private final Tomcat tomcat;
 
     /**
@@ -31,11 +34,13 @@ public class EmbeddedTomcatApp {
      * @throws IOException in case when the properties file is not found
      */
     public EmbeddedTomcatApp() throws IOException {
+        logger.info("Reading the server properties file");
         InputStream resourceStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("server.properties");
         Properties properties = new Properties();
         properties.load(resourceStream);
         int port = Integer.parseInt(properties.getProperty("server.port", "8080"));
 
+        logger.info("Configuring embedded tomcat");
         final File base = new File("");
         tomcat = new Tomcat();
         tomcat.setPort(port);
@@ -58,7 +63,9 @@ public class EmbeddedTomcatApp {
      */
     public void start() {
         try {
+            logger.info("Starting embedded tomcat");
             tomcat.start();
+            logger.info("Embedded tomcat started");
             tomcat.getServer().await();
         } catch (LifecycleException e) {
             e.printStackTrace();
