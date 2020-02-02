@@ -44,6 +44,7 @@
 
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
+        <version.mvc.auth.commons>1.2.0</version.mvc.auth.commons>
 
         <version.postgresql>42.2.8</version.postgresql>
         <version.hibernate.core>5.4.10.Final</version.hibernate.core>
@@ -164,6 +165,12 @@
             <artifactId>auth0-spring-security-api</artifactId>
             <version>${version.auth0.spring.security.api}</version>
         </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>mvc-auth-commons</artifactId>
+            <version>${version.mvc.auth.commons}</version>
+        </dependency>
+
 
         <!-- Test dependencies -->
         <dependency>
