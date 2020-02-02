@@ -3,14 +3,18 @@ package com.softserve.itacademy.kek;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
+import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+
+import com.softserve.itacademy.kek.configuration.SecurityWebApplicationInitializer;
 
 // TODO: Add logger
 
@@ -37,6 +41,10 @@ public class EmbeddedTomcatApp {
         tomcat.setPort(port);
         File base = new File("");
         Context rootCtx = tomcat.addContext("", base.getAbsolutePath());
+
+        rootCtx.addServletContainerInitializer(new SpringServletContainerInitializer(),
+                Collections.singleton(SecurityWebApplicationInitializer.class));
+
         AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
         actx.scan("com.softserve.itacademy.kek");
         DispatcherServlet dispatcher = new DispatcherServlet(actx);
