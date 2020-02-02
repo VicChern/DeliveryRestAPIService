@@ -25,7 +25,7 @@ public class CloudStorageService implements ICloudStorageService {
         String guid = UUID.randomUUID().toString();
         Blob blob = bucket.create(guid, data);
 
-        String url = "gs://" + bucket.getName() + "/" + blob.getName();
+        String url = "https://storage.cloud.google.com/" + bucket.getName() + "/" + blob.getName() + "?authuser=1";
         return new CloudStorageObject(url, guid, data);
     }
 
