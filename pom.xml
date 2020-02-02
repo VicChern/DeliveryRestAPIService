@@ -186,6 +186,12 @@
             <version>${version.mvc.auth.commons}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>mvc-auth-commons</artifactId>
+            <version>${version.mvc.auth.commons}</version>
+        </dependency>
+
 
         <!-- Logger -->
         <dependency>
