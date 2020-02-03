@@ -5,6 +5,8 @@ import com.softserve.itacademy.kek.security.WebSecurityConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
+@PropertySource("classpath:server.properties")
 public class LogoutController extends DefaultController implements LogoutSuccessHandler {
+
+    @Value(value = "${redirect.after.success.logout}")
+    private String redirectAfterSuccessLogout;
 
     @Autowired
     private WebSecurityConfig webSecurityConfig;
@@ -24,13 +30,18 @@ public class LogoutController extends DefaultController implements LogoutSuccess
     @Override
     public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse res, Authentication authentication) {
         logger.debug("Performing logout");
+
         invalidateSession(req);
+
         String returnTo = req.getScheme() + "://" + req.getServerName();
+
         if ((req.getScheme().equals("http") && req.getServerPort() != 80) ||
                 (req.getScheme().equals("https") && req.getServerPort() != 443)) {
             returnTo += ":" + req.getServerPort();
         }
-        returnTo += "/api/v1/users";
+
+        returnTo += redirectAfterSuccessLogout;
+
         String logoutUrl = String.format(
                 "https://%s/v2/logout?client_id=%s&returnTo=%s",
                 webSecurityConfig.getDomain(),
