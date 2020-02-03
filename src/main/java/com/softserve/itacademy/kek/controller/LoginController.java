@@ -4,6 +4,8 @@ import com.auth0.AuthenticationController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,22 +15,32 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
+@PropertySource("classpath:server.properties")
 public class LoginController extends DefaultController {
 
     @Autowired
     private AuthenticationController controller;
+
+    @Value(value = "${redirect.from.auth0}")
+    private String redirectAuth0URL;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     protected void login(HttpServletRequest request, HttpServletResponse response) {
         logger.debug("Performing login");
+
         String redirectUri = request.getScheme() + "://" + request.getServerName();
+
         if ((request.getScheme().equals("http") && request.getServerPort() != 80) ||
                 (request.getScheme().equals("https") && request.getServerPort() != 443)) {
+
             redirectUri += ":" + request.getServerPort();
+
         }
-        redirectUri += "/callback";
+
+        redirectUri += redirectAuth0URL;
+
         String authorizeUrl = controller.buildAuthorizeUrl(request, response, redirectUri)
                 .withScope("openid profile email")
                 .build();

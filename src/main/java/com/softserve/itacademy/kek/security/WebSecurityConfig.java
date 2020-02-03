@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,7 +19,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@PropertySource("classpath:auth0.properties")
+@PropertySources({@PropertySource("classpath:auth0.properties"), @PropertySource("classpath:server.properties")})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * This is your auth0 domain (tenant you have created when registering with auth0 - account name)
@@ -36,6 +37,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * This is the client secret of auth0 application
      */
     private final String clientSecret = System.getenv("clientSecret");
+
+    /**
+     * This is base url path to our project
+     */
+    @Value(value = "${base.url.path}")
+    private String baseURL;
 
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
@@ -56,14 +63,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/api/v1/profile/**")
+                .antMatchers(baseURL + "/profile/**")
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/api/v1/login")
-                .successForwardUrl("/profile")
+                .loginPage(baseURL + "/login")
+                .successForwardUrl(baseURL + "/profile")
                 .and()
                 .logout()
+                .logoutUrl(baseURL + "/logout")
                 .logoutSuccessHandler(logoutSuccessHandler())
                 .permitAll()
         ;
