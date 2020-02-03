@@ -30,11 +30,11 @@ public class TenantProperties implements Serializable {
     private PropertyType propertyType;
 
     @Size(min = 1, max = 256)
-    @Column(name = "key", nullable = false, unique = true)
+    @Column(name = "key", nullable = false, unique = true, length = 256)
     private String key;
 
     @Size(min = 1, max = 4096)
-    @Column(name = "value", nullable = false)
+    @Column(name = "value", nullable = false, length = 4096)
     private String value;
 
     public Long getIdProperty() {

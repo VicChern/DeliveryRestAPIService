@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -31,8 +32,8 @@ public class Order implements Serializable {
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
 
-    @Column(name = "summary", nullable = false)
     @Size(min = 1, max = 256, message = "summary must be in range 1 ... 256")
+    @Column(name = "summary", nullable = false, length = 256)
     private String summary;
 
     @OneToOne(mappedBy = "idOrder")

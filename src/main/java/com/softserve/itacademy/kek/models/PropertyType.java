@@ -19,7 +19,7 @@ public class PropertyType implements Serializable {
     private Long idPropertyType;
 
     @Size(min = 1, max = 256)
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name", unique = true, nullable = false, length = 256)
     private String name;
 
     @Size(min = 1)

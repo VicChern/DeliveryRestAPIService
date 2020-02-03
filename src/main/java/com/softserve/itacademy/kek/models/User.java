@@ -30,19 +30,19 @@ public class User implements Serializable {
 
     @Email
     @Size(min = 1, max = 256)
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 256)
     private String email;
 
     @Size(min = 1, max = 256)
-    @Column(name = "phone_number", nullable = false, unique = true)
+    @Column(name = "phone_number", nullable = false, unique = true, length = 256)
     private String phoneNumber;
 
     @Size(min = 1, max = 256)
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
     @Size(min = 1, max = 256)
-    @Column(name = "nickname", nullable = false, unique = true)
+    @Column(name = "nickname", nullable = false, unique = true, length = 256)
     private String nickname;
 
     @OneToOne(mappedBy = "user")

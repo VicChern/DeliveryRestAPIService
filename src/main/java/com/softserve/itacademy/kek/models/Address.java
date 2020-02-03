@@ -27,15 +27,15 @@ public class Address implements Serializable {
     private UUID guid;
 
     @Size(min = 1, max = 512)
-    @Column(name = "address", nullable = false)
+    @Column(name = "address", nullable = false, length = 512)
     private String address;
 
     @Size(max = 1024)
-    @Column(name = "notes")
+    @Column(name = "notes", length = 1024)
     private String notes;
 
     @Size(min = 1, max = 256)
-    @Column(name = "alias", nullable = false)
+    @Column(name = "alias", nullable = false, length = 256)
     private String alias;
 
     @ManyToOne

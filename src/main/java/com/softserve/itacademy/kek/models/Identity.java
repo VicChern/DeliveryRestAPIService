@@ -31,7 +31,7 @@ public class Identity implements Serializable {
     private User user;
 
     @Size(min = 1, max = 4096)
-    @Column(name = "payload", nullable = false)
+    @Column(name = "payload", nullable = false, length = 4096)
     private String payload;
 
     public Long getIdIdentity() {

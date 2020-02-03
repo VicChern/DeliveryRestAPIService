@@ -23,11 +23,11 @@ public class OrderDetails implements Serializable {
     private Order idOrder;
 
     @Size(max = 4096)
-    @Column(name = "payload")
+    @Column(name = "payload", length = 4096)
     private String payload;
 
     @Size(max = 512)
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 512)
     private String imageUrl;
 
     public Order getIdOrder() {
