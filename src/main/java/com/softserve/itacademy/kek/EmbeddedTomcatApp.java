@@ -14,7 +14,7 @@ import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import com.softserve.itacademy.kek.configuration.SecurityWebApplicationInitializer;
+import com.softserve.itacademy.kek.security.SecurityWebApplicationInitializer;
 
 // TODO: Add logger
 
@@ -28,6 +28,7 @@ public class EmbeddedTomcatApp {
      * - port = 8080
      * - contextPath = \
      * - appBase = .
+     *
      * @throws IOException in case when the properties file is not found
      */
     public EmbeddedTomcatApp() throws IOException {
@@ -49,7 +50,7 @@ public class EmbeddedTomcatApp {
         actx.scan("com.softserve.itacademy.kek");
         DispatcherServlet dispatcher = new DispatcherServlet(actx);
         Tomcat.addServlet(rootCtx, "SpringMVC", dispatcher);
-        rootCtx.addServletMapping("/*", "SpringMVC");
+        rootCtx.addServletMapping("/api/v1/*", "SpringMVC");
     }
 
     /**
