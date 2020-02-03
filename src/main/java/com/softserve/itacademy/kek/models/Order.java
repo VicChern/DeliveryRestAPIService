@@ -31,8 +31,8 @@ public class Order implements Serializable {
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
 
-    @Size(min = 1, max = 256)
     @Column(name = "summary", nullable = false)
+    @Size(min = 1, max = 256, message = "summary must be in range 1 ... 256")
     private String summary;
 
     @OneToOne(mappedBy = "idOrder")
