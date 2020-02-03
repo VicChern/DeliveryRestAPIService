@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.controller;
 
-
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
