@@ -11,6 +11,8 @@ import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -21,6 +23,7 @@ import java.util.UUID;
 
 
 public class CloudStorageService implements ICloudStorageService {
+    private static final Logger logger = LoggerFactory.getLogger(CloudStorageService.class);
 
     @Override
     public CloudStorageObject uploadBinaryData(byte[] data) throws CloudStorageServiceException {
@@ -29,6 +32,7 @@ public class CloudStorageService implements ICloudStorageService {
     }
 
     public CloudStorageObject uploadBinaryData(byte[] data, String bucketName) throws CloudStorageServiceException {
+        logger.info("Uploading binary data to Google Cloud Storage bucket");
         Storage storage = getStorageObject();
         Bucket bucket = null;
 
@@ -36,6 +40,7 @@ public class CloudStorageService implements ICloudStorageService {
             bucket = storage.update(BucketInfo.of(bucketName));
         } else {
             bucket = storage.create(BucketInfo.of(bucketName));
+            logger.info("Google Cloud Storage bucket created successfully");
         }
         String guid = UUID.randomUUID().toString();
         Blob blob = bucket.create(guid, data);
@@ -50,9 +55,11 @@ public class CloudStorageService implements ICloudStorageService {
     }
 
     public CloudStorageObject getCloudStorageObject(String guid, String bucketName) throws CloudStorageServiceException {
+        logger.info("Getting object by GUID from Google Cloud Storage bucket");
         Storage storage = getStorageObject();
 
         if (storage.get(bucketName) != null) {
+            logger.info("Bucket does not exist");
             return null;
         } else {
             Bucket bucket = storage.update(BucketInfo.of(bucketName));
@@ -65,6 +72,7 @@ public class CloudStorageService implements ICloudStorageService {
 
     @Override
     public List<CloudStorageObject> getCloudStorageObjects(String filter) throws CloudStorageServiceException {
+        logger.info("Getting list of objects from Google Cloud Storage bucket");
         List<CloudStorageObject> objects = new ArrayList<>();
 
         Storage storage = getStorageObject();
@@ -83,12 +91,14 @@ public class CloudStorageService implements ICloudStorageService {
     }
 
     public Storage getStorageObject() {
+        logger.info("Creating storage object");
         StorageOptions storageOptions = null;
         String token = System.getenv("GOOGLE_CLOUD_STORAGE_KEY");
         try {
-            Object obj = new JSONParser().parse(new FileReader(token)); //parses token and gets projectID
+            Object obj = new JSONParser().parse(new FileReader(token));
             JSONObject jo = (JSONObject) obj;
             String projectID = (String) jo.get("project_id");
+            logger.info("Token parsed successfully");
 
             storageOptions = StorageOptions.newBuilder()
                     .setProjectId(projectID)
