@@ -28,7 +28,7 @@ public class LoginController extends DefaultController {
                 (request.getScheme().equals("https") && request.getServerPort() != 443)) {
             redirectUri += ":" + request.getServerPort();
         }
-        redirectUri += "/callback";
+        redirectUri += "/api/v1/callback";
         String authorizeUrl = controller.buildAuthorizeUrl(request, response, redirectUri)
                 .withScope("openid profile email")
                 .build();

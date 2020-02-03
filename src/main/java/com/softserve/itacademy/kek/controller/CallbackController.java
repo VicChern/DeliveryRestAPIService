@@ -31,8 +31,8 @@ public class CallbackController extends DefaultController{
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public CallbackController() {
-        this.redirectOnFail = "/login";
-        this.redirectOnSuccess = "/profile";
+        this.redirectOnFail = "/api/v1/login";
+        this.redirectOnSuccess = "/api/v1/profile";
     }
 
     @RequestMapping
