@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.cloudstorage;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class CloudStorageObject implements ICloudStorageObject{
+public class CloudStorageObject implements ICloudStorageObject {
     String url;
     String guid;
     byte[] data;
@@ -18,7 +18,9 @@ public class CloudStorageObject implements ICloudStorageObject{
     }
 
     @Override
-    public String getUrlString() { return url; }
+    public String getUrlString() {
+        return url;
+    }
 
     @Override
     public String getGuid() {
