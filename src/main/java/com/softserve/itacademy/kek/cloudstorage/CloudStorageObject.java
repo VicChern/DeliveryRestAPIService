@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class CloudStorageObject implements ICloudStorageObject {
-    String url;
-    String guid;
-    byte[] data;
+    private String url;
+    private String guid;
+    private byte[] data;
 
     public CloudStorageObject() {
     }
