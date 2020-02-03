@@ -19,7 +19,7 @@ public class IdentityType implements Serializable {
     private Long idIdentityType;
 
     @Size(min = 1, max = 256)
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     public Long getIdIdentityType() {
