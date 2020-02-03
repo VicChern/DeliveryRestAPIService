@@ -25,11 +25,11 @@ public class GlobalProperties implements Serializable {
     private PropertyType propertyType;
 
     @Size(min = 1, max = 256)
-    @Column(name = "key", unique = true, nullable = false)
+    @Column(name = "key", unique = true, nullable = false, length = 256)
     private String key;
 
     @Size(min = 1, max = 4096)
-    @Column(name = "value", nullable = false)
+    @Column(name = "value", nullable = false, length = 4096)
     private String value;
 
     public Long getIdProperty() {

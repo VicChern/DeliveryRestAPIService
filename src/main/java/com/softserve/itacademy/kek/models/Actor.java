@@ -34,7 +34,7 @@ public class Actor implements Serializable {
     private UUID guid;
 
     @Size(min = 1, max = 256)
-    @Column(name = "alias", nullable = false)
+    @Column(name = "alias", nullable = false, length = 256)
     private String alias;
 
     public Long getIdActor() {

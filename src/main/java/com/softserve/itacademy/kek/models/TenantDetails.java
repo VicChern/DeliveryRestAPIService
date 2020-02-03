@@ -18,11 +18,11 @@ public class TenantDetails implements Serializable {
     private Tenant tenant;
 
     @Size(max = 4096)
-    @Column(name = "payload")
+    @Column(name = "payload", length = 4096)
     private String payload;
 
     @Size(max = 512)
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 512)
     private String imageUrl;
 
     public String getPayload() {

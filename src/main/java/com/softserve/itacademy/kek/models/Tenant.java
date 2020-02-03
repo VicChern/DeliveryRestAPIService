@@ -32,7 +32,7 @@ public class Tenant implements Serializable {
     private UUID guid;
 
     @Size(min = 1, max = 256)
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
     @OneToOne(mappedBy = "tenant")

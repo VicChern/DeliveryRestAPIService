@@ -39,7 +39,7 @@ public class OrderEvent implements Serializable {
     private UUID guid;
 
     @Size(min = 1, max = 1024)
-    @Column(name = "payload", nullable = false)
+    @Column(name = "payload", nullable = false, length = 1024)
     private String payload;
 
     public Long getIdOrderEvent() {
