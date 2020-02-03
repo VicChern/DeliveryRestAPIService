@@ -56,11 +56,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/profile/**")
+                .antMatchers("/api/v1/profile/**")
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
+                .loginPage("/api/v1/login")
                 .successForwardUrl("/profile")
                 .and()
                 .logout()
