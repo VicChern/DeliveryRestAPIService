@@ -1,7 +1,6 @@
 package com.softserve.itacademy.kek;
 
-import com.softserve.itacademy.kek.configuration.SecurityWebApplicationInitializer;
-
+import com.softserve.itacademy.kek.security.SecurityWebApplicationInitializer;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -30,7 +29,6 @@ public class EmbeddedTomcatApp {
      * - port = 8080
      * - contextPath = \
      * - appBase = .
-     *
      * @throws IOException in case when the properties file is not found
      */
     public EmbeddedTomcatApp() throws IOException {

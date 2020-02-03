@@ -2,7 +2,6 @@ package com.softserve.itacademy.kek.configuration;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.softserve.itacademy.kek"})
+@ComponentScan(basePackages = {"com.softserve.itacademy.kek", "com.softserve.itacademy.kek.configuration", "com.softserve.itacademy.kek.controller"})
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
