@@ -50,20 +50,4 @@ public class UserRepositoryTestIT extends AbstractTestNGSpringContextTests {
         user.setEmail("segreg@gmail.com");
         return user;
     }
-
-
-    @Test
-    public void whenNameSizeMoreThan256() {
-        User user = nameMaxSize();
-
-        //Проверка на то, что лежит в user.name
-    }
-
-    private User nameMaxSize() {
-        User user = new User();
-
-        //Добавление в user.name строки длиннок > 256
-
-        return user;
-    }
 }
