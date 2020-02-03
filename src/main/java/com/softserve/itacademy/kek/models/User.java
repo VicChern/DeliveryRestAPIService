@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "obj_user")
@@ -25,7 +26,7 @@ public class User implements Serializable {
     private Long idUser;
 
     @Column(name = "guid", nullable = false, unique = true)
-    private String guid;
+    private UUID guid;
 
     @Email
     @Size(min = 1, max = 256)
@@ -60,7 +61,7 @@ public class User implements Serializable {
         return idUser;
     }
 
-    public String getGuid() {
+    public UUID getGuid() {
         return guid;
     }
 
@@ -84,7 +85,7 @@ public class User implements Serializable {
         this.idUser = id;
     }
 
-    public void setGuid(String guid) {
+    public void setGuid(UUID guid) {
         this.guid = guid;
     }
 

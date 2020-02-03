@@ -56,10 +56,6 @@ public class Tenant implements Serializable {
         return guid;
     }
 
-    public void setGuid(String UUID) {
-        this.guid = guid;
-    }
-
     public String getName() {
         return name;
     }
