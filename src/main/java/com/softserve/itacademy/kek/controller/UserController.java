@@ -3,9 +3,11 @@ package com.softserve.itacademy.kek.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.json.JSONObject;
@@ -77,6 +79,31 @@ public class UserController extends DefaultController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable String id) {
+        return ResponseEntity.ok(getJSON(id, "deleted"));
+    }
+
+    @GetMapping("/{id}/address")
+    public ResponseEntity<String> getUserAddresses(@PathVariable String id) {
+        return ResponseEntity.ok(getJSON(id, "15v, Leipzigzskaya st, Kiev"));
+    }
+
+    @PostMapping("/{id}/address")
+    public ResponseEntity<String> addUserAddresses(@PathVariable String id, @RequestBody String body) {
+        return ResponseEntity.ok(getJSON("new", "added"));
+    }
+
+    @GetMapping("/{id}/address/{addrguid}")
+    public ResponseEntity<String> findUserAddress(@PathVariable String id, @PathVariable String addrGuid) {
+        return ResponseEntity.ok(getJSON(id, "15v, Leipzigzskaya st, Kiev"));
+    }
+
+    @PutMapping("/{id}/address/{addrguid}")
+    public ResponseEntity<String> modifyUserAddress(@PathVariable String id, @PathVariable String addrGuid) {
+        return ResponseEntity.ok(getJSON(id, "Modified"));
+    }
+
+    @DeleteMapping("/{id}/address/{addrguid}")
+    public ResponseEntity<String> deleteUserAddress(@PathVariable String id, @PathVariable String addrGuid) {
         return ResponseEntity.ok(getJSON(id, "deleted"));
     }
 }
