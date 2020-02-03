@@ -3,7 +3,8 @@ target/
 target-frontend/
 *.iml
 
-
+# db credentials
+/src/main/resources/dbCredentials.properties
 
 # compiled output
 /src/main/frontend/dist
