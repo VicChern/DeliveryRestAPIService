@@ -69,7 +69,6 @@ public class UserDetails implements Serializable {
     public String toString() {
         return "UserDetails{" +
                 "id=" + id +
-                ", user=" + user +
                 ", payload='" + payload + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
