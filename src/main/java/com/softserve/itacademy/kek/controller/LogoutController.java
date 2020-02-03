@@ -30,7 +30,7 @@ public class LogoutController extends DefaultController implements LogoutSuccess
                 (req.getScheme().equals("https") && req.getServerPort() != 443)) {
             returnTo += ":" + req.getServerPort();
         }
-        returnTo += "/";
+        returnTo += "/api/v1/users";
         String logoutUrl = String.format(
                 "https://%s/v2/logout?client_id=%s&returnTo=%s",
                 webSecurityConfig.getDomain(),

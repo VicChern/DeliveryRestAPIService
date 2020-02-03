@@ -56,14 +56,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/profile/**")
+                .antMatchers("/api/v1/profile/**", "/profile/**")
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
-                .successForwardUrl("/profile")
+                .loginPage("/api/v1/login")
+                .successForwardUrl("/api/v1/profile")
                 .and()
                 .logout()
+                .logoutUrl("/api/v1/logout")
                 .logoutSuccessHandler(logoutSuccessHandler())
                 .permitAll()
         ;
