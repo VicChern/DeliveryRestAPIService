@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.security;
 
+import com.softserve.itacademy.kek.controller.LogoutController;
+
 import com.auth0.AuthenticationController;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.JwkProviderBuilder;
