@@ -28,7 +28,7 @@ public class UserController extends DefaultController {
     /**
      * Get information about users
      *
-     * @return information about users (JSON)
+     * @return list of user objects as a JSON
      */
     @GetMapping
     public ResponseEntity<String> getUserList() {
@@ -42,7 +42,7 @@ public class UserController extends DefaultController {
      * Returns information about the requested user
      *
      * @param id user ID from the URN
-     * @return user information as a JSON
+     * @return user objects as a JSON
      */
     @GetMapping("/{id}")
     public ResponseEntity<String> getUser(@PathVariable String id) {
@@ -52,7 +52,8 @@ public class UserController extends DefaultController {
     /**
      * Creates a new user
      *
-     * @return operation status as a JSON
+     * @param body user object as a JSON
+     * @return created user object as a JSON
      */
     @PostMapping
     public ResponseEntity<String> addUser(@RequestBody String body) {
@@ -63,7 +64,8 @@ public class UserController extends DefaultController {
      * Modifies information of the specified user
      *
      * @param id user ID from the URN
-     * @return operation status as a JSON
+     * @param body user object as a JSON
+     * @return modified user object as a JSON
      */
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyUser(@PathVariable String id, @RequestBody String body) {
