@@ -23,6 +23,11 @@ public class OrderController extends DefaultController {
         return json.toString();
     }
 
+    /**
+     * Get information about orders
+     *
+     * @return list of order objects as a JSON
+     */
     @GetMapping
     public ResponseEntity<String> getOrderList() {
         JSONObject json = new JSONObject();
@@ -31,31 +36,69 @@ public class OrderController extends DefaultController {
         return ResponseEntity.ok(json.toString());
     }
 
+    /**
+     * Creates a new order
+     *
+     * @param body order object as a JSON
+     * @return created order object as a JSON
+     */
     @PostMapping
     public ResponseEntity<String> addOrder(@RequestBody String body) {
         return ResponseEntity.ok(getJSON("new", "added"));
     }
 
+    /**
+     * Returns information about the requested order
+     *
+     * @param id order ID from the URN
+     * @return order object as a JSON
+     */
     @GetMapping("/{id}")
     public ResponseEntity<String> getOrder(@PathVariable String id) {
         return ResponseEntity.ok(getJSON(id, "received"));
     }
 
+    /**
+     * Modifies information of the specified order
+     *
+     * @param id   order ID from the URN
+     * @param body order object as a JSON
+     * @return modified order object as a JSON
+     */
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyOrder(@PathVariable String id, @RequestBody String body) {
         return ResponseEntity.ok(getJSON(id, "modified"));
     }
 
+    /**
+     * Removes the specified order
+     *
+     * @param id order ID from the URN
+     * @return operation status as a JSON
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable String id) {
         return ResponseEntity.ok(getJSON(id, "deleted"));
     }
-    
+
+    /**
+     * Finds events of the specific order
+     *
+     * @param id order ID from the URN
+     * @return list of the event objects as a JSON
+     */
     @GetMapping("/{id}/events")
     public ResponseEntity<String> getEvents(@PathVariable String id) {
         return ResponseEntity.ok(getJSON(id, "Created"));
     }
 
+    /**
+     * Adds a new event for the specific order
+     *
+     * @param id   order ID from the URN
+     * @param body order object as a JSON
+     * @return created event objects as a JSON
+     */
     @PostMapping("/{id}/events")
     public ResponseEntity<String> addEvent(@PathVariable String id, @RequestBody String body) {
         return ResponseEntity.ok(getJSON("new", "added"));
