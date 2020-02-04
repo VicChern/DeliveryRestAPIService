@@ -11,11 +11,17 @@ import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Random;
-import java.util.UUID;
 
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrdinaryUser;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getRandomNumberString;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+/**
+ * Integration tests for {@link User} constraints.
+ */
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class UserTestIT extends AbstractTestNGSpringContextTests {
 
@@ -30,7 +36,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
 
     //====================================================== guid ======================================================
     @Test(description = "Test User_01. Should save user with valid fields.")
-    public void whenGuidIsValidThanSuccess() {
+    public void testUserIsSavedWithValidFields() {
         //given
         User user = getOrdinaryUser(1);
 
@@ -47,7 +53,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_02. Should throw ConstraintViolationException when save user with null guid field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenGuidIsNullThanThrowsException() {
+    public void testUserIsNotSavedWithNullGuid() {
         //given
         User user = getOrdinaryUser(1);
         user.setGuid(null);
@@ -59,7 +65,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_03. Should throw DataIntegrityViolationException when save user with not unique guid field",
             expectedExceptions = DataIntegrityViolationException.class,
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
-    public void whenGuidIsNotUniqueThanThrowsException() {
+    public void testUserIsSavedWithUniqueGuid() {
         //given
         User user1 = getOrdinaryUser(1);
         User user2 = getOrdinaryUser(2);
@@ -78,7 +84,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_04. Should throw ConstraintViolationException when save user with null name field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenNameIsNullThanThrowsException() {
+    public void testUserIsNotSavedWithNullName() {
         //given
         User user = getOrdinaryUser(1);
         user.setName(null);
@@ -90,7 +96,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_05. Should throw ConstraintViolationException when save user with empty name field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenNameIsEmptyThanThrowsException() {
+    public void testUserIsNotSavedWithEmptyName() {
         //given
         User user = getOrdinaryUser(1);
         user.setName("");
@@ -99,11 +105,11 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test User_06. Should throw ConstraintViolationException when save user with name field length more than 256",
+    @Test(description = "Test User_06. Should throw ConstraintViolationException when save user with name field length more than " + MAX_LENGTH,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenNameIsMoreThan256ThanThrowsException() {
-        String name = getRandomString(257);
+    public void testUserIsNotSavedWithNameMoreThanMaxLength() {
+        String name = getRandomLetterString(MAX_LENGTH + 1 + new Random().nextInt(50));
         //given
         User user = getOrdinaryUser(1);
         user.setName(name);
@@ -117,7 +123,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_02. Should throw ConstraintViolationException when save user with null nickname field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenNicknameIsNullThanThrowsException() {
+    public void testUserIsNotSavedWithNullNickname() {
         //given
         User user = getOrdinaryUser(1);
         user.setNickname(null);
@@ -129,7 +135,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_05. Should throw ConstraintViolationException when save user with empty nickname field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenNicknameIsEmptyThanThrowsException() {
+    public void testUserIsNotSavedWithEmptyNickname() {
         //given
         User user = getOrdinaryUser(1);
         user.setName("");
@@ -141,8 +147,8 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_06. Should throw ConstraintViolationException when save user with empty nickname field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenNicknameIsMoreThan256ThanThrowsException() {
-        String nickname = getRandomString(257);
+    public void testUserIsNotSavedWithNicknameMoreThanMaxLength() {
+        String nickname = getRandomLetterString(MAX_LENGTH + 1 + new Random().nextInt(50));
         //given
         User user = getOrdinaryUser(1);
         user.setNickname(nickname);
@@ -154,7 +160,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_07. Should throw DataIntegrityViolationException when save user with not unique nickname field",
             expectedExceptions = DataIntegrityViolationException.class,
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
-    public void whenNicknameIsNotUniqueThanThrowsException() {
+    public void testUserIsSavedWithUniqueNickname() {
         //given
         User user1 = getOrdinaryUser(1);
         User user2 = getOrdinaryUser(2);
@@ -172,7 +178,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_08. Should throw ConstraintViolationException when save user with null email field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenEmailIsNullThanThrowsException() {
+    public void testUserIsNotSavedWithNullEmail() {
         //given
         User user = getOrdinaryUser(1);
         user.setEmail(null);
@@ -184,7 +190,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_09. Should throw ConstraintViolationException when save user with empty email field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenEmailIsEmptyThanThrowsException() {
+    public void testUserIsNotSavedWithEmptyEmail() {
         //given
         User user = getOrdinaryUser(1);
         user.setEmail("");
@@ -193,11 +199,11 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test User_10. Should throw ConstraintViolationException when save user with email field length more than 256",
+    @Test(description = "Test User_10. Should throw ConstraintViolationException when save user with email field length more than " + MAX_LENGTH,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenEmailIsMoreThan256ThanThrowsException() {
-        String email = getRandomString(257);
+    public void testUserIsNotSavedWithEmailMoreThanMaxLength() {
+        String email = getRandomLetterString(MAX_LENGTH + 1 + new Random().nextInt(50));
         //given
         User user = getOrdinaryUser(1);
         user.setEmail(email);
@@ -209,7 +215,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_11. Should throw DataIntegrityViolationException when save user with not unique email field",
             expectedExceptions = DataIntegrityViolationException.class,
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
-    public void whenEmailIsNotUniqueThanThrowsException() {
+    public void testUserIsSavedWithUniqueEmail() {
         //given
         User user1 = getOrdinaryUser(1);
         User user2 = getOrdinaryUser(2);
@@ -225,7 +231,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_12. Should throw DataIntegrityViolationException when save user with not valid email field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenEmailIsNotValidThanThrowsException() {
+    public void testUserIsNotSavedWithNotValidEmail() {
         //given
         User user = getOrdinaryUser(1);
         user.setEmail("notValidEmail");
@@ -239,7 +245,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_13. Should throw ConstraintViolationException when save user with null phoneNumber field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenPhoneNumberIsNullThanThrowsException() {
+    public void testUserIsNotSavedWithNullPhoneNumber() {
         //given
         User user = getOrdinaryUser(1);
         user.setPhoneNumber(null);
@@ -251,7 +257,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_14. Should throw ConstraintViolationException when save user with empty phoneNumber field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenPhoneNumberIsEmptyThanThrowsException() {
+    public void testUserIsNotSavedWithEmptyPhoneNumber() {
         //given
         User user = getOrdinaryUser(1);
         user.setPhoneNumber("");
@@ -260,11 +266,11 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test User_15. Should throw ConstraintViolationException when save user with phoneNumber field length more than 256",
+    @Test(description = "Test User_15. Should throw ConstraintViolationException when save user with phoneNumber field length more than " + MAX_LENGTH,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void whenPhoneNumberIsMoreThan256ThanThrowsException() {
-        String phoneNumber = getRandomString(257);
+    public void testUserIsNotSavedWithPhoneNumberMoreThanMaxLength() {
+        String phoneNumber = getRandomNumberString(MAX_LENGTH + 1 + new Random().nextInt(50));
         //given
         User user = getOrdinaryUser(1);
         user.setNickname(phoneNumber);
@@ -276,12 +282,12 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_16. Should throw DataIntegrityViolationException when save user with not unique phoneNumber field",
             expectedExceptions = DataIntegrityViolationException.class,
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
-    public void whenPhoneNumberIsNotUniqueThanThrowsException() {
+    public void testUserIsSavedWithUniquePhoneNumber() {
         //given
         User user1 = getOrdinaryUser(1);
         User user2 = getOrdinaryUser(2);
         user2.setPhoneNumber(user1.getPhoneNumber());
-        assertEquals(user1.getPhoneNumber(), user2.getPhoneNumber());
+        assertEquals(user1.getPhoneNumber(), user2.getPhoneNumber(), "phoneNumbers is not equals");
 
         //when
         User savedUser1 = userRepository.save(user1);
@@ -289,35 +295,4 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user2);
     }
 
-
-    //================================================== util methods ==================================================
-    private User getOrdinaryUser(int i) {
-        return getSimpleUser(
-                UUID.randomUUID(),
-                "name" + i,
-                "nickname" + i,
-                "email" + i + "@gmail.com",
-                "380-50-444-55-55" + 1);
-    }
-
-    private User getSimpleUser(UUID guid, String name, String nickName, String email, String phoneNumber) {
-        User user = new User();
-        user.setName(name);
-        user.setGuid(guid);
-        user.setNickname(nickName);
-        user.setPhoneNumber(phoneNumber);
-        user.setEmail(email);
-        return user;
-    }
-
-    private String getRandomString(int stringLength) {
-        int leftLimit = 97; // letter 'a'
-        int rightLimit = 122; // letter 'z'
-        Random random = new Random();
-
-        return random.ints(leftLimit, rightLimit + 1)
-                .limit(stringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-    }
 }
