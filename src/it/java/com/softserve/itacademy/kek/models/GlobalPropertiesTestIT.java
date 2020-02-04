@@ -12,11 +12,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
 
-//TODO Add DataProvider for null and max/min check
 @Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
@@ -30,6 +30,16 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
 
     GlobalProperties properties1;
     GlobalProperties properties2;
+
+    @DataProvider(name="keys")
+    public static Object[][] keys(){
+        return new Object[][]{{null},{RandomString.make(MAX_KEY_LENGTH + 1)}};
+    }
+
+    @DataProvider(name="values")
+    public static Object[][] values(){
+        return new Object[][]{{null},{RandomString.make(MAX_VALUE_LENGTH + 1)}};
+    }
 
     @BeforeMethod
     public void setUp() {
@@ -48,32 +58,16 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(savedProperty.get().getIdProperty(), id);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void savePropertyType_KeyIsNull_ExceptionThrown() {
-        properties1.setKey(null);
-        //when
-        propertiesRepository.save(properties1);
-    }
-
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void savePropertyType_KeyIsMoreThanMaxSize_ExceptionThrown() {
-        String key = RandomString.make(MAX_KEY_LENGTH + 1);
+    @Test(dataProvider = "keys", expectedExceptions = DataIntegrityViolationException.class)
+    public void savePropertyType_KeyIsNull_ExceptionThrown(String key) {
         properties1.setKey(key);
         //when
         propertiesRepository.save(properties1);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void savePropertyType_ValueIsNull_ExceptionThrown() {
-        properties1.setValue(null);
-        //when
-        propertiesRepository.save(properties1);
-    }
-
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void savePropertyType_ValueIsMoreThanMaxSize_ExceptionThrown() {
-        String value = RandomString.make(MAX_VALUE_LENGTH + 1);
-        properties1.setKey(value);
+    @Test(dataProvider = "values", expectedExceptions = DataIntegrityViolationException.class)
+    public void savePropertyType_ValueIsNull_ExceptionThrown(String value) {
+        properties1.setValue(value);
         //when
         propertiesRepository.save(properties1);
     }
