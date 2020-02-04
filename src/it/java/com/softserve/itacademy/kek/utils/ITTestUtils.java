@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.utils;
 
+import com.softserve.itacademy.kek.models.PropertyType;
 import com.softserve.itacademy.kek.models.Tenant;
 import com.softserve.itacademy.kek.models.TenantProperties;
 import com.softserve.itacademy.kek.models.User;
@@ -9,9 +10,8 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ITTestUtils {
-
-    //ToDo: change for builders
-    //ToDo: extract values into constants
+    public static final String PHONE_NUMBER_PART = "380-50-444-55-";
+    public static final String GMAIL_COM = "@gmail.com";
 
     public static Tenant getTenant(User user) {
         Tenant tenant = new Tenant();
@@ -26,13 +26,10 @@ public class ITTestUtils {
         user.setName(RandomString.make());
         user.setGuid(UUID.randomUUID());
         user.setNickname(RandomString.make());
-        user.setPhoneNumber("380-50-444-55-" + getRandomIntegerInRange(10, 99));
-        user.setEmail(RandomString.make() + "@gmail.com");
+        user.setPhoneNumber(PHONE_NUMBER_PART
+                .concat(String.valueOf(getRandomIntegerInRange(10, 99))));
+        user.setEmail(RandomString.make() + GMAIL_COM);
         return user;
-    }
-
-    private static int getRandomIntegerInRange(int min, int max) {
-        return ThreadLocalRandom.current().nextInt(min, max);
     }
 
     public static TenantProperties getTenantProperties(Tenant tenant) {
@@ -43,4 +40,14 @@ public class ITTestUtils {
         return properties;
     }
 
+    private static int getRandomIntegerInRange(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max);
+    }
+
+    public static PropertyType getPropertyType() {
+        PropertyType propertyType = new PropertyType();
+        propertyType.setName(RandomString.make());
+        propertyType.setSchema(RandomString.make());
+        return propertyType;
+    }
 }
