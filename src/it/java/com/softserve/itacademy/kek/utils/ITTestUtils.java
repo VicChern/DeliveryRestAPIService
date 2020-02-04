@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.utils;
 
+import com.softserve.itacademy.kek.models.GlobalProperties;
 import com.softserve.itacademy.kek.models.PropertyType;
 import com.softserve.itacademy.kek.models.Tenant;
 import com.softserve.itacademy.kek.models.TenantProperties;
@@ -49,5 +50,13 @@ public class ITTestUtils {
         propertyType.setName(RandomString.make());
         propertyType.setSchema(RandomString.make());
         return propertyType;
+    }
+
+    public static GlobalProperties getGlobalProperty(PropertyType type) {
+        GlobalProperties properties = new GlobalProperties();
+        properties.setPropertyType(type);
+        properties.setKey(RandomString.make());
+        properties.setValue(RandomString.make());
+        return properties;
     }
 }
