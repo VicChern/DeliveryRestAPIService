@@ -55,7 +55,7 @@ public class UserController extends DefaultController {
      * @return operation status as a JSON
      */
     @PostMapping
-    public ResponseEntity<String> addUser() {
+    public ResponseEntity<String> addUser(@RequestBody String body) {
         return ResponseEntity.ok(getJSON("new", "added"));
     }
 
@@ -66,7 +66,7 @@ public class UserController extends DefaultController {
      * @return operation status as a JSON
      */
     @PutMapping("/{id}")
-    public ResponseEntity<String> modifyUser(@PathVariable String id) {
+    public ResponseEntity<String> modifyUser(@PathVariable String id, @RequestBody String body) {
         return ResponseEntity.ok(getJSON(id, "modified"));
     }
 
@@ -97,7 +97,7 @@ public class UserController extends DefaultController {
     }
 
     @PutMapping("/{id}/address/{addrguid}")
-    public ResponseEntity<String> modifyUserAddress(@PathVariable String id, @PathVariable String addrGuid) {
+    public ResponseEntity<String> modifyUserAddress(@PathVariable String id, @PathVariable String addrGuid, @RequestBody String body) {
         return ResponseEntity.ok(getJSON(id, "Modified"));
     }
 
