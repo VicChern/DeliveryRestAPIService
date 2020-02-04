@@ -29,5 +29,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         final Map<String, String> parameterMap = new HashMap<>();
         parameterMap.put("charset", "UTF-8");
         configurer.defaultContentType(new MediaType(MediaType.APPLICATION_JSON, parameterMap));
+
     }
 }
