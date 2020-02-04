@@ -3,78 +3,77 @@ package com.softserve.itacademy.kek.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-// how long to wait with opened connection?
-// do we need fixed timeOut
 
-@Controller
+// TODO: Add logger
+
+@RestController
+@Async
 public class SseController {
-    private int timeOut = 1000;
-    private boolean isAlive = true;
-    private String message;
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public boolean isAlive() {
-        return isAlive;
-    }
-
-    public void setAlive(boolean alive) {
-        isAlive = alive;
-    }
+    private int delay = 5000;
+    private long sessionTimeout;
+    private boolean isConnected = true;
 
     public SseController() {
+        this.sessionTimeout = 180_000;
     }
 
-    public int getTimeOut() {
-        return timeOut;
+    public SseController(long sessionTimeout) {
+        this.sessionTimeout = sessionTimeout;
     }
 
-    public void setTimeOut(int seconds) {
-
-        if ( timeOut < 0 ) {
-            this.timeOut = 0;
-        } else  {
-            this.timeOut = seconds * 1000;
-        }
+    public SseController(long sessionTimeout, int delay) {
+        this.sessionTimeout = sessionTimeout;
+        this.delay = delay;
     }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public void setConnected(boolean connected) {
+        isConnected = connected;
+    }
+
+    public long getSessionTimeout() {
+        return sessionTimeout;
+    }
+
+    public int getDelay() {
+        return delay;
+    }
+
+    /**
+     * Creating emitter for 3 minutes(can be changed) and pushing message every 5 seconds
+     * data sending "message" for now, should be changed for actual coordinates
+     *
+     * @return
+     */
 
     @GetMapping("/request")
     @Async
     public SseEmitter handleRequest() {
-        SseEmitter emitter = new SseEmitter();
-
+        SseEmitter emitter = new SseEmitter(sessionTimeout);
 
         ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(() ->  {
+        service.execute(() -> {
             try {
-                for ( int i = 0 ; isAlive ; i++ ) {
+                for (; isConnected; ) {
                     SseEmitter.SseEventBuilder event = SseEmitter.event()
-                            .id(String.valueOf(i))
-                            .name("name")
-                            .data("message " + i, MediaType.TEXT_PLAIN);
+                            .data("message", MediaType.TEXT_EVENT_STREAM);
                     emitter.send(event);
-                    Thread.sleep(timeOut);
+                    Thread.sleep(delay);
                 }
-            } catch (Exception e ) {
-                e.printStackTrace();
-                emitter.completeWithError(e);
+            } catch (Exception ex) {
+                emitter.completeWithError(ex);
             }
         });
-
         return emitter;
     }
 }
-

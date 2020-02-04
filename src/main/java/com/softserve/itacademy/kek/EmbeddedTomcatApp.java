@@ -1,20 +1,20 @@
 package com.softserve.itacademy.kek;
 
-import org.apache.catalina.Context;
-import org.apache.catalina.LifecycleException;
-import org.apache.catalina.startup.Tomcat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Properties;
 
+import com.softserve.itacademy.kek.configuration.WebAppInitializer;
+import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.startup.Tomcat;
+import org.springframework.web.SpringServletContainerInitializer;
+
+// TODO: Add logger
+
 public class EmbeddedTomcatApp {
-    final Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
     private final Tomcat tomcat;
 
     /**
@@ -24,28 +24,25 @@ public class EmbeddedTomcatApp {
      * - port = 8080
      * - contextPath = \
      * - appBase = .
-     *
      * @throws IOException in case when the properties file is not found
      */
     public EmbeddedTomcatApp() throws IOException {
-        logger.info("Reading the server properties file");
         InputStream resourceStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("server.properties");
         Properties properties = new Properties();
         properties.load(resourceStream);
-        int port = Integer.parseInt(properties.getProperty("server.port", "8080"));
 
-        logger.info("Configuring embedded tomcat");
-        final File base = new File("");
+        int port = Integer.parseInt(properties.getProperty("server.port", "8080"));
+        String docBase = properties.getProperty("doc.base", new File("").getAbsolutePath());
+
         tomcat = new Tomcat();
         tomcat.setPort(port);
-        final Context rootCtx = tomcat.addContext("", base.getAbsolutePath());
-        rootCtx.setDocBase(properties.getProperty("doc.base", base.getAbsolutePath()));
-        final AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
-        actx.scan("com.softserve.itacademy.kek");
-        final DispatcherServlet dispatcher = new DispatcherServlet(actx);
-        Tomcat.initWebappDefaults(rootCtx);
-        Tomcat.addServlet(rootCtx, "SpringMVC", dispatcher);
-        rootCtx.addServletMapping("/api/v1/*", "SpringMVC");
+
+        final Context context = tomcat.addContext("", docBase);
+
+        Tomcat.initWebappDefaults(context);
+
+        context.addServletContainerInitializer(new SpringServletContainerInitializer(),
+                Collections.singleton(WebAppInitializer.class));
     }
 
     /**
@@ -53,9 +50,7 @@ public class EmbeddedTomcatApp {
      */
     public void start() {
         try {
-            logger.info("Starting embedded tomcat");
             tomcat.start();
-            logger.info("Embedded tomcat started");
             tomcat.getServer().await();
         } catch (LifecycleException e) {
             e.printStackTrace();
