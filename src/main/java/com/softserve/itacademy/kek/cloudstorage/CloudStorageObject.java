@@ -9,6 +9,7 @@ public class CloudStorageObject implements ICloudStorageObject {
     private byte[] data;
 
     public CloudStorageObject() {
+        this(null, null, null);
     }
 
     public CloudStorageObject(String url, String guid, byte[] data) {
