@@ -1,0 +1,12 @@
+image: maven:latest
+
+services:
+  - postgres:latest
+
+stages:
+  - test
+
+unit_test:
+  stage: test
+  script:
+    - mvn test
