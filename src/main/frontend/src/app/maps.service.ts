@@ -18,5 +18,9 @@ export class MapsService {
     return this.http.get<any>('./api/v1/users/83');
   }
 
+  getSseEmitter() {
+    return this.http.get<any>('./api/v1/request');
+  }
+
 }
 

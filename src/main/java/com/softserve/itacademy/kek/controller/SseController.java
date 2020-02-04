@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.controller;
 
-
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +8,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 
 @RestController
 public class SseController {
@@ -43,9 +43,9 @@ public class SseController {
     public SseEmitter handleRequest() {
         emitter = new SseEmitter();
         service = Executors.newSingleThreadExecutor();
-        service.execute(() ->  {
+        service.execute(() -> {
             try {
-                for ( int i = 0 ; isConnected; i++ ) {
+                for (int i = 0; isConnected; i++) {
                     SseEmitter.SseEventBuilder event = SseEmitter.event()
                             .id(String.valueOf(i))
                             .name("name")
@@ -54,13 +54,11 @@ public class SseController {
                     emitter.send(event);
                     Thread.sleep(timeOut);
                 }
-            } catch (Exception e ) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 emitter.completeWithError(e);
             }
         });
-
         return emitter;
     }
 }
-
