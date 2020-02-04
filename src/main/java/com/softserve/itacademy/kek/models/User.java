@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
@@ -25,22 +26,27 @@ public class User implements Serializable {
     @Column(name = "id_user")
     private Long idUser;
 
+    @NotNull
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;
 
     @Email
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "email", nullable = false, unique = true, length = 256)
     private String email;
 
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "phone_number", nullable = false, unique = true, length = 256)
     private String phoneNumber;
 
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false, length = 256)
     private String name;
 
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "nickname", nullable = false, unique = true, length = 256)
     private String nickname;
@@ -61,44 +67,44 @@ public class User implements Serializable {
         return idUser;
     }
 
-    public UUID getGuid() {
-        return guid;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
     public void setIdUser(Long id) {
         this.idUser = id;
+    }
+
+    public UUID getGuid() {
+        return guid;
     }
 
     public void setGuid(UUID guid) {
         this.guid = guid;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 
     public void setNickname(String nickname) {
