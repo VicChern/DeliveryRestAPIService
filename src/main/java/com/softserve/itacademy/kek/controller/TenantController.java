@@ -43,7 +43,7 @@ public class TenantController extends DefaultController {
      * @return operation status as a JSON
      */
     @PostMapping
-    public ResponseEntity<String> addTenant() {
+    public ResponseEntity<String> addTenant(@RequestBody String body) {
         return ResponseEntity.ok(getJSON("new", "added"));
     }
 
@@ -65,7 +65,7 @@ public class TenantController extends DefaultController {
      * @return operation status as a JSON
      */
     @PutMapping("/{id}")
-    public ResponseEntity<String> modifyTenant(@PathVariable String id) {
+    public ResponseEntity<String> modifyTenant(@PathVariable String id, @RequestBody String body) {
         return ResponseEntity.ok(getJSON(id, "Modified"));
     }
 
@@ -131,11 +131,11 @@ public class TenantController extends DefaultController {
      * Deletes the specific tenant property
      *
      * @param id       tenant ID from the URN
-     * @param propguid address ID from the URN
+     * @param addrGuid address ID from the URN
      * @return operation status as a JSON
      */
     @DeleteMapping("/{id}/properties/{propguid}")
-    public ResponseEntity<String> deleteTenantProperty(@PathVariable String id, @PathVariable String propguid) {
+    public ResponseEntity<String> deleteTenantProperty(@PathVariable String id, @PathVariable String addrGuid) {
         return ResponseEntity.ok(getJSON(id, "deleted"));
     }
 
@@ -169,7 +169,7 @@ public class TenantController extends DefaultController {
      * @param addrGuid ID of the specific address
      * @return Specific tenant tenant property
      */
-    @GetMapping("/{id}/addresses/{propguid}")
+    @GetMapping("/{id}/addresses/{addrguid}")
     public ResponseEntity<String> getTenantAddress(@PathVariable String id, @PathVariable String addrGuid) {
         return ResponseEntity.ok(getJSON(id, "Specific tenant address"));
     }
@@ -182,7 +182,7 @@ public class TenantController extends DefaultController {
      * @param body     The tenant address to modify
      * @return The modified tenant address object
      */
-    @PostMapping("/{id}/addresses{propguid}")
+    @PutMapping("/{id}/addresses{addrguid}")
     public ResponseEntity<String> modifyTenantAddress(@PathVariable String id, @PathVariable String addrGuid, @RequestBody String body) {
         return ResponseEntity.ok(getJSON(addrGuid, "Modified"));
     }
