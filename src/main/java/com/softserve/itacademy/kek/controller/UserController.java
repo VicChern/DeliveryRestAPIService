@@ -120,7 +120,7 @@ public class UserController extends DefaultController {
 
 
     /**
-     * Modifies the specific user address
+     * Modifies the specific user address tenant property
      *
      * @param id user ID from the URN
      * @param addrGuid address ID from the URN
