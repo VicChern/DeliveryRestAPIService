@@ -42,6 +42,8 @@
         <version.org.json>20180813</version.org.json>
 
         <version.javax.validation>2.0.1.Final</version.javax.validation>
+        <version.hibernate.validator>6.0.18.Final</version.hibernate.validator>
+        <version.javax.el>3.0.1-b10</version.javax.el>
 
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
@@ -145,6 +147,16 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>${version.javax.validation}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${version.hibernate.validator}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>${version.javax.el}</version>
         </dependency>
 
         <!-- Hibernate -->
