@@ -50,6 +50,7 @@ public class CloudStorageService implements ICloudStorageService {
 
     @Override
     public CloudStorageObject getCloudStorageObject(String guid) throws CloudStorageServiceException {
+
         String bucket = System.getenv("BUCKET_NAME");
         return getCloudStorageObject(guid, bucket);
     }
@@ -105,9 +106,11 @@ public class CloudStorageService implements ICloudStorageService {
                     .setCredentials(GoogleCredentials.fromStream(new FileInputStream(token)))
                     .build();
         } catch (IOException e) {
-            throw new CloudStorageServiceException("Token was not found");
+            logger.info("Token was not found");
+            return null;
         } catch (ParseException e) {
-            throw new CloudStorageServiceException("Token was not parsed");
+            logger.info("Token was not parsed");
+            return null;
         }
 
         Storage storage = storageOptions.getService();
