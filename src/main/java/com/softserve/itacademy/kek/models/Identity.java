@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
@@ -22,14 +24,15 @@ public class Identity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idIdentity;
 
-    @OneToOne
-    @JoinColumn(name = "id_identity_type", insertable = false, updatable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_identity_type")
     private IdentityType identityType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user", insertable = false, updatable = false)
+    @JoinColumn(name = "id_user")
     private User user;
 
+    @NotNull
     @Size(min = 1, max = 4096)
     @Column(name = "payload", nullable = false, length = 4096)
     private String payload;
@@ -73,13 +76,12 @@ public class Identity implements Serializable {
         Identity identity = (Identity) o;
         return Objects.equals(idIdentity, identity.idIdentity) &&
                 Objects.equals(identityType, identity.identityType) &&
-                Objects.equals(user, identity.user) &&
                 Objects.equals(payload, identity.payload);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idIdentity, identityType, user, payload);
+        return Objects.hash(idIdentity, identityType, payload);
     }
 
     @Override

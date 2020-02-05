@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
@@ -16,8 +17,10 @@ public class IdentityType implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_identity_type")
     private Long idIdentityType;
 
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false, unique = true, length = 256)
     private String name;

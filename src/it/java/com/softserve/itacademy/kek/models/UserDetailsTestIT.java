@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.transaction.TransactionSystemException;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -15,9 +14,9 @@ import java.util.Random;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_512;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrdinaryUser;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getRandomLetterString;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getSimpleUserDetailsWithValidFields;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createSimpleUserDetailsWithValidFields;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -48,20 +47,38 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test UserDetails_01. Should save userDetails with valid fields.")
     public void testUserDetailsIsSavedWithValidFields() {
         //given
-        User user = getOrdinaryUser(1);
-        UserDetails userDetails = getSimpleUserDetailsWithValidFields();
-        userDetails.setUser(user);
-        user.setUserDetails(userDetails);
+        User user1 = createOrdinaryUser(1);
+        UserDetails userDetails1 = createSimpleUserDetailsWithValidFields();
+        userDetails1.setUser(user1);
+        user1.setUserDetails(userDetails1);
+
+        User user2 = createOrdinaryUser(2);
+
+        User user3 = createOrdinaryUser(3);
+        UserDetails userDetails3 = createSimpleUserDetailsWithValidFields();
+        userDetails3.setUser(user3);
+        user3.setUserDetails(userDetails3);
 
         //when
-        userRepository.save(user);
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
 
         //then
-        assertEquals(1, userRepository.findAll().spliterator().estimateSize());
-        assertEquals(1, userDetailsRepository.findAll().spliterator().estimateSize());
-        assertTrue(userRepository.existsById(user.getIdUser()));
-        assertTrue(userDetailsRepository.existsById(userDetails.getUser().getIdUser()));
-        assertEquals(user.getIdUser(), userDetails.getIdUser());
+        assertEquals(3, userRepository.findAll().spliterator().estimateSize());
+        assertEquals(2, userDetailsRepository.findAll().spliterator().estimateSize());
+
+        assertTrue(userRepository.existsById(user1.getIdUser()));
+        assertTrue(userRepository.existsById(user2.getIdUser()));
+        assertTrue(userRepository.existsById(user3.getIdUser()));
+        assertTrue(userDetailsRepository.existsById(userDetails1.getIdUser()));
+        assertTrue(userDetailsRepository.existsById(userDetails3.getIdUser()));
+
+        assertEquals(user1.getIdUser(), userDetails1.getIdUser());
+        assertEquals(user3.getIdUser(), userDetails3.getIdUser());
+
+        assertEquals(user1, userDetails1.getUser());
+        assertEquals(user3, userDetails3.getUser());
     }
 
 
@@ -72,9 +89,9 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Could not commit JPA transaction; .*")
     public void testUserDetailsIsNotSavedWithPayloadMoreThanMaxLength() {
         //given
-        User user = getOrdinaryUser(1);
-        UserDetails userDetails = getSimpleUserDetailsWithValidFields();
-        userDetails.setPayload(getRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50)));
+        User user = createOrdinaryUser(1);
+        UserDetails userDetails = createSimpleUserDetailsWithValidFields();
+        userDetails.setPayload(createRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50)));
         userDetails.setUser(user);
         user.setUserDetails(userDetails);
 
@@ -93,9 +110,9 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Could not commit JPA transaction; .*")
     public void testUserDetailsIsNotSavedWithImageUrlMoreThanMaxLength() {
         //given
-        User user = getOrdinaryUser(1);
-        UserDetails userDetails = getSimpleUserDetailsWithValidFields();
-        userDetails.setImageUrl(getRandomLetterString(MAX_LENGTH_512 + 1 + new Random().nextInt(50)));
+        User user = createOrdinaryUser(1);
+        UserDetails userDetails = createSimpleUserDetailsWithValidFields();
+        userDetails.setImageUrl(createRandomLetterString(MAX_LENGTH_512 + 1 + new Random().nextInt(50)));
         userDetails.setUser(user);
         user.setUserDetails(userDetails);
 

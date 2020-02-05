@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.models;
 
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +14,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -59,8 +59,8 @@ public class User implements Serializable {
     @OneToOne(mappedBy = "tenantOwner", fetch = FetchType.LAZY)
     private Tenant tenant;
 
-    @OneToMany(mappedBy = "user")
-    List<Identity> identityList;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    List<Identity> identityList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     List<Address> addressList;
@@ -143,6 +143,18 @@ public class User implements Serializable {
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
+    }
+
+    //Bidirectional @OneToMany
+    //https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
+    public void addIdentity(Identity identity) {
+        identityList.add(identity);
+        identity.setUser(this);
+    }
+
+    public void removeIdentity(Identity identity) {
+        identityList.remove(identity);
+        identity.setUser(null);
     }
 
     @Override
