@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import javax.validation.ConstraintViolationException;
 import java.util.Random;
 
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrdinaryUser;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getRandomLetterString;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getRandomNumberString;
@@ -34,7 +34,6 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     }
 
 
-    //====================================================== guid ======================================================
     @Test(description = "Test User_01. Should save user with valid fields.")
     public void testUserIsSavedWithValidFields() {
         //given
@@ -50,6 +49,8 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
         assertEquals(user, savedUser);
     }
 
+
+    //====================================================== guid ======================================================
     @Test(description = "Test User_02. Should throw ConstraintViolationException when save user with null guid field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
@@ -105,11 +106,11 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test User_06. Should throw ConstraintViolationException when save user with name field length more than " + MAX_LENGTH,
+    @Test(description = "Test User_06. Should throw ConstraintViolationException when save user with name field length more than " + MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNameMoreThanMaxLength() {
-        String name = getRandomLetterString(MAX_LENGTH + 1 + new Random().nextInt(50));
+        String name = getRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
         //given
         User user = getOrdinaryUser(1);
         user.setName(name);
@@ -148,7 +149,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNicknameMoreThanMaxLength() {
-        String nickname = getRandomLetterString(MAX_LENGTH + 1 + new Random().nextInt(50));
+        String nickname = getRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
         //given
         User user = getOrdinaryUser(1);
         user.setNickname(nickname);
@@ -199,11 +200,11 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test User_10. Should throw ConstraintViolationException when save user with email field length more than " + MAX_LENGTH,
+    @Test(description = "Test User_10. Should throw ConstraintViolationException when save user with email field length more than " + MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithEmailMoreThanMaxLength() {
-        String email = getRandomLetterString(MAX_LENGTH + 1 + new Random().nextInt(50));
+        String email = getRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
         //given
         User user = getOrdinaryUser(1);
         user.setEmail(email);
@@ -266,11 +267,11 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test User_15. Should throw ConstraintViolationException when save user with phoneNumber field length more than " + MAX_LENGTH,
+    @Test(description = "Test User_15. Should throw ConstraintViolationException when save user with phoneNumber field length more than " + MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithPhoneNumberMoreThanMaxLength() {
-        String phoneNumber = getRandomNumberString(MAX_LENGTH + 1 + new Random().nextInt(50));
+        String phoneNumber = getRandomNumberString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
         //given
         User user = getOrdinaryUser(1);
         user.setNickname(phoneNumber);
