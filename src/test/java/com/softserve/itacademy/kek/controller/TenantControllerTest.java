@@ -71,6 +71,51 @@ public class TenantControllerTest {
     }
 
     @Test
+    public void getTenantPropertiesTest() throws Exception {
+        mockMvc.perform(get("/tenants/1/properties"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.tenantID").value("1"))
+                .andExpect(jsonPath("$.status").value("received"));
+    }
+
+    @Test
+    public void addTenantPropertiesTest() throws Exception {
+        mockMvc.perform(post("/tenants/1/properties")
+                .content("{'item': '15v, Leipzigzskaya st, Kiev'}"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.item").value("15v, Leipzigzskaya st, Kiev"));
+    }
+
+    @Test
+    public void getTenantPropertyTest() throws Exception {
+        mockMvc.perform(get("/tenants/1/properties/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.tenantID").value("1"))
+                .andExpect(jsonPath("$.status").value("received"));
+    }
+
+    @Test
+    public void modifyTenantPropertyTest() throws Exception {
+        mockMvc.perform(put("/tenants/2/properties/2")
+                .content("{\"item\": \"value\"}"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.item").value("value"));
+    }
+
+    @Test
+    public void deleteTenantPropertyTest() throws Exception {
+        mockMvc.perform(delete("/tenants/3/properties/3"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.tenantID").value("3"))
+                .andExpect(jsonPath("$.status").value("deleted"));
+    }
+
+    @Test
     public void getTenantAddressesTest() throws Exception {
         mockMvc.perform(get("/tenants/1/addresses"))
                 .andExpect(status().isOk())
@@ -86,6 +131,33 @@ public class TenantControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("15v, Leipzigzskaya st, Kiev"));
+    }
+
+    @Test
+    public void getTenantAddressTest() throws Exception {
+        mockMvc.perform(get("/tenants/1/addresses/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.tenantID").value("1"))
+                .andExpect(jsonPath("$.status").value("received"));
+    }
+
+    @Test
+    public void modifyTenantAddressTest() throws Exception {
+        mockMvc.perform(put("/tenants/2/addresses/2")
+                .content("{\"item\": \"value\"}"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.item").value("value"));
+    }
+
+    @Test
+    public void deleteTenantAddressTest() throws Exception {
+        mockMvc.perform(delete("/tenants/3/addresses/3"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.tenantID").value("3"))
+                .andExpect(jsonPath("$.status").value("deleted"));
     }
 
 }
