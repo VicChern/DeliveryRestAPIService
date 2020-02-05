@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.utils;
 
 import com.softserve.itacademy.kek.models.User;
+import com.softserve.itacademy.kek.models.UserDetails;
 
 import java.util.Random;
 import java.util.UUID;
@@ -10,7 +11,9 @@ import java.util.UUID;
  */
 public class ITCreateEntitiesUtils {
 
-    public static final int MAX_LENGTH = 256;
+    public static final int MAX_LENGTH_256 = 256;
+    public static final int MAX_LENGTH_512 = 512;
+    public static final int MAX_LENGTH_4096 = 4096;
 
 
     //================================================== User entity ==================================================
@@ -50,6 +53,24 @@ public class ITCreateEntitiesUtils {
         return user;
     }
 
+    /**
+     * Gets {@link UserDetails} without {@link User}
+     *
+     * @return userDetails
+     */
+    public static UserDetails getSimpleUserDetailsWithValidFields() {
+        UserDetails userDetails = new UserDetails();
+        userDetails.setPayload(getRandomLetterString(500));
+        userDetails.setImageUrl(getRandomLetterString(60));
+        return userDetails;
+    }
+
+    public static UserDetails getSimpleUserDetailsWithNotValidPayload() {
+        UserDetails userDetails = new UserDetails();
+        userDetails.setPayload(getRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50)));
+        userDetails.setImageUrl(getRandomLetterString(60));
+        return userDetails;
+    }
 
     //================================================== common methods ==================================================
 

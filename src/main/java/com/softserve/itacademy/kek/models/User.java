@@ -1,8 +1,10 @@
 package com.softserve.itacademy.kek.models;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,10 +53,10 @@ public class User implements Serializable {
     @Column(name = "nickname", nullable = false, unique = true, length = 256)
     private String nickname;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private UserDetails userDetails;
 
-    @OneToOne(mappedBy = "tenantOwner")
+    @OneToOne(mappedBy = "tenantOwner", fetch = FetchType.LAZY)
     private Tenant tenant;
 
     @OneToMany(mappedBy = "user")

@@ -1,6 +1,17 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,10 +22,14 @@ public class UserDetails implements Serializable {
 
     @Id
     @Column(name = "id_user")
-    private Long id;
+//    @GeneratedValue(generator="gen")
+//    @GenericGenerator(name="gen", strategy="foreign",
+//            parameters = @Parameter(name="property", value="user"))
+    private Long idUser;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "id_user")
+    @MapsId
+//    @PrimaryKeyJoinColumn(name = "id_user")
     private User user;
 
     @Size(max = 4096)
@@ -24,6 +39,14 @@ public class UserDetails implements Serializable {
     @Size(max = 512)
     @Column(name = "image_url", length = 512)
     private String imageUrl;
+
+    public Long getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(Long idUser) {
+        this.idUser = idUser;
+    }
 
     public String getPayload() {
         return payload;
@@ -54,7 +77,7 @@ public class UserDetails implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDetails that = (UserDetails) o;
-        return Objects.equals(id, that.id) &&
+        return Objects.equals(idUser, that.idUser) &&
                 Objects.equals(user, that.user) &&
                 Objects.equals(payload, that.payload) &&
                 Objects.equals(imageUrl, that.imageUrl);
@@ -62,13 +85,13 @@ public class UserDetails implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, payload, imageUrl);
+        return Objects.hash(idUser, user, payload, imageUrl);
     }
 
     @Override
     public String toString() {
         return "UserDetails{" +
-                "id=" + id +
+                "id=" + idUser +
                 ", payload='" + payload + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
