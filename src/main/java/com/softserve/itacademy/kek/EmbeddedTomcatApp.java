@@ -3,11 +3,14 @@ package com.softserve.itacademy.kek;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Properties;
 
+import com.softserve.itacademy.kek.configuration.SseInit;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
+import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -39,9 +42,12 @@ public class EmbeddedTomcatApp {
         final AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
         actx.scan("com.softserve.itacademy.kek");
         final DispatcherServlet dispatcher = new DispatcherServlet(actx);
+        rootCtx.addServletContainerInitializer(new SpringServletContainerInitializer(),
+                Collections.singleton(SseInit.class));
+
         Tomcat.initWebappDefaults(rootCtx);
         Tomcat.addServlet(rootCtx, "SpringMVC", dispatcher);
-        rootCtx.addServletMapping("/api/v1/*", "SpringMVC");
+//        rootCtx.addServletMapping("/api/v1/*", "SpringMVC");
     }
 
     /**
