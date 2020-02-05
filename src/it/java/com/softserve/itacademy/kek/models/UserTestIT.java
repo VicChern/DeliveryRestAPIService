@@ -13,9 +13,9 @@ import javax.validation.ConstraintViolationException;
 import java.util.Random;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrdinaryUser;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getRandomLetterString;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getRandomNumberString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomNumberString;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -37,7 +37,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     @Test(description = "Test User_01. Should save user with valid fields.")
     public void testUserIsSavedWithValidFields() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
 
         //when
         assertEquals(0, userRepository.findAll().spliterator().estimateSize());
@@ -56,7 +56,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNullGuid() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setGuid(null);
 
         //when
@@ -68,8 +68,8 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
     public void testUserIsSavedWithUniqueGuid() {
         //given
-        User user1 = getOrdinaryUser(1);
-        User user2 = getOrdinaryUser(2);
+        User user1 = createOrdinaryUser(1);
+        User user2 = createOrdinaryUser(2);
         user2.setGuid(user1.getGuid());
         assertEquals(user1.getGuid(), user2.getGuid());
 
@@ -87,7 +87,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNullName() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setName(null);
 
         //when
@@ -99,7 +99,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithEmptyName() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setName("");
 
         //when
@@ -110,9 +110,9 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNameMoreThanMaxLength() {
-        String name = getRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
         //given
-        User user = getOrdinaryUser(1);
+        String name = createRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
+        User user = createOrdinaryUser(1);
         user.setName(name);
 
         //when
@@ -126,7 +126,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNullNickname() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setNickname(null);
 
         //when
@@ -138,20 +138,20 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithEmptyNickname() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setName("");
 
         //when
         userRepository.save(user);
     }
 
-    @Test(description = "Test User_06. Should throw ConstraintViolationException when save user with empty nickname field",
+    @Test(description = "Test User_06. Should throw ConstraintViolationException when save user with name field length more than " + MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNicknameMoreThanMaxLength() {
-        String nickname = getRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
+        String nickname = createRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setNickname(nickname);
 
         //when
@@ -163,8 +163,8 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
     public void testUserIsSavedWithUniqueNickname() {
         //given
-        User user1 = getOrdinaryUser(1);
-        User user2 = getOrdinaryUser(2);
+        User user1 = createOrdinaryUser(1);
+        User user2 = createOrdinaryUser(2);
         user2.setNickname(user1.getNickname());
         assertEquals(user1.getNickname(), user2.getNickname());
 
@@ -181,7 +181,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNullEmail() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setEmail(null);
 
         //when
@@ -193,7 +193,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithEmptyEmail() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setEmail("");
 
         //when
@@ -204,9 +204,9 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithEmailMoreThanMaxLength() {
-        String email = getRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
+        String email = createRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setEmail(email);
 
         //when
@@ -218,8 +218,8 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
     public void testUserIsSavedWithUniqueEmail() {
         //given
-        User user1 = getOrdinaryUser(1);
-        User user2 = getOrdinaryUser(2);
+        User user1 = createOrdinaryUser(1);
+        User user2 = createOrdinaryUser(2);
         user2.setEmail(user1.getEmail());
         assertEquals(user1.getEmail(), user2.getEmail());
 
@@ -234,7 +234,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNotValidEmail() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setEmail("notValidEmail");
 
         //when
@@ -248,7 +248,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNullPhoneNumber() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setPhoneNumber(null);
 
         //when
@@ -260,7 +260,7 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithEmptyPhoneNumber() {
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setPhoneNumber("");
 
         //when
@@ -271,9 +271,9 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithPhoneNumberMoreThanMaxLength() {
-        String phoneNumber = getRandomNumberString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
+        String phoneNumber = createRandomNumberString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
         //given
-        User user = getOrdinaryUser(1);
+        User user = createOrdinaryUser(1);
         user.setNickname(phoneNumber);
 
         //when
@@ -285,8 +285,8 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
     public void testUserIsSavedWithUniquePhoneNumber() {
         //given
-        User user1 = getOrdinaryUser(1);
-        User user2 = getOrdinaryUser(2);
+        User user1 = createOrdinaryUser(1);
+        User user2 = createOrdinaryUser(2);
         user2.setPhoneNumber(user1.getPhoneNumber());
         assertEquals(user1.getPhoneNumber(), user2.getPhoneNumber(), "phoneNumbers is not equals");
 

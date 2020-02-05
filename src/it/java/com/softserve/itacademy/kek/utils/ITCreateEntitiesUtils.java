@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.utils;
 
+import com.softserve.itacademy.kek.models.Identity;
+import com.softserve.itacademy.kek.models.IdentityType;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.models.UserDetails;
 
@@ -19,22 +21,22 @@ public class ITCreateEntitiesUtils {
     //================================================== User entity ==================================================
 
     /**
-     * Gets {@link User} with simple fields (guid, name, nickname, email, phoneNumber) with fields depending on {@param i}
+     * Creates {@link User} with simple fields (guid, name, nickname, email, phoneNumber) with fields depending on {@param i}
      *
      * @param i
      * @return user
      */
-    public static User getOrdinaryUser(int i) {
-        return getSimpleUser(
+    public static User createOrdinaryUser(int i) {
+        return createSimpleUser(
                 UUID.randomUUID(),
                 "name" + i,
                 "nickname" + i,
                 "email" + i + "@gmail.com",
-                "380-50-444-55-55" + 1);
+                "380-50-444-55-55" + i);
     }
 
     /**
-     * Gets {@link User} with simple fields (guid, name, nickname, email, phoneNumber)
+     * Creates {@link User} with simple fields (guid, name, nickname, email, phoneNumber)
      *
      * @param guid
      * @param name
@@ -43,7 +45,7 @@ public class ITCreateEntitiesUtils {
      * @param phoneNumber
      * @return user
      */
-    public static User getSimpleUser(UUID guid, String name, String nickName, String email, String phoneNumber) {
+    public static User createSimpleUser(UUID guid, String name, String nickName, String email, String phoneNumber) {
         User user = new User();
         user.setName(name);
         user.setGuid(guid);
@@ -54,34 +56,42 @@ public class ITCreateEntitiesUtils {
     }
 
     /**
-     * Gets {@link UserDetails} without {@link User}
+     * Creates {@link UserDetails} without {@link User}
      *
      * @return userDetails
      */
-    public static UserDetails getSimpleUserDetailsWithValidFields() {
+    public static UserDetails createSimpleUserDetailsWithValidFields() {
         UserDetails userDetails = new UserDetails();
-        userDetails.setPayload(getRandomLetterString(500));
-        userDetails.setImageUrl(getRandomLetterString(60));
+        userDetails.setPayload(createRandomLetterString(500));
+        userDetails.setImageUrl(createRandomLetterString(60));
         return userDetails;
     }
 
-    public static UserDetails getSimpleUserDetailsWithNotValidPayload() {
-        UserDetails userDetails = new UserDetails();
-        userDetails.setPayload(getRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50)));
-        userDetails.setImageUrl(getRandomLetterString(60));
-        return userDetails;
+    /**
+     * Creates {@link Identity}
+     *
+     * @return identity
+     */
+    public static Identity createIdentity() {
+        IdentityType identityType = new IdentityType();
+        identityType.setName(createRandomLetterString(60));
+        Identity identity = new Identity();
+        identity.setPayload(createRandomLetterString(500));
+        identity.setIdentityType(identityType);
+        return identity;
     }
+
 
     //================================================== common methods ==================================================
 
     /**
-     * Gets random {@link String} with chars from 'a' to 'z' and from 'A' to 'Z' according to ASCII table
+     * Creates random {@link String} with chars from 'a' to 'z' and from 'A' to 'Z' according to ASCII table
      *
      * @param stringLength length of random string
      * @return random string
      * @see <a href="http://www.asciitable.com">http://www.asciitable.com</a>
      */
-    public static String getRandomLetterString(int stringLength) {
+    public static String createRandomLetterString(int stringLength) {
         char[] stringLetterSymbols;
         StringBuilder sb = new StringBuilder();
         for (char character = 'a'; character <= 'z'; character++) {
@@ -101,13 +111,13 @@ public class ITCreateEntitiesUtils {
     }
 
     /**
-     * Gets random {@link String} with chars from '0' to '9' according to ASCII table
+     * Creates random {@link String} with chars from '0' to '9' according to ASCII table
      *
      * @param stringLength length of random string
      * @return random string
      * @see <a href="http://www.asciitable.com">http://www.asciitable.com</a>
      */
-    public static String getRandomNumberString(int stringLength) {
+    public static String createRandomNumberString(int stringLength) {
         char[] stringNumberSymbols;
         StringBuilder sb = new StringBuilder();
         for (char character = '0'; character <= '9'; character++) {
