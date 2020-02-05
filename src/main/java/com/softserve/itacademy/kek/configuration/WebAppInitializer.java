@@ -23,4 +23,3 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         return "SpringMVC";
     }
 }
-
