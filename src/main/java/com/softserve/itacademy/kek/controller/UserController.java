@@ -89,9 +89,9 @@ public class UserController extends DefaultController {
      * @param id user ID from the URN
      * @return list of the address objects as a JSON
      */
-    @GetMapping("/{id}/address")
+    @GetMapping("/{id}/addresses")
     public ResponseEntity<String> getUserAddresses(@PathVariable String id) {
-        return ResponseEntity.ok(getJSON(id, "15v, Leipzigzskaya st, Kiev"));
+        return ResponseEntity.ok(getJSON(id, "received"));
     }
 
     /**
@@ -101,21 +101,21 @@ public class UserController extends DefaultController {
      * @param body list of address objects as a JSON
      * @return list of the created address objects as a JSON
      */
-    @PostMapping("/{id}/address")
+    @PostMapping("/{id}/addresses")
     public ResponseEntity<String> addUserAddresses(@PathVariable String id, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON("new", "added"));
+        return ResponseEntity.ok(body);
     }
 
     /**
-     * Finds addressess of the specific user
+     * Finds addresses of the specific user
      *
      * @param id user ID from the URN
      * @param addrGuid address ID from the URN
      * @return address object as a JSON
      */
-    @GetMapping("/{id}/address/{addrguid}")
-    public ResponseEntity<String> getUserAddress(@PathVariable String id, @PathVariable String addrGuid) {
-        return ResponseEntity.ok(getJSON(id, "15v, Leipzigzskaya st, Kiev"));
+    @GetMapping("/{id}/addresses/{addrguid}")
+    public ResponseEntity<String> getUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
+        return ResponseEntity.ok(getJSON(id, "received"));
     }
 
 
@@ -127,9 +127,9 @@ public class UserController extends DefaultController {
      * @param body address object as a JSON
      * @return modified address object as a JSON
      */
-    @PutMapping("/{id}/address/{addrguid}")
-    public ResponseEntity<String> modifyUserAddress(@PathVariable String id, @PathVariable String addrGuid, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON(id, "Modified"));
+    @PutMapping("/{id}/addresses/{addrguid}")
+    public ResponseEntity<String> modifyUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid, @RequestBody String body) {
+        return ResponseEntity.ok(body);
     }
 
     /**
@@ -139,8 +139,8 @@ public class UserController extends DefaultController {
      * @param addrGuid address ID from the URN
      * @return operation status as a JSON
      */
-    @DeleteMapping("/{id}/address/{addrguid}")
-    public ResponseEntity<String> deleteUserAddress(@PathVariable String id, @PathVariable String addrGuid) {
+    @DeleteMapping("/{id}/addresses/{addrguid}")
+    public ResponseEntity<String> deleteUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
         return ResponseEntity.ok(getJSON(id, "deleted"));
     }
 }
