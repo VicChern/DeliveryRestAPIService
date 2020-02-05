@@ -11,6 +11,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Logger;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RestController
 @RequestMapping(path = "/tenants", produces = "application/json; charset=UTF-8")
 public class TenantController extends DefaultController {
@@ -88,7 +95,7 @@ public class TenantController extends DefaultController {
      */
     @GetMapping("/{id}/properties")
     public ResponseEntity<String> getTenantProperties(@PathVariable String id) {
-        return ResponseEntity.ok(getJSON(id, "List of tenant properties"));
+        return ResponseEntity.ok(getJSON(id, "received"));
     }
 
     /**
@@ -110,8 +117,8 @@ public class TenantController extends DefaultController {
      * @return Specific tenant tenant property
      */
     @GetMapping("/{id}/properties/{propguid}")
-    public ResponseEntity<String> getTenantProperty(@PathVariable String id, @PathVariable String propGuid) {
-        return ResponseEntity.ok(getJSON(id, "Specific tenant property"));
+    public ResponseEntity<String> getTenantProperty(@PathVariable("id") String id, @PathVariable("propguid") String propGuid) {
+        return ResponseEntity.ok(getJSON(id, "received"));
     }
 
     /**
@@ -122,8 +129,8 @@ public class TenantController extends DefaultController {
      * @param body     The tenant property to modify
      * @return The modified tenant property object
      */
-    @PostMapping("/{id}/properties{propguid}")
-    public ResponseEntity<String> modifyTenantProperty(@PathVariable String id, @PathVariable String propGuid, @RequestBody String body) {
+    @PutMapping("/{id}/properties/{propguid}")
+    public ResponseEntity<String> modifyTenantProperty(@PathVariable("id") String id, @PathVariable("propguid") String propGuid, @RequestBody String body) {
         return ResponseEntity.ok(body);
     }
 
@@ -131,18 +138,18 @@ public class TenantController extends DefaultController {
      * Deletes the specific tenant property
      *
      * @param id       tenant ID from the URN
-     * @param addrGuid address ID from the URN
+     * @param propGuid address ID from the URN
      * @return operation status as a JSON
      */
     @DeleteMapping("/{id}/properties/{propguid}")
-    public ResponseEntity<String> deleteTenantProperty(@PathVariable String id, @PathVariable String addrGuid) {
+    public ResponseEntity<String> deleteTenantProperty(@PathVariable("id") String id, @PathVariable("propguid") String propGuid) {
         return ResponseEntity.ok(getJSON(id, "deleted"));
     }
 
     /**
      * Find addressees of the specific tenant
      *
-     * @param id tenant ID from URNtenant tenant property
+     * @param id tenant ID from URN tenant property
      * @return Specific List of tenant addresses
      */
     @GetMapping("/{id}/addresses")
@@ -163,7 +170,7 @@ public class TenantController extends DefaultController {
      * @return Specific tenant tenant property
      */
     @GetMapping("/{id}/addresses/{addrguid}")
-    public ResponseEntity<String> getTenantAddress(@PathVariable String id, @PathVariable String addrGuid) {
+    public ResponseEntity<String> getTenantAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
         return ResponseEntity.ok(getJSON(id, "received"));
     }
 
@@ -176,7 +183,7 @@ public class TenantController extends DefaultController {
      * @return The modified tenant address object
      */
     @PutMapping("/{id}/addresses/{addrguid}")
-    public ResponseEntity<String> modifyTenantAddress(@PathVariable String id, @PathVariable String addrGuid, @RequestBody String body) {
+    public ResponseEntity<String> modifyTenantAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid, @RequestBody String body) {
         return ResponseEntity.ok(body);
     }
 
@@ -188,7 +195,7 @@ public class TenantController extends DefaultController {
      * @return operation status as a JSON
      */
     @DeleteMapping("/{id}/addresses/{addrguid}")
-    public ResponseEntity<String> deleteTenantAddress(@PathVariable String id, @PathVariable String addrGuid) {
+    public ResponseEntity<String> deleteTenantAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
         return ResponseEntity.ok(getJSON(addrGuid, "deleted"));
     }
 }
