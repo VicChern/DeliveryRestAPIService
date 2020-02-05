@@ -69,4 +69,49 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.userID").value("3"))
                 .andExpect(jsonPath("$.status").value("deleted"));
     }
+
+    @Test
+    public void getUserAddressesTest() throws Exception {
+        mockMvc.perform(get("/users/1/addresses"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.userID").value("1"))
+                .andExpect(jsonPath("$.status").value("received"));
+    }
+
+    @Test
+    public void addUserAddressesTest() throws Exception {
+        mockMvc.perform(post("/users/1/addresses")
+                .content("{'item': '15v, Leipzigzskaya st, Kiev'}"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.item").value("15v, Leipzigzskaya st, Kiev"));
+    }
+
+    @Test
+    public void getUserAddressTest() throws Exception {
+        mockMvc.perform(get("/users/1/addresses/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.userID").value("1"))
+                .andExpect(jsonPath("$.status").value("received"));
+    }
+
+    @Test
+    public void modifyUserAddressTest() throws Exception {
+        mockMvc.perform(put("/users/2/addresses/1")
+                .content("{\"item\": \"value\"}"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.item").value("value"));
+    }
+
+    @Test
+    public void deleteUserAddressTest() throws Exception {
+        mockMvc.perform(delete("/users/3/addresses/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.userID").value("3"))
+                .andExpect(jsonPath("$.status").value("deleted"));
+    }
 }
