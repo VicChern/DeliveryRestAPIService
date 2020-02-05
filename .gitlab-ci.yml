@@ -1,12 +1,13 @@
-image: maven:latest
-
-services:
-  - postgres:latest
+image: maven:3.6.1
 
 stages:
   - test
 
-unit_test:
+maven_build:
   stage: test
   script:
-    - mvn test
+    - mvn verify -B
+#  only:
+#    - merge_requests
+#    - master
+#    - develop
