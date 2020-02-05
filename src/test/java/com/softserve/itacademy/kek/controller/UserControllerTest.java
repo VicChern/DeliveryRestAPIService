@@ -45,20 +45,20 @@ public class UserControllerTest {
 
     @Test
     public void addUserTest() throws Exception {
-        mockMvc.perform(post("/users"))
+        mockMvc.perform(post("/users")
+                .content("{\"item\": \"value\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.userID").value("new"))
-                .andExpect(jsonPath("$.status").value("added"));
+                .andExpect(jsonPath("$.item").value("value"));
     }
 
     @Test
     public void modifyUserTest() throws Exception {
-        mockMvc.perform(put("/users/2"))
+        mockMvc.perform(put("/users/2")
+                .content("{\"item\": \"value\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.userID").value("2"))
-                .andExpect(jsonPath("$.status").value("modified"));
+                .andExpect(jsonPath("$.item").value("value"));
     }
 
     @Test
