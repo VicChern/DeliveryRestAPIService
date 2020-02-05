@@ -36,7 +36,7 @@ public class Order implements Serializable {
     @Column(name = "summary", nullable = false, length = 256)
     private String summary;
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "idOrder")
     private OrderDetails orderDetails;
 
     @OneToMany(mappedBy = "idOrder")
