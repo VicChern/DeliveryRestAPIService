@@ -2,11 +2,10 @@ package com.softserve.itacademy.kek.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -17,10 +16,12 @@ import java.util.Objects;
 public class OrderDetails implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @OneToOne
-    @JoinColumn(name = "id_order")
-    private Order idOrder;
+    @Column(name = "id_order")
+    private Long idOrder;
+
+    @OneToOne(fetch  = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "id_order")
+    private Order order;
 
     @Size(max = 4096)
     @Column(name = "payload", length = 4096)
@@ -30,12 +31,20 @@ public class OrderDetails implements Serializable {
     @Column(name = "image_url", length = 512)
     private String imageUrl;
 
-    public Order getIdOrder() {
+    public Long getIdOrder() {
         return idOrder;
     }
 
-    public void setIdOrder(Order idOrder) {
+    public void setIdOrder(Long idOrder) {
         this.idOrder = idOrder;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public String getPayload() {
@@ -66,6 +75,6 @@ public class OrderDetails implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idOrder, payload, idOrder);
+        return Objects.hash(idOrder, order, payload, idOrder);
     }
 }
