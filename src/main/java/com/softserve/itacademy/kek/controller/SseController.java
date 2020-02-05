@@ -40,17 +40,14 @@ public class SseController {
 
     @GetMapping("/request")
     @Async
-    public SseEmitter handleRequest() {
+    public SseEmitter handleRequest(String message) {
         emitter = new SseEmitter();
         service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             try {
-                for (int i = 0; isConnected; i++) {
+                for ( ; isConnected; ) {
                     SseEmitter.SseEventBuilder event = SseEmitter.event()
-                            .id(String.valueOf(i))
-                            .name("name")
-                            .data("message " + i, MediaType.TEXT_PLAIN);
-                    System.out.println("data has been sent");
+                            .data("message ", MediaType.TEXT_PLAIN);
                     emitter.send(event);
                     Thread.sleep(timeOut);
                 }
