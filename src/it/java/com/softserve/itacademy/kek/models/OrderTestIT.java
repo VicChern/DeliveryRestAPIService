@@ -2,17 +2,11 @@ package com.softserve.itacademy.kek.models;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.utils.ITTestUtils;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.validation.Valid;
@@ -22,70 +16,61 @@ import java.util.UUID;
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class OrderTestIT extends AbstractTestNGSpringContextTests {
 
-    public static final int MAX_SUMMARY_LENGTH = 256;
-
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TenantRepository tenantRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-
-    private Order order1;
-    private Order order2;
+    @Valid
+    private Order order = new Order();
 
     @Autowired
     private OrderRepository repository;
 
-    @BeforeClass
-    public void setUp() {
-        order1 = ITTestUtils.getOrder(getTenantForOrder());
-        order2 = ITTestUtils.getOrder(getTenantForOrder());
+    @Autowired
+    OrderTestIT() {
+        order.setSummary("summary");
+        order.setGuid(UUID.randomUUID());
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test
     public void whenGUIDIsNotUnique() {
-        orderRepository.save(order1);
 
-        UUID guid = order1.getGuid();
-        order2.setGuid(guid);
-
-        orderRepository.save(order2);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test
+    public void whenGUIDIsUnique() {
+
+    }
+
+    @Test
     public void whenGUIDIsNull() {
-        order1.setGuid(null);
 
-        orderRepository.save(order1);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void whenSummarySizeMoreThan256() {
-        order1.setSummary(RandomString.make(MAX_SUMMARY_LENGTH  + 1));
+    @Test
+    public void whenGUIDIsOk() {
 
-        orderRepository.save(order1);
+    }
+
+    @Test
+    public void whenSummarySizeMoreThan256() {
+
     }
 
     @Test
     public void whenSummarySizeLessThan1ThanThrowsException() {
+        String summary = "";
 
+        order.setSummary(summary);
+
+        Order savedOrder = repository.save(order);
+
+        Assert.assertEquals(savedOrder, order);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test
     public void whenSummaryIsNull() {
-        order1.setSummary(null);
 
-        orderRepository.save(order1);
     }
 
-    private Tenant getTenantForOrder() {
-        User user = ITTestUtils.getUser();
-        Tenant tenant = ITTestUtils.getTenant(user);
+    @Test
+    public void whenSummarySizeIsOk() {
 
-        userRepository.save(user);
-        tenantRepository.save(tenant);
-
-        return tenant;
     }
 }
