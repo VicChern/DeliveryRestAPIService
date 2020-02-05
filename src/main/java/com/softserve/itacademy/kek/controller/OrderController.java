@@ -31,7 +31,7 @@ public class OrderController extends DefaultController {
     @GetMapping
     public ResponseEntity<String> getOrderList() {
         JSONObject json = new JSONObject();
-        json.append("OrderID", "1").append("OrderID", "2").append("OrderID", "3");
+        json.append("orderID", "1").append("orderID", "2").append("orderID", "3");
         json.put("status", "received");
         return ResponseEntity.ok(json.toString());
     }
