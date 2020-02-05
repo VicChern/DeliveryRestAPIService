@@ -68,5 +68,3 @@ public class EmbeddedTomcatApp {
         }
     }
 }
-
-
