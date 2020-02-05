@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.controller;
 
+import org.json.JSONObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +17,9 @@ public class DefaultController {
      * @return the error message as a JSON
      */
     @ExceptionHandler(Exception.class)
-    public String defaultExceptionHandler(Exception e) {
-        return "Error: something went wrong...";
+    public ResponseEntity<String> defaultExceptionHandler(Exception e) {
+        JSONObject response = new JSONObject()
+                .put("Error", "Something went wrong...");
+        return ResponseEntity.ok(response.toString());
     }
 }
