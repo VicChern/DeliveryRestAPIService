@@ -57,7 +57,7 @@ public class UserController extends DefaultController {
      */
     @PostMapping
     public ResponseEntity<String> addUser(@RequestBody String body) {
-        return ResponseEntity.ok(getJSON("new", "added"));
+        return ResponseEntity.ok(body);
     }
 
     /**
@@ -69,7 +69,7 @@ public class UserController extends DefaultController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyUser(@PathVariable String id, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON(id, "modified"));
+        return ResponseEntity.ok(body);
     }
 
     /**
