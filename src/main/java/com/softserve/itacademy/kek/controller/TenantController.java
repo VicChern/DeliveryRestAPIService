@@ -38,16 +38,6 @@ public class TenantController extends DefaultController {
     }
 
     /**
-     * Creates a new tenant
-     *
-     * @return operation status as a JSON
-     */
-    @PostMapping
-    public ResponseEntity<String> addTenant(@RequestBody String body) {
-        return ResponseEntity.ok(getJSON("new", "added"));
-    }
-
-    /**
      * Finds the specific tenant"
      *
      * @param id tenant id from the URN
@@ -59,6 +49,16 @@ public class TenantController extends DefaultController {
     }
 
     /**
+     * Creates a new tenant
+     *
+     * @return operation status as a JSON
+     */
+    @PostMapping
+    public ResponseEntity<String> addTenant(@RequestBody String body) {
+        return ResponseEntity.ok(body);
+    }
+
+    /**
      * Modifies information of the specified tenant
      *
      * @param id tenant ID from the URN
@@ -66,7 +66,7 @@ public class TenantController extends DefaultController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyTenant(@PathVariable String id, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON(id, "Modified"));
+        return ResponseEntity.ok(body);
     }
 
     /**
@@ -99,7 +99,7 @@ public class TenantController extends DefaultController {
      */
     @PostMapping("/{id}/properties")
     public ResponseEntity<String> addTenantProperties(@PathVariable String id, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON("new", "added"));
+        return ResponseEntity.ok(body);
     }
 
     /**
@@ -124,7 +124,7 @@ public class TenantController extends DefaultController {
      */
     @PostMapping("/{id}/properties{propguid}")
     public ResponseEntity<String> modifyTenantProperty(@PathVariable String id, @PathVariable String propGuid, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON(propGuid, "Modified"));
+        return ResponseEntity.ok(body);
     }
 
     /**
@@ -147,19 +147,12 @@ public class TenantController extends DefaultController {
      */
     @GetMapping("/{id}/addresses")
     public ResponseEntity<String> getTenantAddresses(@PathVariable String id) {
-        return ResponseEntity.ok(getJSON(id, "List of tenant addresses"));
+        return ResponseEntity.ok(getJSON(id, "received"));
     }
 
-    /**
-     * Adds a new addresses
-     *
-     * @param id   tenant ID from URN
-     * @param body The tenant address to add
-     * @return The modified tenant property object
-     */
     @PostMapping("/{id}/addresses")
     public ResponseEntity<String> addTenantAddresses(@PathVariable String id, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON("new", "Added"));
+        return ResponseEntity.ok(body);
     }
 
     /**
@@ -171,7 +164,7 @@ public class TenantController extends DefaultController {
      */
     @GetMapping("/{id}/addresses/{addrguid}")
     public ResponseEntity<String> getTenantAddress(@PathVariable String id, @PathVariable String addrGuid) {
-        return ResponseEntity.ok(getJSON(id, "Specific tenant address"));
+        return ResponseEntity.ok(getJSON(id, "received"));
     }
 
     /**
@@ -182,9 +175,9 @@ public class TenantController extends DefaultController {
      * @param body     The tenant address to modify
      * @return The modified tenant address object
      */
-    @PutMapping("/{id}/addresses{addrguid}")
+    @PutMapping("/{id}/addresses/{addrguid}")
     public ResponseEntity<String> modifyTenantAddress(@PathVariable String id, @PathVariable String addrGuid, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON(addrGuid, "Modified"));
+        return ResponseEntity.ok(body);
     }
 
     /**
