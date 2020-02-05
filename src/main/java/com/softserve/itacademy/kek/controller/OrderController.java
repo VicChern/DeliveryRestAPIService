@@ -44,7 +44,7 @@ public class OrderController extends DefaultController {
      */
     @PostMapping
     public ResponseEntity<String> addOrder(@RequestBody String body) {
-        return ResponseEntity.ok(getJSON("new", "added"));
+        return ResponseEntity.ok(body);
     }
 
     /**
@@ -67,7 +67,7 @@ public class OrderController extends DefaultController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyOrder(@PathVariable String id, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON(id, "modified"));
+        return ResponseEntity.ok(body);
     }
 
     /**
@@ -101,6 +101,6 @@ public class OrderController extends DefaultController {
      */
     @PostMapping("/{id}/events")
     public ResponseEntity<String> addEvent(@PathVariable String id, @RequestBody String body) {
-        return ResponseEntity.ok(getJSON("new", "added"));
+        return ResponseEntity.ok(body);
     }
 }
