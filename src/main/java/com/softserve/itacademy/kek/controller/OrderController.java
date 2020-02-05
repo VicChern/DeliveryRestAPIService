@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/users", produces = "application/json; charset=UTF-8")
+@RequestMapping(path = "/orders", produces = "application/json; charset=UTF-8")
 public class OrderController extends DefaultController {
 
     // Build Response (stub, temporary method)
@@ -89,7 +89,7 @@ public class OrderController extends DefaultController {
      */
     @GetMapping("/{id}/events")
     public ResponseEntity<String> getEvents(@PathVariable String id) {
-        return ResponseEntity.ok(getJSON(id, "Created"));
+        return ResponseEntity.ok(getJSON(id, "received"));
     }
 
     /**
