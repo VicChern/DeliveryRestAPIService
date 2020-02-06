@@ -29,7 +29,6 @@ public class TenantControllerTest {
     public void getTenantListTest() throws Exception {
         mockMvc.perform(get("/tenants"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.tenantID").value(Matchers.contains("1", "2", "3")))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -38,7 +37,6 @@ public class TenantControllerTest {
     public void getTenantTest() throws Exception {
         mockMvc.perform(get("/tenants/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.tenantID").value("1"))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -48,7 +46,6 @@ public class TenantControllerTest {
         mockMvc.perform(post(("/tenants"))
                 .content("{\"item\": \"value\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("value"));
     }
 
@@ -57,7 +54,6 @@ public class TenantControllerTest {
         mockMvc.perform(put("/tenants/2")
                 .content("{\"item\": \"value\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("value"));
     }
 
@@ -65,7 +61,6 @@ public class TenantControllerTest {
     public void deleteTenantTest() throws Exception {
         mockMvc.perform(delete("/tenants/3"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.tenantID").value("3"))
                 .andExpect(jsonPath("$.status").value("deleted"));
     }
@@ -74,7 +69,6 @@ public class TenantControllerTest {
     public void getTenantPropertiesTest() throws Exception {
         mockMvc.perform(get("/tenants/1/properties"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.tenantID").value("1"))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -84,7 +78,6 @@ public class TenantControllerTest {
         mockMvc.perform(post("/tenants/1/properties")
                 .content("{'item': 'some specific properties'}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("some specific properties"));
     }
 
@@ -92,7 +85,6 @@ public class TenantControllerTest {
     public void getTenantPropertyTest() throws Exception {
         mockMvc.perform(get("/tenants/1/properties/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.tenantID").value("1"))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -102,7 +94,6 @@ public class TenantControllerTest {
         mockMvc.perform(put("/tenants/2/properties/2")
                 .content("{\"item\": \"value\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("value"));
     }
 
@@ -110,7 +101,6 @@ public class TenantControllerTest {
     public void deleteTenantPropertyTest() throws Exception {
         mockMvc.perform(delete("/tenants/3/properties/3"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.tenantID").value("3"))
                 .andExpect(jsonPath("$.status").value("deleted"));
     }
@@ -119,7 +109,6 @@ public class TenantControllerTest {
     public void getTenantAddressesTest() throws Exception {
         mockMvc.perform(get("/tenants/1/addresses"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.tenantID").value("1"))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -129,7 +118,6 @@ public class TenantControllerTest {
         mockMvc.perform(post("/tenants/1/addresses")
                 .content("{'item': '15v, Leipzigzskaya st, Kiev'}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("15v, Leipzigzskaya st, Kiev"));
     }
 
@@ -137,7 +125,6 @@ public class TenantControllerTest {
     public void getTenantAddressTest() throws Exception {
         mockMvc.perform(get("/tenants/1/addresses/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.tenantID").value("1"))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -147,7 +134,6 @@ public class TenantControllerTest {
         mockMvc.perform(put("/tenants/2/addresses/2")
                 .content("{\"item\": \"value\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("value"));
     }
 
@@ -155,7 +141,6 @@ public class TenantControllerTest {
     public void deleteTenantAddressTest() throws Exception {
         mockMvc.perform(delete("/tenants/3/addresses/3"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.tenantID").value("3"))
                 .andExpect(jsonPath("$.status").value("deleted"));
     }
