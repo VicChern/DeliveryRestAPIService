@@ -9,9 +9,8 @@ public class KekMain {
 
     public static void main(String[] args) {
         try {
-            logger.info("Starting embedded tomcat");
+            logger.info("Starting application");
             new EmbeddedTomcatApp().start();
-            logger.info("Embedded tomcat started");
         } catch (IOException e) {
             logger.error("Could not start embedded tomcat");
             e.printStackTrace();
