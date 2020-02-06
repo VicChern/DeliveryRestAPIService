@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -16,7 +17,7 @@ import javax.validation.ConstraintViolationException;
 
 @Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
-public class ActorRoleTEstIT extends AbstractTestNGSpringContextTests {
+public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
 
     public static final int MAX_NAME_LENGTH = 256;
 
@@ -68,4 +69,8 @@ public class ActorRoleTEstIT extends AbstractTestNGSpringContextTests {
         actorRoleRepository.save(actorRole2);
     }
 
+    @AfterClass
+    public void cleanUp() {
+        actorRoleRepository.deleteAll();
+    }
 }

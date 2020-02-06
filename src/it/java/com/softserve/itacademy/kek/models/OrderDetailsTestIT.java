@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -66,5 +67,13 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order);
 
         return order;
+    }
+
+    @AfterClass
+    public void cleanUp() {
+        orderDetailsRepository.deleteAll();
+        orderRepository.deleteAll();
+        tenantRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }

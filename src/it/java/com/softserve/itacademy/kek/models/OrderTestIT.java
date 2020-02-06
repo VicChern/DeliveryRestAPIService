@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -90,5 +91,12 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
         tenantRepository.save(tenant);
 
         return tenant;
+    }
+
+    @AfterClass
+    public void clearUp() {
+        orderRepository.deleteAll();
+        tenantRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }
