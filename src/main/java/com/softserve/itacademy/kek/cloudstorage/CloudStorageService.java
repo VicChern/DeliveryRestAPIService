@@ -31,12 +31,15 @@ public class CloudStorageService implements ICloudStorageService {
     @Override
     public CloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {
         logger.info("Uploading binary data to Google Cloud Storage default bucket");
+
         String bucket = getBucketName("storage.properties");
+
         return uploadBinaryData(data, bucket);
     }
 
     public CloudStorageObject uploadBinaryData(final byte[] data, final String bucketName) throws CloudStorageServiceException {
         logger.info("Uploading binary data to Google Cloud Storage bucket");
+
         Storage storage = getStorageObject();
         Bucket bucket;
 
@@ -46,32 +49,39 @@ public class CloudStorageService implements ICloudStorageService {
             bucket = storage.create(BucketInfo.of(bucketName));
             logger.info("Google Cloud Storage bucket created successfully");
         }
+
         String guid = UUID.randomUUID().toString();
         Blob blob = bucket.create(guid, data);
         String url = blob.getMediaLink();
+
         return new CloudStorageObject(url, guid, data);
     }
 
     @Override
     public CloudStorageObject getCloudStorageObject(final String guid) throws CloudStorageServiceException {
         logger.info("Getting object by GUID from Google Cloud Storage default bucket");
-        final String bucket = getBucketName("storage.properties");
+
+        String bucket = getBucketName("storage.properties");
 
         return getCloudStorageObject(guid, bucket);
     }
 
     public CloudStorageObject getCloudStorageObject(final String guid, final String bucketName) throws CloudStorageServiceException {
         logger.info("Getting object by GUID from Google Cloud Storage bucket");
+
         Storage storage = getStorageObject();
 
         if (storage.get(bucketName) != null) {
             logger.info("Bucket does not exist");
+
             return null;
         } else {
+
             Bucket bucket = storage.update(BucketInfo.of(bucketName));
             Blob blob = bucket.get(guid);
             byte[] data = blob.getContent();
             String url = blob.getMediaLink();
+
             return new CloudStorageObject(url, guid, data);
         }
     }
@@ -79,6 +89,7 @@ public class CloudStorageService implements ICloudStorageService {
     @Override
     public List<CloudStorageObject> getCloudStorageObjects(final String filter) throws CloudStorageServiceException {
         logger.info("Getting list of objects from Google Cloud Storage bucket");
+
         List<CloudStorageObject> objects = new ArrayList<>();
 
         Storage storage = getStorageObject();
@@ -87,6 +98,7 @@ public class CloudStorageService implements ICloudStorageService {
         Page<Blob> blobs = bucket.list();
 
         for (Blob blob : blobs.getValues()) {
+
             String url = blob.getMediaLink();
             String guid = blob.getName();
             byte[] data = blob.getContent();
@@ -101,6 +113,7 @@ public class CloudStorageService implements ICloudStorageService {
 
         StorageOptions storageOptions = null;
         String token = System.getenv("GOOGLE_CLOUD_STORAGE_KEY");
+
         try {
             logger.info("Token parsed successfully");
 
@@ -116,6 +129,7 @@ public class CloudStorageService implements ICloudStorageService {
             logger.info("Token was not found");
 
             return null;
+
         } catch (ParseException e) {
             logger.info("Token was not parsed");
 
@@ -123,6 +137,7 @@ public class CloudStorageService implements ICloudStorageService {
         }
 
         Storage storage = storageOptions.getService();
+
         return storage;
     }
 
@@ -137,13 +152,17 @@ public class CloudStorageService implements ICloudStorageService {
             Properties properties = new Properties();
 
             if (inputStream != null) {
+
                 properties.load(inputStream);
+
             } else {
                 logger.info("Property file was not found in the classpath");
 
                 throw new FileNotFoundException("Property file " + propFileName + " was not found in the classpath");
             }
+
             bucketName = properties.getProperty("bucketName");
+
         } catch (IOException e) {
             logger.info("Bucket name was not initialized");
 
