@@ -35,7 +35,6 @@ public class OrderControllerTest {
     public void getOrderListTest() throws Exception {
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.orderID").value(Matchers.contains("1", "2", "3")))
                 .andExpect(jsonPath("$.status").value("received"));
 
@@ -46,7 +45,6 @@ public class OrderControllerTest {
         mockMvc.perform(post("/orders")
                 .content("{\"item\": \"value\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("value"));
 
     }
@@ -55,7 +53,6 @@ public class OrderControllerTest {
     public void getOrderTest() throws Exception {
         mockMvc.perform(get("/orders/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.orderID").value("1"))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -65,7 +62,6 @@ public class OrderControllerTest {
         mockMvc.perform(put("/orders/2")
                 .content("{\"item\": \"value\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("value"));
 
     }
@@ -74,7 +70,6 @@ public class OrderControllerTest {
     public void deleteOrderTest() throws Exception {
         mockMvc.perform(delete("/orders/3"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.orderID").value("3"))
                 .andExpect(jsonPath("$.status").value("deleted"));
     }
@@ -83,7 +78,6 @@ public class OrderControllerTest {
     public void getEventsTest() throws Exception {
         mockMvc.perform(get("/orders/1/events"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.orderID").value("1"))
                 .andExpect(jsonPath("$.status").value("received"));
     }
@@ -93,7 +87,6 @@ public class OrderControllerTest {
         mockMvc.perform(post("/orders/1/events")
                 .content("{'item': 'value'}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.item").value("value"));
 
     }
