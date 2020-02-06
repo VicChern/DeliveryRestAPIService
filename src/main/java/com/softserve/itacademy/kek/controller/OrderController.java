@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 @RestController
 @RequestMapping(path = "/orders")
 public class OrderController extends DefaultController {
+
     final Logger logger = Logger.getLogger(UserController.class);
 
     // Build Response (stub, temporary method)
@@ -34,6 +34,8 @@ public class OrderController extends DefaultController {
      */
     @GetMapping
     public ResponseEntity<String> getOrderList() {
+        logger.info("Client requested the list of all orders");
+
         JSONObject json = new JSONObject();
         json.append("orderID", "1").append("orderID", "2").append("orderID", "3");
         json.put("status", "received");
@@ -48,6 +50,8 @@ public class OrderController extends DefaultController {
      */
     @PostMapping
     public ResponseEntity<String> addOrder(@RequestBody String body) {
+        logger.info("Sending the created order to the client");
+
         return ResponseEntity.ok(body);
     }
 
@@ -59,6 +63,8 @@ public class OrderController extends DefaultController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<String> getOrder(@PathVariable String id) {
+        logger.info("Sending the specific order (" + id + ") to the client");
+
         return ResponseEntity.ok(getJSON(id, "received"));
     }
 
@@ -71,6 +77,8 @@ public class OrderController extends DefaultController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyOrder(@PathVariable String id, @RequestBody String body) {
+        logger.info("Sending the modified order to the client");
+
         return ResponseEntity.ok(body);
     }
 
@@ -82,6 +90,8 @@ public class OrderController extends DefaultController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable String id) {
+        logger.info("Order (" + id + ") successfully deleted");
+
         return ResponseEntity.ok(getJSON(id, "deleted"));
     }
 
@@ -93,6 +103,8 @@ public class OrderController extends DefaultController {
      */
     @GetMapping("/{id}/events")
     public ResponseEntity<String> getEvents(@PathVariable String id) {
+        logger.info("Sending the list of order (" + id + ") events to the client");
+
         return ResponseEntity.ok(getJSON(id, "received"));
     }
 
@@ -105,6 +117,8 @@ public class OrderController extends DefaultController {
      */
     @PostMapping("/{id}/events")
     public ResponseEntity<String> addEvent(@PathVariable String id, @RequestBody String body) {
+        logger.info("Sending the created order(" + id + ") events to the client");
+
         return ResponseEntity.ok(body);
     }
 }
