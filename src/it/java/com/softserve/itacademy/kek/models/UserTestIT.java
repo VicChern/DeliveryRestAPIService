@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.configuration.PersistenceJPAConfig;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
