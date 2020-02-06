@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.logging.Logger;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -21,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RestController
 @RequestMapping(path = "/tenants", produces = "application/json; charset=UTF-8")
 public class TenantController extends DefaultController {
+    final org.apache.log4j.Logger logger = Logger.getLogger(TenantController.class);
 
     // Build Response (stub, temporary method)
     private String getJSON(String id, String status) {
@@ -38,6 +38,8 @@ public class TenantController extends DefaultController {
      */
     @GetMapping
     public ResponseEntity<String> getTenantList() {
+        logger.info("Client requested the list of all tenants");
+
         JSONObject json = new JSONObject();
         json.append("tenantID", "1").append("tenantID", "2").append("tenantID", "3");
         json.put("status", "received");
@@ -52,6 +54,8 @@ public class TenantController extends DefaultController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<String> getTenant(@PathVariable String id) {
+        logger.info("Sending the specific tenant(" + id + ") to the client");
+
         return ResponseEntity.ok(getJSON(id, "received"));
     }
 
@@ -62,6 +66,8 @@ public class TenantController extends DefaultController {
      */
     @PostMapping
     public ResponseEntity<String> addTenant(@RequestBody String body) {
+        logger.info("Sending the created tenant to the client");
+
         return ResponseEntity.ok(body);
     }
 
@@ -73,6 +79,8 @@ public class TenantController extends DefaultController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<String> modifyTenant(@PathVariable String id, @RequestBody String body) {
+        logger.info("Sending the modified tenant to the client");
+
         return ResponseEntity.ok(body);
     }
 
@@ -84,6 +92,8 @@ public class TenantController extends DefaultController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTenant(@PathVariable String id) {
+        logger.info("Tenant(" + id + ") was successfully deleted");
+
         return ResponseEntity.ok(getJSON(id, "deleted"));
     }
 
@@ -95,6 +105,8 @@ public class TenantController extends DefaultController {
      */
     @GetMapping("/{id}/properties")
     public ResponseEntity<String> getTenantProperties(@PathVariable String id) {
+        logger.info("Sending the list of tenant's(" + id + ") properties to the client");
+
         return ResponseEntity.ok(getJSON(id, "received"));
     }
 
@@ -106,6 +118,8 @@ public class TenantController extends DefaultController {
      */
     @PostMapping("/{id}/properties")
     public ResponseEntity<String> addTenantProperties(@PathVariable String id, @RequestBody String body) {
+        logger.info("Sending the created tenant's(" + id + ") properties to the client");
+
         return ResponseEntity.ok(body);
     }
 
@@ -118,6 +132,8 @@ public class TenantController extends DefaultController {
      */
     @GetMapping("/{id}/properties/{propguid}")
     public ResponseEntity<String> getTenantProperty(@PathVariable("id") String id, @PathVariable("propguid") String propGuid) {
+        logger.info("Sending the tenant's(" + id + ") specific property(" + propGuid + ") to the client");
+
         return ResponseEntity.ok(getJSON(id, "received"));
     }
 
@@ -131,6 +147,8 @@ public class TenantController extends DefaultController {
      */
     @PutMapping("/{id}/properties/{propguid}")
     public ResponseEntity<String> modifyTenantProperty(@PathVariable("id") String id, @PathVariable("propguid") String propGuid, @RequestBody String body) {
+        logger.info("Sending the modified tenant's(" + id + ") property(" + propGuid + ") to the client");
+
         return ResponseEntity.ok(body);
     }
 
@@ -143,6 +161,8 @@ public class TenantController extends DefaultController {
      */
     @DeleteMapping("/{id}/properties/{propguid}")
     public ResponseEntity<String> deleteTenantProperty(@PathVariable("id") String id, @PathVariable("propguid") String propGuid) {
+        logger.info("Tenant's(" + id + ") address(" + propGuid + ") was successfully deleted");
+
         return ResponseEntity.ok(getJSON(id, "deleted"));
     }
 
@@ -154,11 +174,15 @@ public class TenantController extends DefaultController {
      */
     @GetMapping("/{id}/addresses")
     public ResponseEntity<String> getTenantAddresses(@PathVariable String id) {
+        logger.info("Sending the list of tenant's(" + id + ") addresses to the client");
+
         return ResponseEntity.ok(getJSON(id, "received"));
     }
 
     @PostMapping("/{id}/addresses")
     public ResponseEntity<String> addTenantAddresses(@PathVariable String id, @RequestBody String body) {
+        logger.info("Sending the created tenant's(" + id + ") address to the client");
+
         return ResponseEntity.ok(body);
     }
 
@@ -171,6 +195,8 @@ public class TenantController extends DefaultController {
      */
     @GetMapping("/{id}/addresses/{addrguid}")
     public ResponseEntity<String> getTenantAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
+        logger.info("Sending the specific tenant's(" + id + ") address(" + addrGuid + ") to the client");
+
         return ResponseEntity.ok(getJSON(id, "received"));
     }
 
@@ -184,6 +210,8 @@ public class TenantController extends DefaultController {
      */
     @PutMapping("/{id}/addresses/{addrguid}")
     public ResponseEntity<String> modifyTenantAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid, @RequestBody String body) {
+        logger.info("Sending the modified specific tenant's(" + id + ") address(" + addrGuid + ") to the client");
+
         return ResponseEntity.ok(body);
     }
 
@@ -196,6 +224,8 @@ public class TenantController extends DefaultController {
      */
     @DeleteMapping("/{id}/addresses/{addrguid}")
     public ResponseEntity<String> deleteTenantAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
+        logger.info("Tenant's(" + id + ") specific address(" + addrGuid + ") was successfully deleted");
+
         return ResponseEntity.ok(getJSON(addrGuid, "deleted"));
     }
 }
