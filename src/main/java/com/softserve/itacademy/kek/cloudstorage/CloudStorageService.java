@@ -29,13 +29,13 @@ public class CloudStorageService implements ICloudStorageService {
     private static final Logger logger = LoggerFactory.getLogger(CloudStorageService.class);
 
     @Override
-    public CloudStorageObject uploadBinaryData(byte[] data) throws CloudStorageServiceException {
+    public CloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {
         logger.info("Uploading binary data to Google Cloud Storage default bucket");
         String bucket = getBucketName("storage.properties");
         return uploadBinaryData(data, bucket);
     }
 
-    public CloudStorageObject uploadBinaryData(byte[] data, String bucketName) throws CloudStorageServiceException {
+    public CloudStorageObject uploadBinaryData(final byte[] data, final String bucketName) throws CloudStorageServiceException {
         logger.info("Uploading binary data to Google Cloud Storage bucket");
         Storage storage = getStorageObject();
         Bucket bucket;
@@ -53,14 +53,14 @@ public class CloudStorageService implements ICloudStorageService {
     }
 
     @Override
-    public CloudStorageObject getCloudStorageObject(String guid) throws CloudStorageServiceException {
+    public CloudStorageObject getCloudStorageObject(final String guid) throws CloudStorageServiceException {
         logger.info("Getting object by GUID from Google Cloud Storage default bucket");
-        String bucket = getBucketName("storage.properties");
+        final String bucket = getBucketName("storage.properties");
 
         return getCloudStorageObject(guid, bucket);
     }
 
-    public CloudStorageObject getCloudStorageObject(String guid, String bucketName) throws CloudStorageServiceException {
+    public CloudStorageObject getCloudStorageObject(final String guid, final String bucketName) throws CloudStorageServiceException {
         logger.info("Getting object by GUID from Google Cloud Storage bucket");
         Storage storage = getStorageObject();
 
@@ -77,7 +77,7 @@ public class CloudStorageService implements ICloudStorageService {
     }
 
     @Override
-    public List<CloudStorageObject> getCloudStorageObjects(String filter) throws CloudStorageServiceException {
+    public List<CloudStorageObject> getCloudStorageObjects(final String filter) throws CloudStorageServiceException {
         logger.info("Getting list of objects from Google Cloud Storage bucket");
         List<CloudStorageObject> objects = new ArrayList<>();
 
@@ -126,7 +126,7 @@ public class CloudStorageService implements ICloudStorageService {
         return storage;
     }
 
-    public String getBucketName(String propFileName) {
+    public String getBucketName(final String propFileName) {
         logger.info("Getting name of Google Cloud Storage default bucket");
 
         String bucketName;
