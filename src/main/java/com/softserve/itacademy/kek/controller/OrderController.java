@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+
 @RestController
-@RequestMapping(path = "/orders", produces = "application/json; charset=UTF-8")
+@RequestMapping(path = "/orders")
 public class OrderController extends DefaultController {
+    final Logger logger = Logger.getLogger(UserController.class);
 
     // Build Response (stub, temporary method)
     private String getJSON(String id, String status) {
