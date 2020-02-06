@@ -1,6 +1,12 @@
 package com.softserve.itacademy.kek.utils;
 
+import com.softserve.itacademy.kek.models.Actor;
+import com.softserve.itacademy.kek.models.ActorRole;
 import com.softserve.itacademy.kek.models.GlobalProperties;
+import com.softserve.itacademy.kek.models.Order;
+import com.softserve.itacademy.kek.models.OrderDetails;
+import com.softserve.itacademy.kek.models.OrderEvent;
+import com.softserve.itacademy.kek.models.OrderEventType;
 import com.softserve.itacademy.kek.models.PropertyType;
 import com.softserve.itacademy.kek.models.Tenant;
 import com.softserve.itacademy.kek.models.TenantProperties;
@@ -58,5 +64,64 @@ public class ITTestUtils {
         properties.setKey(RandomString.make());
         properties.setValue(RandomString.make());
         return properties;
+    }
+
+    public static Actor getActor(User user, Tenant tenant) {
+        Actor actor = new Actor();
+
+        actor.setIdTenant(tenant);
+        actor.setIdUser(user);
+        actor.setGuid(UUID.randomUUID());
+        actor.setAlias(RandomString.make(128));
+
+        return actor;
+    }
+
+    public static Order getOrder(Tenant tenant) {
+        Order order = new Order();
+
+        order.setIdTenant(tenant);
+        order.setGuid(UUID.randomUUID());
+        order.setSummary(RandomString.make(128));
+
+        return order;
+    }
+
+    public static ActorRole getActorRole() {
+        ActorRole actorRole = new ActorRole();
+
+        actorRole.setName(RandomString.make(128));
+
+        return actorRole;
+    }
+
+    public static OrderEventType getOrderEventType() {
+        OrderEventType orderEventType = new OrderEventType();
+
+        orderEventType.setName(RandomString.make(128));
+
+        return orderEventType;
+    }
+
+    public static OrderEvent getOrderEvent(Order order, Actor actor, OrderEventType orderEventType) {
+        OrderEvent orderEvent = new OrderEvent();
+
+        orderEvent.setIdOrder(order);
+        orderEvent.setIdActor(actor);
+        orderEvent.setIdOrderEventType(orderEventType);
+        orderEvent.setGuid(UUID.randomUUID());
+        orderEvent.setPayload(RandomString.make(512));
+
+        return orderEvent;
+    }
+
+    public static OrderDetails getOrderDetails(Order order) {
+        OrderDetails orderDetails = new OrderDetails();
+
+        orderDetails.setOrder(order);
+        orderDetails.setPayload(RandomString.make(2048));
+        orderDetails.setImageUrl(RandomString.make(256));
+
+        return orderDetails;
     }
 }
