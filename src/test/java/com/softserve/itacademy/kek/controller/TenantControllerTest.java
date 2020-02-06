@@ -82,10 +82,10 @@ public class TenantControllerTest {
     @Test
     public void addTenantPropertiesTest() throws Exception {
         mockMvc.perform(post("/tenants/1/properties")
-                .content("{'item': '15v, Leipzigzskaya st, Kiev'}"))
+                .content("{'item': 'some specific properties'}"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.item").value("15v, Leipzigzskaya st, Kiev"));
+                .andExpect(jsonPath("$.item").value("some specific properties"));
     }
 
     @Test
