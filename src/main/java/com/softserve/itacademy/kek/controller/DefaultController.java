@@ -1,14 +1,14 @@
 package com.softserve.itacademy.kek.controller;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-// TODO: Add logger
-
 @RestController
 public class DefaultController {
+    final Logger logger = Logger.getLogger(DefaultController.class);
 
     /**
      * Handles all the exception which were not handled locally
@@ -20,6 +20,7 @@ public class DefaultController {
     public ResponseEntity<String> defaultExceptionHandler(Exception e) {
         JSONObject response = new JSONObject()
                 .put("Error", "Something went wrong...");
+        logger.info("Sending the error message to the client");
         return ResponseEntity.ok(response.toString());
     }
 }
