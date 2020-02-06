@@ -12,15 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RestController
-@RequestMapping(path = "/tenants", produces = "application/json; charset=UTF-8")
+@RequestMapping(path = "/tenants")
 public class TenantController extends DefaultController {
-    final org.apache.log4j.Logger logger = Logger.getLogger(TenantController.class);
+    final Logger logger = Logger.getLogger(TenantController.class);
 
     // Build Response (stub, temporary method)
     private String getJSON(String id, String status) {
@@ -52,7 +47,7 @@ public class TenantController extends DefaultController {
      * @param id tenant id from the URN
      * @return tenant information as a JSON
      */
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<String> getTenant(@PathVariable String id) {
         logger.info("Sending the specific tenant(" + id + ") to the client");
 
