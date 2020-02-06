@@ -15,10 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 
@@ -27,14 +30,15 @@ public class CloudStorageService implements ICloudStorageService {
 
     @Override
     public CloudStorageObject uploadBinaryData(byte[] data) throws CloudStorageServiceException {
-        String bucket = System.getenv("BUCKET_NAME");
+        logger.info("Uploading binary data to Google Cloud Storage default bucket");
+        String bucket = getBucketName("storage.properties");
         return uploadBinaryData(data, bucket);
     }
 
     public CloudStorageObject uploadBinaryData(byte[] data, String bucketName) throws CloudStorageServiceException {
         logger.info("Uploading binary data to Google Cloud Storage bucket");
         Storage storage = getStorageObject();
-        Bucket bucket = null;
+        Bucket bucket;
 
         if (storage.get(bucketName) != null) {
             bucket = storage.update(BucketInfo.of(bucketName));
@@ -50,8 +54,9 @@ public class CloudStorageService implements ICloudStorageService {
 
     @Override
     public CloudStorageObject getCloudStorageObject(String guid) throws CloudStorageServiceException {
+        logger.info("Getting object by GUID from Google Cloud Storage default bucket");
+        String bucket = getBucketName("storage.properties");
 
-        String bucket = System.getenv("BUCKET_NAME");
         return getCloudStorageObject(guid, bucket);
     }
 
@@ -93,13 +98,15 @@ public class CloudStorageService implements ICloudStorageService {
 
     public Storage getStorageObject() {
         logger.info("Creating storage object");
+
         StorageOptions storageOptions = null;
         String token = System.getenv("GOOGLE_CLOUD_STORAGE_KEY");
         try {
+            logger.info("Token parsed successfully");
+
             Object obj = new JSONParser().parse(new FileReader(token));
             JSONObject jo = (JSONObject) obj;
             String projectID = (String) jo.get("project_id");
-            logger.info("Token parsed successfully");
 
             storageOptions = StorageOptions.newBuilder()
                     .setProjectId(projectID)
@@ -107,13 +114,42 @@ public class CloudStorageService implements ICloudStorageService {
                     .build();
         } catch (IOException e) {
             logger.info("Token was not found");
+
             return null;
         } catch (ParseException e) {
             logger.info("Token was not parsed");
+
             return null;
         }
 
         Storage storage = storageOptions.getService();
         return storage;
+    }
+
+    public String getBucketName(String propFileName) {
+        logger.info("Getting name of Google Cloud Storage default bucket");
+
+        String bucketName;
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName)) {
+            logger.info("Getting bucket name form .properties");
+
+            Properties properties = new Properties();
+
+            if (inputStream != null) {
+                properties.load(inputStream);
+            } else {
+                logger.info("Property file was not found in the classpath");
+
+                throw new FileNotFoundException("Property file " + propFileName + " was not found in the classpath");
+            }
+            bucketName = properties.getProperty("bucketName");
+        } catch (IOException e) {
+            logger.info("Bucket name was not initialized");
+
+            return null;
+        }
+
+        return bucketName;
     }
 }
