@@ -6,14 +6,13 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Properties;
 
+import com.softserve.itacademy.kek.security.SecurityWebApplicationInitializer;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
-
-import com.softserve.itacademy.kek.security.SecurityWebApplicationInitializer;
 
 // TODO: Add logger
 
@@ -27,7 +26,6 @@ public class EmbeddedTomcatApp {
      * - port = 8080
      * - contextPath = \
      * - appBase = .
-     *
      * @throws IOException in case when the properties file is not found
      */
     public EmbeddedTomcatApp() throws IOException {
@@ -41,13 +39,14 @@ public class EmbeddedTomcatApp {
         tomcat.setPort(port);
         final Context rootCtx = tomcat.addContext("", base.getAbsolutePath());
         rootCtx.setDocBase(properties.getProperty("doc.base", base.getAbsolutePath()));
-        final AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
 
         rootCtx.addServletContainerInitializer(new SpringServletContainerInitializer(),
                 Collections.singleton(SecurityWebApplicationInitializer.class));
 
+        final AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
         actx.scan("com.softserve.itacademy.kek");
-        DispatcherServlet dispatcher = new DispatcherServlet(actx);
+        final DispatcherServlet dispatcher = new DispatcherServlet(actx);
+        Tomcat.initWebappDefaults(rootCtx);
         Tomcat.addServlet(rootCtx, "SpringMVC", dispatcher);
         rootCtx.addServletMapping("/api/v1/*", "SpringMVC");
     }
