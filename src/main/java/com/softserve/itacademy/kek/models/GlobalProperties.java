@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,10 +19,11 @@ public class GlobalProperties implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_property")
     private Long idProperty;
 
-    @OneToOne
-    @JoinColumn(name = "id_property_type", insertable = false, updatable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_Property_Type")
     private PropertyType propertyType;
 
     @Size(min = 1, max = 256)

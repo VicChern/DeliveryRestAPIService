@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.configuration.PersistenceJPAConfig;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.GlobalPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
@@ -15,10 +16,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
 @Component
-@ContextConfiguration(classes = {PersistenceTestConfig.class})
+@ContextConfiguration(classes = {PersistenceJPAConfig.class})
 public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
     private static final int MAX_KEY_LENGTH = 256;
     private static final int MAX_VALUE_LENGTH = 4096;
@@ -31,20 +33,23 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
     GlobalProperties properties1;
     GlobalProperties properties2;
 
-    @DataProvider(name="keys")
+    @DataProvider(name="illegal_keys")
     public static Object[][] keys(){
-        return new Object[][]{{null},{RandomString.make(MAX_KEY_LENGTH + 1)}};
+        return new Object[][]{{RandomString.make(MAX_KEY_LENGTH + 1)}, {""}};
     }
 
-    @DataProvider(name="values")
+    @DataProvider(name="illegal_values")
     public static Object[][] values(){
-        return new Object[][]{{null},{RandomString.make(MAX_VALUE_LENGTH + 1)}};
+        return new Object[][]{{RandomString.make(MAX_VALUE_LENGTH + 1)}, {""}};
     }
 
     @BeforeMethod
     public void setUp() {
-        properties1 = ITTestUtils.getGlobalProperty(createTransientFields());
-        properties2 = ITTestUtils.getGlobalProperty(createTransientFields());
+        PropertyType propertyType1 = ITTestUtils.getPropertyType();
+        properties1 = ITTestUtils.getGlobalProperty(propertyType1);
+
+        PropertyType propertyType2 = ITTestUtils.getPropertyType();
+        properties2 = ITTestUtils.getGlobalProperty(propertyType2);
     }
 
     @Test
@@ -56,17 +61,34 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         //then
         Assert.assertNotNull(savedProperty.orElse(null));
         Assert.assertEquals(savedProperty.get().getIdProperty(), id);
+        Assert.assertNotNull(savedProperty.get().getKey());
     }
 
-    @Test(dataProvider = "keys", expectedExceptions = DataIntegrityViolationException.class)
-    public void savePropertyType_KeyIsNull_ExceptionThrown(String key) {
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void savePropertyType_KeyIsNull_ExceptionThrown() {
+        String key = null;
         properties1.setKey(key);
         //when
         propertiesRepository.save(properties1);
     }
 
-    @Test(dataProvider = "values", expectedExceptions = DataIntegrityViolationException.class)
-    public void savePropertyType_ValueIsNull_ExceptionThrown(String value) {
+    @Test(dataProvider = "illegal_keys", expectedExceptions = ConstraintViolationException.class)
+    public void savePropertyType_KeyIsLongerOrEmpty_ExceptionThrown(String key) {
+        properties1.setKey(key);
+        //when
+        propertiesRepository.save(properties1);
+    }
+
+    @Test(dataProvider = "illegal_values", expectedExceptions = {ConstraintViolationException.class})
+    public void savePropertyType_ValueIsLongerlOrEmpty_ExceptionThrown(String value) {
+        properties1.setValue(value);
+        //when
+        propertiesRepository.save(properties1);
+    }
+
+    @Test(expectedExceptions = {DataIntegrityViolationException.class})
+    public void savePropertyType_ValueIsNull_ExceptionThrown() {
+        String value = null;
         properties1.setValue(value);
         //when
         propertiesRepository.save(properties1);
@@ -82,9 +104,4 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         propertiesRepository.save(properties2);
     }
 
-    private PropertyType createTransientFields() {
-        PropertyType type = ITTestUtils.getPropertyType();
-        typeRepository.save(type);
-        return type;
-    }
 }

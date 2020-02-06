@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.configuration.PersistenceJPAConfig;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
 import com.softserve.itacademy.kek.utils.ITTestUtils;
@@ -11,8 +12,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
 @Component
@@ -25,6 +28,11 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
     PropertyType propertyType1;
     PropertyType propertyType2;
 
+    @DataProvider(name="illegal_names")
+    public static Object[][] names(){
+        return new Object[][]{{RandomString.make(MAX_NAME_LENGTH + 1)}, {""}};
+    }
+
     @BeforeMethod
     public void setUp() {
         propertyType1 = ITTestUtils.getPropertyType();
@@ -32,7 +40,7 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void savePropertyType_FindById_ReturnProperty() {
+    public void testPropertyTypeWasSavedAndFindById() {
         repository.save(propertyType1);
         Long id = propertyType1.getIdPropertyType();
         //when
@@ -43,15 +51,14 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void savePropertyType_NameIsNull_ExceptionThrown() {
+    public void validatePropertyTypeIsNotSavedWithNullName() {
         propertyType1.setName(null);
         //when
         repository.save(propertyType1);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void savePropertyType_NameLonger256_ExceptionThrown() {
-        String name = RandomString.make(MAX_NAME_LENGTH + 1);
+    @Test(dataProvider = "illegal_names",expectedExceptions = ConstraintViolationException.class)
+    public void validatePropertyTypeIsNotSavedWithEmptyOrLongName(String name) {
         propertyType1.setName(name);
         //when
         repository.save(propertyType1);
