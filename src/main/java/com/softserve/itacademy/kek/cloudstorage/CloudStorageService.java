@@ -71,19 +71,12 @@ public class CloudStorageService implements ICloudStorageService {
 
         Storage storage = getStorageObject();
 
-        if (storage.get(bucketName) != null) {
-            logger.info("Bucket does not exist");
+        Bucket bucket = storage.update(BucketInfo.of(bucketName));
+        Blob blob = bucket.get(guid);
+        byte[] data = blob.getContent();
+        String url = blob.getMediaLink();
 
-            return null;
-        } else {
-
-            Bucket bucket = storage.update(BucketInfo.of(bucketName));
-            Blob blob = bucket.get(guid);
-            byte[] data = blob.getContent();
-            String url = blob.getMediaLink();
-
-            return new CloudStorageObject(url, guid, data);
-        }
+        return new CloudStorageObject(url, guid, data);
     }
 
     @Override
