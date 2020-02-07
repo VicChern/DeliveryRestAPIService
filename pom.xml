@@ -143,11 +143,6 @@
             <artifactId>json</artifactId>
             <version>${version.org.json}</version>
         </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${version.gson}</version>
-        </dependency>
 
         <!-- Hibernate -->
         <dependency>
@@ -179,13 +174,6 @@
             <artifactId>mvc-auth-commons</artifactId>
             <version>${version.mvc.auth.commons}</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>mvc-auth-commons</artifactId>
-            <version>${version.mvc.auth.commons}</version>
-        </dependency>
-
 
         <!-- Logger -->
         <dependency>
@@ -228,12 +216,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${version.slf4j.simple}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
