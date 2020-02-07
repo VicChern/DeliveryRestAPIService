@@ -11,8 +11,7 @@ import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,7 +25,7 @@ import java.util.UUID;
 
 
 public class CloudStorageService implements ICloudStorageService {
-    private static final Logger logger = LoggerFactory.getLogger(CloudStorageService.class);
+    private static final Logger logger = Logger.getLogger(CloudStorageService.class);
 
     @Override
     public CloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {
