@@ -40,6 +40,7 @@
         <version.spring.test>5.2.2.RELEASE</version.spring.test>
 
         <version.org.json>20180813</version.org.json>
+        <version.gson>2.8.5</version.gson>
 
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.hibernate.validator>6.0.18.Final</version.hibernate.validator>
@@ -143,6 +144,11 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${version.org.json}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${version.gson}</version>
         </dependency>
 
         <!-- Validation -->
