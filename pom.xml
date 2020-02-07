@@ -143,6 +143,11 @@
             <artifactId>json</artifactId>
             <version>${version.org.json}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${version.gson}</version>
+        </dependency>
 
         <!-- Hibernate -->
         <dependency>
