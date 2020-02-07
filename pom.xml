@@ -39,12 +39,16 @@
         <version.spring.test>5.2.2.RELEASE</version.spring.test>
 
         <version.org.json>20180813</version.org.json>
+        <version.gson>2.8.5</version.gson>
 
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
 
         <version.postgresql>42.2.8</version.postgresql>
         <version.hibernate.core>5.4.10.Final</version.hibernate.core>
+
+        <version.slf4j.api>1.7.13</version.slf4j.api>
+        <version.slf4j.log4j12>1.7.13</version.slf4j.log4j12>
 
         <version.testng>7.0.0</version.testng>
         <version.mockito>3.1.0</version.mockito>
@@ -126,6 +130,11 @@
             <artifactId>json</artifactId>
             <version>${version.org.json}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${version.gson}</version>
+        </dependency>
 
         <!-- Hibernate -->
         <dependency>
@@ -151,6 +160,18 @@
             <groupId>com.auth0</groupId>
             <artifactId>auth0-spring-security-api</artifactId>
             <version>${version.auth0.spring.security.api}</version>
+        </dependency>
+
+        <!-- Logger -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version.slf4j.api}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${version.slf4j.log4j12}</version>
         </dependency>
 
         <!-- Test dependencies -->
