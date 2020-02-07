@@ -3,19 +3,35 @@ package com.softserve.itacademy.kek.controller;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 @RestController
+@Async
 public class SseController {
-    private int timeOut = 1000;
+    private int delay = 5000;
+    private long sessionTimeout;
     private boolean isConnected = true;
-    private SseEmitter emitter;
-    private ExecutorService service;
+
+    public SseController() {
+        this.sessionTimeout = 180_000;
+    }
+
+    public SseController(long sessionTimeout) {
+        this.sessionTimeout = sessionTimeout;
+    }
+
+    public SseController(long sessionTimeout, int delay) {
+        this.sessionTimeout = sessionTimeout;
+        this.delay = delay;
+    }
 
     public boolean isConnected() {
         return isConnected;
@@ -25,35 +41,37 @@ public class SseController {
         isConnected = connected;
     }
 
-    public int getTimeOut() {
-        return timeOut;
+    public long getSessionTimeout() {
+        return sessionTimeout;
     }
 
-    public void setTimeOut(int seconds) {
-
-        if ( timeOut < 0 ) {
-            this.timeOut = 0;
-        } else  {
-            this.timeOut = seconds * 1000;
-        }
+    public int getDelay() {
+        return delay;
     }
+
+    /**
+     * Creating emitter for 3 minutes(can be changed) and pushing message every 5 seconds
+     * data sending "message" for now, should be changed for actual coordinates
+     *
+     * @return
+     */
 
     @GetMapping("/request")
     @Async
-    public SseEmitter handleRequest(String message) {
-        emitter = new SseEmitter();
-        service = Executors.newSingleThreadExecutor();
+    public SseEmitter handleRequest() {
+        SseEmitter emitter = new SseEmitter(sessionTimeout);
+
+        ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             try {
                 for ( ; isConnected; ) {
                     SseEmitter.SseEventBuilder event = SseEmitter.event()
-                            .data("message ", MediaType.TEXT_PLAIN);
+                            .data("message", MediaType.TEXT_EVENT_STREAM);
                     emitter.send(event);
-                    Thread.sleep(timeOut);
+                    Thread.sleep(delay);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                emitter.completeWithError(e);
+            } catch (Exception ex) {
+                emitter.completeWithError(ex);
             }
         });
         return emitter;
