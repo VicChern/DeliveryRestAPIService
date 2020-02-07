@@ -39,6 +39,7 @@
         <version.spring.test>5.2.2.RELEASE</version.spring.test>
 
         <version.org.json>20180813</version.org.json>
+        <version.gson>2.8.5</version.gson>
 
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
@@ -128,6 +129,11 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${version.org.json}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${version.gson}</version>
         </dependency>
 
         <!-- Hibernate -->
