@@ -1,7 +1,8 @@
 package com.softserve.itacademy.kek.controller;
 
-import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +16,7 @@ import org.json.JSONObject;
 @RestController
 @RequestMapping(path = "/users", produces = "application/json; charset=UTF-8")
 public class UserController extends DefaultController {
-    final Logger logger = Logger.getLogger(UserController.class);
+    final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     // Build Response (stub, temporary method)
     private String getJSON(String id, String status) {
