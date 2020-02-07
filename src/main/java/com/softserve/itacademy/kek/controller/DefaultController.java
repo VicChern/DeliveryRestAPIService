@@ -1,14 +1,15 @@
 package com.softserve.itacademy.kek.controller;
 
-import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DefaultController {
-    final Logger logger = Logger.getLogger(DefaultController.class);
+    final Logger logger = LoggerFactory.getLogger(DefaultController.class);
 
     /**
      * Handles all the exception which were not handled locally
