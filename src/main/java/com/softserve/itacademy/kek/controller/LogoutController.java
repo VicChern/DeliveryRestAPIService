@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @RestController
 @PropertySource("classpath:server.properties")
@@ -47,11 +46,14 @@ public class LogoutController extends DefaultController implements LogoutSuccess
                 webSecurityConfig.getDomain(),
                 webSecurityConfig.getClientId(),
                 returnTo);
+
         try {
+            logger.info("trying to redirect to logoutUrl");
             res.sendRedirect(logoutUrl);
-        } catch (IOException e) {
-            logger.error("Failed to redirect to logoutUrl {}", logoutUrl);
-            logger.error(e.getMessage());
+
+        } catch (Exception e) {
+            logger.error("Failed to redirect to logoutUrl {}, {}", logoutUrl, e);
+            throw new IllegalArgumentException(e);
         }
     }
 

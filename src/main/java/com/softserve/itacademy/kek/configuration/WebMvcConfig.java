@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.softserve.itacademy.kek", "com.softserve.itacademy.kek.security", "com.softserve.itacademy.kek.controller"})
+@ComponentScan(basePackages = {"com.softserve.itacademy.kek"})
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
