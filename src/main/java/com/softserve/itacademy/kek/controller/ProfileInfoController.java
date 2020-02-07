@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/profile", produces = "application/json; charset=UTF-8")
+@RequestMapping(path = "/profile")
 public class ProfileInfoController extends DefaultController {
 
     @GetMapping

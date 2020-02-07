@@ -1,7 +1,6 @@
 package com.softserve.itacademy.kek.security;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -45,13 +44,11 @@ public class TokenUtils {
             }
         });
 
-        String json = "";
         try {
-            json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
-        } catch (JsonProcessingException jpe) {
-            logger.error("Error processing json from profile", jpe);
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+        } catch (Exception e) {
+            logger.error("Error processing json from profile", e);
+            throw new IllegalArgumentException(e);
         }
-
-        return json;
     }
 }
