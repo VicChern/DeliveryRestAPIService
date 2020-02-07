@@ -14,14 +14,15 @@ public class DefaultController {
     /**
      * Handles all the exception which were not handled locally
      *
-     * @param e the exception which occurred anywhere in the code
+     * @param ex the exception which occurred anywhere in the code
      * @return the error message as a JSON
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> defaultExceptionHandler(Exception e) {
+    public ResponseEntity<String> defaultExceptionHandler(Exception ex) {
+        logger.error("An error occurred:", ex);
         JSONObject response = new JSONObject()
                 .put("Error", "Something went wrong...");
-        logger.info("Sending the error message to the client");
+        logger.warn("Sending the error message to the client");
         return ResponseEntity.ok(response.toString());
     }
 }
