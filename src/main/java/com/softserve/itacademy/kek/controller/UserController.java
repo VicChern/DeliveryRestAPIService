@@ -75,7 +75,7 @@ public class UserController extends DefaultController {
     public UserDto addUser(@RequestBody String body) {
         logger.info("Accepted requested to create a new user:\n" + body);
 
-        UserDto userDto = gson.fromJson(body, UserDto.class); int i = 2 / 0;
+        UserDto userDto = gson.fromJson(body, UserDto.class);
 
         logger.info("Sending the created user to the client:\n" + gson.toJson(userDto));
         return userDto;
