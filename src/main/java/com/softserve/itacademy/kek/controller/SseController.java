@@ -3,15 +3,14 @@ package com.softserve.itacademy.kek.controller;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
-import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
+// TODO: Add logger
 
 @RestController
 @Async
@@ -64,7 +63,7 @@ public class SseController {
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             try {
-                for ( ; isConnected; ) {
+                for (; isConnected; ) {
                     SseEmitter.SseEventBuilder event = SseEmitter.event()
                             .data("message", MediaType.TEXT_EVENT_STREAM);
                     emitter.send(event);
