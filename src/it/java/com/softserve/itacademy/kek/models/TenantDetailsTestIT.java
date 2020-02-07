@@ -57,7 +57,6 @@ public class TenantDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     @AfterMethod
     void tearDown() {
-        tenantDetailsRepository.deleteAll();
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -69,15 +68,16 @@ public class TenantDetailsTestIT extends AbstractTestNGSpringContextTests {
 
         //then
         assertEquals(1, tenantRepository.findAll().spliterator().estimateSize());
-        assertEquals(1, tenantDetailsRepository.findAll().spliterator().estimateSize());
-
         Optional<Tenant> tenantOptional = tenantRepository.findById(tenant.getIdTenant());
         assertNotNull(tenantOptional.orElse(null));
 
+        //delete if we wouldn't use tenantDetailsRepository
+        assertEquals(1, tenantDetailsRepository.findAll().spliterator().estimateSize());
         Optional<TenantDetails> tenantDetailsOptional = tenantDetailsRepository.findById(tenantDetails.getIdTenant());
         assertNotNull(tenantDetailsOptional.orElse(null));
 
-        assertEquals(tenantOptional.get().getIdTenant(), tenantDetailsOptional.get().getIdTenant());
+        TenantDetails tenantDetails = tenantOptional.get().getTenantDetails();
+        assertEquals(tenantOptional.get().getIdTenant(), tenantDetails.getIdTenant());
     }
 
 
@@ -88,7 +88,8 @@ public class TenantDetailsTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Could not commit JPA transaction; .*")
     public void testTenantDetailsIsNotSavedWithPayloadMoreThanMaxLength() {
         //given
-        tenantDetails.setPayload(createRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50)));
+        String payload = createRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50));
+        tenantDetails.setPayload(payload);
 
         //when
         tenantRepository.save(tenant);
@@ -101,7 +102,8 @@ public class TenantDetailsTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Could not commit JPA transaction; .*")
     public void testTenantDetailsIsNotSavedWithImageUrlMoreThanMaxLength() {
         //given
-        tenantDetails.setImageUrl(createRandomLetterString(MAX_LENGTH_512 + 1 + new Random().nextInt(50)));
+        String imageUrl = createRandomLetterString(MAX_LENGTH_512 + 1 + new Random().nextInt(50));
+        tenantDetails.setImageUrl(imageUrl);
 
         //when
         tenantRepository.save(tenant);

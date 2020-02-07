@@ -79,7 +79,8 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Could not commit JPA transaction; .*")
     public void testUserDetailsIsNotSavedWithPayloadMoreThanMaxLength() {
         //given
-        userDetails.setPayload(createRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50)));
+        String payload = createRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50));
+        userDetails.setPayload(payload);
 
         //when
         userRepository.save(user);
@@ -92,7 +93,8 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Could not commit JPA transaction; .*")
     public void testUserDetailsIsNotSavedWithImageUrlMoreThanMaxLength() {
         //given
-        userDetails.setImageUrl(createRandomLetterString(MAX_LENGTH_512 + 1 + new Random().nextInt(50)));
+        String imageUrl = createRandomLetterString(MAX_LENGTH_512 + 1 + new Random().nextInt(50));
+        userDetails.setImageUrl(imageUrl);
 
         //when
         userRepository.save(user);

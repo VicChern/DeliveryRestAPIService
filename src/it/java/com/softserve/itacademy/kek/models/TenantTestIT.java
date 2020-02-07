@@ -38,23 +38,21 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
     void setUp() {
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
+
+        userRepository.save(user);
+        assertNotNull(userRepository.findById(user.getIdUser()));
+
+        tenant.setTenantOwner(user);
     }
 
     @AfterMethod
     void tearDown() {
         tenantRepository.deleteAll();
         userRepository.deleteAll();
-
     }
 
     @Test(description = "Test Tenant_01. Should save tenant with valid fields for existing in db user.")
     public void testTenantIsSavedWithValidFields() {
-        //given
-        userRepository.save(user);
-        assertNotNull(userRepository.findById(user.getIdUser()));
-
-        tenant.setTenantOwner(user);
-
         //when
         tenantRepository.save(tenant);
     }
@@ -65,10 +63,6 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testTenantIsNotSavedWithNullGuid() {
         //given
-        userRepository.save(user);
-        assertNotNull(userRepository.findById(user.getIdUser()));
-
-        tenant.setTenantOwner(user);
         tenant.setGuid(null);
 
         //when
@@ -80,12 +74,11 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
     public void testTenantIsSavedWithUniqueGuid() {
         //given
-        //   save two users to db
         User user1 = user;
+
+        //   save second user to db
         User user2 = createOrdinaryUser(2);
-        userRepository.save(user1);
         userRepository.save(user2);
-        assertNotNull(userRepository.findById(user1.getIdUser()));
         assertNotNull(userRepository.findById(user2.getIdUser()));
 
         //  prepare two tenants with equals guid
@@ -111,10 +104,6 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testTenantIsNotSavedWithNullName() {
         //given
-        userRepository.save(user);
-        assertNotNull(userRepository.findById(user.getIdUser()));
-
-        tenant.setTenantOwner(user);
         tenant.setName(null);
 
         //when
@@ -126,10 +115,6 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testTenantIsNotSavedWithEmptyName() {
         //given
-        userRepository.save(user);
-        assertNotNull(userRepository.findById(user.getIdUser()));
-
-        tenant.setTenantOwner(user);
         tenant.setName("");
 
         //when
@@ -141,11 +126,7 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testTenantIsNotSavedWithNameMoreThanMaxLength() {
         //given
-        userRepository.save(user);
-        assertNotNull(userRepository.findById(user.getIdUser()));
-
         String name = createRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
-        tenant.setTenantOwner(user);
         tenant.setName(name);
 
         //when

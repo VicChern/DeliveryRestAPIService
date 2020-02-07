@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
@@ -23,9 +24,11 @@ public class Address implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAddress;
 
+    @NotNull
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
 
+    @NotNull
     @Size(min = 1, max = 512)
     @Column(name = "address", nullable = false, length = 512)
     private String address;
@@ -34,6 +37,7 @@ public class Address implements Serializable {
     @Column(name = "notes", length = 1024)
     private String notes;
 
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "alias", nullable = false, length = 256)
     private String alias;
@@ -119,14 +123,12 @@ public class Address implements Serializable {
                 Objects.equals(guid, address1.guid) &&
                 Objects.equals(address, address1.address) &&
                 Objects.equals(notes, address1.notes) &&
-                Objects.equals(alias, address1.alias) &&
-                Objects.equals(tenant, address1.tenant) &&
-                Objects.equals(user, address1.user);
+                Objects.equals(alias, address1.alias);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idAddress, guid, address, notes, alias, tenant, user);
+        return Objects.hash(idAddress, guid, address, notes, alias);
     }
 
     @Override

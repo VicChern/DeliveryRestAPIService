@@ -46,7 +46,6 @@ public class UserTestIT extends AbstractTestNGSpringContextTests {
     public void testUserIsSavedWithValidFields() {
 
         //when
-        assertEquals(0, userRepository.findAll().spliterator().estimateSize());
         User savedUser = userRepository.save(user);
 
         //then

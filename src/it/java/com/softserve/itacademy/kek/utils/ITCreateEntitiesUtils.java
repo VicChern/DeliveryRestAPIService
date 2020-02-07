@@ -18,6 +18,7 @@ public class ITCreateEntitiesUtils {
 
     public static final int MAX_LENGTH_256 = 256;
     public static final int MAX_LENGTH_512 = 512;
+    public static final int MAX_LENGTH_1024 = 1024;
     public static final int MAX_LENGTH_4096 = 4096;
 
 
@@ -146,18 +147,35 @@ public class ITCreateEntitiesUtils {
     }
 
 
-    public static Address createSimpleAddress(UUID guid, String alias, String notes) {
+    //================================================== Address entity ==================================================
+    /**
+     * Creates {@link Address} with simple fields (guid, alias, address, notes)
+     *
+     * @param guid
+     * @param alias
+     * @param addressValue
+     * @param notes
+     * @return address
+     */
+    public static Address createSimpleAddress(UUID guid, String alias, String addressValue, String notes) {
         Address address = new Address();
         address.setGuid(guid);
         address.setAlias(alias);
+        address.setAddress(addressValue);
         address.setNotes(notes);
         return address;
     }
 
+    /**
+     * Creates {@link Address} with simple fields (guid, alias, address, notes) depending on {@param i}
+     * @param i
+     * @return address
+     */
     public static Address createOrdinaryAddress(int i) {
         return createSimpleAddress(
                 UUID.randomUUID(),
                 "alias" + i,
+                "addressValue" + i,
                 "notes" + i);
     }
     //================================================== common methods ==================================================

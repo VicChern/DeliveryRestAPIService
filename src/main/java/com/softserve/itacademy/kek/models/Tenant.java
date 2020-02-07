@@ -47,7 +47,7 @@ public class Tenant implements Serializable {
     @OneToMany(mappedBy = "tenant")
     private List<TenantProperties> tenantPropertiesList;
 
-    @OneToMany(mappedBy = "tenant")
+    @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
     private List<Address> addressList;
 
     public Long getIdTenant() {
@@ -114,15 +114,12 @@ public class Tenant implements Serializable {
         return Objects.equals(idTenant, tenant.idTenant) &&
                 Objects.equals(tenantOwner, tenant.tenantOwner) &&
                 Objects.equals(guid, tenant.guid) &&
-                Objects.equals(name, tenant.name) &&
-                Objects.equals(tenantDetails, tenant.tenantDetails) &&
-                Objects.equals(tenantPropertiesList, tenant.tenantPropertiesList) &&
-                Objects.equals(addressList, tenant.addressList);
+                Objects.equals(name, tenant.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idTenant, tenantOwner, guid, name, tenantDetails, tenantPropertiesList, addressList);
+        return Objects.hash(idTenant, tenantOwner, guid, name);
     }
 
     @Override

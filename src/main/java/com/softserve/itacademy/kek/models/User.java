@@ -62,7 +62,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     List<Identity> identityList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Address> addressList;
 
     public Long getIdUser() {
@@ -167,16 +167,12 @@ public class User implements Serializable {
                 Objects.equals(email, user.email) &&
                 Objects.equals(phoneNumber, user.phoneNumber) &&
                 Objects.equals(name, user.name) &&
-                Objects.equals(nickname, user.nickname) &&
-                Objects.equals(userDetails, user.userDetails) &&
-                Objects.equals(tenant, user.tenant) &&
-                Objects.equals(identityList, user.identityList) &&
-                Objects.equals(addressList, user.addressList);
+                Objects.equals(nickname, user.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idUser, guid, email, phoneNumber, name, nickname, userDetails, tenant, identityList, addressList);
+        return Objects.hash(idUser, guid, email, phoneNumber, name, nickname);
     }
 
     @Override
@@ -189,7 +185,6 @@ public class User implements Serializable {
                 ", name='" + name + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", userDetails=" + userDetails +
-                ", tenant=" + tenant +
                 '}';
     }
 }
