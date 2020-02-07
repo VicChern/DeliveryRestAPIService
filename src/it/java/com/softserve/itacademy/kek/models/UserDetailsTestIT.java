@@ -11,6 +11,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Optional;
 import java.util.Random;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
@@ -19,6 +20,7 @@ import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdi
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createSimpleUserDetailsWithValidFields;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -39,6 +41,9 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
     void setUp() {
         user = createOrdinaryUser(1);
         userDetails = createSimpleUserDetailsWithValidFields();
+
+        user.setUserDetails(userDetails);
+        userDetails.setUser(user);
     }
 
     @AfterMethod
@@ -50,39 +55,20 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     @Test(description = "Test UserDetails_01. Should saves user with valid userDetails fields.")
     public void testUserDetailsIsSavedWithValidFields() {
-        //given
-        User user1 = user;
-        UserDetails userDetails1 = userDetails;
-        userDetails1.setUser(user1);
-        user1.setUserDetails(userDetails1);
-
-        User user2 = createOrdinaryUser(2);
-
-        User user3 = createOrdinaryUser(3);
-        UserDetails userDetails3 = createSimpleUserDetailsWithValidFields();
-        userDetails3.setUser(user3);
-        user3.setUserDetails(userDetails3);
-
         //when
-        userRepository.save(user1);
-        userRepository.save(user2);
-        userRepository.save(user3);
+        userRepository.save(user);
 
         //then
-        assertEquals(3, userRepository.findAll().spliterator().estimateSize());
-//        assertEquals(2, userDetailsRepository.findAll().spliterator().estimateSize());
+        assertEquals(1, userRepository.findAll().spliterator().estimateSize());
+        assertEquals(1, userDetailsRepository.findAll().spliterator().estimateSize());
 
-        assertTrue(userRepository.existsById(user1.getIdUser()));
-        assertTrue(userRepository.existsById(user2.getIdUser()));
-        assertTrue(userRepository.existsById(user3.getIdUser()));
-        assertTrue(userDetailsRepository.existsById(userDetails1.getIdUser()));
-        assertTrue(userDetailsRepository.existsById(userDetails3.getIdUser()));
+        Optional<User> userOptional = userRepository.findById(user.getIdUser());
+        assertNotNull(userOptional.orElse(null));
 
-        assertEquals(user1.getIdUser(), userDetails1.getIdUser());
-        assertEquals(user3.getIdUser(), userDetails3.getIdUser());
+        Optional<UserDetails> userDetailsOptional = userDetailsRepository.findById(userDetails.getIdUser());
+        assertNotNull(userDetailsOptional.orElse(null));
 
-        assertEquals(user1, userDetails1.getUser());
-        assertEquals(user3, userDetails3.getUser());
+        assertEquals(userOptional.get().getIdUser(), userDetailsOptional.get().getIdUser());
     }
 
 
@@ -94,8 +80,6 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
     public void testUserDetailsIsNotSavedWithPayloadMoreThanMaxLength() {
         //given
         userDetails.setPayload(createRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50)));
-        userDetails.setUser(user);
-        user.setUserDetails(userDetails);
 
         //when
         userRepository.save(user);
@@ -109,8 +93,6 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
     public void testUserDetailsIsNotSavedWithImageUrlMoreThanMaxLength() {
         //given
         userDetails.setImageUrl(createRandomLetterString(MAX_LENGTH_512 + 1 + new Random().nextInt(50)));
-        userDetails.setUser(user);
-        user.setUserDetails(userDetails);
 
         //when
         userRepository.save(user);

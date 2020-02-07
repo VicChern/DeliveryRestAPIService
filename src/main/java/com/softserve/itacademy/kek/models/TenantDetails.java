@@ -1,6 +1,12 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,10 +17,11 @@ public class TenantDetails implements Serializable {
 
     @Id
     @Column(name = "id_tenant")
-    private Long id;
+    private Long idTenant;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @MapsId
+    @JoinColumn(name = "id_tenant", insertable = false, updatable = false)
 //    @PrimaryKeyJoinColumn(name = "id_tenant")
     private Tenant tenant;
 
@@ -25,6 +32,14 @@ public class TenantDetails implements Serializable {
     @Size(max = 512)
     @Column(name = "image_url", length = 512)
     private String imageUrl;
+
+    public Long getIdTenant() {
+        return idTenant;
+    }
+
+    public void setIdTenant(Long idTenant) {
+        this.idTenant = idTenant;
+    }
 
     public String getPayload() {
         return payload;
@@ -55,22 +70,20 @@ public class TenantDetails implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TenantDetails that = (TenantDetails) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(tenant, that.tenant) &&
+        return Objects.equals(idTenant, that.idTenant) &&
                 Objects.equals(payload, that.payload) &&
                 Objects.equals(imageUrl, that.imageUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tenant, payload, imageUrl);
+        return Objects.hash(idTenant, payload, imageUrl);
     }
 
     @Override
     public String toString() {
         return "TenantDetails{" +
-                "id=" + id +
-                ", tenant=" + tenant +
+                "id=" + idTenant +
                 ", payload='" + payload + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';

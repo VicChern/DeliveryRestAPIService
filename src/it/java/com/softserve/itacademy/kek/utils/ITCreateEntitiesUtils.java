@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.utils;
 
+import com.softserve.itacademy.kek.models.Address;
 import com.softserve.itacademy.kek.models.Identity;
 import com.softserve.itacademy.kek.models.IdentityType;
 import com.softserve.itacademy.kek.models.Tenant;
@@ -23,7 +24,7 @@ public class ITCreateEntitiesUtils {
     //================================================== User entity ==================================================
 
     /**
-     * Creates {@link User} with simple fields (guid, name, nickname, email, phoneNumber) with fields depending on {@param i}
+     * Creates {@link User} with simple fields (guid, name, nickname, email, phoneNumber) depending on {@param i}
      *
      * @param i
      * @return user
@@ -54,9 +55,12 @@ public class ITCreateEntitiesUtils {
         user.setNickname(nickName);
         user.setPhoneNumber(phoneNumber);
         user.setEmail(email);
+
         UserDetails userDetails = new UserDetails();
+
         user.setUserDetails(userDetails);
         userDetails.setUser(user);
+
         return user;
     }
 
@@ -72,16 +76,16 @@ public class ITCreateEntitiesUtils {
         return userDetails;
     }
 
+    //================================================== Identity entity ==================================================
     /**
      * Creates {@link Identity} with valid fields
      *
      * @return identity
      */
     public static Identity createIdentity() {
-        IdentityType identityType = createIdentityType();
         Identity identity = new Identity();
         identity.setPayload(createRandomLetterString(500));
-        identity.setIdentityType(identityType);
+        identity.setIdentityType(createIdentityType());
         return identity;
     }
 
@@ -96,26 +100,65 @@ public class ITCreateEntitiesUtils {
         return identityType;
     }
 
-    public static Tenant createTenantWithTenantDetails(int i) {
+    //================================================== Tenant entity ==================================================
+    /**
+     * Creates {@link Tenant} with simple fields (guid, name) depending on {@param i}
+     *
+     * @param i
+     * @return tenant
+     */
+    public static Tenant createOrdinaryTenant(int i) {
         return createSimpleTenant(
                 UUID.randomUUID(),
                 "name" + i
         );
     }
 
+    /**
+     * Creates {@link Tenant} with simple fields (guid, name) and empty {@link TenantDetails}
+     * @param guid
+     * @param name
+     * @return tenant
+     */
     public static Tenant createSimpleTenant(UUID guid, String name) {
         Tenant tenant = new Tenant();
         tenant.setName(name);
         tenant.setGuid(guid);
 
         TenantDetails tenantDetails = new TenantDetails();
-        tenantDetails.setPayload(createRandomLetterString(500));
-        tenantDetails.setImageUrl(createRandomLetterString(60));
 
         tenant.setTenantDetails(tenantDetails);
         tenantDetails.setTenant(tenant);
 
         return tenant;
+    }
+
+    /**
+     * Creates {@link TenantDetails} with valid field, but without {@link Tenant}
+     *
+     * @return tenantDetails
+     */
+    public static TenantDetails createSimpleTenantDetailsWithValidFields() {
+        TenantDetails tenantDetails = new TenantDetails();
+        tenantDetails.setPayload(createRandomLetterString(500));
+        tenantDetails.setImageUrl(createRandomLetterString(60));
+        return tenantDetails;
+    }
+
+
+    public static Address createSimpleAddress(UUID guid, String alias, String notes) {
+        Address address = new Address();
+        address.setGuid(guid);
+        address.setAlias(alias);
+        address.setNotes(notes);
+        return address;
+    }
+
+    public static Address createOrdinaryAddress(int i) {
+        return createSimpleAddress(
+                UUID.randomUUID(),
+                "alias" + i,
+                "notes" + i);
     }
     //================================================== common methods ==================================================
 

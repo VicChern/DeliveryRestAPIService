@@ -29,7 +29,7 @@ public class Tenant implements Serializable {
     private Long idTenant;
 
     @OneToOne
-    @JoinColumn(name ="id_tenant_owner") //, insertable = false, updatable = false
+    @JoinColumn(name ="id_tenant_owner")
     private User tenantOwner;
 
     @NotNull
@@ -38,7 +38,7 @@ public class Tenant implements Serializable {
 
     @NotNull
     @Size(min = 1, max = 256)
-    @Column(name = "name", nullable = false, length = 256)
+    @Column(name = "name", nullable = false, unique = true, length = 256)
     private String name;
 
     @OneToOne(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
