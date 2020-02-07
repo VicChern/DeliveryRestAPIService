@@ -1,7 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
 import com.auth0.AuthenticationController;
-import com.auth0.IdentityVerificationException;
 import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
 import com.softserve.itacademy.kek.security.TokenAuthentication;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +20,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping(path = "/callback")
 @PropertySource("classpath:server.properties")
-public class CallbackController extends DefaultController{
+public class CallbackController extends DefaultController {
 
     @Autowired
     private AuthenticationController controller;
@@ -50,8 +48,8 @@ public class CallbackController extends DefaultController{
             logger.info("User was authenticated");
 
             response.sendRedirect(redirectOnSuccess);
-        } catch (AuthenticationException | IdentityVerificationException e) {
-            logger.error(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error while authentication", e);
 
             SecurityContextHolder.clearContext();
             response.sendRedirect(redirectOnFail);
