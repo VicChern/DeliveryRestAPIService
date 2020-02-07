@@ -14,7 +14,8 @@ public class TenantDetails implements Serializable {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "id_tenant")
+    @MapsId
+//    @PrimaryKeyJoinColumn(name = "id_tenant")
     private Tenant tenant;
 
     @Size(max = 4096)

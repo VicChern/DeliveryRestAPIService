@@ -5,9 +5,9 @@ import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -27,8 +27,9 @@ public class UserDetails implements Serializable {
 //            parameters = @Parameter(name="property", value="user"))
     private Long idUser;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @MapsId
+    @JoinColumn(name = "id_user", insertable = false, updatable = false)
 //    @PrimaryKeyJoinColumn
     private User user;
 
@@ -72,7 +73,7 @@ public class UserDetails implements Serializable {
     //https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#identifiers-derived-primarykeyjoincolumn
     public void setUser(User user) {
         this.user = user;
-        this.idUser = user.getIdUser();
+//        this.idUser = user.getIdUser();
     }
 
     @Override

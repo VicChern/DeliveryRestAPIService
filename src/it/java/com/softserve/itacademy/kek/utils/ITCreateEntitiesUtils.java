@@ -2,6 +2,8 @@ package com.softserve.itacademy.kek.utils;
 
 import com.softserve.itacademy.kek.models.Identity;
 import com.softserve.itacademy.kek.models.IdentityType;
+import com.softserve.itacademy.kek.models.Tenant;
+import com.softserve.itacademy.kek.models.TenantDetails;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.models.UserDetails;
 
@@ -36,7 +38,7 @@ public class ITCreateEntitiesUtils {
     }
 
     /**
-     * Creates {@link User} with simple fields (guid, name, nickname, email, phoneNumber)
+     * Creates {@link User} with simple fields (guid, name, nickname, email, phoneNumber) and empty {@link UserDetails}
      *
      * @param guid
      * @param name
@@ -52,11 +54,14 @@ public class ITCreateEntitiesUtils {
         user.setNickname(nickName);
         user.setPhoneNumber(phoneNumber);
         user.setEmail(email);
+        UserDetails userDetails = new UserDetails();
+        user.setUserDetails(userDetails);
+        userDetails.setUser(user);
         return user;
     }
 
     /**
-     * Creates {@link UserDetails} without {@link User}
+     * Creates {@link UserDetails} with valid fields, but without {@link User}
      *
      * @return userDetails
      */
@@ -68,20 +73,50 @@ public class ITCreateEntitiesUtils {
     }
 
     /**
-     * Creates {@link Identity}
+     * Creates {@link Identity} with valid fields
      *
      * @return identity
      */
     public static Identity createIdentity() {
-        IdentityType identityType = new IdentityType();
-        identityType.setName(createRandomLetterString(60));
+        IdentityType identityType = createIdentityType();
         Identity identity = new Identity();
         identity.setPayload(createRandomLetterString(500));
         identity.setIdentityType(identityType);
         return identity;
     }
 
+    /**
+     * Creates {@link IdentityType} with valid fields
+     *
+     * @return identityType
+     */
+    public static IdentityType createIdentityType() {
+        IdentityType identityType = new IdentityType();
+        identityType.setName(createRandomLetterString(60));
+        return identityType;
+    }
 
+    public static Tenant createTenantWithTenantDetails(int i) {
+        return createSimpleTenant(
+                UUID.randomUUID(),
+                "name" + i
+        );
+    }
+
+    public static Tenant createSimpleTenant(UUID guid, String name) {
+        Tenant tenant = new Tenant();
+        tenant.setName(name);
+        tenant.setGuid(guid);
+
+        TenantDetails tenantDetails = new TenantDetails();
+        tenantDetails.setPayload(createRandomLetterString(500));
+        tenantDetails.setImageUrl(createRandomLetterString(60));
+
+        tenant.setTenantDetails(tenantDetails);
+        tenantDetails.setTenant(tenant);
+
+        return tenant;
+    }
     //================================================== common methods ==================================================
 
     /**
