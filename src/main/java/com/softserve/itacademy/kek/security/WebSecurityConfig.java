@@ -23,19 +23,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * This is your auth0 domain (tenant you have created when registering with auth0 - account name)
      */
-    @Value(value = "${com.auth0.domain}")
-    private String domain;
+    private final String domain = System.getenv("KekDomain");
 
     /**
      * This is the client id of auth0 application
      */
-    @Value(value = "${com.auth0.clientId}")
-    private String clientId;
+    private final String clientId = System.getenv("KekId");
 
     /**
      * This is the client secret of auth0 application
      */
-    private final String clientSecret = System.getenv("clientSecret");
+    private final String clientSecret = System.getenv("KekWord");
 
     /**
      * This is base url path to our project
