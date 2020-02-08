@@ -39,6 +39,7 @@
         <version.spring.web>5.2.2.RELEASE</version.spring.web>
         <version.spring.webmvc>5.2.2.RELEASE</version.spring.webmvc>
         <version.spring.test>5.2.2.RELEASE</version.spring.test>
+        <version.spring.security.test>5.2.2.RELEASE</version.spring.security.test>
 
         <version.org.json>20180813</version.org.json>
         <version.gson>2.8.5</version.gson>
@@ -186,13 +187,6 @@
             <version>${version.mvc.auth.commons}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>mvc-auth-commons</artifactId>
-            <version>${version.mvc.auth.commons}</version>
-        </dependency>
-
-
         <!-- Logger -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -251,7 +245,6 @@
             <version>${version.slf4j.simple}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
