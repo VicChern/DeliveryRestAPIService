@@ -39,6 +39,7 @@
         <version.spring.web>5.2.2.RELEASE</version.spring.web>
         <version.spring.webmvc>5.2.2.RELEASE</version.spring.webmvc>
         <version.spring.test>5.2.2.RELEASE</version.spring.test>
+        <version.spring.security.test>5.2.2.RELEASE</version.spring.security.test>
 
         <version.org.json>20180813</version.org.json>
         <version.gson>2.8.5</version.gson>
@@ -136,6 +137,13 @@
             <artifactId>spring-test</artifactId>
             <version>${version.spring.test}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${version.spring.security.test}</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <!-- JSON -->
         <dependency>
@@ -223,19 +231,6 @@
             <version>${version.slf4j.simple}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
