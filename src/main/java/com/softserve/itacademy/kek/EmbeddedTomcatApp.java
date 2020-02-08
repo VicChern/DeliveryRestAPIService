@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek;
 
-import com.softserve.itacademy.kek.security.SecurityWebApplicationInitializer;
+import com.softserve.itacademy.kek.security.SecurityWebAppInitializer;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -46,7 +46,7 @@ public class EmbeddedTomcatApp {
         rootCtx.setDocBase(properties.getProperty("doc.base", base.getAbsolutePath()));
 
         rootCtx.addServletContainerInitializer(new SpringServletContainerInitializer(),
-                Collections.singleton(SecurityWebApplicationInitializer.class));
+                Collections.singleton(SecurityWebAppInitializer.class));
 
         final AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
 
