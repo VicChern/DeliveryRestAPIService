@@ -307,7 +307,6 @@ public class ITCreateEntitiesUtils {
 
 
     //================================================== common methods ==================================================
-
     /**
      * Creates random {@link String} with chars from 'a' to 'z' and from 'A' to 'Z' according to ASCII table
      *
@@ -316,22 +315,6 @@ public class ITCreateEntitiesUtils {
      * @see <a href="http://www.asciitable.com">http://www.asciitable.com</a>
      */
     public static String createRandomLetterString(int stringLength) {
-//        char[] stringLetterSymbols;
-//        StringBuilder sb = new StringBuilder();
-//        for (char character = 'a'; character <= 'z'; character++) {
-//            sb.append(character);
-//        }
-//        for (char character = 'A'; character <= 'Z'; character++) {
-//            sb.append(character);
-//        }
-//        stringLetterSymbols = sb.toString().toCharArray();
-//
-//        Random random = new Random();
-//        char[] buffer = new char[stringLength];
-//        for (int index = 0; index < stringLength; index++) {
-//            buffer[index] = stringLetterSymbols[random.nextInt(stringLetterSymbols.length)];
-//        }
-//        return new String(buffer);
         return RandomString.make(stringLength);
     }
 
