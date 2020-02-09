@@ -1,17 +1,12 @@
 package com.softserve.itacademy.kek.controller;
 
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import java.util.concurrent.ExecutorService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,12 +18,6 @@ public class SseControllerTest {
 
     @InjectMocks
     private SseController controller;
-
-    @Mock
-    private SseEmitter sseEmitter;
-
-    @Mock
-    private ExecutorService service;
 
     private MockMvc mockMvc;
 
@@ -42,15 +31,14 @@ public class SseControllerTest {
     public void asyncTest() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/request"))
                 .andExpect(request().asyncStarted())
-                .andDo(MockMvcResultHandlers.log())
                 .andReturn();
     }
 
     @Test
     public void dataReceivingTest() throws Exception {
         mockMvc.perform(get("/request"))
-                .andDo(MockMvcResultHandlers.log())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("text/event-stream;charset=UTF-8"));
+                .andExpect(content().contentType("text/event-stream;charset=UTF-8"))
+                .andReturn();
     }
 }

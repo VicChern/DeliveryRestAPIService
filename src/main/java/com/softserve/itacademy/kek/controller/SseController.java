@@ -55,7 +55,7 @@ public class SseController {
      * @return
      */
 
-    @GetMapping("/request")
+    @GetMapping(value = "/request", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Async
     public SseEmitter handleRequest() {
         SseEmitter emitter = new SseEmitter(sessionTimeout);
