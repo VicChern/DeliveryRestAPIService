@@ -1,15 +1,26 @@
 package com.softserve.itacademy.kek.utils;
 
+import com.softserve.itacademy.kek.models.Actor;
+import com.softserve.itacademy.kek.models.ActorRole;
 import com.softserve.itacademy.kek.models.Address;
+import com.softserve.itacademy.kek.models.GlobalProperties;
 import com.softserve.itacademy.kek.models.Identity;
 import com.softserve.itacademy.kek.models.IdentityType;
+import com.softserve.itacademy.kek.models.Order;
+import com.softserve.itacademy.kek.models.OrderDetails;
+import com.softserve.itacademy.kek.models.OrderEvent;
+import com.softserve.itacademy.kek.models.OrderEventType;
+import com.softserve.itacademy.kek.models.PropertyType;
 import com.softserve.itacademy.kek.models.Tenant;
 import com.softserve.itacademy.kek.models.TenantDetails;
+import com.softserve.itacademy.kek.models.TenantProperties;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.models.UserDetails;
+import net.bytebuddy.utility.RandomString;
 
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Util class for creating entities in integration tests
@@ -21,8 +32,11 @@ public class ITCreateEntitiesUtils {
     public static final int MAX_LENGTH_1024 = 1024;
     public static final int MAX_LENGTH_4096 = 4096;
 
+    public static final String PHONE_NUMBER_PART = "380-50-444-55-";
+    public static final String GMAIL_COM = "@gmail.com";
 
-    //================================================== User entity ==================================================
+
+    //================================================== User entity ===================================================
 
     /**
      * Creates {@link User} with simple fields (guid, name, nickname, email, phoneNumber) depending on {@param i}
@@ -35,8 +49,8 @@ public class ITCreateEntitiesUtils {
                 UUID.randomUUID(),
                 "name" + i,
                 "nickname" + i,
-                "email" + i + "@gmail.com",
-                "380-50-444-55-55" + i);
+                "email" + i + GMAIL_COM,
+                PHONE_NUMBER_PART + 55 + i);
     }
 
     /**
@@ -65,6 +79,20 @@ public class ITCreateEntitiesUtils {
         return user;
     }
 
+
+    public static User getUser() {
+        User user = new User();
+        user.setName(RandomString.make());
+        user.setGuid(UUID.randomUUID());
+        user.setNickname(randomString());
+        user.setPhoneNumber(PHONE_NUMBER_PART
+                .concat(String.valueOf(getRandomIntegerInRange(10, 99))));
+        user.setEmail(randomString() + GMAIL_COM);
+        UserDetails userDetails = new UserDetails();
+        userDetails.setUser(user);
+        user.setUserDetails(userDetails);
+        return user;
+    }
     /**
      * Creates {@link UserDetails} with valid fields, but without {@link User}
      *
@@ -77,7 +105,7 @@ public class ITCreateEntitiesUtils {
         return userDetails;
     }
 
-    //================================================== Identity entity ==================================================
+    //================================================ Identity entity =================================================
     /**
      * Creates {@link Identity} with valid fields
      *
@@ -101,7 +129,7 @@ public class ITCreateEntitiesUtils {
         return identityType;
     }
 
-    //================================================== Tenant entity ==================================================
+    //================================================== Tenant entity =================================================
     /**
      * Creates {@link Tenant} with simple fields (guid, name) depending on {@param i}
      *
@@ -134,6 +162,18 @@ public class ITCreateEntitiesUtils {
         return tenant;
     }
 
+    public static Tenant getTenant(User user) {
+        Tenant tenant = new Tenant();
+        tenant.setGuid(UUID.randomUUID());
+        tenant.setName(randomString());
+        tenant.setTenantOwner(user);
+
+        TenantDetails tenantDetails = new TenantDetails();
+        tenantDetails.setTenant(tenant);
+        tenant.setTenantDetails(tenantDetails);
+        return tenant;
+    }
+
     /**
      * Creates {@link TenantDetails} with valid field, but without {@link Tenant}
      *
@@ -146,8 +186,15 @@ public class ITCreateEntitiesUtils {
         return tenantDetails;
     }
 
+    public static TenantProperties getTenantProperties(Tenant tenant) {
+        TenantProperties properties = new TenantProperties();
+        properties.setKey(randomString());
+        properties.setValue(randomString());
+        properties.setTenant(tenant);
+        return properties;
+    }
 
-    //================================================== Address entity ==================================================
+    //================================================= Address entity =================================================
     /**
      * Creates {@link Address} with simple fields (guid, alias, address, notes)
      *
@@ -178,6 +225,87 @@ public class ITCreateEntitiesUtils {
                 "addressValue" + i,
                 "notes" + i);
     }
+
+
+    //============================================== GlobalProperty entity =============================================
+    public static GlobalProperties getGlobalProperty(PropertyType type) {
+        GlobalProperties properties = new GlobalProperties();
+        properties.setPropertyType(type);
+        properties.setKey(randomString());
+        properties.setValue(randomString());
+        return properties;
+    }
+
+    public static PropertyType getPropertyType() {
+        PropertyType propertyType = new PropertyType();
+        propertyType.setName(randomString());
+        propertyType.setSchema(randomString());
+        return propertyType;
+    }
+
+
+    //================================================== Order entity ==================================================
+    public static Order getOrder(Tenant tenant) {
+        Order order = new Order();
+
+        order.setIdTenant(tenant);
+        order.setGuid(UUID.randomUUID());
+        order.setSummary(createRandomLetterString(128));
+
+        return order;
+    }
+
+    public static OrderEventType getOrderEventType() {
+        OrderEventType orderEventType = new OrderEventType();
+
+        orderEventType.setName(createRandomLetterString(128));
+
+        return orderEventType;
+    }
+
+    public static OrderEvent getOrderEvent(Order order, Actor actor, OrderEventType orderEventType) {
+        OrderEvent orderEvent = new OrderEvent();
+
+        orderEvent.setIdOrder(order);
+        orderEvent.setIdActor(actor);
+        orderEvent.setIdOrderEventType(orderEventType);
+        orderEvent.setGuid(UUID.randomUUID());
+        orderEvent.setPayload(createRandomLetterString(MAX_LENGTH_512));
+
+        return orderEvent;
+    }
+
+    public static OrderDetails getOrderDetails(Order order) {
+        OrderDetails orderDetails = new OrderDetails();
+
+        orderDetails.setOrder(order);
+        orderDetails.setPayload(createRandomLetterString(2048));
+        orderDetails.setImageUrl(createRandomLetterString(MAX_LENGTH_256));
+
+        return orderDetails;
+    }
+
+    //================================================== Actor entity ==================================================
+    public static Actor getActor(User user, Tenant tenant) {
+        Actor actor = new Actor();
+
+        actor.setIdTenant(tenant);
+        actor.setIdUser(user);
+        actor.setGuid(UUID.randomUUID());
+        actor.setAlias(createRandomLetterString(128));
+
+        return actor;
+    }
+
+    public static ActorRole getActorRole() {
+        ActorRole actorRole = new ActorRole();
+
+        actorRole.setName(createRandomLetterString(128));
+
+        return actorRole;
+    }
+
+
     //================================================== common methods ==================================================
 
     /**
@@ -188,22 +316,27 @@ public class ITCreateEntitiesUtils {
      * @see <a href="http://www.asciitable.com">http://www.asciitable.com</a>
      */
     public static String createRandomLetterString(int stringLength) {
-        char[] stringLetterSymbols;
-        StringBuilder sb = new StringBuilder();
-        for (char character = 'a'; character <= 'z'; character++) {
-            sb.append(character);
-        }
-        for (char character = 'A'; character <= 'Z'; character++) {
-            sb.append(character);
-        }
-        stringLetterSymbols = sb.toString().toCharArray();
+//        char[] stringLetterSymbols;
+//        StringBuilder sb = new StringBuilder();
+//        for (char character = 'a'; character <= 'z'; character++) {
+//            sb.append(character);
+//        }
+//        for (char character = 'A'; character <= 'Z'; character++) {
+//            sb.append(character);
+//        }
+//        stringLetterSymbols = sb.toString().toCharArray();
+//
+//        Random random = new Random();
+//        char[] buffer = new char[stringLength];
+//        for (int index = 0; index < stringLength; index++) {
+//            buffer[index] = stringLetterSymbols[random.nextInt(stringLetterSymbols.length)];
+//        }
+//        return new String(buffer);
+        return RandomString.make(stringLength);
+    }
 
-        Random random = new Random();
-        char[] buffer = new char[stringLength];
-        for (int index = 0; index < stringLength; index++) {
-            buffer[index] = stringLetterSymbols[random.nextInt(stringLetterSymbols.length)];
-        }
-        return new String(buffer);
+    public static String randomString() {
+        return createRandomLetterString(8);
     }
 
     /**
@@ -227,5 +360,9 @@ public class ITCreateEntitiesUtils {
             buffer[index] = stringNumberSymbols[random.nextInt(stringNumberSymbols.length)];
         }
         return new String(buffer);
+    }
+
+    private static int getRandomIntegerInRange(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max);
     }
 }

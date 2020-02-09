@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.models;
 
-import com.softserve.itacademy.kek.configuration.PersistenceJPAConfig;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.GlobalPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
@@ -8,10 +7,10 @@ import com.softserve.itacademy.kek.utils.ITTestUtils;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -19,11 +18,11 @@ import org.testng.annotations.Test;
 import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
-@Component
-@ContextConfiguration(classes = {PersistenceJPAConfig.class})
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
+
+@ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
-    private static final int MAX_KEY_LENGTH = 256;
-    private static final int MAX_VALUE_LENGTH = 4096;
 
     @Autowired
     GlobalPropertiesRepository propertiesRepository;
@@ -35,12 +34,12 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
 
     @DataProvider(name="illegal_keys")
     public static Object[][] keys(){
-        return new Object[][]{{RandomString.make(MAX_KEY_LENGTH + 1)}, {""}};
+        return new Object[][]{{RandomString.make(MAX_LENGTH_256 + 1)}, {""}};
     }
 
     @DataProvider(name="illegal_values")
     public static Object[][] values(){
-        return new Object[][]{{RandomString.make(MAX_VALUE_LENGTH + 1)}, {""}};
+        return new Object[][]{{RandomString.make(MAX_LENGTH_4096 + 1)}, {""}};
     }
 
     @BeforeMethod
@@ -50,6 +49,11 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
 
         PropertyType propertyType2 = ITTestUtils.getPropertyType();
         properties2 = ITTestUtils.getGlobalProperty(propertyType2);
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        propertiesRepository.deleteAll();
     }
 
     @Test

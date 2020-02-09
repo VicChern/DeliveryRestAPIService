@@ -9,8 +9,10 @@ import com.softserve.itacademy.kek.models.OrderEvent;
 import com.softserve.itacademy.kek.models.OrderEventType;
 import com.softserve.itacademy.kek.models.PropertyType;
 import com.softserve.itacademy.kek.models.Tenant;
+import com.softserve.itacademy.kek.models.TenantDetails;
 import com.softserve.itacademy.kek.models.TenantProperties;
 import com.softserve.itacademy.kek.models.User;
+import com.softserve.itacademy.kek.models.UserDetails;
 import net.bytebuddy.utility.RandomString;
 
 import java.util.UUID;
@@ -25,6 +27,9 @@ public class ITTestUtils {
         tenant.setGuid(UUID.randomUUID());
         tenant.setName(RandomString.make());
         tenant.setTenantOwner(user);
+        TenantDetails tenantDetails = new TenantDetails();
+        tenantDetails.setTenant(tenant);
+        tenant.setTenantDetails(tenantDetails);
         return tenant;
     }
 
@@ -36,6 +41,9 @@ public class ITTestUtils {
         user.setPhoneNumber(PHONE_NUMBER_PART
                 .concat(String.valueOf(getRandomIntegerInRange(10, 99))));
         user.setEmail(RandomString.make() + GMAIL_COM);
+        UserDetails userDetails = new UserDetails();
+        userDetails.setUser(user);
+        user.setUserDetails(userDetails);
         return user;
     }
 

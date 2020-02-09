@@ -6,8 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
@@ -21,10 +21,12 @@ public class PropertyType implements Serializable {
     @JoinColumn(name ="id_property_type")
     private Long idPropertyType;
 
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "name", unique = true, nullable = false, length = 256)
     private String name;
 
+    @NotNull
     @Size(min = 1)
     @Column(name = "schema", nullable = false)
     private String schema;
