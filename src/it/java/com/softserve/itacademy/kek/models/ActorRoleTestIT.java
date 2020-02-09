@@ -7,14 +7,15 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 
+@Rollback
 @Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
@@ -27,38 +28,37 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
     private ActorRole actorRole1;
     private ActorRole actorRole2;
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() {
         actorRole1 = ITTestUtils.getActorRole();
         actorRole2 = ITTestUtils.getActorRole();
     }
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenNameSizeMoreThan256() {
-        actorRole1 = actorRole2;
         actorRole1.setName(RandomString.make(MAX_NAME_LENGTH + 1));
 
         actorRoleRepository.save(actorRole1);
-        actorRoleRepository.deleteAll();
     }
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenNameSizeLessThan1() {
-        actorRole1 = actorRole2;
         actorRole1.setName("");
 
         actorRoleRepository.save(actorRole1);
-        actorRoleRepository.deleteAll();
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenNameIsNull() {
         actorRole1.setName(null);
 
         actorRoleRepository.save(actorRole1);
-        actorRoleRepository.deleteAll();
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenNameIsNotUnique() {
         actorRoleRepository.save(actorRole1);
@@ -67,10 +67,5 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
         actorRole2.setName(name);
 
         actorRoleRepository.save(actorRole2);
-    }
-
-    @AfterClass
-    public void cleanUp() {
-        actorRoleRepository.deleteAll();
     }
 }

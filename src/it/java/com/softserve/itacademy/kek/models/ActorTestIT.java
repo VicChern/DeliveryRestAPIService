@@ -9,15 +9,17 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
+@Rollback
 @Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class ActorTestIT extends AbstractTestNGSpringContextTests {
@@ -31,55 +33,70 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private ActorRepository actorRepository;
 
-    private Actor actor;
     private Actor actor1;
-    private Actor actor2;
+    private Actor actor;
 
     @BeforeClass
-    public void setUp() {
+    void getActor() {
         actor = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
-        actor1 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
-        actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
     }
 
+    @BeforeMethod
+    public void setUp() {
+        actor1 = actor;
+    }
+
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenGUIDIsNotUnique() {
-        actor1 = actor;
         actorRepository.save(actor1);
 
         UUID guid = actor1.getGuid();
+
+        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
         actor2.setGuid(guid);
 
         actorRepository.save(actor2);
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenGUIDIsNull() {
-        actor1 = actor2;
-        actor1.setGuid(null);
+        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
 
-        actorRepository.save(actor1);
+        actor2.setGuid(null);
+
+        actorRepository.save(actor2);
     }
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenAliasSizeMoreThan256() {
-        actor1.setAlias(RandomString.make(MAX_ALIAS_LENGTH + 1));
+        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
 
-        actorRepository.save(actor1);
+        actor2.setAlias(RandomString.make(MAX_ALIAS_LENGTH + 1));
+
+        actorRepository.save(actor2);
     }
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenAliasSizeLessThan1() {
-        actor1.setAlias("");
+        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
 
-        actorRepository.save(actor1);
+        actor2.setAlias("");
+
+        actorRepository.save(actor2);
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenAliasIsNull() {
-        actor1.setAlias(null);
+        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
 
-        actorRepository.save(actor1);
+        actor2.setAlias(null);
+
+        actorRepository.save(actor2);
     }
 
     private Tenant getTenantForActor() {
@@ -96,12 +113,5 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
 
         return user;
-    }
-
-    @AfterClass
-    public void cleanUp() {
-        actorRepository.deleteAll();
-        tenantRepository.deleteAll();
-        userRepository.deleteAll();
     }
 }

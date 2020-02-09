@@ -9,15 +9,16 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
+@Rollback
 @Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class OrderTestIT extends AbstractTestNGSpringContextTests {
@@ -43,6 +44,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
         order2 = ITTestUtils.getOrder(getTenantForOrder());
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenGUIDIsNotUnique() {
         orderRepository.save(order1);
@@ -53,6 +55,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order2);
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenGUIDIsNull() {
         order1.setGuid(null);
@@ -60,6 +63,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order1);
     }
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenSummarySizeMoreThan256() {
         order1 = order2;
@@ -68,6 +72,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order1);
     }
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenSummarySizeLessThan1ThanThrowsException() {
         order1 = order2;
@@ -76,6 +81,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order1);
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenSummaryIsNull() {
         order1.setSummary(null);
@@ -93,10 +99,4 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
         return tenant;
     }
 
-    @AfterClass
-    public void clearUp() {
-        orderRepository.deleteAll();
-        tenantRepository.deleteAll();
-        userRepository.deleteAll();
-    }
 }

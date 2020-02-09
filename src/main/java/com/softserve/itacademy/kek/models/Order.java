@@ -1,7 +1,9 @@
 package com.softserve.itacademy.kek.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,10 +37,10 @@ public class Order implements Serializable {
     @Column(name = "summary", nullable = false, length = 256)
     private String summary;
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private OrderDetails orderDetails;
 
-    @OneToMany(mappedBy = "idOrder")
+    @OneToMany(mappedBy = "idOrder", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderEvent> orderEventList;
 
     public Long getIdOrder() {

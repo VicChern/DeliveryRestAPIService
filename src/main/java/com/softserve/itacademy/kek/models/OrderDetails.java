@@ -1,11 +1,12 @@
 package com.softserve.itacademy.kek.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -19,8 +20,8 @@ public class OrderDetails implements Serializable {
     @Column(name = "id_order")
     private Long idOrder;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "id_order")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @MapsId
     private Order order;
 
     @Size(max = 4096)
@@ -34,7 +35,6 @@ public class OrderDetails implements Serializable {
     public Long getIdOrder() {
         return idOrder;
     }
-
     public void setIdOrder(Long idOrder) {
         this.idOrder = idOrder;
     }
@@ -75,6 +75,6 @@ public class OrderDetails implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idOrder, payload, idOrder);
+        return Objects.hash(idOrder, payload, order);
     }
 }

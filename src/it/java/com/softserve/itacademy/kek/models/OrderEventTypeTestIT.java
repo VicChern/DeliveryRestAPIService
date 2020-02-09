@@ -7,14 +7,15 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 
+@Rollback
 @Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
@@ -33,6 +34,7 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
         orderEventType2 = ITTestUtils.getOrderEventType();
     }
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenNameSizeMoreThan256() {
         orderEventType1 = orderEventType2;
@@ -41,6 +43,7 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
         orderEventTypeRepository.save(orderEventType1);
     }
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenNameSizeLessThan1() {
         orderEventType1 = orderEventType2;
@@ -49,6 +52,7 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
         orderEventTypeRepository.save(orderEventType1);
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenNameIsNull() {
         orderEventType1.setName(null);
@@ -56,6 +60,7 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
         orderEventTypeRepository.save(orderEventType1);
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenNameIsNotUnique() {
         orderEventTypeRepository.save(orderEventType1);
@@ -66,8 +71,4 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
         orderEventTypeRepository.save(orderEventType2);
     }
 
-    @AfterClass
-    public void clearUp() {
-        orderEventTypeRepository.deleteAll();
-    }
 }

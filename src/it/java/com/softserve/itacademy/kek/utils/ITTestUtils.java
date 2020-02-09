@@ -88,6 +88,7 @@ public class ITTestUtils {
     public static Order getOrder(Tenant tenant) {
         Order order = new Order();
 
+        order.setIdOrder(0L);
         order.setIdTenant(tenant);
         order.setGuid(UUID.randomUUID());
         order.setSummary(RandomString.make(128));

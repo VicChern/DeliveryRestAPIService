@@ -12,15 +12,16 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
+@Rollback
 @Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
@@ -49,6 +50,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
         orderEvent2 = ITTestUtils.getOrderEvent(getOrderForOrderEvent(), getActorForOrderEvent(), getOrderEventTypeForOrderEvent());
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenGUIDIsNotUnique() {
         orderEventRepository.save(orderEvent1);
@@ -60,6 +62,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
         orderEventRepository.deleteAll();
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenGUIDIsNull() {
         orderEvent1 = orderEvent2;
@@ -70,6 +73,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     }
 
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenPayloadSizeMoreThan1024() {
         orderEvent1.setPayload(RandomString.make(MAX_PAYLOAD_LENGTH + 1));
@@ -78,6 +82,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
         orderEventRepository.deleteAll();
     }
 
+    @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
     public void whenPayloadSizeLessThan1() {
         orderEvent1.setPayload("");
@@ -86,6 +91,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
         orderEventRepository.deleteAll();
     }
 
+    @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void whenPayloadIsNull() {
         orderEvent1.setPayload(null);
@@ -128,15 +134,5 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
         orderEventTypeRepository.save(orderEventType);
 
         return orderEventType;
-    }
-
-    @AfterClass
-    public void cleanUp() {
-        orderEventRepository.deleteAll();
-        orderEventTypeRepository.deleteAll();
-        actorRepository.deleteAll();
-        orderRepository.deleteAll();
-        tenantRepository.deleteAll();
-        userRepository.deleteAll();
     }
 }

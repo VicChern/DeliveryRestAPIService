@@ -9,14 +9,17 @@ import com.softserve.itacademy.kek.utils.ITTestUtils;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.springframework.transaction.TransactionSystemException;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.validation.ConstraintViolationException;
+import static org.testng.Assert.assertEquals;
 
+
+@Rollback
 @Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
@@ -35,45 +38,56 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     private OrderDetails orderDetails;
 
-    @BeforeClass
+    private Order order;
+
+    @BeforeMethod
     public void setUp() {
         orderDetails = ITTestUtils.getOrderDetails(getOrderForOrderDetails());
-        orderDetailsRepository.save(orderDetails);
     }
 
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Rollback
+    @Test
+    public void whenSaveWithValidData() {
+        order.setOrderDetails(orderDetails);
+
+        orderRepository.save(order);
+
+        assertEquals(1, orderRepository.findAll().spliterator().estimateSize());
+        assertEquals(1, orderDetailsRepository.findAll().spliterator().estimateSize());
+    }
+
+    @Rollback
+    @Test(expectedExceptions = TransactionSystemException.class)
     public void whenPayloadSizeMoreThan4096() {
         orderDetails.setPayload(RandomString.make(MAX_PAYLOAD_LENGTH + 1));
+        order.setOrderDetails(orderDetails);
 
-        orderDetailsRepository.save(orderDetails);
+        orderRepository.save(order);
+
+        assertEquals(0, orderRepository.findAll().spliterator().estimateSize());
+        assertEquals(0, orderDetailsRepository.findAll().spliterator().estimateSize());
     }
 
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Rollback
+    @Test(expectedExceptions = TransactionSystemException.class)
     public void whenImageUrlSizeMoreThan512() {
         orderDetails.setImageUrl(RandomString.make(MAX_IMAGE_URL_LENGTH + 1));
+        order.setOrderDetails(orderDetails);
 
-        orderDetailsRepository.save(orderDetails);
+        orderRepository.save(order);
+
+        assertEquals(0, orderRepository.findAll().spliterator().estimateSize());
+        assertEquals(0, orderDetailsRepository.findAll().spliterator().estimateSize());
     }
 
     private Order getOrderForOrderDetails() {
         User user = ITTestUtils.getUser();
         Tenant tenant = ITTestUtils.getTenant(user);
+        order = ITTestUtils.getOrder(tenant);
 
         userRepository.save(user);
         tenantRepository.save(tenant);
 
-        Order order = ITTestUtils.getOrder(tenant);
-
-        orderRepository.save(order);
-
         return order;
-    }
-
-    @AfterClass
-    public void cleanUp() {
-        orderDetailsRepository.deleteAll();
-        orderRepository.deleteAll();
-        tenantRepository.deleteAll();
-        userRepository.deleteAll();
     }
 }
