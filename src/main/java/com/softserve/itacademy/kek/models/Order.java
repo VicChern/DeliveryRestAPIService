@@ -12,9 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -30,9 +32,11 @@ public class Order implements Serializable {
     @JoinColumn(name ="id_tenant", insertable = false, updatable = false)
     private Tenant idTenant;
 
+    @NotNull
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
 
+    @NotNull
     @Size(min = 1, max = 256, message = "summary must be in range 1 ... 256")
     @Column(name = "summary", nullable = false, length = 256)
     private String summary;
@@ -89,5 +93,35 @@ public class Order implements Serializable {
 
     public void setOrderEventList(List<OrderEvent> orderEventList) {
         this.orderEventList = orderEventList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(idOrder, order.idOrder) &&
+                Objects.equals(idTenant, order.idTenant) &&
+                Objects.equals(guid, order.guid) &&
+                Objects.equals(summary, order.summary) &&
+                Objects.equals(orderDetails, order.orderDetails) &&
+                Objects.equals(orderEventList, order.orderEventList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idOrder, idTenant, guid, summary, orderDetails, orderEventList);
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "idOrder=" + idOrder +
+                ", tenant=" + idTenant +
+                ", guid=" + guid +
+                ", summary='" + summary + '\'' +
+                ", orderDetails=" + orderDetails +
+                ", orderEventList=" + orderEventList +
+                '}';
     }
 }

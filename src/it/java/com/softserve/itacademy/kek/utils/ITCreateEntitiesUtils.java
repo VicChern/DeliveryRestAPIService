@@ -263,11 +263,11 @@ public class ITCreateEntitiesUtils {
         return orderEventType;
     }
 
-    public static OrderEvent getOrderEvent(Order order, Actor actor, OrderEventType orderEventType) {
+    public static OrderEvent getOrderEvent(Order order, OrderEventType orderEventType) {
         OrderEvent orderEvent = new OrderEvent();
 
         orderEvent.setIdOrder(order);
-        orderEvent.setIdActor(actor);
+//        orderEvent.setIdActor(actor);
         orderEvent.setIdOrderEventType(orderEventType);
         orderEvent.setGuid(UUID.randomUUID());
         orderEvent.setPayload(createRandomLetterString(MAX_LENGTH_512));

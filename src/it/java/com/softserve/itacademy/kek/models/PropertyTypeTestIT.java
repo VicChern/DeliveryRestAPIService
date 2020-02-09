@@ -2,8 +2,6 @@ package com.softserve.itacademy.kek.models;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
-import com.softserve.itacademy.kek.utils.ITTestUtils;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,6 +16,8 @@ import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getPropertyType;
 
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
@@ -30,13 +30,13 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
 
     @DataProvider(name="illegal_names")
     public static Object[][] names(){
-        return new Object[][]{{RandomString.make(MAX_LENGTH_256 + 1)}, {""}};
+        return new Object[][]{{createRandomLetterString(MAX_LENGTH_256 + 1)}, {""}};
     }
 
     @BeforeMethod
     public void setUp() {
-        propertyType1 = ITTestUtils.getPropertyType();
-        propertyType2 = ITTestUtils.getPropertyType();
+        propertyType1 = getPropertyType();
+        propertyType2 = getPropertyType();
     }
 
     @AfterMethod
@@ -45,7 +45,7 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void testPropertyTypeWasSavedAndFindById() {
+    public void testPropertyTypeIsSavedWithValidFields() {
         repository.save(propertyType1);
         Long id = propertyType1.getIdPropertyType();
         //when
@@ -56,21 +56,21 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void validatePropertyTypeIsNotSavedWithNullName() {
+    public void testPropertyTypeIsNotSavedWithNullName() {
         propertyType1.setName(null);
         //when
         repository.save(propertyType1);
     }
 
     @Test(dataProvider = "illegal_names",expectedExceptions = ConstraintViolationException.class)
-    public void validatePropertyTypeIsNotSavedWithEmptyOrLongName(String name) {
+    public void testPropertyTypeIsNotSavedWithNameMoreThanMaxLengthOrEmpty(String name) {
         propertyType1.setName(name);
         //when
         repository.save(propertyType1);
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void saveProperty_NameIsDuplicated_ExceptionThrown() {
+    public void testPropertyTypeIsSavedWithUniqueName() {
         //given
         repository.save(propertyType1);
         String propertyType1Name = propertyType1.getName();
@@ -80,7 +80,7 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void savePropertyType_SchemaIsNull_ExceptionThrown() {
+    public void testPropertyTypeIsNotSavedWithNullSchema() {
         propertyType1.setSchema(null);
         //when
         repository.save(propertyType1);

@@ -75,6 +75,15 @@ public class OrderDetails implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idOrder, payload, order);
+        return Objects.hash(idOrder, payload, imageUrl);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDetails{" +
+                "idOrder=" + idOrder +
+                ", payload='" + payload + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
     }
 }

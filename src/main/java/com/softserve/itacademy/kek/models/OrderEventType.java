@@ -6,8 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "def_order_event_type")
@@ -18,6 +20,7 @@ public class OrderEventType implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idOrderEventType;
 
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "name", unique = true, nullable = false, length = 256)
     private String name;
@@ -38,5 +41,25 @@ public class OrderEventType implements Serializable {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderEventType that = (OrderEventType) o;
+        return Objects.equals(idOrderEventType, that.idOrderEventType) &&
+                Objects.equals(name, that.name);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(idOrderEventType, name);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderEventType{" +
+                "idOrderEventType=" + idOrderEventType +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

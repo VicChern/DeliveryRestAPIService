@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
@@ -26,10 +27,12 @@ public class GlobalProperties implements Serializable {
     @JoinColumn(name = "id_Property_Type")
     private PropertyType propertyType;
 
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "key", unique = true, nullable = false, length = 256)
     private String key;
 
+    @NotNull
     @Size(min = 1, max = 4096)
     @Column(name = "value", nullable = false, length = 4096)
     private String value;

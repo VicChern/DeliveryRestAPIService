@@ -4,8 +4,6 @@ import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.utils.ITTestUtils;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,6 +18,10 @@ import java.util.Optional;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenantProperties;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getUser;
 
 
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
@@ -37,10 +39,8 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod
     public void setUp() {
-        tenantProperties1 = ITTestUtils
-                .getTenantProperties(getTransientFieldsForTenantProperies());
-        tenantProperties2 = ITTestUtils
-                .getTenantProperties(getTransientFieldsForTenantProperies());
+        tenantProperties1 = getTenantProperties(getTransientFieldsForTenantProperies());
+        tenantProperties2 = getTenantProperties(getTransientFieldsForTenantProperies());
     }
 
     @AfterMethod
@@ -49,37 +49,37 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void saveProperty_keyIsNull_ExceptionThrown() {
+    public void testTenantPropertiesIsNotSavedWithNullKey() {
         tenantProperties1.setKey(null);
         //when
         tenantPropertiesRepository.save(tenantProperties1);
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void saveProperty_keyLongerThan256_ExceptionThrown() {
-        String generatedString = RandomString.make(MAX_LENGTH_256 + 1);
+    public void testTenantPropertiesIsNotSavedWithKeyMoreThanMaxLength() {
+        String generatedString = createRandomLetterString(MAX_LENGTH_256 + 1);
         tenantProperties1.setKey(generatedString);
         //when
         tenantPropertiesRepository.save(tenantProperties1);
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void saveProperty_valueLongerThan4096_ExceptionThrown() {
-        String generatedString = RandomString.make(MAX_LENGTH_4096 + 1);
+    public void testTenantPropertiesIsNotSavedWithValueMoreThanMaxLength() {
+        String generatedString = createRandomLetterString(MAX_LENGTH_4096 + 1);
         tenantProperties1.setValue(generatedString);
         //when
         tenantPropertiesRepository.save(tenantProperties1);
     }
 
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void saveProperty_ValueIsNull_ExceptionThrown() {
+    public void testTenantPropertiesIsNotSavedWithNullValue() {
         tenantProperties1.setValue(null);
         //when
         tenantPropertiesRepository.save(tenantProperties1);
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void saveProperty_KeyIsDuplicated_ExceptionThrown() {
+    public void testTenantPropertiesIsSavedWithUniqueKey() {
         //given
         tenantPropertiesRepository.save(tenantProperties1);
         String tenantProperties1Key = tenantProperties1.getKey();
@@ -90,7 +90,7 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void saveProperty_findById_returnProperty() {
+    public void testTenantPropertiesIsSavedWithValidFields() {
         tenantPropertiesRepository.save(tenantProperties1);
         Long id = tenantProperties1.getIdProperty();
         //when
@@ -101,8 +101,8 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
     }
 
     private Tenant getTransientFieldsForTenantProperies() {
-        User user = ITTestUtils.getUser();
-        Tenant tenant = ITTestUtils.getTenant(user);
+        User user = getUser();
+        Tenant tenant = getTenant(user);
         userRepository.save(user);
         tenantRepository.save(tenant);
         return tenant;

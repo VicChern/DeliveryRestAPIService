@@ -2,25 +2,26 @@ package com.softserve.itacademy.kek.models;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
-import com.softserve.itacademy.kek.utils.ITTestUtils;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderEventType;
+
 @Rollback
-@Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
 
-    public static final int MAX_NAME_LENGTH = 256;
+    public static final int MAX_NAME_LENGTH = MAX_LENGTH_256;
 
     @Autowired
     private OrderEventTypeRepository orderEventTypeRepository;
@@ -28,24 +29,29 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
     private OrderEventType orderEventType1;
     private OrderEventType orderEventType2;
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() {
-        orderEventType1 = ITTestUtils.getOrderEventType();
-        orderEventType2 = ITTestUtils.getOrderEventType();
+        orderEventType1 = getOrderEventType();
+        orderEventType2 = getOrderEventType();
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        orderEventTypeRepository.deleteAll();
     }
 
     @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void whenNameSizeMoreThan256() {
+    public void testOrderEventTypeIsNotSavedWithNameMoreThanMaxLength() {
         orderEventType1 = orderEventType2;
-        orderEventType1.setName(RandomString.make(MAX_NAME_LENGTH + 1));
+        orderEventType1.setName(createRandomLetterString(MAX_NAME_LENGTH + 1));
 
         orderEventTypeRepository.save(orderEventType1);
     }
 
     @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void whenNameSizeLessThan1() {
+    public void testOrderEventTypeIsNotSavedWithEmptyName() {
         orderEventType1 = orderEventType2;
         orderEventType1.setName("");
 
@@ -53,8 +59,8 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void whenNameIsNull() {
+    @Test(expectedExceptions =  ConstraintViolationException.class)
+    public void testOrderEventTypeIsNotSavedWithNullName() {
         orderEventType1.setName(null);
 
         orderEventTypeRepository.save(orderEventType1);
@@ -62,7 +68,7 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
 
     @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void whenNameIsNotUnique() {
+    public void testUserIsSavedWithUniqueName() {
         orderEventTypeRepository.save(orderEventType1);
 
         String name = orderEventType1.getName();

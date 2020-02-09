@@ -3,8 +3,6 @@ package com.softserve.itacademy.kek.models;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.GlobalPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
-import com.softserve.itacademy.kek.utils.ITTestUtils;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,35 +18,38 @@ import java.util.Optional;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getGlobalProperty;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getPropertyType;
 
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    GlobalPropertiesRepository propertiesRepository;
+    private GlobalPropertiesRepository propertiesRepository;
     @Autowired
-    PropertyTypeRepository typeRepository;
+    private PropertyTypeRepository typeRepository;
 
-    GlobalProperties properties1;
-    GlobalProperties properties2;
+    private GlobalProperties properties1;
+    private GlobalProperties properties2;
 
     @DataProvider(name="illegal_keys")
     public static Object[][] keys(){
-        return new Object[][]{{RandomString.make(MAX_LENGTH_256 + 1)}, {""}};
+        return new Object[][]{{createRandomLetterString(MAX_LENGTH_256 + 1)}, {""}};
     }
 
     @DataProvider(name="illegal_values")
     public static Object[][] values(){
-        return new Object[][]{{RandomString.make(MAX_LENGTH_4096 + 1)}, {""}};
+        return new Object[][]{{createRandomLetterString(MAX_LENGTH_4096 + 1)}, {""}};
     }
 
     @BeforeMethod
     public void setUp() {
-        PropertyType propertyType1 = ITTestUtils.getPropertyType();
-        properties1 = ITTestUtils.getGlobalProperty(propertyType1);
+        PropertyType propertyType1 = getPropertyType();
+        properties1 = getGlobalProperty(propertyType1);
 
-        PropertyType propertyType2 = ITTestUtils.getPropertyType();
-        properties2 = ITTestUtils.getGlobalProperty(propertyType2);
+        PropertyType propertyType2 = getPropertyType();
+        properties2 = getGlobalProperty(propertyType2);
     }
 
     @AfterMethod
@@ -57,7 +58,7 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void saveProperty_FindById_thenCorrect() {
+    public void testGlobalPropertiesIsSavedWithValidFields() {
         propertiesRepository.save(properties1);
         Long id = properties1.getIdProperty();
         //when
@@ -68,8 +69,8 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(savedProperty.get().getKey());
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void savePropertyType_KeyIsNull_ExceptionThrown() {
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void testGlobalPropertiesIsNotSavedWithNullKey() {
         String key = null;
         properties1.setKey(key);
         //when
@@ -77,21 +78,21 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test(dataProvider = "illegal_keys", expectedExceptions = ConstraintViolationException.class)
-    public void savePropertyType_KeyIsLongerOrEmpty_ExceptionThrown(String key) {
+    public void testGlobalPropertiesIsNotSavedWithKeyMoreThanMaxLengthOrEmpty(String key) {
         properties1.setKey(key);
         //when
         propertiesRepository.save(properties1);
     }
 
     @Test(dataProvider = "illegal_values", expectedExceptions = {ConstraintViolationException.class})
-    public void savePropertyType_ValueIsLongerlOrEmpty_ExceptionThrown(String value) {
+    public void testGlobalPropertiesIsNotSavedWithValueMoreThanMaxLengthOrEmpty(String value) {
         properties1.setValue(value);
         //when
         propertiesRepository.save(properties1);
     }
 
-    @Test(expectedExceptions = {DataIntegrityViolationException.class})
-    public void savePropertyType_ValueIsNull_ExceptionThrown() {
+    @Test(expectedExceptions = {ConstraintViolationException.class})
+    public void testGlobalPropertiesIsNotSavedWithNullValue() {
         String value = null;
         properties1.setValue(value);
         //when
@@ -99,7 +100,7 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void saveProperty_KeyIsDuplicated_ExceptionThrown() {
+    public void testGlobalPropertiesIsSavedWithUniqueKey() {
         //given
         propertiesRepository.save(properties1);
         String property1Key = properties1.getKey();

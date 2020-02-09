@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
@@ -35,9 +36,11 @@ public class OrderEvent implements Serializable {
     @JoinColumn(name = "id_order_event_type")
     private OrderEventType idOrderEventType;
 
+    @NotNull
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
 
+    @NotNull
     @Size(min = 1, max = 1024)
     @Column(name = "payload", nullable = false, length = 1024)
     private String payload;
@@ -106,5 +109,15 @@ public class OrderEvent implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(idOrderEvent, idOrder, idActor, idOrderEventType, guid, payload);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderEvent{" +
+                "idOrderEvent=" + idOrderEvent +
+                ", idOrderEventType=" + idOrderEventType +
+                ", guid=" + guid +
+                ", payload='" + payload + '\'' +
+                '}';
     }
 }

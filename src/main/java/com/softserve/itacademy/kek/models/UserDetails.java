@@ -1,16 +1,12 @@
 package com.softserve.itacademy.kek.models;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -22,15 +18,11 @@ public class UserDetails implements Serializable {
 
     @Id
     @Column(name = "id_user")
-//    @GeneratedValue(generator="gen")
-//    @GenericGenerator(name="gen", strategy="foreign",
-//            parameters = @Parameter(name="property", value="user"))
     private Long idUser;
 
     @OneToOne
     @MapsId
     @JoinColumn(name = "id_user", insertable = false, updatable = false)
-//    @PrimaryKeyJoinColumn
     private User user;
 
     @Size(max = 4096)
@@ -69,11 +61,8 @@ public class UserDetails implements Serializable {
         return user;
     }
 
-    // derived identifiers
-    //https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#identifiers-derived-primarykeyjoincolumn
     public void setUser(User user) {
         this.user = user;
-//        this.idUser = user.getIdUser();
     }
 
     @Override

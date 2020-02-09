@@ -4,27 +4,28 @@ import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.utils.ITTestUtils;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getActor;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
+
+
 @Rollback
-@Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class ActorTestIT extends AbstractTestNGSpringContextTests {
-
-    public static final int MAX_ALIAS_LENGTH = 256;
 
     @Autowired
     private TenantRepository tenantRepository;
@@ -34,81 +35,78 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     private ActorRepository actorRepository;
 
     private Actor actor1;
-    private Actor actor;
+    private Actor actor2;
 
-    @BeforeClass
-    void getActor() {
-        actor = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
-    }
 
     @BeforeMethod
     public void setUp() {
-        actor1 = actor;
+        Tenant tenant1 = getTenantForActor(1);
+        actor1= getActor(tenant1.getTenantOwner(), tenant1);
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        actorRepository.deleteAll();
+        tenantRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void whenGUIDIsNotUnique() {
+    public void testActorIsSavedWithUniqueGuid() {
         actorRepository.save(actor1);
 
-        UUID guid = actor1.getGuid();
+        Tenant tenant2 = getTenantForActor(2);
+        actor2 = getActor(tenant2.getTenantOwner(), tenant2);
 
-        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
+        UUID guid = actor1.getGuid();
         actor2.setGuid(guid);
 
         actorRepository.save(actor2);
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void whenGUIDIsNull() {
-        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void testActorIsNotSavedWithNullGuid() {
+        actor1.setGuid(null);
 
-        actor2.setGuid(null);
-
-        actorRepository.save(actor2);
+        actorRepository.save(actor1);
     }
 
     @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void whenAliasSizeMoreThan256() {
-        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
+    public void testActorIsNotSavedWithAliasMoreThanMaxLength() {
+        actor1.setAlias(createRandomLetterString(MAX_LENGTH_256 + 1));
 
-        actor2.setAlias(RandomString.make(MAX_ALIAS_LENGTH + 1));
-
-        actorRepository.save(actor2);
+        actorRepository.save(actor1);
     }
 
     @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void whenAliasSizeLessThan1() {
-        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
+    public void testActorIsNotSavedWithEmptyAlias() {
+        actor1.setAlias("");
 
-        actor2.setAlias("");
-
-        actorRepository.save(actor2);
+        actorRepository.save(actor1);
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void whenAliasIsNull() {
-        Actor actor2 = ITTestUtils.getActor(getUserForActor(), getTenantForActor());
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void testActorIsNotSavedWithNullAlias() {
+        actor1.setAlias(null);
 
-        actor2.setAlias(null);
-
-        actorRepository.save(actor2);
+        actorRepository.save(actor1);
     }
 
-    private Tenant getTenantForActor() {
-        Tenant tenant = ITTestUtils.getTenant(getUserForActor());
+    private Tenant getTenantForActor(int i) {
+        Tenant tenant = getTenant(getUserForActor(i));
 
         tenantRepository.save(tenant);
 
         return tenant;
     }
 
-    private User getUserForActor() {
-        User user = ITTestUtils.getUser();
+    private User getUserForActor(int i) {
+        User user = createOrdinaryUser(i);
 
         userRepository.save(user);
 

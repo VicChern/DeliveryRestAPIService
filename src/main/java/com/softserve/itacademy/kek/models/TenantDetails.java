@@ -22,7 +22,6 @@ public class TenantDetails implements Serializable {
     @OneToOne
     @MapsId
     @JoinColumn(name = "id_tenant", insertable = false, updatable = false)
-//    @PrimaryKeyJoinColumn(name = "id_tenant")
     private Tenant tenant;
 
     @Size(max = 4096)

@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +10,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -30,9 +33,11 @@ public class Actor implements Serializable {
     @JoinColumn(name = "id_user")
     private User idUser;
 
+    @NotNull
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
 
+    @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "alias", nullable = false, length = 256)
     private String alias;
@@ -75,5 +80,33 @@ public class Actor implements Serializable {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Actor actor = (Actor) o;
+        return Objects.equals(idActor, actor.idActor) &&
+                Objects.equals(idTenant, actor.idTenant) &&
+                Objects.equals(idUser, actor.idUser) &&
+                Objects.equals(guid, actor.guid) &&
+                Objects.equals(alias, actor.alias);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idActor, idTenant, idUser, guid, alias);
+    }
+
+    @Override
+    public String toString() {
+        return "Actor{" +
+                "idActor=" + idActor +
+                ", idTenant=" + idTenant +
+                ", idUser=" + idUser +
+                ", guid=" + guid +
+                ", alias='" + alias + '\'' +
+                '}';
     }
 }

@@ -5,27 +5,28 @@ import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.utils.ITTestUtils;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.transaction.TransactionSystemException;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_512;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderDetails;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getUser;
 import static org.testng.Assert.assertEquals;
 
 
 @Rollback
-@Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
-
-    public static final int MAX_PAYLOAD_LENGTH = 4096;
-    public static final int MAX_IMAGE_URL_LENGTH = 512;
 
     @Autowired
     private UserRepository userRepository;
@@ -41,13 +42,19 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
     private Order order;
 
     @BeforeMethod
-    public void setUp() {
-        orderDetails = ITTestUtils.getOrderDetails(getOrderForOrderDetails());
+    private void setUp() {
+        orderDetails = getOrderDetails(getOrderForOrderDetails());
+    }
+
+    @AfterMethod
+    private void tearDown() {
+        orderRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Rollback
     @Test
-    public void whenSaveWithValidData() {
+    public void testOrderIsSavedWithValidFields() {
         order.setOrderDetails(orderDetails);
 
         orderRepository.save(order);
@@ -58,8 +65,8 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     @Rollback
     @Test(expectedExceptions = TransactionSystemException.class)
-    public void whenPayloadSizeMoreThan4096() {
-        orderDetails.setPayload(RandomString.make(MAX_PAYLOAD_LENGTH + 1));
+    public void testOrderIsNotSavedWithPayloadMoreThanMaxLength() {
+        orderDetails.setPayload(createRandomLetterString(MAX_LENGTH_4096 + 1));
         order.setOrderDetails(orderDetails);
 
         orderRepository.save(order);
@@ -70,8 +77,8 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     @Rollback
     @Test(expectedExceptions = TransactionSystemException.class)
-    public void whenImageUrlSizeMoreThan512() {
-        orderDetails.setImageUrl(RandomString.make(MAX_IMAGE_URL_LENGTH + 1));
+    public void testOrderIsNotSavedWithImageUrlMoreThanMaxLength() {
+        orderDetails.setImageUrl(createRandomLetterString(MAX_LENGTH_512 + 1));
         order.setOrderDetails(orderDetails);
 
         orderRepository.save(order);
@@ -81,12 +88,13 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
     }
 
     private Order getOrderForOrderDetails() {
-        User user = ITTestUtils.getUser();
-        Tenant tenant = ITTestUtils.getTenant(user);
-        order = ITTestUtils.getOrder(tenant);
+        User user = getUser();
+        Tenant tenant = getTenant(user);
 
         userRepository.save(user);
         tenantRepository.save(tenant);
+
+        order = getOrder(tenant);
 
         return order;
     }

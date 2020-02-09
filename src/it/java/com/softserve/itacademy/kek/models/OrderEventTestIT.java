@@ -7,26 +7,32 @@ import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.utils.ITTestUtils;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_1024;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getActor;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderEvent;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderEventType;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
+
 @Rollback
-@Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
 
-    public static final int MAX_PAYLOAD_LENGTH = 1024;
+    public static final int MAX_PAYLOAD_LENGTH = MAX_LENGTH_1024;
 
     @Autowired
     private OrderEventRepository orderEventRepository;
@@ -44,92 +50,85 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     private OrderEvent orderEvent1;
     private OrderEvent orderEvent2;
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() {
-        orderEvent1 = ITTestUtils.getOrderEvent(getOrderForOrderEvent(), getActorForOrderEvent(), getOrderEventTypeForOrderEvent());
-        orderEvent2 = ITTestUtils.getOrderEvent(getOrderForOrderEvent(), getActorForOrderEvent(), getOrderEventTypeForOrderEvent());
+        orderEvent1 = getOrderEvent(getOrderForOrderEvent(1), getOrderEventTypeForOrderEvent());
+        orderEvent2 = getOrderEvent(getOrderForOrderEvent(2), getOrderEventTypeForOrderEvent());
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        orderEventRepository.deleteAll();
+        orderRepository.deleteAll();
+        actorRepository.deleteAll();
+        userRepository.deleteAll();
+        tenantRepository.deleteAll();
+        System.out.println();
     }
 
     @Rollback
     @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void whenGUIDIsNotUnique() {
+    public void testOrderEventIsSavedWithUniqueGuid() {
         orderEventRepository.save(orderEvent1);
 
         UUID guid = orderEvent1.getGuid();
         orderEvent2.setGuid(guid);
 
         orderEventRepository.save(orderEvent2);
-        orderEventRepository.deleteAll();
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void whenGUIDIsNull() {
+    @Test(expectedExceptions =  ConstraintViolationException.class)
+    public void testOrderEventIsNotSavedWithNullGuid() {
         orderEvent1 = orderEvent2;
         orderEvent1.setGuid(null);
 
         orderEventRepository.save(orderEvent1);
-        orderEventRepository.deleteAll();
     }
 
 
     @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void whenPayloadSizeMoreThan1024() {
-        orderEvent1.setPayload(RandomString.make(MAX_PAYLOAD_LENGTH + 1));
+    public void testOrderEventIsNotSavedWithPayloadMoreThanMaxLength() {
+        orderEvent1.setPayload(createRandomLetterString(MAX_PAYLOAD_LENGTH + 1));
 
         orderEventRepository.save(orderEvent1);
-        orderEventRepository.deleteAll();
     }
 
     @Rollback
     @Test(expectedExceptions = ConstraintViolationException.class)
-    public void whenPayloadSizeLessThan1() {
+    public void testOrderEventIsNotSavedWithEmptyPayload() {
         orderEvent1.setPayload("");
 
         orderEventRepository.save(orderEvent1);
-        orderEventRepository.deleteAll();
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void whenPayloadIsNull() {
+    @Test(expectedExceptions =  ConstraintViolationException.class)
+    public void testUserIsNotSavedWithNullPayload() {
         orderEvent1.setPayload(null);
 
         orderEventRepository.save(orderEvent1);
-        orderEventRepository.deleteAll();
     }
 
-    private Actor getActorForOrderEvent() {
-        User user = ITTestUtils.getUser();
-        Tenant tenant = ITTestUtils.getTenant(user);
+    private Order getOrderForOrderEvent(int i) {
+        User user = createOrdinaryUser(i);
+        Tenant tenant = getTenant(user);
 
         userRepository.save(user);
         tenantRepository.save(tenant);
 
-        Actor actor = ITTestUtils.getActor(user, tenant);
-
-        actorRepository.save(actor);
-
-        return actor;
-    }
-
-    private Order getOrderForOrderEvent() {
-        User user = ITTestUtils.getUser();
-        Tenant tenant = ITTestUtils.getTenant(user);
-
-        userRepository.save(user);
-        tenantRepository.save(tenant);
-
-        Order order = ITTestUtils.getOrder(tenant);
+        Actor actor = getActor(user, tenant);
+        Order order = getOrder(tenant);
 
         orderRepository.save(order);
+        actorRepository.save(actor);
 
         return order;
     }
 
     private OrderEventType getOrderEventTypeForOrderEvent() {
-        OrderEventType orderEventType = ITTestUtils.getOrderEventType();
+        OrderEventType orderEventType = getOrderEventType();
 
         orderEventTypeRepository.save(orderEventType);
 
