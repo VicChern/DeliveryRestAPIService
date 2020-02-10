@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.service.impl;
 
+
 import com.google.api.gax.paging.Page;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Blob;
@@ -12,13 +13,10 @@ import com.softserve.itacademy.kek.model.impl.CloudStorageObject;
 import com.softserve.itacademy.kek.service.ICloudStorageService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
 import org.apache.log4j.Logger;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,65 +29,65 @@ public class CloudStorageService implements ICloudStorageService {
 
     @Override
     public CloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {
-        logger.info("Uploading binary data to Google Cloud Storage default bucket");
+        logger.debug("Uploading binary data to Google Cloud Storage default bucket");
 
-        String bucket = getBucketName("storage.properties");
+        final String bucket = getBucketName("storage.properties");
 
         return uploadBinaryData(data, bucket);
     }
 
     public CloudStorageObject uploadBinaryData(final byte[] data, final String bucketName) throws CloudStorageServiceException {
-        logger.info("Uploading binary data to Google Cloud Storage bucket");
+        logger.debug("Uploading binary data to Google Cloud Storage bucket");
 
-        Storage storage = getStorageObject();
-        Bucket bucket;
+        final Storage storage = getStorageObject();
+        final Bucket bucket;
 
         if (storage.get(bucketName) != null) {
             bucket = storage.update(BucketInfo.of(bucketName));
         } else {
             bucket = storage.create(BucketInfo.of(bucketName));
-            logger.info("Google Cloud Storage bucket created successfully");
+            logger.debug("Google Cloud Storage bucket created successfully");
         }
 
-        String guid = UUID.randomUUID().toString();
-        Blob blob = bucket.create(guid, data);
-        String url = blob.getMediaLink();
+        final String guid = UUID.randomUUID().toString();
+        final Blob blob = bucket.create(guid, data);
+        final String url = blob.getMediaLink();
 
         return new CloudStorageObject(url, guid, data);
     }
 
     @Override
     public CloudStorageObject getCloudStorageObject(final String guid) throws CloudStorageServiceException {
-        logger.info("Getting object by GUID from Google Cloud Storage default bucket");
+        logger.debug("Getting object by GUID from Google Cloud Storage default bucket");
 
-        String bucket = getBucketName("storage.properties");
+        final String bucket = getBucketName("storage.properties");
 
         return getCloudStorageObject(guid, bucket);
     }
 
     public CloudStorageObject getCloudStorageObject(final String guid, final String bucketName) throws CloudStorageServiceException {
-        logger.info("Getting object by GUID from Google Cloud Storage bucket");
+        logger.debug("Getting object by GUID from Google Cloud Storage bucket");
 
-        Storage storage = getStorageObject();
+        final Storage storage = getStorageObject();
 
-        Bucket bucket = storage.update(BucketInfo.of(bucketName));
-        Blob blob = bucket.get(guid);
-        byte[] data = blob.getContent();
-        String url = blob.getMediaLink();
+        final Bucket bucket = storage.update(BucketInfo.of(bucketName));
+        final Blob blob = bucket.get(guid);
+        final byte[] data = blob.getContent();
+        final String url = blob.getMediaLink();
 
         return new CloudStorageObject(url, guid, data);
     }
 
     @Override
     public List<CloudStorageObject> getCloudStorageObjects(final String filter) throws CloudStorageServiceException {
-        logger.info("Getting list of objects from Google Cloud Storage bucket");
+        logger.debug("Getting list of objects from Google Cloud Storage bucket");
 
-        List<CloudStorageObject> objects = new ArrayList<>();
+        final List<CloudStorageObject> objects = new ArrayList<>();
 
-        Storage storage = getStorageObject();
-        Bucket bucket = storage.update(BucketInfo.of(filter));
+        final Storage storage = getStorageObject();
+        final Bucket bucket = storage.update(BucketInfo.of(filter));
 
-        Page<Blob> blobs = bucket.list();
+        final Page<Blob> blobs = bucket.list();
 
         for (Blob blob : blobs.getValues()) {
 
@@ -103,64 +101,63 @@ public class CloudStorageService implements ICloudStorageService {
     }
 
     public Storage getStorageObject() {
-        logger.info("Creating storage object");
+        logger.debug("Creating storage object");
 
-        StorageOptions storageOptions = null;
-        String token = System.getenv("GOOGLE_CLOUD_STORAGE_KEY");
+        final StorageOptions storageOptions;
+        final String projectID;
+        final Storage storage;
+
+        final String token = System.getenv("GOOGLE_CLOUD_STORAGE_KEY");
 
         try {
-            logger.info("Token parsed successfully");
-
             Object obj = new JSONParser().parse(new FileReader(token));
             JSONObject jo = (JSONObject) obj;
-            String projectID = (String) jo.get("project_id");
+            projectID = (String) jo.get("project_id");
 
+            logger.debug("Token parsed successfully");
+
+        } catch (Exception ex) {
+            logger.warn("Token was not parsed", ex);
+
+            throw new CloudStorageServiceException(ex);
+        }
+
+        try {
             storageOptions = StorageOptions.newBuilder()
                     .setProjectId(projectID)
                     .setCredentials(GoogleCredentials.fromStream(new FileInputStream(token)))
                     .build();
-        } catch (IOException e) {
-            logger.info("Token was not found");
+            storage = storageOptions.getService();
 
-            return null;
+            logger.debug("Storage object created successfully");
 
-        } catch (ParseException e) {
-            logger.info("Token was not parsed");
+        } catch (Exception ex) {
+            logger.warn("Token was not found", ex);
 
-            return null;
+            throw new CloudStorageServiceException(ex);
         }
-
-        Storage storage = storageOptions.getService();
 
         return storage;
     }
 
     public String getBucketName(final String propFileName) {
-        logger.info("Getting name of Google Cloud Storage default bucket");
+        logger.debug("Getting name of Google Cloud Storage default bucket");
 
-        String bucketName;
+        final String bucketName;
+        final Properties properties = new Properties();
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName)) {
-            logger.info("Getting bucket name form .properties");
+            logger.debug("Getting bucket name form .properties");
 
-            Properties properties = new Properties();
-
-            if (inputStream != null) {
-
-                properties.load(inputStream);
-
-            } else {
-                logger.info("Property file was not found in the classpath");
-
-                throw new FileNotFoundException("Property file " + propFileName + " was not found in the classpath");
-            }
-
+            properties.load(inputStream);
             bucketName = properties.getProperty("bucketName");
 
-        } catch (IOException e) {
-            logger.info("Bucket name was not initialized");
 
-            return null;
+        } catch (Exception ex) {
+            logger.warn("Bucket name was not initialized", ex);
+
+            throw new CloudStorageServiceException(ex);
+
         }
 
         return bucketName;
