@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.softserve.itacademy.kek", "com.softserve.itacademy.kek.configuration", "com.softserve.itacademy.kek.controller"})
+@ComponentScan(basePackages = {"com.softserve.itacademy.kek"})
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
@@ -32,5 +32,4 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         parameterMap.put("charset", "UTF-8");
         configurer.defaultContentType(new MediaType(MediaType.APPLICATION_JSON, parameterMap));
     }
-
 }

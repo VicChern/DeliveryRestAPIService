@@ -16,8 +16,6 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Properties;
 
-// TODO: Add logger
-
 public class EmbeddedTomcatApp {
     final Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
     private final Tomcat tomcat;
@@ -29,6 +27,7 @@ public class EmbeddedTomcatApp {
      * - port = 8080
      * - contextPath = \
      * - appBase = .
+     *
      * @throws IOException in case when the properties file is not found
      */
     public EmbeddedTomcatApp() throws IOException {
@@ -44,11 +43,11 @@ public class EmbeddedTomcatApp {
         tomcat.setPort(port);
         final Context rootCtx = tomcat.addContext("", base.getAbsolutePath());
         rootCtx.setDocBase(properties.getProperty("doc.base", base.getAbsolutePath()));
-        final AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
 
         rootCtx.addServletContainerInitializer(new SpringServletContainerInitializer(),
                 Collections.singleton(SecurityWebAppInitializer.class));
 
+        final AnnotationConfigWebApplicationContext actx = new AnnotationConfigWebApplicationContext();
         actx.scan("com.softserve.itacademy.kek");
         final DispatcherServlet dispatcher = new DispatcherServlet(actx);
         Tomcat.initWebappDefaults(rootCtx);
