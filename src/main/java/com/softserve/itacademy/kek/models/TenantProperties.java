@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,14 +21,15 @@ public class TenantProperties implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_property")
     private Long idProperty;
 
     @ManyToOne
-    @JoinColumn(name = "id_tenant", insertable = false, updatable = false)
+    @JoinColumn(name = "id_tenant", nullable = false)
     Tenant tenant;
 
-    @OneToOne
-    @JoinColumn(name = "id_property_type", insertable = false, updatable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_Property_Type", nullable = false)
     private PropertyType propertyType;
 
     @NotNull

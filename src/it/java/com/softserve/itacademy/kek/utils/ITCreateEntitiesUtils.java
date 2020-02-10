@@ -174,6 +174,15 @@ public class ITCreateEntitiesUtils {
         return tenant;
     }
 
+    public static TenantProperties getTenantProperties(Tenant tenant, PropertyType type) {
+        TenantProperties properties = new TenantProperties();
+        properties.setKey(RandomString.make());
+        properties.setValue(RandomString.make());
+        properties.setTenant(tenant);
+        properties.setPropertyType(type);
+        return properties;
+    }
+
     /**
      * Creates {@link TenantDetails} with valid field, but without {@link Tenant}
      *

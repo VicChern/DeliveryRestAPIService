@@ -24,7 +24,7 @@ public class GlobalProperties implements Serializable {
     private Long idProperty;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_Property_Type")
+    @JoinColumn(name = "id_Property_Type", nullable = false)
     private PropertyType propertyType;
 
     @NotNull

@@ -44,7 +44,7 @@ public class Tenant implements Serializable {
     @OneToOne(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private TenantDetails tenantDetails;
 
-    @OneToMany(mappedBy = "tenant")
+    @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<TenantProperties> tenantPropertiesList;
 
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
