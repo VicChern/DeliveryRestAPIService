@@ -1,4 +1,6 @@
-package com.softserve.itacademy.kek.cloudstorage;
+package com.softserve.itacademy.kek.model.impl;
+
+import com.softserve.itacademy.kek.model.ICloudStorageObject;
 
 import java.util.Arrays;
 import java.util.Objects;

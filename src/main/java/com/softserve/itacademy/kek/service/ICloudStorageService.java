@@ -1,6 +1,7 @@
-package com.softserve.itacademy.kek.cloudstorage;
+package com.softserve.itacademy.kek.service;
 
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
+import com.softserve.itacademy.kek.model.impl.CloudStorageObject;
 
 import java.util.List;
 

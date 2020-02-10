@@ -1,6 +1,7 @@
-package com.softserve.itacademy.kek.cloudstorage;
+package com.softserve.itacademy.kek.model;
 
 public interface ICloudStorageObject {
+
     String getUrlString();
 
     String getGuid();
