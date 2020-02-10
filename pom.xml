@@ -49,6 +49,10 @@
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
 
+        <version.google.cloud.storage>1.17.0</version.google.cloud.storage>
+
+        <version.log4j>1.2.17</version.log4j>
+
         <version.postgresql>42.2.8</version.postgresql>
         <version.hibernate.core>5.4.10.Final</version.hibernate.core>
 
@@ -209,6 +213,21 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>${version.slf4j.log4j12}</version>
         </dependency>
+
+        <!-- Google Cloud Storage -->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+            <version>${version.google.cloud.storage}</version>
+        </dependency>
+
+        <!-- Logger -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${version.log4j}</version>
+        </dependency>
+
 
         <!-- Test dependencies -->
         <dependency>
