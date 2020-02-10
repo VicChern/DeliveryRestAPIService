@@ -31,14 +31,7 @@ public class SseControllerTest {
     public void asyncTest() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/request"))
                 .andExpect(request().asyncStarted())
-                .andReturn();
-    }
-
-    @Test
-    public void dataReceivingTest() throws Exception {
-        mockMvc.perform(get("/request"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("text/event-stream;charset=UTF-8"))
                 .andReturn();
     }
 }
