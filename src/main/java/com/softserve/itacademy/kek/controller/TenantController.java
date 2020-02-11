@@ -1,8 +1,16 @@
 package com.softserve.itacademy.kek.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.Gson;
+import com.softserve.itacademy.kek.dto.TenantDetailsDto;
+import com.softserve.itacademy.kek.dto.TenantDto;
+import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,12 +19,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/tenants")
 public class TenantController extends DefaultController {
     final Logger logger = LoggerFactory.getLogger(TenantController.class);
+    private final Gson gson = new Gson();
 
     // Build Response (stub, temporary method)
     private String getJSON(String id, String status) {
@@ -26,103 +36,155 @@ public class TenantController extends DefaultController {
         return json.toString();
     }
 
+    /**
+     * Temporary method for TenantDto stub
+     *
+     * @return {@link TenantDto} stub
+     */
+    private TenantDto getTenantDtoStub() {
+        TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
+        return new TenantDto("guid12345qwawt", "Petro", "pict", detailsDto);
+    }
+
+    /**
+     * Temporary method for TenantPropertiesDto stub
+     *
+     * @return {@link TenantPropertiesDto} stub
+     */
+    private TenantPropertiesDto getTenantPropertiesDtoStub() {
+        return new TenantPropertiesDto(
+                "guid12345qwawt", "glovo", "additional info", "workingDay", "Wednesday");
+    }
+
 
     /**
      * Get information about tenants
      *
-     * @return information about tenants (JSON)
+     * @return list of {@link TenantDto} objects as a JSON
      */
-    @GetMapping
-    public ResponseEntity<String> getTenantList() {
+    @GetMapping(produces = "application/vnd.softserve.tenant+json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<TenantDto> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
-        JSONObject json = new JSONObject();
-        json.append("tenantID", "1").append("tenantID", "2").append("tenantID", "3");
-        json.put("status", "received");
-        return ResponseEntity.ok(json.toString());
-    }
+        List<TenantDto> tenantList = new ArrayList<>();
+        tenantList.add(getTenantDtoStub());
 
-    /**
-     * Finds the specific tenant"
-     *
-     * @param id tenant id from the URN
-     * @return tenant information as a JSON
-     */
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<String> getTenant(@PathVariable String id) {
-        logger.info("Sending the specific tenant(" + id + ") to the client");
-
-        return ResponseEntity.ok(getJSON(id, "received"));
+        logger.info("Sending list of all tenants to the client:\n" + gson.toJson(tenantList));
+        return tenantList;
     }
 
     /**
      * Creates a new tenant
      *
-     * @return operation status as a JSON
+     * @param body {@link TenantDto} object as a JSON
+     * @return {@link TenantDto} object as a JSON
      */
-    @PostMapping
-    public ResponseEntity<String> addTenant(@RequestBody String body) {
-        logger.info("Sending the created tenant to the client");
+    @PostMapping(consumes = "application/vnd.softserve.tenant+json", produces = "application/vnd.softserve.tenant+json")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public TenantDto addTenant(@RequestBody String body) {
+        logger.info("Accepted requested to create a new tenant:\n" + body);
 
-        return ResponseEntity.ok(body);
+        TenantDto tenantDto = gson.fromJson(body, TenantDto.class);
+
+        logger.info("Sending the created tenant to the client:\n" + gson.toJson(tenantDto));
+        return tenantDto;
     }
+
+    /**
+     * Finds the specific tenant
+     *
+     * @param guid tenant ID from the URL
+     * @return {@link TenantDto} object as a JSON
+     */
+    @GetMapping(value = "/{guid}", produces = "application/vnd.softserve.tenant+json")
+    @ResponseStatus(HttpStatus.OK)
+    public TenantDto getTenant(@PathVariable String guid) {
+        logger.info("Client requested the tenant " + guid);
+
+        TenantDto tenantDto = getTenantDtoStub();
+
+        logger.info("Sending the specific tenant(" + guid + ") to the client");
+        return tenantDto;
+    }
+
 
     /**
      * Modifies information of the specified tenant
      *
-     * @param id tenant ID from the URN
-     * @return operation status as a JSON
+     * @param guid tenant ID from the URL
+     * @param body tenant object as a JSON
+     * @return {@link TenantDto} object as a JSON
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<String> modifyTenant(@PathVariable String id, @RequestBody String body) {
-        logger.info("Sending the modified tenant to the client");
+    @PutMapping(value = "/{guid}", consumes = "application/vnd.softserve.tenant+json",
+            produces = "application/vnd.softserve.tenant+json")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public TenantDto modifyTenant(@PathVariable String guid, @RequestBody String body) {
+        logger.info("Accepted modified tenant from the client:\n" + body);
 
-        return ResponseEntity.ok(body);
+        TenantDto tenantDto = gson.fromJson(body, TenantDto.class);
+
+        logger.info("Sending the modified tenant to the client:\n" + gson.toJson(tenantDto));
+        return tenantDto;
     }
 
     /**
      * Removes the specified tenant
      *
-     * @param id tenant ID from the URN
-     * @return operation status as a JSON
+     * @param guid tenant ID from the URL
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTenant(@PathVariable String id) {
-        logger.info("Tenant(" + id + ") was successfully deleted");
+    @DeleteMapping("/{guid}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTenant(@PathVariable String guid) {
+        logger.info("Accepted request to delete the tenant " + guid);
 
-        return ResponseEntity.ok(getJSON(id, "deleted"));
+        logger.info("Tenant(" + guid + ") was successfully deleted");
     }
 
     /**
      * Find properties of the specific tenant
      *
-     * @param id tenant ID from URN
-     * @return List of tenant properties
+     * @param guid tenant ID from URL
+     * @return List of (@link TenantPropertiesDTO) objects as a JSON
      */
-    @GetMapping("/{id}/properties")
-    public ResponseEntity<String> getTenantProperties(@PathVariable String id) {
-        logger.info("Sending the list of tenant's(" + id + ") properties to the client");
+    @GetMapping(value = "/{guid}/properties", produces = "application/vnd.softserve.tenantproperty+json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<TenantPropertiesDto> getTenantProperties(@PathVariable String guid) {
+        logger.info("Client requested all the properties of the tenant " + guid);
 
-        return ResponseEntity.ok(getJSON(id, "received"));
+        List<TenantPropertiesDto> tenantPropertiesList = new ArrayList<>();
+        tenantPropertiesList.add(getTenantPropertiesDtoStub());
+
+        logger.info("Sending the list of tenant's(" + guid + ") properties to the client:\n"
+                + gson.toJson(tenantPropertiesList));
+
+        return tenantPropertiesList;
     }
 
     /**
-     * Add properties of the specific tenant
+     * Add new properties of the specific tenant
      *
-     * @param id tenant ID from URN
-     * @return List of added tenant properties
+     * @param guid tenant ID from URL
+     * @param body list of properties objects as a JSON
+     * @return list of the {@link TenantPropertiesDto} objects as a JSON
      */
-    @PostMapping("/{id}/properties")
-    public ResponseEntity<String> addTenantProperties(@PathVariable String id, @RequestBody String body) {
-        logger.info("Sending the created tenant's(" + id + ") properties to the client");
+    @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantproperty+json",
+            produces = "application/vnd.softserve.tenantproperty+json")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public TenantPropertiesDto addTenantProperties(@PathVariable String guid, @RequestBody String body) {
+        logger.info("Accepted requested to create a new properties for tenant:" + guid + ":\n" + body);
 
-        return ResponseEntity.ok(body);
+        TenantPropertiesDto tenantPropertiesDto = gson.fromJson(body, TenantPropertiesDto.class);
+
+        logger.info("Sending the created tenant's(" + guid + ") properties to the client");
+
+        return tenantPropertiesDto;
     }
 
     /**
      * Finds specific property of the specific tenant
      *
-     * @param id       tenant ID from URN
+     * @param id       tenant ID from URL
      * @param propGuid ID of the tenant specific property
      * @return Specific tenant tenant property
      */
