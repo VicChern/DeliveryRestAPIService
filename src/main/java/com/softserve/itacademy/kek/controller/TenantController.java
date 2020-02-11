@@ -217,8 +217,8 @@ public class TenantController extends DefaultController {
      * @param body     The tenant property to modify
      * @return The modified tenant property object{@link TenantPropertiesDto}
      */
-    @PutMapping(value = "/{guid}/properties/{propguid}", consumes = "application/vnd.softserve.address+json",
-            produces = "application/vnd.softserve.address+json")
+    @PutMapping(value = "/{guid}/properties/{propguid}", consumes = "application/vnd.softserve.tenantproperty+json",
+            produces = "application/vnd.softserve.tenantproperty+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public TenantPropertiesDto modifyTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid, @RequestBody String body) {
         logger.info("Sending the modified tenant's(" + guid + ") property(" + propGuid + ") to the client");
