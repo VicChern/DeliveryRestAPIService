@@ -1,42 +1,42 @@
 package com.softserve.itacademy.kek.services;
 
 import com.softserve.itacademy.kek.models.Tenant;
-import com.softserve.itacademy.kek.objects.TenantObject;
+import com.softserve.itacademy.kek.modelInterfaces.ITenant;
 
 import java.util.UUID;
 
 /**
- * Service interface for {@link Tenant} and {@link TenantObject}
+ * Service interface for {@link ITenant}
  */
 public interface ITenantService {
 
     /**
      * Saved new {@link Tenant} to db
-     * @param tenantObject tenant object that converted to {@link Tenant} in this method
-     * @return converted (from saved to db {@link Tenant}) tenant object
+     * @param tenant tenant
+     * @return saved tenant
      */
-    TenantObject save(TenantObject tenantObject);
+    ITenant save(ITenant tenant);
 
     /**
-     * Gets an tenant object for principal user
-     * @return converted (from saved to db tenant) tenant object for principal user
+     * Gets an tenant for principal user
+     * @return tenant for principal user
      */
-    TenantObject get();
+    ITenant get();
 
     /**
-     * Gets tenant object by {@link Tenant} guid
-     * @param guid for that the {@link Tenant} is being getting
-     * @return converted (from getting from db {@link Tenant}) tenant object for {@link Tenant} guid
+     * Gets tenant by {@link Tenant} guid
+     * @param guid {@link Tenant} guid
+     * @return tenant
      */
-    TenantObject getByGuid(UUID guid);
+    ITenant getByGuid(UUID guid);
 
     /**
      * Updates {@link Tenant}
-     * @param tenantObject
+     * @param tenant
      * @param guid {@link Tenant} guid
-     * @return converted (from updated {@link Tenant}) tenant object for {@link Tenant} guid
+     * @return updated tenant
      */
-    TenantObject update(TenantObject tenantObject, UUID guid);
+    ITenant update(ITenant tenant, UUID guid);
 
     /**
      * Deletes {@link Tenant} by guid
