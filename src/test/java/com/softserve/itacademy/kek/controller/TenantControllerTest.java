@@ -150,8 +150,6 @@ public class TenantControllerTest {
 
     @Test
     public void modifyTenantPropertyTest() throws Exception {
-        tenantPropertiesDto = new TenantPropertiesDto(
-                "guid12345qwawt", "glovo", "additional info", "workingDay", "Wednesday");
         mockMvc.perform(put("/tenants/2/properties/2")
                 .contentType("application/vnd.softserve.tenantproperty+json")
                 .accept("application/vnd.softserve.tenantproperty+json")
