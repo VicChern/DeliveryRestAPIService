@@ -1,22 +1,47 @@
 package com.softserve.itacademy.kek.services;
 
 import com.softserve.itacademy.kek.models.Tenant;
+import com.softserve.itacademy.kek.objects.TenantObject;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
+/**
+ * Service interface for {@link Tenant} and {@link TenantObject}
+ */
 public interface ITenantService {
-    Optional<Tenant> save(Tenant tenant);
 
-    Optional<Iterable<Tenant>> saveAll(List<Tenant> tenants);
+    /**
+     * Saved new {@link Tenant} to db
+     * @param tenantObject tenant object that converted to {@link Tenant} in this method
+     * @return converted (from saved to db {@link Tenant}) tenant object
+     */
+    TenantObject save(TenantObject tenantObject);
 
-    Optional<Tenant> update(Tenant tenant);
+    /**
+     * Gets an tenant object for principal user
+     * @return converted (from saved to db tenant) tenant object for principal user
+     */
+    TenantObject get();
 
-    Optional<Tenant> get(Long id);
+    /**
+     * Gets tenant object by {@link Tenant} guid
+     * @param guid for that the {@link Tenant} is being getting
+     * @return converted (from getting from db {@link Tenant}) tenant object for {@link Tenant} guid
+     */
+    TenantObject getByGuid(UUID guid);
 
-    List<Tenant> getAll();
+    /**
+     * Updates {@link Tenant}
+     * @param tenantObject
+     * @param guid {@link Tenant} guid
+     * @return converted (from updated {@link Tenant}) tenant object for {@link Tenant} guid
+     */
+    TenantObject update(TenantObject tenantObject, UUID guid);
 
-    void deleteById(Long id);
+    /**
+     * Deletes {@link Tenant} by guid
+     * @param guid must not be {@literal null}.
+     */
+    void deleteByGuid(UUID guid);
 
-    void deleteAll();
 }
