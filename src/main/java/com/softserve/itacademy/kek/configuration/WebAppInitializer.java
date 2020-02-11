@@ -1,11 +1,12 @@
 package com.softserve.itacademy.kek.configuration;
 
+import com.softserve.itacademy.kek.security.WebSecurityConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[]{};
+        return new Class<?>[]{WebSecurityConfig.class};
     }
 
     @Override
