@@ -17,6 +17,23 @@ import javax.servlet.http.HttpServletRequest;
 public class DefaultController {
     final Logger logger = LoggerFactory.getLogger(DefaultController.class);
 
+
+    /**
+     * Handles {@link ServiceException} which were not handled locally
+     *
+     * @param ex the exception which occurred in services
+     * @return the error message as a JSON
+     */
+    @ExceptionHandler(ServiceException.class)
+    public ResponseEntity<String> serviceExceptionHandler(ServiceException ex) {
+        logger.error("An error occurred:", ex);
+        JSONObject response = new JSONObject()
+                .put("Error", "Message that we want to send to client about error with services");
+        logger.warn("Sending the error message to the client");
+        return ResponseEntity.ok(response.toString());
+    }
+
+
     /**
      * ServiceException handler.
      * @param ex ServiceException for handling.
