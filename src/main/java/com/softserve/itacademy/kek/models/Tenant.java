@@ -1,6 +1,8 @@
 package com.softserve.itacademy.kek.models;
 
 
+import com.softserve.itacademy.kek.modelInterfaces.ITenant;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +23,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_tenant")
-public class Tenant implements Serializable {
+public class Tenant implements ITenant, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

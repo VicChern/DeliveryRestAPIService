@@ -3,8 +3,7 @@ package com.softserve.itacademy.kek.services.impl;
 import com.softserve.itacademy.kek.converter.objectConverter.TenantObjectConverter;
 import com.softserve.itacademy.kek.exception.TenantServiceException;
 import com.softserve.itacademy.kek.models.Tenant;
-import com.softserve.itacademy.kek.models.User;
-import com.softserve.itacademy.kek.objects.TenantObject;
+import com.softserve.itacademy.kek.modelInterfaces.ITenant;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.ITenantService;
@@ -38,44 +37,45 @@ public class TenantServiceImpl implements ITenantService {
 
 
     @Override
-    public TenantObject save(TenantObject tenantObject) throws TenantServiceException {
-        logger.info("Save Tenant to db: " + tenantObject);
-        User tenantOwner;
+    public ITenant save( ITenant tenant) throws TenantServiceException {
+        logger.info("Save Tenant to db: " + tenant);
+        UUID ownerGuid = tenant.getTenantOwner().getGuid();
 
-        // get user for tenant
+        tenant.setGuid(UUID.randomUUID());
+
+        // check if exist user for tenant
+        //TODO replace by checking whether the ownerGuid is guid of principal user (when will be added security)
         try {
-          tenantOwner = userRepository.findByGuid(UUID.fromString(tenantObject.getOwner()));
+         userRepository.findByGuid(ownerGuid);
         } catch (EntityNotFoundException ex) {
-            logger.error("There is no User in db for Tenant with user guid: " + tenantObject.getOwner());
-            throw new TenantServiceException("There is no User for Tenant with user guid: " + tenantObject.getOwner());
+            logger.error("There is no User in db for Tenant with user guid: " + ownerGuid);
+            throw new TenantServiceException("There is no User for Tenant with user guid: " + ownerGuid);
         }
-
-        Tenant tenant = tenantObjectConverter.transform(tenantObject, tenantOwner);
 
         // save tenant to db
         try {
-            tenantRepository.save(tenant);
+            tenantRepository.save((Tenant) tenant);
         } catch (PersistenceException ex) {
             logger.error("Tenant wasn't saved: " + tenant);
             throw new TenantServiceException("Tenant wasn't saved");
         }
 
         logger.info("Tenant was saved: " + tenant);
-        return tenantObjectConverter.transform(tenant);
+        return tenant;
     }
 
     @Override
-    public TenantObject get() {
+    public ITenant get() {
         throw new TenantServiceException("Method get() will be implemented when will be added security.");
     }
 
     @Override
-    public TenantObject getByGuid(UUID guid) {
+    public ITenant getByGuid(UUID guid) {
         throw new TenantServiceException("Method getByGuid(UUID guid) isn't implemented yet");
     }
 
     @Override
-    public TenantObject update(TenantObject tenant, UUID guid) {
+    public ITenant update(ITenant tenant, UUID guid) {
         throw new TenantServiceException("Method update(TenantObject tenant, UUID guid) isn't implemented yet");
     }
 
