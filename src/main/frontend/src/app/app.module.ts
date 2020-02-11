@@ -12,6 +12,7 @@ import { MapComponent } from './map/map.component';
 import {AgmCoreModule} from '@agm/core';
 import {HttpClientModule} from '@angular/common/http';
 import {MapsService} from './maps.service';
+import { SseControllerComponent } from './sse-controller/sse-controller.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {MapsService} from './maps.service';
     AdminComponent,
     CustomerAccountComponent,
     RegistrationComponent,
-    MapComponent
+    MapComponent,
+    SseControllerComponent
   ],
 
   imports: [
