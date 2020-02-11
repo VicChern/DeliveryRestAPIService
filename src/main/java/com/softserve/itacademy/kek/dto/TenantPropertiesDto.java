@@ -2,14 +2,14 @@ package com.softserve.itacademy.kek.dto;
 
 import java.util.Objects;
 
-public class TenantPropertiesDTO {
+public class TenantPropertiesDto {
     private String guid;
     private String tenant;
     private String type;
     private String key;
     private String value;
 
-    public TenantPropertiesDTO(String guid, String tenant, String type, String key, String value) {
+    public TenantPropertiesDto(String guid, String tenant, String type, String key, String value) {
         this.guid = guid;
         this.tenant = tenant;
         this.type = type;
@@ -51,8 +51,8 @@ public class TenantPropertiesDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TenantPropertiesDTO)) return false;
-        TenantPropertiesDTO that = (TenantPropertiesDTO) o;
+        if (!(o instanceof TenantPropertiesDto)) return false;
+        TenantPropertiesDto that = (TenantPropertiesDto) o;
         return guid.equals(that.guid) &&
                 tenant.equals(that.tenant) &&
                 type.equals(that.type) &&
