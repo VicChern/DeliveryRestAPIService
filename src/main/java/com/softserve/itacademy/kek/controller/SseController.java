@@ -18,6 +18,7 @@ public class SseController {
     private int delay = 5000;
     private long sessionTimeout;
     private boolean isConnected = true;
+    private String coordinates = "0;0";
 
     public SseController() {
         this.sessionTimeout = 180_000;
@@ -30,6 +31,14 @@ public class SseController {
     public SseController(long sessionTimeout, int delay) {
         this.sessionTimeout = sessionTimeout;
         this.delay = delay;
+    }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 
     public boolean isConnected() {
@@ -65,7 +74,7 @@ public class SseController {
             try {
                 for (; isConnected; ) {
                     SseEmitter.SseEventBuilder event = SseEmitter.event()
-                            .data("message", MediaType.TEXT_EVENT_STREAM);
+                            .data(coordinates, MediaType.TEXT_EVENT_STREAM);
                     emitter.send(event);
                     Thread.sleep(delay);
                 }
