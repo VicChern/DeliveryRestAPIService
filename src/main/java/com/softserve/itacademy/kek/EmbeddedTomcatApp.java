@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek;
 
 import com.softserve.itacademy.kek.configuration.WebAppInitializer;
+import com.softserve.itacademy.kek.security.SecurityWebAppInitializer;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -11,8 +12,9 @@ import org.springframework.web.SpringServletContainerInitializer;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Properties;
+import java.util.Set;
 
 public class EmbeddedTomcatApp {
     final Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
@@ -44,8 +46,11 @@ public class EmbeddedTomcatApp {
 
         final Context context = tomcat.addContext("", docBase);
 
-        context.addServletContainerInitializer(new SpringServletContainerInitializer(),
-                Collections.singleton(WebAppInitializer.class));
+        Set<Class<?>> classes = new LinkedHashSet<>();
+        classes.add(WebAppInitializer.class);
+        classes.add(SecurityWebAppInitializer.class);
+
+        context.addServletContainerInitializer(new SpringServletContainerInitializer(), classes);
 
         Tomcat.initWebappDefaults(context);
     }
