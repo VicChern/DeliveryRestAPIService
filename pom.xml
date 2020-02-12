@@ -33,11 +33,14 @@
         <version.spring.context>5.2.0.RELEASE</version.spring.context>
         <version.spring.data.commons>2.2.0.RELEASE</version.spring.data.commons>
         <version.spring.security.core>5.2.0.RELEASE</version.spring.security.core>
+        <version.spring.security.web>5.2.0.RELEASE</version.spring.security.web>
+        <version.spring.security.config>5.2.0.RELEASE</version.spring.security.config>
         <version.spring.data.rest.core>3.2.0.RELEASE</version.spring.data.rest.core>
         <version.spring.data.jpa>2.2.4.RELEASE</version.spring.data.jpa>
         <version.spring.web>5.2.2.RELEASE</version.spring.web>
         <version.spring.webmvc>5.2.2.RELEASE</version.spring.webmvc>
         <version.spring.test>5.2.2.RELEASE</version.spring.test>
+        <version.spring.security.test>5.2.2.RELEASE</version.spring.security.test>
 
         <version.org.json>20180813</version.org.json>
         <version.gson>2.8.5</version.gson>
@@ -48,6 +51,7 @@
 
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
+        <version.mvc.auth.commons>1.2.0</version.mvc.auth.commons>
 
         <version.google.cloud.storage>1.17.0</version.google.cloud.storage>
 
@@ -115,6 +119,16 @@
             <version>${version.spring.security.core}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${version.spring.security.web}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${version.spring.security.config}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-rest-core</artifactId>
             <version>${version.spring.data.rest.core}</version>
@@ -139,6 +153,13 @@
             <artifactId>spring-test</artifactId>
             <version>${version.spring.test}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${version.spring.security.test}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
@@ -200,6 +221,11 @@
             <groupId>com.auth0</groupId>
             <artifactId>auth0-spring-security-api</artifactId>
             <version>${version.auth0.spring.security.api}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>mvc-auth-commons</artifactId>
+            <version>${version.mvc.auth.commons}</version>
         </dependency>
 
         <!-- Logger -->

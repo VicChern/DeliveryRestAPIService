@@ -10,12 +10,12 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.softserve.itacademy.kek", "com.softserve.itacademy.kek.security", "com.softserve.itacademy.kek.controller"})
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -31,6 +31,5 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         final Map<String, String> parameterMap = new HashMap<>();
         parameterMap.put("charset", "UTF-8");
         configurer.defaultContentType(new MediaType(MediaType.APPLICATION_JSON, parameterMap));
-
     }
 }
