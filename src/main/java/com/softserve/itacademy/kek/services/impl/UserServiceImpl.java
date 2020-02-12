@@ -1,57 +1,130 @@
 package com.softserve.itacademy.kek.services.impl;
 
+import com.softserve.itacademy.kek.exception.UserServiceException;
+import com.softserve.itacademy.kek.modelInterfaces.IUserData;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.repositories.UserRepository;
+import com.softserve.itacademy.kek.services.ITenantService;
 import com.softserve.itacademy.kek.services.IUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.PersistenceException;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements IUserService {
 
-    private UserRepository userRepository;
+    final Logger logger = LoggerFactory.getLogger(ITenantService.class);
+
+    private final UserRepository userRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    @Override
-    public Optional<User> save(User user) {
-        return Optional.of(userRepository.save(user));
+    /**
+     * Inserts new user to db
+     *
+     * @param userData user data
+     * @return inserted user data
+     */
+    public IUserData insert(IUserData userData) {
+        logger.info("Insert User into DB: " + userData);
+
+        User user = new User();
+        user.setGuid(UUID.randomUUID());
+        user.setName(userData.getName());
+        user.setNickname(userData.getNickname());
+        user.setEmail(userData.getEmail());
+        user.setPhoneNumber(userData.getPhoneNumber());
+
+        try {
+            user = userRepository.save(user);
+        } catch (PersistenceException ex) {
+            logger.error("User wasn't inserted into DB: " + user);
+            throw new UserServiceException("User wasn't saved");
+        }
+
+        logger.info("User was inserted into DB, guid: " + user.getGuid());
+
+        return user;
     }
 
+    /**
+     * Updates user
+     *
+     * @param userData user data
+     * @return updated user data
+     */
     @Override
-    public Optional<Iterable<User>> saveAll(List<User> users) {
-        return Optional.of(userRepository.saveAll(users));
+    public IUserData update(IUserData userData) {
+        logger.info("Update User in DB: " + userData);
+
+        User user = getEntityByGuid(userData.getGuid());
+        user.setName(userData.getName());
+        user.setNickname(userData.getNickname());
+        user.setEmail(userData.getEmail());
+        user.setPhoneNumber(userData.getPhoneNumber());
+
+        try {
+            user = userRepository.save(user);
+        } catch (PersistenceException ex) {
+            logger.error("User wasn't updated in DB: " + user);
+            throw new UserServiceException("User wasn't saved");
+        }
+
+        logger.info("User was updated in DB, guid: " + user.getGuid());
+
+        return user;
     }
 
+    /**
+     * Deletes user in DB by user guid
+     *
+     * @param guid user guid
+     */
     @Override
-    public Optional<User> update(User user) {
-        return Optional.of(userRepository.save(user));
+    public void deleteByGuid(UUID guid) {
+        logger.info("Delete User from DB, guid: " + guid);
+
+        User user = getEntityByGuid(guid);
+
+        try {
+            userRepository.deleteById(user.getIdUser());
+        } catch (PersistenceException ex) {
+            logger.error("User wasn't deleted from DB: " + user);
+            throw new UserServiceException("User wasn't deleted");
+        }
+
+        logger.info("User was deleted from DB, guid: " + user.getGuid());
     }
 
+    /**
+     * Returns user data by user guid
+     *
+     * @param guid user guid
+     * @return user data
+     */
     @Override
-    public Optional<User> get(Long id) {
-        return userRepository.findById(id);
+    public IUserData getByGuid(UUID guid) {
+        return getEntityByGuid(guid);
     }
 
-    @Override
-    public List<User> getAll() {
-        return (List<User>) userRepository.findAll();
-    }
+    private User getEntityByGuid(UUID guid) {
+        logger.info("Find User in DB, guid: " + guid);
 
-    @Override
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
+        User user;
+        try {
+            user = userRepository.findByGuid(guid);
+        } catch (NoSuchElementException ex) {
+            logger.error("User wasn't found in DB, guid: " + guid);
+            throw new UserServiceException("User wasn't found");
+        }
+        return user;
     }
-
-    @Override
-    public void deleteAll() {
-        userRepository.deleteAll();
-    }
-
 }
