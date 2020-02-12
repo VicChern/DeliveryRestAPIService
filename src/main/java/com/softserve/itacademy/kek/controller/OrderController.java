@@ -64,7 +64,7 @@ public class OrderController extends DefaultController {
         List<OrderDto> orderList = new ArrayList<>();
         orderList.add(getOrderDtoStub());
 
-        logger.info("Sending list of all orders to the client:\n" + gson.toJson(orderList));
+        logger.info("Sending list of all orders to the client:\n{}", gson.toJson(orderList));
         return orderList;
     }
 
@@ -80,7 +80,7 @@ public class OrderController extends DefaultController {
         logger.info("Sending the created order to the client");
 
         OrderDto order = gson.fromJson(body, OrderDto.class);
-        logger.info("Order has been sent:\n" + gson.toJson(order));
+        logger.info("Order has been sent:\n{}", gson.toJson(order));
         return order;
     }
 
@@ -95,7 +95,7 @@ public class OrderController extends DefaultController {
     public OrderDto getOrder(@PathVariable String id) {
         OrderDto order = getOrderDtoStub();
 
-        logger.info("Sending the specific order (" + id + ") to the client:\n" + gson.toJson(order));
+        logger.info("Sending the specific order ({}) to the client:\n{}",id , gson.toJson(order));
         return order;
     }
 
@@ -110,10 +110,10 @@ public class OrderController extends DefaultController {
             produces = "application/vnd.softserve.order+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public OrderDto modifyOrder(@PathVariable String id, @RequestBody String body) {
-        logger.info("Sending the modified order(" + id + ") to the client");
+        logger.info("Sending the modified order({}) to the client", id);
 
         OrderDto order = gson.fromJson(body, OrderDto.class);
-        logger.info("Order was modified:\n" + gson.toJson(order));
+        logger.info("Order was modified:\n{}", gson.toJson(order));
         return order;
     }
 
@@ -125,7 +125,7 @@ public class OrderController extends DefaultController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteOrder(@PathVariable String id) {
-        logger.info("Order (" + id + ") successfully deleted");
+        logger.info("Order ({}}) successfully deleted", id);
     }
 
     /**
@@ -137,12 +137,12 @@ public class OrderController extends DefaultController {
     @GetMapping(value = "/{id}/events", produces = "application/vnd.softserve.event+json")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderEventDto> getEvents(@PathVariable String id) {
-        logger.info("Sending the list of order (" + id + ") events to the client");
+        logger.info("Sending the list of order ({}) events to the client", id);
 
         List<OrderEventDto> orders = new ArrayList<>();
         orders.add(getOrderEventStub());
 
-        logger.info("Sending the list: " + gson.toJson(orders));
+        logger.info("Sending the list: {}", gson.toJson(orders));
         return orders;
     }
 
@@ -157,10 +157,10 @@ public class OrderController extends DefaultController {
             produces = "application/vnd.softserve.event+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public OrderEventDto addEvent(@PathVariable String id, @RequestBody String body) {
-        logger.info("Sending the created order(" + id + ") events to the client");
+        logger.info("Sending the created order({}) events to the client", id);
 
         OrderEventDto order = gson.fromJson(body, OrderEventDto.class);
-        logger.info("Event have been added: " + gson.toJson(order));
+        logger.info("Event have been added: {}", gson.toJson(order));
         return order;
     }
 }
