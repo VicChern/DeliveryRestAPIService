@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.modelInterfaces;
 /**
  * Interface for User details data exchange with Service Layer
  */
-public interface IUserDetailsData {
+public interface IUserDetails {
     /**
      * Returns user payload
      * @return user payload
