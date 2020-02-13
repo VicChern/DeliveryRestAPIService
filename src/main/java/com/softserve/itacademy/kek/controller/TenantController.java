@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/tenants")
 public class TenantController extends DefaultController {
-    final Logger logger = LoggerFactory.getLogger(TenantController.class);
+    final static Logger logger = LoggerFactory.getLogger(TenantController.class);
     private final Gson gson = new Gson();
 
     // Build Response (stub, temporary method)
@@ -80,7 +80,7 @@ public class TenantController extends DefaultController {
         List<TenantDto> tenantList = new ArrayList<>();
         tenantList.add(getTenantDtoStub());
 
-        logger.info("Sending list of all tenants to the client:\n" + gson.toJson(tenantList));
+        logger.info("Sending list of all tenants to the client:\n{}", gson.toJson(tenantList));
         return tenantList;
     }
 
@@ -93,11 +93,11 @@ public class TenantController extends DefaultController {
     @PostMapping(consumes = "application/vnd.softserve.tenant+json", produces = "application/vnd.softserve.tenant+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public TenantDto addTenant(@RequestBody String body) {
-        logger.info("Accepted requested to create a new tenant:\n" + body);
+        logger.info("Accepted requested to create a new tenant:\n{}", body);
 
         TenantDto tenantDto = gson.fromJson(body, TenantDto.class);
 
-        logger.info("Sending the created tenant to the client:\n" + gson.toJson(tenantDto));
+        logger.info("Sending the created tenant to the client:\n{}", gson.toJson(tenantDto));
         return tenantDto;
     }
 
@@ -110,11 +110,11 @@ public class TenantController extends DefaultController {
     @GetMapping(value = "/{guid}", produces = "application/vnd.softserve.tenant+json")
     @ResponseStatus(HttpStatus.OK)
     public TenantDto getTenant(@PathVariable String guid) {
-        logger.info("Client requested the tenant " + guid);
+        logger.info("Client requested the tenant {}", guid);
 
         TenantDto tenantDto = getTenantDtoStub();
 
-        logger.info("Sending the specific tenant(" + guid + ") to the client");
+        logger.info("Sending the specific tenant({}) to the client", guid);
         return tenantDto;
     }
 
@@ -130,11 +130,11 @@ public class TenantController extends DefaultController {
             produces = "application/vnd.softserve.tenant+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public TenantDto modifyTenant(@PathVariable String guid, @RequestBody String body) {
-        logger.info("Accepted modified tenant from the client:\n" + body);
+        logger.info("Accepted modified tenant from the client:\n{}", body);
 
         TenantDto tenantDto = gson.fromJson(body, TenantDto.class);
 
-        logger.info("Sending the modified tenant to the client:\n" + gson.toJson(tenantDto));
+        logger.info("Sending the modified tenant to the client:\n{}", gson.toJson(tenantDto));
         return tenantDto;
     }
 
@@ -146,9 +146,9 @@ public class TenantController extends DefaultController {
     @DeleteMapping("/{guid}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTenant(@PathVariable String guid) {
-        logger.info("Accepted request to delete the tenant " + guid);
+        logger.info("Accepted request to delete the tenant {}", guid);
 
-        logger.info("Tenant(" + guid + ") was successfully deleted");
+        logger.info("Tenant({}}) was successfully deleted", guid);
     }
 
     /**
@@ -160,13 +160,12 @@ public class TenantController extends DefaultController {
     @GetMapping(value = "/{guid}/properties", produces = "application/vnd.softserve.tenantproperty+json")
     @ResponseStatus(HttpStatus.OK)
     public List<TenantPropertiesDto> getTenantProperties(@PathVariable String guid) {
-        logger.info("Client requested all the properties of the tenant " + guid);
+        logger.info("Client requested all the properties of the tenant {}", guid);
 
         List<TenantPropertiesDto> tenantPropertiesList = new ArrayList<>();
         tenantPropertiesList.add(getTenantPropertiesDtoStub());
 
-        logger.info("Sending the list of tenant's(" + guid + ") properties to the client:\n"
-                + gson.toJson(tenantPropertiesList));
+        logger.info("Sending the list of tenant's({}) properties to the client:\n{}", guid, gson.toJson(tenantPropertiesList));
 
         return tenantPropertiesList;
     }
@@ -182,11 +181,11 @@ public class TenantController extends DefaultController {
             produces = "application/vnd.softserve.tenantproperty+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public TenantPropertiesDto addTenantProperties(@PathVariable String guid, @RequestBody String body) {
-        logger.info("Accepted requested to create a new properties for tenant:" + guid + ":\n" + body);
+        logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, body);
 
         TenantPropertiesDto tenantPropertiesDto = gson.fromJson(body, TenantPropertiesDto.class);
 
-        logger.info("Sending the created tenant's(" + guid + ") properties to the client");
+        logger.info("Sending the created tenant's({}) properties to the client", guid);
 
         return tenantPropertiesDto;
     }
@@ -201,11 +200,11 @@ public class TenantController extends DefaultController {
     @GetMapping(value = "/{guid}/properties/{propguid}", produces = "application/vnd.softserve.tenantproperty+json")
     @ResponseStatus(HttpStatus.OK)
     public TenantPropertiesDto getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
-        logger.info("Sending the tenant's(" + guid + ") specific property(" + propGuid + ") to the client");
+        logger.info("Sending the tenant's({}) specific property({}) to the client", guid, propGuid);
 
         TenantPropertiesDto tenantPropertiesDto = getTenantPropertiesDtoStub();
 
-        logger.info("Sending specific property of the tenant " + guid + " to the client:\n" + gson.toJson(tenantPropertiesDto));
+        logger.info("Sending specific property of the tenant {} to the client:\n{}", guid, gson.toJson(tenantPropertiesDto));
         return tenantPropertiesDto;
     }
 
@@ -221,11 +220,11 @@ public class TenantController extends DefaultController {
             produces = "application/vnd.softserve.tenantproperty+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public TenantPropertiesDto modifyTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid, @RequestBody String body) {
-        logger.info("Sending the modified tenant's(" + guid + ") property(" + propGuid + ") to the client");
+        logger.info("Sending the modified tenant's({}) property({}) to the client", guid, propGuid);
 
         TenantPropertiesDto tenantPropertiesDto = gson.fromJson(body, TenantPropertiesDto.class);
 
-        logger.info("Sending the modified property of the tenant " + guid + " to the client:\n" + gson.toJson(tenantPropertiesDto));
+        logger.info("Sending the modified property of the tenant {} to the client:\n{}", guid, gson.toJson(tenantPropertiesDto));
         return tenantPropertiesDto;
     }
 
@@ -238,9 +237,9 @@ public class TenantController extends DefaultController {
     @DeleteMapping("/{guid}/properties/{propguid}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
-        logger.info("Accepted request to delete the property " + propGuid + " ot the tenant " + guid);
+        logger.info("Accepted request to delete the property {} ot the tenant {}", propGuid, guid);
 
-        logger.info("the property " + propGuid + " ot the tenant " + guid + " successfully deleted");
+        logger.info("the property {} ot the tenant {} successfully deleted", propGuid, guid);
     }
 
     /**
@@ -252,12 +251,12 @@ public class TenantController extends DefaultController {
     @GetMapping(value = "/{guid}/addresses", produces = "application/vnd.softserve.address+json")
     @ResponseStatus(HttpStatus.OK)
     public List<AddressDto> getTenantAddresses(@PathVariable String guid) {
-        logger.info("Client requested all the addresses" + guid);
+        logger.info("Client requested all the addresses {}", guid);
 
         List<AddressDto> addressesList = new ArrayList<>();
         addressesList.add(getTenantAddressDtoStub());
 
-        logger.info("Sending the list of addresses of the tenant " + guid + " to the client:\n" + gson.toJson(addressesList));
+        logger.info("Sending the list of addresses of the tenant {} to the client:\n{}", guid, gson.toJson(addressesList));
         return addressesList;
     }
 
@@ -272,11 +271,11 @@ public class TenantController extends DefaultController {
             produces = "application/vnd.softserve.address+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public AddressDto addTenantAddresses(@PathVariable String guid, @RequestBody String body) {
-        logger.info("Accepted requested to create a new address for tenant:" + guid + ":\n" + body);
+        logger.info("Accepted requested to create a new address for tenant: {} :\n{}", guid, body);
 
         AddressDto addressDto = gson.fromJson(body, AddressDto.class);
 
-        logger.info("Sending the created address of the tenant " + guid + " to the client:\n" + gson.toJson(addressDto));
+        logger.info("Sending the created address of the tenant {} to the client:\n{}", guid, gson.toJson(addressDto));
         return addressDto;
     }
 
@@ -290,11 +289,11 @@ public class TenantController extends DefaultController {
     @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
     @ResponseStatus(HttpStatus.OK)
     public AddressDto getTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
-        logger.info("Client requested the address " + addrGuid + " of the tenant " + guid);
+        logger.info("Client requested the address {} of the tenant {}", addrGuid, guid);
 
         AddressDto addressDto = getTenantAddressDtoStub();
 
-        logger.info("Sending the address of the tenant " + guid + " to the client:\n" + gson.toJson(addressDto));
+        logger.info("Sending the address of the tenant {} to the client:\n{}", guid, gson.toJson(addressDto));
         return addressDto;
     }
 
@@ -310,11 +309,11 @@ public class TenantController extends DefaultController {
             produces = "application/vnd.softserve.address+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public AddressDto modifyTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid, @RequestBody String body) {
-        logger.info("Accepted modified address of the tenant " + guid + " from the client:\n" + body);
+        logger.info("Accepted modified address of the tenant {} from the client:\n{}", guid, body);
 
         AddressDto addressDto = gson.fromJson(body, AddressDto.class);
 
-        logger.info("Sending the modified address of the tenant " + guid + " to the client:\n" + gson.toJson(addressDto));
+        logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, gson.toJson(addressDto));
         return addressDto;
     }
 
@@ -327,8 +326,8 @@ public class TenantController extends DefaultController {
     @DeleteMapping("/{guid}/addresses/{addrguid}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
-        logger.info("Accepted request to delete the address " + addrGuid + " ot the tenant " + guid);
+        logger.info("Accepted request to delete the address {} ot the tenant {}", addrGuid, guid);
 
-        logger.info("the address " + addrGuid + " ot the tenant " + guid + " successfully deleted");
+        logger.info("the address {} ot the tenant {} successfully deleted", addrGuid, guid);
     }
 }
