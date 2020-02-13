@@ -10,23 +10,23 @@ import java.util.UUID;
 public interface IUserService {
     /**
      * Inserts new user to db
-     * @param userData user data
+     * @param user user data
      * @return inserted user data
      */
-    IUser insert(IUser userData);
+    IUser create(IUser user);
 
     /**
      * Updates user
-     * @param userData user data
+     * @param user user data
      * @return updated user data
      */
-    IUser update(IUser userData);
+    IUser update(IUser user);
 
     /**
      * Deletes user in DB by user guid
      * @param guid user guid
      */
-    void deleteByGuid(UUID guid);
+    void delete(UUID guid);
 
     /**
      * Returns user data by user guid
