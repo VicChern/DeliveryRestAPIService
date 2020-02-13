@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  * Interface for User data exchange with Service Layer
  */
-public interface IUserData {
+public interface IUser {
     /**
      * Returns user GUID
      *
@@ -45,5 +45,5 @@ public interface IUserData {
      * Returns user details
      * @return user details
      */
-    IUserDetailsData getUserDetailsData();
+    IUserDetails getUserDetailsData();
 }

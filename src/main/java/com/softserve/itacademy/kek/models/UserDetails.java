@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
-import com.softserve.itacademy.kek.modelInterfaces.IUserDetailsData;
+import com.softserve.itacademy.kek.modelInterfaces.IUserDetails;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "o2o_user_details")
-public class UserDetails implements IUserDetailsData, Serializable {
+public class UserDetails implements IUserDetails, Serializable {
 
     @Id
     @Column(name = "id_user")

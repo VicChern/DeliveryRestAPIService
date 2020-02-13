@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.modelInterfaces.IUserData;
+import com.softserve.itacademy.kek.modelInterfaces.IUser;
 
 import java.util.UUID;
 
@@ -13,14 +13,14 @@ public interface IUserService {
      * @param userData user data
      * @return inserted user data
      */
-    IUserData insert(IUserData userData);
+    IUser insert(IUser userData);
 
     /**
      * Updates user
      * @param userData user data
      * @return updated user data
      */
-    IUserData update(IUserData userData);
+    IUser update(IUser userData);
 
     /**
      * Deletes user in DB by user guid
@@ -33,5 +33,5 @@ public interface IUserService {
      * @param guid user guid
      * @return user data
      */
-    IUserData getByGuid(UUID guid);
+    IUser getByGuid(UUID guid);
 }
