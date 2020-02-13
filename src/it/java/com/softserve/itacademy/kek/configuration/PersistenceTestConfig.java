@@ -16,8 +16,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-//TODO Extract db properties into separate files
-//TODO: Add logger
+
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"com.softserve.itacademy.kek.repositories"})

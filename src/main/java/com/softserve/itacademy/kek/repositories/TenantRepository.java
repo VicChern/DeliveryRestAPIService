@@ -8,4 +8,6 @@ import java.util.UUID;
 public interface TenantRepository extends CrudRepository<Tenant, Long> {
 
     Tenant findByGuid(UUID guid);
+
+    void removeByGuid(UUID guid);
 }
