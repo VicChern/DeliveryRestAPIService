@@ -59,7 +59,7 @@ public class SseController {
 
     /**
      * Creating emitter for 3 minutes(can be changed) and pushing message every 5 seconds
-     * data sending "message" for now, should be changed for actual coordinates
+     * data sending coordinates "0;0" for now, should be changed for actual coordinates
      *
      * @return
      */
@@ -72,7 +72,7 @@ public class SseController {
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             try {
-                for (; isConnected; ) {
+                while (isConnected) {
                     SseEmitter.SseEventBuilder event = SseEmitter.event()
                             .data(coordinates, MediaType.TEXT_EVENT_STREAM);
                     emitter.send(event);
