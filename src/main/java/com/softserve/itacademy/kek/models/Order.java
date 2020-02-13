@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.modelInterfaces.IOrder;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +23,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_order")
-public class Order implements Serializable {
+public class Order implements IOrder, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +31,7 @@ public class Order implements Serializable {
     private Long idOrder;
 
     @ManyToOne
-    @JoinColumn(name ="id_tenant", insertable = false, updatable = false)
+    @JoinColumn(name = "id_tenant", insertable = false, updatable = false)
     private Tenant idTenant;
 
     @NotNull
