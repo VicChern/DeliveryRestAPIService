@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.models;
 
 import com.softserve.itacademy.kek.modelInterfaces.ITenantDetails;
 import com.softserve.itacademy.kek.modelInterfaces.ITenant;
-import com.softserve.itacademy.kek.modelInterfaces.IUserData;
+import com.softserve.itacademy.kek.modelInterfaces.IUser;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -74,11 +74,11 @@ public class Tenant implements ITenant, Serializable {
         this.name = name;
     }
 
-    public IUserData getTenantOwner() {
+    public IUser getTenantOwner() {
         return tenantOwner;
     }
 
-    public void setTenantOwner(IUserData tenantOwner) {
+    public void setTenantOwner(IUser tenantOwner) {
         this.tenantOwner = (User)tenantOwner;
     }
 

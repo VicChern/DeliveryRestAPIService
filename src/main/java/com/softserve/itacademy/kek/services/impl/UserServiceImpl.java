@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek.services.impl;
 
 import com.softserve.itacademy.kek.exception.UserServiceException;
-import com.softserve.itacademy.kek.modelInterfaces.IUserData;
-import com.softserve.itacademy.kek.modelInterfaces.IUserDetailsData;
+import com.softserve.itacademy.kek.modelInterfaces.IUser;
+import com.softserve.itacademy.kek.modelInterfaces.IUserDetails;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.models.UserDetails;
 import com.softserve.itacademy.kek.repositories.UserRepository;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements IUserService {
      * @param userData user data
      * @return inserted user data
      */
-    public IUserData insert(IUserData userData) {
+    public IUser insert(IUser userData) {
         logger.info("Insert User into DB: " + userData);
 
         User user = new User();
@@ -47,7 +47,7 @@ public class UserServiceImpl implements IUserService {
 
         UserDetails details = new UserDetails();
 
-        IUserDetailsData detailsData = userData.getUserDetailsData();
+        IUserDetails detailsData = userData.getUserDetailsData();
         if (detailsData != null) {
             details.setImageUrl(detailsData.getImageUrl());
             details.setPayload(detailsData.getPayload());
@@ -74,7 +74,7 @@ public class UserServiceImpl implements IUserService {
      * @return updated user data
      */
     @Override
-    public IUserData update(IUserData userData) {
+    public IUser update(IUser userData) {
         logger.info("Update User in DB: " + userData);
 
         User user = getEntityByGuid(userData.getGuid());
@@ -83,7 +83,7 @@ public class UserServiceImpl implements IUserService {
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
 
-        IUserDetailsData detailsData = userData.getUserDetailsData();
+        IUserDetails detailsData = userData.getUserDetailsData();
         if (detailsData != null) {
             UserDetails details = user.getUserDetails();
             details.setImageUrl(detailsData.getImageUrl());
@@ -130,7 +130,7 @@ public class UserServiceImpl implements IUserService {
      * @return user data
      */
     @Override
-    public IUserData getByGuid(UUID guid) {
+    public IUser getByGuid(UUID guid) {
         return getEntityByGuid(guid);
     }
 
