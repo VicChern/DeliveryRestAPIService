@@ -1,11 +1,10 @@
 package com.softserve.itacademy.kek.repositories;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.Tenant;
-import com.softserve.itacademy.kek.models.TenantDetails;
-import com.softserve.itacademy.kek.models.User;
-import com.softserve.itacademy.kek.repositories.TenantDetailsRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.StreamSupport;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,10 +12,10 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.StreamSupport;
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.models.Tenant;
+import com.softserve.itacademy.kek.models.TenantDetails;
+import com.softserve.itacademy.kek.models.User;
 
 @Component
 @ContextConfiguration(classes = {PersistenceTestConfig.class})

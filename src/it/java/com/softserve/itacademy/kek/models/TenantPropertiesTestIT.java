@@ -1,9 +1,10 @@
 package com.softserve.itacademy.kek.models;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils;
+import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,10 +15,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
+import com.softserve.itacademy.kek.repositories.UserRepository;
+import com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
@@ -38,13 +39,13 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
     private User user1;
     private User user2;
 
-    @DataProvider(name="illegal_keys")
-    public static Object[][] keys(){
+    @DataProvider(name = "illegal_keys")
+    public static Object[][] keys() {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_256 + 1)}, {""}, {null}};
     }
 
-    @DataProvider(name="illegal_values")
-    public static Object[][] values(){
+    @DataProvider(name = "illegal_values")
+    public static Object[][] values() {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_4096 + 1)}, {""}, {null}};
     }
 
@@ -96,7 +97,7 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(savedTenantProperty.get().getIdProperty(), id);
     }
 
-//TODO: Extract into utils, refactor to Builder, refactor to User with all transitive dependencies
+    //TODO: Extract into utils, refactor to Builder, refactor to User with all transitive dependencies
     private User getUserWithTenantProperties() {
         User user = getUser();
         Tenant tenant = getTenant(user);

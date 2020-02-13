@@ -35,6 +35,7 @@ public class OrderDetails implements Serializable {
     public Long getIdOrder() {
         return idOrder;
     }
+
     public void setIdOrder(Long idOrder) {
         this.idOrder = idOrder;
     }

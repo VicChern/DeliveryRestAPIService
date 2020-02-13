@@ -6,7 +6,7 @@ public class DetailsDto {
     private String payload;
     private String imageUrl;
 
-    public DetailsDto (String payload, String imageUrl) {
+    public DetailsDto(String payload, String imageUrl) {
         this.payload = payload;
         this.imageUrl = imageUrl;
     }

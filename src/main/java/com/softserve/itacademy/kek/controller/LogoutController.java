@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.softserve.itacademy.kek.security.WebSecurityConfig;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.softserve.itacademy.kek.security.WebSecurityConfig;
 
 @RestController
 @PropertySource("classpath:server.properties")

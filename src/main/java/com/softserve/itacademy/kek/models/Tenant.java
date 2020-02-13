@@ -29,7 +29,7 @@ public class Tenant implements Serializable {
     private Long idTenant;
 
     @OneToOne
-    @JoinColumn(name ="id_tenant_owner")
+    @JoinColumn(name = "id_tenant_owner")
     private User tenantOwner;
 
     @NotNull

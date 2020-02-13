@@ -29,7 +29,7 @@ public class Order implements Serializable {
     private Long idOrder;
 
     @ManyToOne
-    @JoinColumn(name ="id_tenant", insertable = false, updatable = false)
+    @JoinColumn(name = "id_tenant", insertable = false, updatable = false)
     private Tenant idTenant;
 
     @NotNull

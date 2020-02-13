@@ -17,7 +17,7 @@ public class PropertyType implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="id_property_type")
+    @Column(name = "id_property_type")
     private Long idPropertyType;
 
     @NotNull

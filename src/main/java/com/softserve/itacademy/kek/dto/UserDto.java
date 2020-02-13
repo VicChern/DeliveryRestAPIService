@@ -1,7 +1,5 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Objects;
 
 public class UserDto {
