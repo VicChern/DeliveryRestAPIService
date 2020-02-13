@@ -1,23 +1,37 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.models.User;
+import com.softserve.itacademy.kek.modelInterfaces.IUserData;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
+/**
+ * Service for work with user
+ */
 public interface IUserService {
+    /**
+     * Inserts new user to db
+     * @param userData user data
+     * @return inserted user data
+     */
+    IUserData insert(IUserData userData);
 
-    Optional<User> save(User user);
+    /**
+     * Updates user
+     * @param userData user data
+     * @return updated user data
+     */
+    IUserData update(IUserData userData);
 
-    Optional<Iterable<User>> saveAll(List<User> users);
+    /**
+     * Deletes user in DB by user guid
+     * @param guid user guid
+     */
+    void deleteByGuid(UUID guid);
 
-    Optional<User> update(User user);
-
-    Optional<User> get(Long id);
-
-    List<User> getAll();
-
-    void deleteById(Long id);
-
-    void deleteAll();
+    /**
+     * Returns user data by user guid
+     * @param guid user guid
+     * @return user data
+     */
+    IUserData getByGuid(UUID guid);
 }
