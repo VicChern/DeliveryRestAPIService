@@ -45,5 +45,5 @@ public interface IUser {
      * Returns user details
      * @return user details
      */
-    IUserDetails getUserDetailsData();
+    IUserDetails getUserDetails();
 }
