@@ -48,6 +48,7 @@ public class WebSecurityConfigTestIT extends AbstractTestNGSpringContextTests {
 
     @Test(groups = {"integration-tests"})
     public void routeRedirectWhenNotAuthenticated() throws Exception {
+        System.out.println("requestedPageURL value - " + requestedPageURL);
         mvc.perform(get(requestedPageURL))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrlWhenNotAuthenticated));
