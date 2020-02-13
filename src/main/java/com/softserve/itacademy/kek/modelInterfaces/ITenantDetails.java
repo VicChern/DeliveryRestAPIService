@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.modelInterfaces;
 /**
  * Interface for exchange data with details in service layer
  */
-public interface IDetails {
+public interface ITenantDetails {
 
     String getPayload();
 

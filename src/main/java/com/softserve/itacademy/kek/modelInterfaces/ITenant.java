@@ -11,8 +11,8 @@ public interface ITenant {
 
     String getName();
 
-    IUser getTenantOwner();
+    IUserData getTenantOwner();
 
-    IDetails getTenantDetails();
+    ITenantDetails getTenantDetails();
 
 }
