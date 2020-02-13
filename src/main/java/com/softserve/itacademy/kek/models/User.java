@@ -115,7 +115,6 @@ public class User implements IUserData, Serializable {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
-
     @Override
     public IUserDetailsData getUserDetailsData() {
         return getUserDetails();

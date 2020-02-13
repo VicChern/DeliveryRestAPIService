@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.models;
 
-
 import com.softserve.itacademy.kek.modelInterfaces.IUserDetailsData;
 
 import javax.persistence.Column;
