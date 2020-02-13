@@ -11,6 +11,9 @@ stages:
 maven_build:
   stage: test
   script:
+    - echo $KekDomain
+    - echo KekId
+    - echo KekWord
     - mvn verify -B
 #  only:
 #    - merge_requests
