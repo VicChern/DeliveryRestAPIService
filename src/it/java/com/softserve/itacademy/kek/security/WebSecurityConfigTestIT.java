@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Test(groups = {"integration-tests"})
 @ContextConfiguration(classes = {WebMvcConfig.class, WebSecurityConfig.class, PersistenceTestConfig.class})
 @WebAppConfiguration
 @Configuration
@@ -47,7 +46,7 @@ public class WebSecurityConfigTestIT extends AbstractTestNGSpringContextTests {
                 .build();
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void routeRedirectWhenNotAuthenticated() throws Exception {
         mvc.perform(get(requestedPageURL))
                 .andExpect(status().is3xxRedirection())
