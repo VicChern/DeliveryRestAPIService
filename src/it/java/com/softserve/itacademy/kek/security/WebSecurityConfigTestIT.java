@@ -13,6 +13,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.configuration.WebMvcConfig;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -21,16 +22,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Test(groups = {"integration-tests"})
-@ContextConfiguration(classes = {WebMvcConfig.class, WebSecurityConfig.class})
+@ContextConfiguration(classes = {WebMvcConfig.class, WebSecurityConfig.class, PersistenceTestConfig.class})
 @WebAppConfiguration
 @Configuration
-@TestPropertySource(locations = "classpath:integration-test.properties")
-public class WebSecurityIntegrationTest extends AbstractTestNGSpringContextTests {
+@TestPropertySource(locations = "classpath:integration.properties")
+public class WebSecurityConfigTestIT extends AbstractTestNGSpringContextTests {
 
     @Value(value = "${redirect.URL.when.not.authenticated}")
     private String redirectUrlWhenNotAuthenticated;
 
-    @Value(value = "requested.page.URL")
+    @Value(value = "${requested.page.URL}")
     private String requestedPageURL;
 
     @Autowired
