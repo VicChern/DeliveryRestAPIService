@@ -2,7 +2,9 @@ package com.softserve.itacademy.kek.services.impl;
 
 import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.modelInterfaces.IUserData;
+import com.softserve.itacademy.kek.modelInterfaces.IUserDetailsData;
 import com.softserve.itacademy.kek.models.User;
+import com.softserve.itacademy.kek.models.UserDetails;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.ITenantService;
 import com.softserve.itacademy.kek.services.IUserService;
@@ -43,6 +45,16 @@ public class UserServiceImpl implements IUserService {
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
 
+        UserDetails details = new UserDetails();
+
+        IUserDetailsData detailsData = userData.getUserDetailsData();
+        if (detailsData != null) {
+            details.setImageUrl(detailsData.getImageUrl());
+            details.setPayload(detailsData.getPayload());
+        }
+
+        user.setUserDetails(details);
+
         try {
             user = userRepository.save(user);
         } catch (PersistenceException ex) {
@@ -71,6 +83,13 @@ public class UserServiceImpl implements IUserService {
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
 
+        IUserDetailsData detailsData = userData.getUserDetailsData();
+        if (detailsData != null) {
+            UserDetails details = user.getUserDetails();
+            details.setImageUrl(detailsData.getImageUrl());
+            details.setPayload(detailsData.getPayload());
+        }
+
         try {
             user = userRepository.save(user);
         } catch (PersistenceException ex) {
@@ -84,7 +103,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     /**
-     * Deletes user in DB by user guid
+     * Deletes user from DB by user guid
      *
      * @param guid user guid
      */

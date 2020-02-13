@@ -40,4 +40,10 @@ public interface IUserData {
      * @return user phone number
      */
     String getPhoneNumber();
+
+    /**
+     * Returns user details
+     * @return user details
+     */
+    IUserDetailsData getUserDetailsData();
 }
