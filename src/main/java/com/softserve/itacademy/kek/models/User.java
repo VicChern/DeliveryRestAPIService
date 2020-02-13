@@ -1,5 +1,8 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.modelInterfaces.IDetails;
+import com.softserve.itacademy.kek.modelInterfaces.IUser;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +24,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_user")
-public class User implements Serializable {
+public class User implements IUser, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -113,12 +116,12 @@ public class User implements Serializable {
         this.nickname = nickname;
     }
 
-    public UserDetails getUserDetails() {
+    public IDetails getUserDetails() {
         return userDetails;
     }
 
-    public void setUserDetails(UserDetails userDetails) {
-        this.userDetails = userDetails;
+    public void setUserDetails(IDetails userDetails) {
+        this.userDetails = (UserDetails) userDetails;
     }
 
     public Tenant getTenant() {

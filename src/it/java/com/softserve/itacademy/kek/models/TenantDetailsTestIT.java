@@ -76,7 +76,7 @@ public class TenantDetailsTestIT extends AbstractTestNGSpringContextTests {
         Optional<TenantDetails> tenantDetailsOptional = tenantDetailsRepository.findById(tenantDetails.getIdTenant());
         assertNotNull(tenantDetailsOptional.orElse(null));
 
-        TenantDetails tenantDetails = tenantOptional.get().getTenantDetails();
+        TenantDetails tenantDetails = (TenantDetails) tenantOptional.get().getTenantDetails();
         assertEquals(tenantOptional.get().getIdTenant(), tenantDetails.getIdTenant());
     }
 
