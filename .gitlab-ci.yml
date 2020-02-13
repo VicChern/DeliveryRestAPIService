@@ -1,5 +1,10 @@
 image: maven:3.6.1
 
+before_script:
+  - export KekDomain=domain
+  - export KekId=id
+  - export KekWord=word
+
 stages:
   - test
 
