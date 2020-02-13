@@ -116,12 +116,7 @@ public class User implements IUser, Serializable {
         this.nickname = nickname;
     }
 
-    @Override
-    public IUserDetails getUserDetailsData() {
-        return getUserDetails();
-    }
-
-    public UserDetails getUserDetails() {
+    public IUserDetails getUserDetails() {
         return userDetails;
     }
 

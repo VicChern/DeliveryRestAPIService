@@ -12,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -30,76 +32,85 @@ public class UserServiceImpl implements IUserService {
     }
 
     /**
-     * Inserts new user to db
+     * Inserts new user into DB
      *
-     * @param userData user data
+     * @param user user data
      * @return inserted user data
      */
-    public IUser insert(IUser userData) {
-        logger.info("Insert User into DB: " + userData);
+    @Transactional
+    @Override
+    public IUser create(IUser user) {
+        logger.info("Insert User into DB: {}", user);
 
-        User user = new User();
-        user.setGuid(UUID.randomUUID());
-        user.setName(userData.getName());
-        user.setNickname(userData.getNickname());
-        user.setEmail(userData.getEmail());
-        user.setPhoneNumber(userData.getPhoneNumber());
+        User realUser = new User();
 
-        UserDetails details = new UserDetails();
+        realUser.setGuid(UUID.randomUUID());
+        realUser.setName(user.getName());
+        realUser.setNickname(user.getNickname());
+        realUser.setEmail(user.getEmail());
+        realUser.setPhoneNumber(user.getPhoneNumber());
 
-        IUserDetails detailsData = userData.getUserDetailsData();
-        if (detailsData != null) {
-            details.setImageUrl(detailsData.getImageUrl());
-            details.setPayload(detailsData.getPayload());
+        UserDetails realDetails = new UserDetails();
+
+        IUserDetails details = user.getUserDetails();
+        if (details != null) {
+            realDetails.setImageUrl(details.getImageUrl());
+            realDetails.setPayload(details.getPayload());
         }
 
-        user.setUserDetails(details);
+        realUser.setUserDetails(realDetails);
 
         try {
-            user = userRepository.save(user);
-        } catch (PersistenceException ex) {
-            logger.error("User wasn't inserted into DB: " + user);
+            realUser = userRepository.save(realUser);
+        } catch (PersistenceException | ConstraintViolationException ex) {
+            logger.error("User wasn't inserted into DB: {}", realUser, ex);
             throw new UserServiceException("User wasn't saved");
         }
 
-        logger.info("User was inserted into DB, guid: " + user.getGuid());
+        logger.info("User was inserted into DB: guid = {}", realUser.getGuid());
 
-        return user;
+        return realUser;
     }
 
     /**
-     * Updates user
+     * Updates user data
      *
-     * @param userData user data
+     * @param user user data
      * @return updated user data
      */
+    @Transactional
     @Override
-    public IUser update(IUser userData) {
-        logger.info("Update User in DB: " + userData);
+    public IUser update(IUser user) {
+        logger.info("Update User in DB: {}", user);
 
-        User user = getEntityByGuid(userData.getGuid());
-        user.setName(userData.getName());
-        user.setNickname(userData.getNickname());
-        user.setEmail(userData.getEmail());
-        user.setPhoneNumber(userData.getPhoneNumber());
+        //User realUser = findRealUser(user.getGuid());
+        User realUser = findRealUser(UUID.fromString("5a15adfc-84e9-451a-a3db-4d86879dc0a9"));
+        realUser.setName(user.getName());
+        realUser.setNickname(user.getNickname());
+        realUser.setEmail(user.getEmail());
+        realUser.setPhoneNumber(user.getPhoneNumber());
 
-        IUserDetails detailsData = userData.getUserDetailsData();
-        if (detailsData != null) {
-            UserDetails details = user.getUserDetails();
-            details.setImageUrl(detailsData.getImageUrl());
-            details.setPayload(detailsData.getPayload());
+        UserDetails realDetails = new UserDetails();
+        realDetails.setIdUser(realUser.getIdUser());
+
+        IUserDetails details = user.getUserDetails();
+        if (details != null) {
+            realDetails.setImageUrl(details.getImageUrl());
+            realDetails.setPayload(details.getPayload());
         }
 
+        realUser.setUserDetails(realDetails);
+
         try {
-            user = userRepository.save(user);
-        } catch (PersistenceException ex) {
-            logger.error("User wasn't updated in DB: " + user);
+            realUser = userRepository.save(realUser);
+        } catch (PersistenceException | ConstraintViolationException ex) {
+            logger.error("User wasn't updated in DB: {}", realUser);
             throw new UserServiceException("User wasn't saved");
         }
 
-        logger.info("User was updated in DB, guid: " + user.getGuid());
+        logger.info("User was updated in DB: guid = {}", realUser.getGuid());
 
-        return user;
+        return realUser;
     }
 
     /**
@@ -107,20 +118,21 @@ public class UserServiceImpl implements IUserService {
      *
      * @param guid user guid
      */
+    @Transactional
     @Override
-    public void deleteByGuid(UUID guid) {
-        logger.info("Delete User from DB, guid: " + guid);
+    public void delete(UUID guid) {
+        logger.info("Delete User from DB: guid = {}", guid);
 
-        User user = getEntityByGuid(guid);
+        User realUser = findRealUser(guid);
 
         try {
-            userRepository.deleteById(user.getIdUser());
+            userRepository.deleteById(realUser.getIdUser());
         } catch (PersistenceException ex) {
-            logger.error("User wasn't deleted from DB: " + user);
+            logger.error("User wasn't deleted from DB: {}", realUser);
             throw new UserServiceException("User wasn't deleted");
         }
 
-        logger.info("User was deleted from DB, guid: " + user.getGuid());
+        logger.info("User was deleted from DB: guid = {}", realUser.getGuid());
     }
 
     /**
@@ -131,17 +143,18 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public IUser getByGuid(UUID guid) {
-        return getEntityByGuid(guid);
+        return findRealUser(guid);
     }
 
-    private User getEntityByGuid(UUID guid) {
-        logger.info("Find User in DB, guid: " + guid);
+    @Transactional(readOnly = true)
+    private User findRealUser(UUID guid) {
+        logger.info("Find User in DB: guid = {}", guid);
 
         User user;
         try {
             user = userRepository.findByGuid(guid);
         } catch (NoSuchElementException ex) {
-            logger.error("User wasn't found in DB, guid: " + guid);
+            logger.error("User wasn't found in DB: guid = {}", guid);
             throw new UserServiceException("User wasn't found");
         }
         return user;
