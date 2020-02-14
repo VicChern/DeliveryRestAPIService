@@ -1,13 +1,12 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.google.gson.Gson;
-import com.softserve.itacademy.kek.dto.OrderDetailsDto;
-import com.softserve.itacademy.kek.dto.OrderDto;
-import com.softserve.itacademy.kek.dto.OrderEventDto;
-import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.softserve.itacademy.kek.dto.OrderDetailsDto;
+import com.softserve.itacademy.kek.dto.OrderDto;
+import com.softserve.itacademy.kek.dto.OrderEventDto;
+import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 
 
 @RestController
@@ -27,7 +28,6 @@ import java.util.List;
 public class OrderController extends DefaultController {
 
     final Logger logger = LoggerFactory.getLogger(OrderController.class);
-    private final Gson gson = new Gson();
 
     /**
      * Temporary method for OrderDto stub
@@ -36,7 +36,8 @@ public class OrderController extends DefaultController {
      */
     private OrderDto getOrderDtoStub() {
         OrderDetailsDto orderDetails = new OrderDetailsDto("some info", "https://mypicture");
-        OrderDto order = new OrderDto("MyTenant", "safgad123", orderDetails);
+        OrderDto order = new OrderDto("MyTenant", "user123", "123",
+                "summary", orderDetails);
         return order;
     }
 
@@ -54,67 +55,58 @@ public class OrderController extends DefaultController {
     /**
      * Get information about orders
      *
-     * @return list of {@link OrderDto} objects
+     * @return Response Entity with list of {@link OrderDto} objects
      */
     @GetMapping(produces = "application/vnd.softserve.order+json")
-    @ResponseStatus(HttpStatus.OK)
-    public List<OrderDto> getOrderList() {
+    public ResponseEntity<List<OrderDto>> getOrderList() {
         logger.info("Client requested the list of all orders");
 
         List<OrderDto> orderList = new ArrayList<>();
         orderList.add(getOrderDtoStub());
 
-        logger.info("Sending list of all orders to the client:\n{}", gson.toJson(orderList));
-        return orderList;
+        logger.info("Sending list of all orders to the client:\n{}", orderList);
+        return new ResponseEntity<>(orderList, HttpStatus.OK);
     }
 
     /**
      * Creates a new order
      *
-     * @param body order object as a JSON
+     * @param order DTO object as a JSON
      * @return created {@link OrderDto} object
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public OrderDto addOrder(@RequestBody String body) {
-        logger.info("Sending the created order to the client");
-
-        OrderDto order = gson.fromJson(body, OrderDto.class);
-        logger.info("Order has been sent:\n{}", gson.toJson(order));
-        return order;
+    public ResponseEntity<OrderDto> addOrder(@RequestBody OrderDto order) {
+        logger.info("Order has been sent:\n{}", order);
+        return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
     }
 
     /**
      * Returns information about the requested order
      *
      * @param id order ID from the URN
-     * @return {@link OrderDto} object
+     * @return Response Entity with {@link OrderDto} object
      */
     @GetMapping(value = "/{id}", produces = "application/vnd.softserve.order+json")
-    @ResponseStatus(HttpStatus.OK)
-    public OrderDto getOrder(@PathVariable String id) {
+    public ResponseEntity<OrderDto> getOrder(@PathVariable Long id) {
         OrderDto order = getOrderDtoStub();
 
-        logger.info("Sending the specific order ({}) to the client:\n{}",id , gson.toJson(order));
-        return order;
+        logger.info("Sending the specific order ({}) to the client:\n{}", id, order);
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
     /**
      * Modifies information of the specified order
      *
-     * @param id   order ID from the URN
-     * @param body order object as a JSON
-     * @return modified {@link OrderDto} object
+     * @param id    order ID from the URN
+     * @param order order object as a JSON
+     * @return Response entity with modified {@link OrderDto} object
      */
     @PutMapping(value = "/{id}", consumes = "application/vnd.softserve.order+json",
             produces = "application/vnd.softserve.order+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public OrderDto modifyOrder(@PathVariable String id, @RequestBody String body) {
+    public ResponseEntity<OrderDto> modifyOrder(@PathVariable String id, @RequestBody OrderDto order) {
         logger.info("Sending the modified order({}) to the client", id);
-
-        OrderDto order = gson.fromJson(body, OrderDto.class);
-        logger.info("Order was modified:\n{}", gson.toJson(order));
-        return order;
+        logger.info("Order was modified:\n{}", order);
+        return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -123,9 +115,9 @@ public class OrderController extends DefaultController {
      * @param id order ID from the URN
      */
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteOrder(@PathVariable String id) {
-        logger.info("Order ({}}) successfully deleted", id);
+    public ResponseEntity deleteOrder(@PathVariable String id) {
+        logger.info("Order ({}) successfully deleted", id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
@@ -135,32 +127,29 @@ public class OrderController extends DefaultController {
      * @return list of the {@link OrderEventDto} objects
      */
     @GetMapping(value = "/{id}/events", produces = "application/vnd.softserve.event+json")
-    @ResponseStatus(HttpStatus.OK)
-    public List<OrderEventDto> getEvents(@PathVariable String id) {
+    public ResponseEntity<List<OrderEventDto>> getEvents(@PathVariable String id) {
         logger.info("Sending the list of order ({}) events to the client", id);
 
         List<OrderEventDto> orders = new ArrayList<>();
         orders.add(getOrderEventStub());
 
-        logger.info("Sending the list: {}", gson.toJson(orders));
-        return orders;
+        logger.info("Sending the list: {}", orders);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     /**
      * Adds a new event for the specific order
      *
      * @param id   order ID from the URN
-     * @param body order object as a JSON
-     * @return created {@link OrderEventDto} objects
+     * @param body {@link OrderEventDto} object
+     * @return Response Entity with created {@link OrderEventDto} objects
      */
     @PostMapping(value = "/{id}/events", consumes = "application/vnd.softserve.event+json",
             produces = "application/vnd.softserve.event+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public OrderEventDto addEvent(@PathVariable String id, @RequestBody String body) {
+    @ResponseStatus()
+    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String id, @RequestBody OrderEventDto body) {
         logger.info("Sending the created order({}) events to the client", id);
-
-        OrderEventDto order = gson.fromJson(body, OrderEventDto.class);
-        logger.info("Event have been added: {}", gson.toJson(order));
-        return order;
+        logger.info("Event have been added: {}", body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 }

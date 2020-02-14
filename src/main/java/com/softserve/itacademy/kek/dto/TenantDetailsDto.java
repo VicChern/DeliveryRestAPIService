@@ -1,10 +1,18 @@
 package com.softserve.itacademy.kek.dto;
 
+import javax.validation.constraints.Max;
 import java.util.Objects;
 
 public class TenantDetailsDto {
+
+    @Max(4096)
     private String payload;
+
+    @Max(512)
     private String imageUrl;
+
+    public TenantDetailsDto() {
+    }
 
     public TenantDetailsDto(String payload, String imageUrl) {
         this.payload = payload;

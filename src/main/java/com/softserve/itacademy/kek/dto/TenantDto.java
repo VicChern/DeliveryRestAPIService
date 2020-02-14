@@ -1,12 +1,22 @@
 package com.softserve.itacademy.kek.dto;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class TenantDto {
+
+    @NotNull
     private String guid;
     private String owner;
+
+    @NotNull
+    @Max(256)
     private String name;
     private TenantDetailsDto details;
+
+    public TenantDto() {
+    }
 
     public TenantDto(String guid, String owner, String name, TenantDetailsDto details) {
         this.guid = guid;

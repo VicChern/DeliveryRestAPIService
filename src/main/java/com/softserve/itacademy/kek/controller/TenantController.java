@@ -1,14 +1,13 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.google.gson.Gson;
-import com.softserve.itacademy.kek.dto.AddressDto;
-import com.softserve.itacademy.kek.dto.TenantDetailsDto;
-import com.softserve.itacademy.kek.dto.TenantDto;
-import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,14 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.softserve.itacademy.kek.dto.AddressDto;
+import com.softserve.itacademy.kek.dto.TenantDetailsDto;
+import com.softserve.itacademy.kek.dto.TenantDto;
+import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
 
 @RestController
 @RequestMapping(path = "/tenants")
 public class TenantController extends DefaultController {
     final static Logger logger = LoggerFactory.getLogger(TenantController.class);
-    private final Gson gson = new Gson();
 
     // Build Response (stub, temporary method)
     private String getJSON(String id, String status) {
@@ -66,56 +66,48 @@ public class TenantController extends DefaultController {
 
     }
 
-
     /**
      * Get information about tenants
      *
-     * @return list of {@link TenantDto} objects as a JSON
+     * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
     @GetMapping(produces = "application/vnd.softserve.tenant+json")
-    @ResponseStatus(HttpStatus.OK)
-    public List<TenantDto> getTenantList() {
+    public ResponseEntity<List<TenantDto>> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
         List<TenantDto> tenantList = new ArrayList<>();
         tenantList.add(getTenantDtoStub());
 
-        logger.info("Sending list of all tenants to the client:\n{}", gson.toJson(tenantList));
-        return tenantList;
+        logger.info("Sending list of all tenants to the client:\n{}", tenantList);
+        return new ResponseEntity<>(tenantList, HttpStatus.OK);
     }
 
     /**
      * Creates a new tenant
      *
      * @param body {@link TenantDto} object as a JSON
-     * @return {@link TenantDto} object as a JSON
+     * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PostMapping(consumes = "application/vnd.softserve.tenant+json", produces = "application/vnd.softserve.tenant+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public TenantDto addTenant(@RequestBody String body) {
+    public ResponseEntity<TenantDto> addTenant(@RequestBody TenantDto body) {
         logger.info("Accepted requested to create a new tenant:\n{}", body);
-
-        TenantDto tenantDto = gson.fromJson(body, TenantDto.class);
-
-        logger.info("Sending the created tenant to the client:\n{}", gson.toJson(tenantDto));
-        return tenantDto;
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
      * Finds the specific tenant
      *
      * @param guid tenant ID from the URL
-     * @return {@link TenantDto} object as a JSON
+     * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @GetMapping(value = "/{guid}", produces = "application/vnd.softserve.tenant+json")
-    @ResponseStatus(HttpStatus.OK)
-    public TenantDto getTenant(@PathVariable String guid) {
+    public ResponseEntity<TenantDto> getTenant(@PathVariable String guid) {
         logger.info("Client requested the tenant {}", guid);
 
         TenantDto tenantDto = getTenantDtoStub();
 
         logger.info("Sending the specific tenant({}) to the client", guid);
-        return tenantDto;
+        return new ResponseEntity<>(tenantDto, HttpStatus.OK);
     }
 
 
@@ -123,19 +115,16 @@ public class TenantController extends DefaultController {
      * Modifies information of the specified tenant
      *
      * @param guid tenant ID from the URL
-     * @param body tenant object as a JSON
-     * @return {@link TenantDto} object as a JSON
+     * @param body tenant object
+     * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PutMapping(value = "/{guid}", consumes = "application/vnd.softserve.tenant+json",
             produces = "application/vnd.softserve.tenant+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public TenantDto modifyTenant(@PathVariable String guid, @RequestBody String body) {
+    @ResponseStatus()
+    public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody TenantDto body) {
         logger.info("Accepted modified tenant from the client:\n{}", body);
-
-        TenantDto tenantDto = gson.fromJson(body, TenantDto.class);
-
-        logger.info("Sending the modified tenant to the client:\n{}", gson.toJson(tenantDto));
-        return tenantDto;
+        logger.info("Sending the modified tenant to the client:\n{}", body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -144,30 +133,28 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from the URL
      */
     @DeleteMapping("/{guid}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteTenant(@PathVariable String guid) {
+    public ResponseEntity deleteTenant(@PathVariable String guid) {
         logger.info("Accepted request to delete the tenant {}", guid);
-
         logger.info("Tenant({}}) was successfully deleted", guid);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
      * Find properties of the specific tenant
      *
      * @param guid tenant ID from URL
-     * @return List of (@link TenantPropertiesDTO) objects as a JSON
+     * @return Response Entity with a List of (@link TenantPropertiesDTO) objects as a JSON
      */
     @GetMapping(value = "/{guid}/properties", produces = "application/vnd.softserve.tenantproperty+json")
-    @ResponseStatus(HttpStatus.OK)
-    public List<TenantPropertiesDto> getTenantProperties(@PathVariable String guid) {
+    public ResponseEntity<List<TenantPropertiesDto>> getTenantProperties(@PathVariable String guid) {
         logger.info("Client requested all the properties of the tenant {}", guid);
 
         List<TenantPropertiesDto> tenantPropertiesList = new ArrayList<>();
         tenantPropertiesList.add(getTenantPropertiesDtoStub());
 
-        logger.info("Sending the list of tenant's({}) properties to the client:\n{}", guid, gson.toJson(tenantPropertiesList));
+        logger.info("Sending the list of tenant's({}) properties to the client:\n{}", tenantPropertiesList, guid);
 
-        return tenantPropertiesList;
+        return new ResponseEntity<>(tenantPropertiesList, HttpStatus.OK);
     }
 
     /**
@@ -179,15 +166,10 @@ public class TenantController extends DefaultController {
      */
     @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public TenantPropertiesDto addTenantProperties(@PathVariable String guid, @RequestBody String body) {
+    public ResponseEntity<TenantPropertiesDto> addTenantProperties(@PathVariable String guid, @RequestBody TenantPropertiesDto body) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, body);
-
-        TenantPropertiesDto tenantPropertiesDto = gson.fromJson(body, TenantPropertiesDto.class);
-
-        logger.info("Sending the created tenant's({}) properties to the client", guid);
-
-        return tenantPropertiesDto;
+        logger.info("Sending the created tenant's({}) properties to the client", body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -195,17 +177,16 @@ public class TenantController extends DefaultController {
      *
      * @param guid     tenant ID from URL
      * @param propGuid ID of the tenant specific property
-     * @return Specific tenant property {@link TenantPropertiesDto}
+     * @return Response entity with a specific tenant property {@link TenantPropertiesDto}
      */
     @GetMapping(value = "/{guid}/properties/{propguid}", produces = "application/vnd.softserve.tenantproperty+json")
-    @ResponseStatus(HttpStatus.OK)
-    public TenantPropertiesDto getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
+    public ResponseEntity<TenantPropertiesDto> getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Sending the tenant's({}) specific property({}) to the client", guid, propGuid);
 
         TenantPropertiesDto tenantPropertiesDto = getTenantPropertiesDtoStub();
 
-        logger.info("Sending specific property of the tenant {} to the client:\n{}", guid, gson.toJson(tenantPropertiesDto));
-        return tenantPropertiesDto;
+        logger.info("Sending specific property of the tenant {} to the client:\n{}", guid, tenantPropertiesDto);
+        return new ResponseEntity<>(tenantPropertiesDto, HttpStatus.OK);
     }
 
     /**
@@ -214,18 +195,15 @@ public class TenantController extends DefaultController {
      * @param guid     tenant ID from URN
      * @param propGuid ID of the specific tenant property
      * @param body     The tenant property to modify
-     * @return The modified tenant property object{@link TenantPropertiesDto}
+     * @return Response entity with modified tenant property object{@link TenantPropertiesDto}
      */
     @PutMapping(value = "/{guid}/properties/{propguid}", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public TenantPropertiesDto modifyTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid, @RequestBody String body) {
+    public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid, @RequestBody TenantPropertiesDto body) {
         logger.info("Sending the modified tenant's({}) property({}) to the client", guid, propGuid);
-
-        TenantPropertiesDto tenantPropertiesDto = gson.fromJson(body, TenantPropertiesDto.class);
-
-        logger.info("Sending the modified property of the tenant {} to the client:\n{}", guid, gson.toJson(tenantPropertiesDto));
-        return tenantPropertiesDto;
+        logger.info("Sending the modified property of the tenant {} to the client:\n{}", guid, body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -235,29 +213,28 @@ public class TenantController extends DefaultController {
      * @param propGuid address ID from the URN
      */
     @DeleteMapping("/{guid}/properties/{propguid}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
+    public ResponseEntity deleteTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Accepted request to delete the property {} ot the tenant {}", propGuid, guid);
-
         logger.info("the property {} ot the tenant {} successfully deleted", propGuid, guid);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
      * Find addressees of the specific tenant
      *
      * @param guid tenant ID from URN tenant property
-     * @return Specific List of tenant addresses{@link AddressDto}
+     * @return Response entity with a list of tenant addresses{@link AddressDto}
      */
     @GetMapping(value = "/{guid}/addresses", produces = "application/vnd.softserve.address+json")
-    @ResponseStatus(HttpStatus.OK)
-    public List<AddressDto> getTenantAddresses(@PathVariable String guid) {
+    public ResponseEntity<List<AddressDto>> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
 
         List<AddressDto> addressesList = new ArrayList<>();
         addressesList.add(getTenantAddressDtoStub());
 
-        logger.info("Sending the list of addresses of the tenant {} to the client:\n{}", guid, gson.toJson(addressesList));
-        return addressesList;
+        logger.info("Sending the list of addresses of the tenant {} to the client:\n{}", guid, addressesList);
+        return new ResponseEntity<>(addressesList, HttpStatus.OK);
     }
 
     /**
@@ -265,18 +242,14 @@ public class TenantController extends DefaultController {
      *
      * @param guid tenant ID from the URN
      * @param body address object as a JSON
-     * @return {@link AddressDto} object as a JSON
+     * @return Response entity with a {@link AddressDto} object as a JSON
      */
     @PostMapping(value = "/{guid}/addresses", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public AddressDto addTenantAddresses(@PathVariable String guid, @RequestBody String body) {
+    @ResponseStatus()
+    public ResponseEntity<AddressDto> addTenantAddresses(@PathVariable String guid, @RequestBody AddressDto body) {
         logger.info("Accepted requested to create a new address for tenant: {} :\n{}", guid, body);
-
-        AddressDto addressDto = gson.fromJson(body, AddressDto.class);
-
-        logger.info("Sending the created address of the tenant {} to the client:\n{}", guid, gson.toJson(addressDto));
-        return addressDto;
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -284,17 +257,16 @@ public class TenantController extends DefaultController {
      *
      * @param guid     tenant ID from URN
      * @param addrGuid ID of the specific address
-     * @return Specific tenant tenant property{@link TenantPropertiesDto}
+     * @return Response Entity with a specific tenant tenant property{@link TenantPropertiesDto}
      */
     @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
-    @ResponseStatus(HttpStatus.OK)
-    public AddressDto getTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
+    public ResponseEntity<AddressDto> getTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address {} of the tenant {}", addrGuid, guid);
 
         AddressDto addressDto = getTenantAddressDtoStub();
 
-        logger.info("Sending the address of the tenant {} to the client:\n{}", guid, gson.toJson(addressDto));
-        return addressDto;
+        logger.info("Sending the address of the tenant {} to the client:\n{}", guid, addressDto);
+        return new ResponseEntity<>(addressDto, HttpStatus.OK);
     }
 
     /**
@@ -303,18 +275,14 @@ public class TenantController extends DefaultController {
      * @param guid     tenant ID from URN
      * @param addrGuid ID of the specific tenant address
      * @param body     The tenant address to modify
-     * @return The modified tenant address{@link AddressDto} object
+     * @return Response entity with modified tenant address{@link AddressDto} object
      */
     @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public AddressDto modifyTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid, @RequestBody String body) {
+    public ResponseEntity<AddressDto> modifyTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid, @RequestBody AddressDto body) {
         logger.info("Accepted modified address of the tenant {} from the client:\n{}", guid, body);
-
-        AddressDto addressDto = gson.fromJson(body, AddressDto.class);
-
-        logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, gson.toJson(addressDto));
-        return addressDto;
+        logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -324,10 +292,10 @@ public class TenantController extends DefaultController {
      * @param addrGuid specific address ID from the URN
      */
     @DeleteMapping("/{guid}/addresses/{addrguid}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
+    public ResponseEntity deleteTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Accepted request to delete the address {} ot the tenant {}", addrGuid, guid);
-
         logger.info("the address {} ot the tenant {} successfully deleted", addrGuid, guid);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

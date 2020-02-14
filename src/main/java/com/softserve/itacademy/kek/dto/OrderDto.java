@@ -1,16 +1,45 @@
 package com.softserve.itacademy.kek.dto;
 
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class OrderDto {
+
+    @NotNull
     private String tenant;
+
+    @NotNull
+    private String user;
+
+    @NotNull
     private String guid;
+
+    @NotNull
+    @Max(256)
+    private String summary;
+
+    @NotNull
     private OrderDetailsDto details;
 
-    public OrderDto(String tenant, String guid, OrderDetailsDto details) {
+    public OrderDto() {
+    }
+
+    public OrderDto(String tenant, String user, String guid, String summary, OrderDetailsDto details) {
         this.tenant = tenant;
+        this.user = user;
         this.guid = guid;
+        this.summary = summary;
         this.details = details;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public String getUser() {
+        return user;
     }
 
     public String getTenant() {

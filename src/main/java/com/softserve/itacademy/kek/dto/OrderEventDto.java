@@ -1,12 +1,21 @@
 package com.softserve.itacademy.kek.dto;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class OrderEventDto {
+    @NotNull
     private String guid;
     private String orderId;
+
+    @NotNull
+    @Max(1024)
     private String payload;
     private OrderEventTypesDto type;
+
+    public OrderEventDto() {
+    }
 
     public OrderEventDto(String guid, String orderId, String payload, OrderEventTypesDto type) {
         this.guid = guid;

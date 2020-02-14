@@ -1,16 +1,17 @@
 package com.softserve.itacademy.kek.controller;
 
 import com.google.gson.Gson;
-import com.softserve.itacademy.kek.dto.OrderDetailsDto;
-import com.softserve.itacademy.kek.dto.OrderDto;
-import com.softserve.itacademy.kek.dto.OrderEventDto;
-import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.softserve.itacademy.kek.dto.OrderDetailsDto;
+import com.softserve.itacademy.kek.dto.OrderDto;
+import com.softserve.itacademy.kek.dto.OrderEventDto;
+import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,7 +35,8 @@ public class OrderControllerTest {
     @BeforeTest
     public void setup() {
         OrderDetailsDto orderDetails = new OrderDetailsDto("some info", "https://mypicture");
-        orderDto = new OrderDto("MyTenant", "safgad123", orderDetails);
+        orderDto = new OrderDto("MyTenant", "user123", "123",
+                "summary", orderDetails);
         orderEventDto = new OrderEventDto("wqewqe1r1", "123",
                 "some info", OrderEventTypesDto.DELIVERED);
 

@@ -1,12 +1,28 @@
 package com.softserve.itacademy.kek.dto;
 
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class AddressDto {
+
+    @NotNull
     private String guid;
+
+    @NotNull
+    @Max(256)
     private String alias;
+
+    @NotNull
+    @Max(512)
     private String address;
+
+    @Max(1024)
     private String notes;
+
+    public AddressDto() {
+    }
 
     public AddressDto(String guid, String alias, String address, String notes) {
         this.guid = guid;
