@@ -83,8 +83,7 @@ public class UserServiceImpl implements IUserService {
     public IUser update(IUser user) {
         logger.info("Update User in DB: {}", user);
 
-        //User realUser = findRealUser(user.getGuid());
-        User realUser = findRealUser(UUID.fromString("5a15adfc-84e9-451a-a3db-4d86879dc0a9"));
+        User realUser = findRealUser(user.getGuid());
         realUser.setName(user.getName());
         realUser.setNickname(user.getNickname());
         realUser.setEmail(user.getEmail());
