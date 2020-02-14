@@ -1,12 +1,13 @@
 package com.softserve.itacademy.kek.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.Gson;
-import com.softserve.itacademy.kek.dto.AddressDto;
-import com.softserve.itacademy.kek.dto.DetailsDto;
-import com.softserve.itacademy.kek.dto.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.softserve.itacademy.kek.dto.AddressDto;
+import com.softserve.itacademy.kek.dto.DetailsDto;
+import com.softserve.itacademy.kek.dto.UserDto;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -50,52 +52,46 @@ public class UserController extends DefaultController {
     /**
      * Get information about users
      *
-     * @return list of {@link UserDto} objects as a JSON
+     * @return Response entity with list of {@link UserDto} objects as a JSON
      */
     @GetMapping(produces = "application/vnd.softserve.user+json")
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getUserList() {
+    public ResponseEntity<List<UserDto>> getUserList() {
         logger.info("Client requested the list of all users");
 
         List<UserDto> userList = new ArrayList<>();
         userList.add(getUserDtoStub());
 
         logger.info("Sending list of all users to the client:\n" + gson.toJson(userList));
-        return userList;
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
     /**
      * Creates a new user
      *
      * @param body {@link UserDto} object as a JSON
-     * @return {@link UserDto} object as a JSON
+     * @return Response entity with {@link UserDto} object as a JSON
      */
     @PostMapping(consumes = "application/vnd.softserve.user+json", produces = "application/vnd.softserve.user+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto addUser(@RequestBody String body) {
+    public ResponseEntity<UserDto> addUser(@RequestBody UserDto body) {
         logger.info("Accepted requested to create a new user:\n" + body);
-
-        UserDto userDto = gson.fromJson(body, UserDto.class);
-
-        logger.info("Sending the created user to the client:\n" + gson.toJson(userDto));
-        return userDto;
+        logger.info("Sending the created user to the client:\n" + gson.toJson(body));
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
      * Returns information about the requested user
      *
      * @param id user ID from the URN
-     * @return {@link UserDto} object as a JSON
+     * @return Response entity with {@link UserDto} object as a JSON
      */
     @GetMapping(value = "/{id}", produces = "application/vnd.softserve.user+json")
-    @ResponseStatus(HttpStatus.OK)
-    public UserDto getUser(@PathVariable String id) {
+    public ResponseEntity<UserDto> getUser(@PathVariable String id) {
         logger.info("Client requested the user " + id);
 
         UserDto userDto = getUserDtoStub();
 
         logger.info("Sending the user to the client:\n" + gson.toJson(userDto));
-        return userDto;
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     /**
@@ -103,18 +99,14 @@ public class UserController extends DefaultController {
      *
      * @param id   user ID from the URN
      * @param body user object as a JSON
-     * @return {@link UserDto} object as a JSON
+     * @return Response entity with {@link UserDto} object as a JSON
      */
     @PutMapping(value = "/{id}", consumes = "application/vnd.softserve.user+json",
             produces = "application/vnd.softserve.user+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto modifyUser(@PathVariable String id, @RequestBody String body) {
+    public ResponseEntity<UserDto> modifyUser(@PathVariable String id, @RequestBody UserDto body) {
         logger.info("Accepted modified user from the client:\n" + body);
-
-        UserDto userDto = gson.fromJson(body, UserDto.class);
-
-        logger.info("Sending the modified user to the client:\n" + gson.toJson(userDto));
-        return userDto;
+        logger.info("Sending the modified user to the client:\n" + gson.toJson(body));
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -126,7 +118,6 @@ public class UserController extends DefaultController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@PathVariable String id) {
         logger.info("Accepted request to delete the user " + id);
-
         logger.info("User (" + id + ") successfully deleted");
     }
 
@@ -134,18 +125,17 @@ public class UserController extends DefaultController {
      * Finds addresses of the specific user
      *
      * @param id user ID from the URN
-     * @return list of the {@link AddressDto} objects as a JSON
+     * @return Response Entity with list of the {@link AddressDto} objects as a JSON
      */
     @GetMapping(value = "/{id}/addresses", produces = "application/vnd.softserve.address+json")
-    @ResponseStatus(HttpStatus.OK)
-    public List<AddressDto> getUserAddresses(@PathVariable String id) {
+    public ResponseEntity<List<AddressDto>> getUserAddresses(@PathVariable String id) {
         logger.info("Client requested all the addresses of the employee " + id);
 
         List<AddressDto> addressesList = new ArrayList<>();
         addressesList.add(getAddressDtoStub());
 
         logger.info("Sending the list of addresses of the user " + id + " to the client:\n" + gson.toJson(addressesList));
-        return addressesList;
+        return new ResponseEntity<>(addressesList, HttpStatus.OK);
     }
 
     /**
@@ -153,18 +143,14 @@ public class UserController extends DefaultController {
      *
      * @param id   user ID from the URN
      * @param body list of address objects as a JSON
-     * @return list of the {@link AddressDto} objects as a JSON
+     * @return Response entity with list of the {@link AddressDto} objects as a JSON
      */
     @PostMapping(value = "/{id}/addresses", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public AddressDto addUserAddresses(@PathVariable String id, @RequestBody String body) {
+    public ResponseEntity<AddressDto> addUserAddresses(@PathVariable String id, @RequestBody AddressDto body) {
         logger.info("Accepted requested to create a new address for user:" + id + ":\n" + body);
-
-        AddressDto addressDto = gson.fromJson(body, AddressDto.class);
-
-        logger.info("Sending the created address of the user " + id + " to the client:\n" + gson.toJson(addressDto));
-        return addressDto;
+        logger.info("Sending the created address of the user " + id + " to the client:\n" + gson.toJson(body));
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -172,17 +158,16 @@ public class UserController extends DefaultController {
      *
      * @param id       user ID from the URN
      * @param addrGuid address ID from the URN
-     * @return {@link AddressDto} object as a JSON
+     * @return Response entity with {@link AddressDto} object as a JSON
      */
     @GetMapping(value = "/{id}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
-    @ResponseStatus(HttpStatus.OK)
-    public AddressDto getUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
+    public ResponseEntity<AddressDto> getUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address " + addrGuid + " of the employee " + id);
 
         AddressDto addressDto = getAddressDtoStub();
 
         logger.info("Sending the address of the user " + id + " to the client:\n" + gson.toJson(addressDto));
-        return addressDto;
+        return new ResponseEntity<>(addressDto, HttpStatus.OK);
     }
 
     /**
@@ -191,18 +176,14 @@ public class UserController extends DefaultController {
      * @param id       user ID from the URN
      * @param addrGuid address ID from the URN
      * @param body     address object as a JSON
-     * @return {@link AddressDto} object as a JSON
+     * @return Response Entity with {@link AddressDto} object as a JSON
      */
     @PutMapping(value = "/{id}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public AddressDto modifyUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid, @RequestBody String body) {
+    public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid, @RequestBody AddressDto body) {
         logger.info("Accepted modified address of the user " + id + " from the client:\n" + body);
-
-        AddressDto addressDto = gson.fromJson(body, AddressDto.class);
-
-        logger.info("Sending the modified address of the user " + id + " to the client:\n" + gson.toJson(addressDto));
-        return addressDto;
+        logger.info("Sending the modified address of the user " + id + " to the client:\n" + gson.toJson(body));
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
