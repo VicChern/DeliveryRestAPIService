@@ -1,5 +1,16 @@
 package com.softserve.itacademy.kek.services.impl;
 
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.modelInterfaces.IUser;
 import com.softserve.itacademy.kek.modelInterfaces.IUserDetails;
@@ -8,16 +19,6 @@ import com.softserve.itacademy.kek.models.UserDetails;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.ITenantService;
 import com.softserve.itacademy.kek.services.IUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolationException;
-import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -31,12 +32,6 @@ public class UserServiceImpl implements IUserService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Inserts new user into DB
-     *
-     * @param user user data
-     * @return inserted user data
-     */
     @Transactional
     @Override
     public IUser create(IUser user) {
@@ -72,12 +67,6 @@ public class UserServiceImpl implements IUserService {
         return actualUser;
     }
 
-    /**
-     * Updates user data
-     *
-     * @param user user data
-     * @return updated user data
-     */
     @Transactional
     @Override
     public IUser update(IUser user) {
@@ -112,11 +101,6 @@ public class UserServiceImpl implements IUserService {
         return actualUser;
     }
 
-    /**
-     * Deletes user from DB by user guid
-     *
-     * @param guid user guid
-     */
     @Transactional
     @Override
     public void delete(UUID guid) {
@@ -134,15 +118,16 @@ public class UserServiceImpl implements IUserService {
         logger.info("User was deleted from DB: guid = {}", actualUser.getGuid());
     }
 
-    /**
-     * Returns user data by user guid
-     *
-     * @param guid user guid
-     * @return user data
-     */
     @Override
     public IUser getByGuid(UUID guid) {
         return findActualUser(guid);
+    }
+
+    @Override
+    public Iterable<IUser> getAll() {
+        logger.info("Get all Users");
+        Iterable<? extends IUser> users = userRepository.findAll();
+        return (Iterable<IUser>) users;
     }
 
     @Transactional(readOnly = true)
