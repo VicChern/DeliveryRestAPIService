@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.modelInterfaces.IUser;
-
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.modelInterfaces.IUser;
 
 /**
  * Service for work with user
@@ -34,4 +34,10 @@ public interface IUserService {
      * @return user data
      */
     IUser getByGuid(UUID guid);
+
+    /**
+     * Returns all users
+     * @return all users
+     */
+    Iterable<IUser> getAll();
 }
