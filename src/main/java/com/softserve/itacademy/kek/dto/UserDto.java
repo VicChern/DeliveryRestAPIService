@@ -1,34 +1,33 @@
 package com.softserve.itacademy.kek.dto;
 
-
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class UserDto {
 
     @NotNull
-    @Max(256)
+    @Size(max = 256)
     private String guid;
 
     @NotNull
-    @Max(256)
+    @Size(max = 256)
     private String name;
 
     @NotNull
-    @Max(256)
+    @Size(max = 256)
     private String nickname;
 
     @NotNull
-    @Max(256)
+    @Size(max = 256)
     private String email;
 
     @NotNull
-    @Max(256)
+    @Size(max = 256)
     private String phone;
 
     @NotNull
-    @Max(256)
+    @Size(max = 256)
     private DetailsDto details;
 
     public UserDto() {

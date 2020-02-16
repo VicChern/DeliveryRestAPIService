@@ -1,8 +1,7 @@
 package com.softserve.itacademy.kek.dto;
 
-
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class AddressDto {
@@ -11,14 +10,14 @@ public class AddressDto {
     private String guid;
 
     @NotNull
-    @Max(256)
+    @Size(max = 256)
     private String alias;
 
     @NotNull
-    @Max(512)
+    @Size(max = 512)
     private String address;
 
-    @Max(1024)
+    @Size(max = 1024)
     private String notes;
 
     public AddressDto() {

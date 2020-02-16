@@ -1,7 +1,7 @@
 package com.softserve.itacademy.kek.dto;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class OrderEventDto {
@@ -10,7 +10,7 @@ public class OrderEventDto {
     private String orderId;
 
     @NotNull
-    @Max(1024)
+    @Size(max = 1024)
     private String payload;
     private OrderEventTypesDto type;
 

@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PostMapping(consumes = "application/vnd.softserve.tenant+json", produces = "application/vnd.softserve.tenant+json")
-    public ResponseEntity<TenantDto> addTenant(@RequestBody TenantDto body) {
+    public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto body) {
         logger.info("Accepted requested to create a new tenant:\n{}", body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
@@ -121,7 +122,7 @@ public class TenantController extends DefaultController {
     @PutMapping(value = "/{guid}", consumes = "application/vnd.softserve.tenant+json",
             produces = "application/vnd.softserve.tenant+json")
     @ResponseStatus()
-    public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody TenantDto body) {
+    public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto body) {
         logger.info("Accepted modified tenant from the client:\n{}", body);
         logger.info("Sending the modified tenant to the client:\n{}", body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
@@ -166,7 +167,8 @@ public class TenantController extends DefaultController {
      */
     @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
-    public ResponseEntity<TenantPropertiesDto> addTenantProperties(@PathVariable String guid, @RequestBody TenantPropertiesDto body) {
+    public ResponseEntity<TenantPropertiesDto> addTenantProperties(@PathVariable String guid,
+                                                                   @RequestBody @Valid TenantPropertiesDto body) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, body);
         logger.info("Sending the created tenant's({}) properties to the client", body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
@@ -200,7 +202,9 @@ public class TenantController extends DefaultController {
     @PutMapping(value = "/{guid}/properties/{propguid}", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid, @RequestBody TenantPropertiesDto body) {
+    public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid,
+                                                                    @PathVariable("propguid") String propGuid,
+                                                                    @RequestBody @Valid TenantPropertiesDto body) {
         logger.info("Sending the modified tenant's({}) property({}) to the client", guid, propGuid);
         logger.info("Sending the modified property of the tenant {} to the client:\n{}", guid, body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
@@ -247,7 +251,7 @@ public class TenantController extends DefaultController {
     @PostMapping(value = "/{guid}/addresses", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
     @ResponseStatus()
-    public ResponseEntity<AddressDto> addTenantAddresses(@PathVariable String guid, @RequestBody AddressDto body) {
+    public ResponseEntity<AddressDto> addTenantAddresses(@PathVariable String guid, @RequestBody @Valid AddressDto body) {
         logger.info("Accepted requested to create a new address for tenant: {} :\n{}", guid, body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
@@ -279,7 +283,9 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    public ResponseEntity<AddressDto> modifyTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid, @RequestBody AddressDto body) {
+    public ResponseEntity<AddressDto> modifyTenantAddress(@PathVariable("guid") String guid,
+                                                          @PathVariable("addrguid") String addrGuid,
+                                                          @RequestBody @Valid AddressDto body) {
         logger.info("Accepted modified address of the tenant {} from the client:\n{}", guid, body);
         logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);

@@ -1,7 +1,7 @@
 package com.softserve.itacademy.kek.dto;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class TenantDto {
@@ -11,7 +11,7 @@ public class TenantDto {
     private String owner;
 
     @NotNull
-    @Max(256)
+    @Size(max = 256)
     private String name;
     private TenantDetailsDto details;
 

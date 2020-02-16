@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class UserController extends DefaultController {
      * @return Response entity with {@link UserDto} object as a JSON
      */
     @PostMapping(consumes = "application/vnd.softserve.user+json", produces = "application/vnd.softserve.user+json")
-    public ResponseEntity<UserDto> addUser(@RequestBody UserDto body) {
+    public ResponseEntity<UserDto> addUser(@RequestBody @Valid UserDto body) {
         logger.info("Accepted requested to create a new user:\n" + body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
@@ -99,7 +100,7 @@ public class UserController extends DefaultController {
      */
     @PutMapping(value = "/{id}", consumes = "application/vnd.softserve.user+json",
             produces = "application/vnd.softserve.user+json")
-    public ResponseEntity<UserDto> modifyUser(@PathVariable String id, @RequestBody UserDto body) {
+    public ResponseEntity<UserDto> modifyUser(@PathVariable String id, @RequestBody @Valid UserDto body) {
         logger.info("Accepted modified user from the client:\n" + body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
@@ -143,9 +144,9 @@ public class UserController extends DefaultController {
      */
     @PostMapping(value = "/{id}/addresses", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    public ResponseEntity<AddressDto> addUserAddresses(@PathVariable String id, @RequestBody AddressDto body) {
-        logger.info("Accepted requested to create a new address for user:" + id + ":\n" + body);
-        logger.info("Sending the created address of the user " + id + " to the client:\n" + body);
+    public ResponseEntity<List<AddressDto>> addUserAddresses(@PathVariable String id,
+                                                             @RequestBody @Valid List<AddressDto> body) {
+        logger.info("Accepted requested to create a new addresses for user:" + id + ":\n" + body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
@@ -176,7 +177,9 @@ public class UserController extends DefaultController {
      */
     @PutMapping(value = "/{id}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid, @RequestBody AddressDto body) {
+    public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("id") String id,
+                                                        @PathVariable("addrguid") String addrGuid,
+                                                        @RequestBody @Valid AddressDto body) {
         logger.info("Accepted modified address of the user " + id + " from the client:\n" + body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }

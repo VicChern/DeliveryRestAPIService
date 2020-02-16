@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +76,7 @@ public class OrderController extends DefaultController {
      * @return created {@link OrderDto} object
      */
     @PostMapping
-    public ResponseEntity<OrderDto> addOrder(@RequestBody OrderDto order) {
+    public ResponseEntity<OrderDto> addOrder(@RequestBody @Valid OrderDto order) {
         logger.info("Order has been sent:\n{}", order);
         return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
     }
@@ -103,7 +104,7 @@ public class OrderController extends DefaultController {
      */
     @PutMapping(value = "/{id}", consumes = "application/vnd.softserve.order+json",
             produces = "application/vnd.softserve.order+json")
-    public ResponseEntity<OrderDto> modifyOrder(@PathVariable String id, @RequestBody OrderDto order) {
+    public ResponseEntity<OrderDto> modifyOrder(@PathVariable String id, @RequestBody @Valid OrderDto order) {
         logger.info("Sending the modified order({}) to the client", id);
         logger.info("Order was modified:\n{}", order);
         return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
@@ -147,7 +148,7 @@ public class OrderController extends DefaultController {
     @PostMapping(value = "/{id}/events", consumes = "application/vnd.softserve.event+json",
             produces = "application/vnd.softserve.event+json")
     @ResponseStatus()
-    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String id, @RequestBody OrderEventDto body) {
+    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String id, @RequestBody @Valid OrderEventDto body) {
         logger.info("Sending the created order({}) events to the client", id);
         logger.info("Event have been added: {}", body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
