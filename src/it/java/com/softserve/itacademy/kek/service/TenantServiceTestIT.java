@@ -1,7 +1,9 @@
-package com.softserve.itacademy.kek;
+package com.softserve.itacademy.kek.service;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.modelInterfaces.ITenant;
 import com.softserve.itacademy.kek.modelInterfaces.IUser;
+import com.softserve.itacademy.kek.models.Tenant;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
@@ -15,9 +17,11 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
-@Test(groups = {"integration-tests"})
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
 
@@ -31,22 +35,40 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private TenantRepository tenantRepository;
 
+    private IUser user;
+    private Tenant tenant;
+
     @BeforeMethod
     public void setUp() {
+        tenantRepository.deleteAll();
         userRepository.deleteAll();
+
+        user = createOrdinaryUser(1);
+        tenant = createOrdinaryTenant(1);
+
+        IUser savedUser  = userService.create(user);
+        assertNotNull(savedUser);
+
+        tenant.setTenantOwner(savedUser);
     }
 
     @AfterMethod
     public void tearDown() {
-//        userRepository.deleteAll();
+        tenantRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void createSuccess() {
-       IUser user = createOrdinaryUser(1);
-       IUser savedUser = userService.create(user);
-        System.out.println();
+        //when
+        ITenant savedTenant  = tenantService.create(tenant);
+
+        //then
+        assertNotNull(savedTenant);
+        ITenant foundTenant = tenantRepository.findByGuid(savedTenant.getGuid());
+        assertNotNull(foundTenant);
+        assertEquals(foundTenant, savedTenant);
     }
 
 }
