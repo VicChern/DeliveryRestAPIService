@@ -176,6 +176,7 @@ public class ITCreateEntitiesUtils {
 
     public static TenantProperties getTenantProperties(Tenant tenant, PropertyType type) {
         TenantProperties properties = new TenantProperties();
+        properties.setGuid(UUID.randomUUID());
         properties.setKey(RandomString.make());
         properties.setValue(RandomString.make());
         properties.setTenant(tenant);
@@ -193,14 +194,6 @@ public class ITCreateEntitiesUtils {
         tenantDetails.setPayload(createRandomLetterString(500));
         tenantDetails.setImageUrl(createRandomLetterString(60));
         return tenantDetails;
-    }
-
-    public static TenantProperties getTenantProperties(Tenant tenant) {
-        TenantProperties properties = new TenantProperties();
-        properties.setKey(randomString());
-        properties.setValue(randomString());
-        properties.setTenant(tenant);
-        return properties;
     }
 
     //================================================= Address entity =================================================

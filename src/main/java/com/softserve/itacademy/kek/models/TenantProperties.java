@@ -1,5 +1,9 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.modelInterfaces.IPropertyType;
+import com.softserve.itacademy.kek.modelInterfaces.ITenant;
+import com.softserve.itacademy.kek.modelInterfaces.ITenantProperties;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,15 +18,20 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "obj_tenant_properties")
-public class TenantProperties implements Serializable {
+public class TenantProperties implements ITenantProperties, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_property")
     private Long idProperty;
+
+    @NotNull
+    @Column(name = "guid", unique = true, nullable = false)
+    private UUID guid;
 
     @ManyToOne
     @JoinColumn(name = "id_tenant", nullable = false)
@@ -50,6 +59,14 @@ public class TenantProperties implements Serializable {
         this.idProperty = idProperty;
     }
 
+    public UUID getGuid() {
+        return guid;
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
     public String getKey() {
         return key;
     }
@@ -66,20 +83,20 @@ public class TenantProperties implements Serializable {
         this.value = value;
     }
 
-    public Tenant getTenant() {
+    public ITenant getTenant() {
         return tenant;
     }
 
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
+    public void setTenant(ITenant tenant) {
+        this.tenant = (Tenant) tenant;
     }
 
-    public PropertyType getPropertyType() {
+    public IPropertyType getPropertyType() {
         return propertyType;
     }
 
-    public void setPropertyType(PropertyType propertyType) {
-        this.propertyType = propertyType;
+    public void setPropertyType(IPropertyType propertyType) {
+        this.propertyType = (PropertyType) propertyType;
     }
 
     @Override
@@ -88,6 +105,7 @@ public class TenantProperties implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         TenantProperties that = (TenantProperties) o;
         return Objects.equals(idProperty, that.idProperty) &&
+                Objects.equals(guid, that.guid) &&
                 Objects.equals(tenant, that.tenant) &&
                 Objects.equals(propertyType, that.propertyType) &&
                 Objects.equals(key, that.key) &&
@@ -96,13 +114,15 @@ public class TenantProperties implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idProperty, tenant, propertyType, key, value);
+        return Objects.hash(idProperty, guid, tenant, propertyType, key, value);
     }
 
     @Override
     public String toString() {
         return "TenantProperties{" +
                 "idProperty=" + idProperty +
+                ", guid=" + guid +
+                ", tenant=" + tenant +
                 ", propertyType=" + propertyType +
                 ", key='" + key + '\'' +
                 ", value='" + value + '\'' +

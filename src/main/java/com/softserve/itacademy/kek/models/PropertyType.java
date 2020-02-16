@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.modelInterfaces.IPropertyType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +15,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "def_property_type")
-public class PropertyType implements Serializable {
+public class PropertyType implements IPropertyType, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
