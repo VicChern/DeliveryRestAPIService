@@ -8,6 +8,7 @@ import com.softserve.itacademy.kek.modelInterfaces.ITenant;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.impl.TenantServiceImpl;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -68,15 +69,15 @@ public class TenantServiceTest {
     }
 
 
-    //  ============================================ save(ITenant tenant)() ============================================
+    //  ============================================ create(ITenant tenant)() ============================================
     @Test
-    void saveSuccess() {
+    void createSuccess() {
         //given
         when(userRepository.findByGuid(any(UUID.class))).thenReturn((User) user);
         when(tenantRepository.save(any(Tenant.class))).thenReturn((Tenant) tenant);
 
         // when
-        ITenant createdTenant = tenantService.save(tenant);
+        ITenant createdTenant = tenantService.create(tenant);
 
         // then
         assertNotNull(createdTenant);
@@ -91,22 +92,22 @@ public class TenantServiceTest {
     }
 
     @Test(expectedExceptions = ServiceException.class)
-    void saveThrowsServiceExceptionWhenRepositoryThrowsEntityNotFoundException() {
+    void createThrowsServiceExceptionWhenRepositoryThrowsEntityNotFoundException() {
         //given
         when(userRepository.findByGuid(any(UUID.class))).thenThrow(EntityNotFoundException.class);
 
         // when
-        ITenant save = tenantService.save(tenant);
+        ITenant save = tenantService.create(tenant);
     }
 
     @Test(expectedExceptions = ServiceException.class)
-    void saveThrowsServiceExceptionWhenRepositoryThrowsPersistenceException() {
+    void createThrowsServiceExceptionWhenRepositoryThrowsPersistenceException() {
         //given
         when(userRepository.findByGuid(any(UUID.class))).thenReturn((User)user);
         when(tenantRepository.save(any(Tenant.class))).thenThrow(PersistenceException.class);
 
         // when
-        tenantService.save(tenant);
+        tenantService.create(tenant);
     }
 
     //  ============================================= getByGuid(UUID guid) =============================================
@@ -131,11 +132,10 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void getByGuidThrowsServiceExceptionWhenRepositoryThrowsEntityNotFoundException() {
        //given
-        when(tenantRepository.findByGuid(any(UUID.class))).thenThrow(EntityNotFoundException.class);
+        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(null);
 
         // when
-        ITenant byGuid = tenantService.getByGuid(tenant.getGuid());
-
+        tenantService.getByGuid(tenant.getGuid());
     }
 
 
@@ -167,7 +167,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void updateThrowsServiceExceptionWhenRepositoryThrowsEntityNotFoundException() {
         //given
-        when(tenantRepository.findByGuid(any(UUID.class))).thenThrow(EntityNotFoundException.class);
+        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(null);
 
         // when
         tenantService.update(tenant, user.getGuid());
@@ -187,18 +187,20 @@ public class TenantServiceTest {
     @Test
     void deleteByGuidSuccess() {
         //given
-        doNothing().when(tenantRepository).removeByGuid(any(UUID.class));
+        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn((Tenant) tenant);
+        doNothing().when(tenantRepository).deleteById(any(Long.class));
 
         // when
         tenantService.deleteByGuid(tenant.getGuid());
 
-        verify(tenantRepository, times(1)).removeByGuid(any(UUID.class));
+//        verify(tenantRepository, times(1)).findByGuid(any(UUID.class));
+//        verify(tenantRepository, times(1)).deleteById(any(Long.class));
     }
 
     @Test(expectedExceptions = ServiceException.class)
     void deleteThrowsServiceExceptionWhenRepositoryThrowsEntityNotFoundException() {
         //given
-        doThrow(PersistenceException.class).when(tenantRepository).removeByGuid(any(UUID.class));
+        doThrow(EmptyResultDataAccessException.class).when(tenantRepository).removeByGuid(any(UUID.class));
 
         // when
         tenantService.deleteByGuid(tenant.getGuid());
