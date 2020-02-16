@@ -34,16 +34,14 @@ import static org.testng.Assert.assertNotNull;
 /**
  * Unit tests for {@link TenantServiceImpl}
  */
+@Test(groups = {"unit-tests"})
 public class TenantServiceTest {
 
     private User user;
     private Tenant tenant;
 
-//    @InjectMocks
     private TenantServiceImpl tenantService;
-//    @Mock
     private TenantRepository tenantRepository;
-//    @Mock
     private UserRepository userRepository;
 
     @BeforeClass
@@ -52,7 +50,6 @@ public class TenantServiceTest {
 
     @BeforeMethod
     void setUp() {
-//        MockitoAnnotations.initMocks(this);
         tenantRepository = mock(TenantRepository.class);
         userRepository = mock(UserRepository.class);
         tenantService  = new TenantServiceImpl(tenantRepository, userRepository);
@@ -187,14 +184,12 @@ public class TenantServiceTest {
     @Test
     void deleteByGuidSuccess() {
         //given
-        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn((Tenant) tenant);
-        doNothing().when(tenantRepository).deleteById(any(Long.class));
+        doNothing().when(tenantRepository).removeByGuid(any(UUID.class));
 
         // when
         tenantService.deleteByGuid(tenant.getGuid());
 
-//        verify(tenantRepository, times(1)).findByGuid(any(UUID.class));
-//        verify(tenantRepository, times(1)).deleteById(any(Long.class));
+        verify(tenantRepository, times(1)).removeByGuid(any(UUID.class));
     }
 
     @Test(expectedExceptions = ServiceException.class)
