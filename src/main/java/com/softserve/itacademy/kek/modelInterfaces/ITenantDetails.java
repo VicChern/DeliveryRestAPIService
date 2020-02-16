@@ -1,15 +1,19 @@
 package com.softserve.itacademy.kek.modelInterfaces;
 
 /**
- * Interface for exchange data with details in service layer
+ * Interface for Tenant details data exchange with service layer
  */
 public interface ITenantDetails {
 
+    /**
+     * Returns tenant payload
+     * @return tenant payload
+     */
     String getPayload();
 
-    void setPayload(String payload);
-
-   String getImageUrl();
-
-   void setImageUrl(String imageUrl);
+    /**
+     * Returns tenant image url
+     * @return tenant image url
+     */
+    String getImageUrl();
 }
