@@ -2,8 +2,8 @@ package com.softserve.itacademy.kek.models;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,16 +15,16 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getPropertyType;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenantProperties;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getUser;
+import static org.testng.Assert.assertNotNull;
 
 
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
@@ -34,9 +34,14 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
     private TenantPropertiesRepository tenantPropertiesRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TenantRepository tenantRepository;
 
+    private TenantProperties tenantProperties;
     private User user1;
     private User user2;
+    private Tenant tenant1;
+    private Tenant tenant2;
 
     @DataProvider(name="illegal_keys")
     public static Object[][] keys(){
@@ -50,64 +55,76 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod
     public void setUp() {
-        user1 = getUserWithTenantProperties();
-        user2 = getUserWithTenantProperties();
+
+        user1 = createOrdinaryUser(1);
+        tenant1 = createOrdinaryTenant(1);
+
+        userRepository.save(user1);
+        assertNotNull(userRepository.findById(user1.getIdUser()));
+
+        tenant1.setTenantOwner(user1);
+        tenantRepository.save(tenant1);
+        assertNotNull(tenantRepository.findById(tenant1.getIdTenant()));
+
+        tenantProperties = getTenantProperties(tenant1, getPropertyType());
+
     }
 
     @AfterMethod
     public void tearDown() {
+        tenantPropertiesRepository.deleteAll();
+        tenantRepository.deleteAll();
         userRepository.deleteAll();
+    }
+
+    @Test
+    public void testTenantPropertiesIsSavedWithValidFields() {
+        //when
+        tenantPropertiesRepository.save(tenantProperties);
+
+        Optional<TenantProperties> savedTenantProperty = tenantPropertiesRepository.findById(tenantProperties.getIdProperty());
+        //then
+        Assert.assertNotNull(savedTenantProperty.orElse(null));
+        Assert.assertEquals(savedTenantProperty.get().getIdProperty(), tenantProperties.getIdProperty());
     }
 
     @Test(dataProvider = "illegal_keys", expectedExceptions =
             {ConstraintViolationException.class, DataIntegrityViolationException.class})
     public void testTenantPropertiesIsNotSavedWithIllegalKey(String key) {
-        user1.getTenant().getTenantPropertiesList().get(0).setKey(key);
+        tenantProperties.setKey(key);
         //when
-        userRepository.save(user1);
+        tenantPropertiesRepository.save(tenantProperties);
     }
 
     @Test(dataProvider = "illegal_values", expectedExceptions =
             {ConstraintViolationException.class, DataIntegrityViolationException.class})
     public void testTenantPropertiesIsNotSavedWithIllegalValue(String value) {
-        user1.getTenant().getTenantPropertiesList().get(0).setValue(value);
+        tenantProperties.setValue(value);
         //when
-        userRepository.save(user1);
+        tenantPropertiesRepository.save(tenantProperties);
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testTenantPropertiesIsSavedWithUniqueKey() {
         //given
-        userRepository.save(user1);
-        String tenantProperties1Key = user1.getTenant().getTenantPropertiesList().get(0).getKey();
-        user2.getTenant().getTenantPropertiesList().get(0).setKey(tenantProperties1Key);
-        //when
+        user2 = createOrdinaryUser(2);
+        tenant2 = createOrdinaryTenant(2);
+
         userRepository.save(user2);
-    }
+        assertNotNull(userRepository.findById(user2.getIdUser()));
 
-    @Test
-    public void testTenantPropertiesIsSavedWithValidFields() {
-        userRepository.save(user1);
-        Long id = user1.getTenant().getTenantPropertiesList().get(0).getIdProperty();
+        tenant2.setTenantOwner(user2);
+        tenantRepository.save(tenant2);
+        assertNotNull(tenantRepository.findById(tenant2.getIdTenant()));
+
+        tenantPropertiesRepository.save(tenantProperties);
+        assertNotNull(tenantPropertiesRepository.findById(tenantProperties.getIdProperty()));
+
+        TenantProperties tenantProperties2 = getTenantProperties(tenant2, getPropertyType());
+        tenantProperties2.setKey(tenantProperties.getKey());
+
         //when
-        Optional<TenantProperties> savedTenantProperty = tenantPropertiesRepository.findById(id);
-        //then
-        Assert.assertNotNull(savedTenantProperty.orElse(null));
-        Assert.assertEquals(savedTenantProperty.get().getIdProperty(), id);
-    }
-
-//TODO: Extract into utils, refactor to Builder, refactor to User with all transitive dependencies
-    private User getUserWithTenantProperties() {
-        User user = getUser();
-        Tenant tenant = getTenant(user);
-        user.setTenant(tenant);
-        PropertyType propertyType = ITCreateEntitiesUtils.getPropertyType();
-        TenantProperties tenantProperties = getTenantProperties(tenant, propertyType);
-        ArrayList<TenantProperties> propertiesList = new ArrayList<>(
-                List.of(tenantProperties)
-        );
-        tenant.setTenantPropertiesList(propertiesList);
-        return user;
+        tenantPropertiesRepository.save(tenantProperties2);
     }
 
 }
