@@ -3,12 +3,6 @@ image: maven:3.6.1
 stages:
   - test
 
-before_script:
-  - export KekDomain=domain
-  - export KekId=id
-  - export KekWord=word
-
-
 maven_build:
   stage: test
   script:
