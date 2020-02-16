@@ -71,7 +71,7 @@ public class TenantServiceImpl implements ITenantService {
         }
 
         LOGGER.info("Tenant was saved: " + tenantForSaving);
-        return tenant;
+        return tenantForSaving;
     }
 
 
