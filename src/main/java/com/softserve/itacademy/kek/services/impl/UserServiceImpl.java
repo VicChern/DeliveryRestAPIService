@@ -78,16 +78,14 @@ public class UserServiceImpl implements IUserService {
         actualUser.setEmail(user.getEmail());
         actualUser.setPhoneNumber(user.getPhoneNumber());
 
-        UserDetails actualDetails = new UserDetails();
-        actualDetails.setIdUser(actualUser.getIdUser());
-
         IUserDetails details = user.getUserDetails();
         if (details != null) {
+            UserDetails actualDetails = new UserDetails();
+            actualDetails.setIdUser(actualUser.getIdUser());
             actualDetails.setImageUrl(details.getImageUrl());
             actualDetails.setPayload(details.getPayload());
+            actualUser.setUserDetails(actualDetails);
         }
-
-        actualUser.setUserDetails(actualDetails);
 
         try {
             actualUser = userRepository.save(actualUser);
@@ -118,11 +116,13 @@ public class UserServiceImpl implements IUserService {
         logger.info("User was deleted from DB: guid = {}", actualUser.getGuid());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public IUser getByGuid(UUID guid) {
         return findActualUser(guid);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Iterable<IUser> getAll() {
         logger.info("Get all Users");
@@ -130,14 +130,11 @@ public class UserServiceImpl implements IUserService {
         return (Iterable<IUser>) users;
     }
 
-    @Transactional(readOnly = true)
     private User findActualUser(UUID guid) {
         logger.info("Find User in DB: guid = {}", guid);
 
-        User user;
-        try {
-            user = userRepository.findByGuid(guid);
-        } catch (NoSuchElementException ex) {
+        User user = userRepository.findByGuid(guid);
+        if (user == null) {
             logger.error("User wasn't found in DB: guid = {}", guid);
             throw new UserServiceException("User wasn't found");
         }
