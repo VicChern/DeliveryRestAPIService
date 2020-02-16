@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.services;
 import com.softserve.itacademy.kek.models.Tenant;
 import com.softserve.itacademy.kek.modelInterfaces.ITenant;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -15,13 +16,13 @@ public interface ITenantService {
      * @param tenant tenant
      * @return saved tenant
      */
-    ITenant save(ITenant tenant);
+    ITenant create(ITenant tenant);
 
     /**
-     * Gets an tenant for principal user
-     * @return tenant for principal user
+     * Gets all tenants for principal user
+     * @return all tenants for principal user
      */
-    ITenant get();
+    List<ITenant> getAll();
 
     /**
      * Gets tenant by {@link Tenant} guid

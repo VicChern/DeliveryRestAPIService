@@ -63,7 +63,6 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
         actorRepository.deleteAll();
         userRepository.deleteAll();
         tenantRepository.deleteAll();
-        System.out.println();
     }
 
     @Rollback
