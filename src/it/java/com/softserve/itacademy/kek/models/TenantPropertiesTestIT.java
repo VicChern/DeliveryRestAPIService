@@ -81,7 +81,7 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
         userRepository.deleteAll();
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void testTenantPropertiesIsSavedWithValidFields() {
         //when
         tenantPropertiesRepository.save(tenantProperties);
@@ -92,7 +92,7 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(savedTenantProperty.get().getIdProperty(), tenantProperties.getIdProperty());
     }
 
-    @Test(dataProvider = "illegal_keys", expectedExceptions =
+    @Test(groups = {"integration-tests"}, dataProvider = "illegal_keys", expectedExceptions =
             {ConstraintViolationException.class, DataIntegrityViolationException.class})
     public void testTenantPropertiesIsNotSavedWithIllegalKey(String key) {
         tenantProperties.setKey(key);
@@ -100,7 +100,7 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
         tenantPropertiesRepository.save(tenantProperties);
     }
 
-    @Test(dataProvider = "illegal_values", expectedExceptions =
+    @Test(groups = {"integration-tests"}, dataProvider = "illegal_values", expectedExceptions =
             {ConstraintViolationException.class, DataIntegrityViolationException.class})
     public void testTenantPropertiesIsNotSavedWithIllegalValue(String value) {
         tenantProperties.setValue(value);
@@ -108,7 +108,7 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
         tenantPropertiesRepository.save(tenantProperties);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = DataIntegrityViolationException.class)
     public void testTenantPropertiesIsSavedWithUniqueKey() {
         //given
         user2 = createOrdinaryUser(2);

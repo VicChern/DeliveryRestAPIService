@@ -41,7 +41,7 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testActorRoleIsNotSavedWithNameMoreThanMaxLength() {
         actorRole1.setName(createRandomLetterString(MAX_LENGTH_256 + 1));
 
@@ -49,7 +49,7 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testActorRoleIsNotSavedWithEmptyName() {
         actorRole1.setName("");
 
@@ -57,7 +57,7 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testActorRoleIsNotSavedWithNullName() {
         actorRole1.setName(null);
 
@@ -65,7 +65,7 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = DataIntegrityViolationException.class)
     public void testActorRoleIsSavedWithUniqueName() {
         actorRoleRepository.save(actorRole1);
 

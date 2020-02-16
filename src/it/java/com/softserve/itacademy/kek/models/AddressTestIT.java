@@ -75,7 +75,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
         userRepository.deleteAll();
     }
 
-    @Test(description = "Test Address_01. Should save address with valid fields.")
+    @Test(groups = {"integration-tests"}, description = "Test Address_01. Should save address with valid fields.")
     public void testTenantIsSavedWithValidFields() {
         //when
         addressRepository.save(address);
@@ -91,7 +91,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
     }
 
     //====================================================== guid ======================================================
-    @Test(description = "Test Address_02. Should throw ConstraintViolationException when saves address with null guid field",
+    @Test(groups = {"integration-tests"}, description = "Test Address_02. Should throw ConstraintViolationException when saves address with null guid field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithNullGuid() {
@@ -102,7 +102,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
         addressRepository.save(address);
     }
 
-    @Test(description = "Test Address_03. Should throw DataIntegrityViolationException when saves address with not unique guid field",
+    @Test(groups = {"integration-tests"}, description = "Test Address_03. Should throw DataIntegrityViolationException when saves address with not unique guid field",
             expectedExceptions = DataIntegrityViolationException.class,
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
     public void testAddressIsSavedWithUniqueGuid() {
@@ -121,7 +121,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
 
 
     //====================================================== address ======================================================
-    @Test(description = "Test Address_04. Should throw ConstraintViolationException when saves address with null address field",
+    @Test(groups = {"integration-tests"}, description = "Test Address_04. Should throw ConstraintViolationException when saves address with null address field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithNullAddressValue() {
@@ -132,7 +132,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
         addressRepository.save(address);
     }
 
-    @Test(description = "Test Address_05. Should throw ConstraintViolationException when saves address with empty address field",
+    @Test(groups = {"integration-tests"}, description = "Test Address_05. Should throw ConstraintViolationException when saves address with empty address field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithEmptyAddressValue() {
@@ -143,7 +143,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
         addressRepository.save(address);
     }
 
-    @Test(description = "Test Address_06. Should throw ConstraintViolationException when saves address with address field length more than " + MAX_LENGTH_512,
+    @Test(groups = {"integration-tests"}, description = "Test Address_06. Should throw ConstraintViolationException when saves address with address field length more than " + MAX_LENGTH_512,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithAddressValueMoreThanMaxLength() {
@@ -157,7 +157,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
 
 
     //====================================================== notes ======================================================
-    @Test(description = "Test Address_07. Should throw ConstraintViolationException when saves address with notes field length more than " + MAX_LENGTH_512,
+    @Test(groups = {"integration-tests"}, description = "Test Address_07. Should throw ConstraintViolationException when saves address with notes field length more than " + MAX_LENGTH_512,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithNotesMoreThanMaxLength() {
@@ -171,7 +171,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
 
 
     //====================================================== alias ======================================================
-    @Test(description = "Test Address_08. Should throw ConstraintViolationException when saves address with null alias field",
+    @Test(groups = {"integration-tests"}, description = "Test Address_08. Should throw ConstraintViolationException when saves address with null alias field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithNullAlias() {
@@ -182,7 +182,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
         addressRepository.save(address);
     }
 
-    @Test(description = "Test Address_09. Should throw ConstraintViolationException when saves address with empty alias field",
+    @Test(groups = {"integration-tests"}, description = "Test Address_09. Should throw ConstraintViolationException when saves address with empty alias field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithEmptyAlias() {
@@ -193,7 +193,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
         addressRepository.save(address);
     }
 
-    @Test(description = "Test Address_10. Should throw ConstraintViolationException when saves address with alias field length more than " + MAX_LENGTH_256,
+    @Test(groups = {"integration-tests"}, description = "Test Address_10. Should throw ConstraintViolationException when saves address with alias field length more than " + MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithAliasMoreThanMaxLength() {
