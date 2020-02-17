@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import com.softserve.itacademy.kek.modelInterfaces.IOrderEvent;
+import com.softserve.itacademy.kek.dataexchange.IOrderEvent;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
