@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.UserServiceException;
-import com.softserve.itacademy.kek.modelInterfaces.IUser;
-import com.softserve.itacademy.kek.modelInterfaces.IUserDetails;
+import com.softserve.itacademy.kek.dataexchange.IUser;
+import com.softserve.itacademy.kek.dataexchange.IUserDetails;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.models.UserDetails;
 import com.softserve.itacademy.kek.repositories.UserRepository;

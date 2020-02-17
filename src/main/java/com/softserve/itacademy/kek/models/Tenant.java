@@ -1,9 +1,9 @@
 package com.softserve.itacademy.kek.models;
 
 
-import com.softserve.itacademy.kek.modelInterfaces.ITenant;
-import com.softserve.itacademy.kek.modelInterfaces.ITenantDetails;
-import com.softserve.itacademy.kek.modelInterfaces.IUser;
+import com.softserve.itacademy.kek.dataexchange.ITenant;
+import com.softserve.itacademy.kek.dataexchange.ITenantDetails;
+import com.softserve.itacademy.kek.dataexchange.IUser;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

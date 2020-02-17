@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek.services.impl;
 
 import com.softserve.itacademy.kek.exception.OrderServiceException;
-import com.softserve.itacademy.kek.modelInterfaces.IOrder;
-import com.softserve.itacademy.kek.modelInterfaces.IOrderDetails;
+import com.softserve.itacademy.kek.dataexchange.IOrder;
+import com.softserve.itacademy.kek.dataexchange.IOrderDetails;
 import com.softserve.itacademy.kek.models.Order;
 import com.softserve.itacademy.kek.models.OrderDetails;
 import com.softserve.itacademy.kek.repositories.OrderRepository;

@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.modelInterfaces;
+package com.softserve.itacademy.kek.dataexchange;
 
 import com.softserve.itacademy.kek.models.Tenant;
 

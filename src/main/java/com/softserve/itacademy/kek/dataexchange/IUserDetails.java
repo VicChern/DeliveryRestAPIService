@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.modelInterfaces;
+package com.softserve.itacademy.kek.dataexchange;
 
 /**
  * Interface for User details data exchange with Service Layer

@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.modelInterfaces.IUser;
+import com.softserve.itacademy.kek.dataexchange.IUser;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.impl.UserServiceImpl;

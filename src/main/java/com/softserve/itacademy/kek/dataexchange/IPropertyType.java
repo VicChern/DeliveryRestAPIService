@@ -1,6 +1,4 @@
-package com.softserve.itacademy.kek.modelInterfaces;
-
-import java.util.UUID;
+package com.softserve.itacademy.kek.dataexchange;
 
 /**
  * Interface for PropertyType data exchange with service layer
