@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.models;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
@@ -34,6 +35,8 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     private TenantRepository tenantRepository;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private OrderDetailsRepository orderDetailsRepository;
 
     private Order order1;
     private Order order2;
@@ -46,7 +49,6 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
 
     @AfterMethod
     public void tearDown() {
-        orderRepository.deleteAll();
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }
