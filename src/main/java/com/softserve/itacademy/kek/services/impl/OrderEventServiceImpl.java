@@ -37,7 +37,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
 
     @Transactional
     @Override
-    public IOrderEvent save(IOrderEvent orderEvent) throws OrderEventServiceException {
+    public IOrderEvent create(IOrderEvent orderEvent) throws OrderEventServiceException {
         logger.info("Saving OrderEvent to db: {}", orderEvent);
         UUID orderGuid = orderEvent.getIdOrder().getGuid();
 

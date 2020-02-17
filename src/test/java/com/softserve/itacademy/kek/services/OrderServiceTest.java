@@ -53,7 +53,7 @@ public class OrderServiceTest {
 
         when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
 
-        IOrder createdOrder = orderService.save(testOrder);
+        IOrder createdOrder = orderService.create(testOrder);
 
         ArgumentCaptor<Order> acOrder = ArgumentCaptor.forClass(Order.class);
 
@@ -99,7 +99,7 @@ public class OrderServiceTest {
 
         when(orderRepository.findByGuid(guid)).thenReturn(foundOrder);
 
-        orderService.delete(guid);
+        orderService.deleteByGuid(guid);
 
         ArgumentCaptor<Long> acOrderID = ArgumentCaptor.forClass(Long.class);
 
