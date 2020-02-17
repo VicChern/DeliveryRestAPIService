@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.services;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.softserve.itacademy.kek.modelInterfaces.IAddress;
@@ -50,7 +51,7 @@ public interface IAddressService {
      * @param tenantGuid tenant guid
      * @return tenant addresses
      */
-    Iterable<IAddress> getAddressForTenantAll(UUID tenantGuid);
+    List<IAddress> getAddressAllForTenant(UUID tenantGuid);
 
     /**
      * Creates user address
@@ -93,5 +94,5 @@ public interface IAddressService {
      * @param userGuid user guid
      * @return user addresses
      */
-    Iterable<IAddress> getAddressForUserAll(UUID userGuid);
+    List<IAddress> getAddressAllForUser(UUID userGuid);
 }
