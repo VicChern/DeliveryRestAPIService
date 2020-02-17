@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.dataexchange.IOrderEventType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +15,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "def_order_event_type")
-public class OrderEventType implements Serializable {
+public class OrderEventType implements IOrderEventType, Serializable {
 
     @Id
     @Column(name = "id_order_event_type")

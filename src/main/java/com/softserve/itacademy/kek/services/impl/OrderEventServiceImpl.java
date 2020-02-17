@@ -1,8 +1,9 @@
 package com.softserve.itacademy.kek.services.impl;
 
+import com.softserve.itacademy.kek.dataexchange.IOrderEvent;
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.exception.OrderServiceException;
-import com.softserve.itacademy.kek.dataexchange.IOrderEvent;
+import com.softserve.itacademy.kek.models.Order;
 import com.softserve.itacademy.kek.models.OrderEvent;
 import com.softserve.itacademy.kek.repositories.OrderEventRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
@@ -34,22 +35,25 @@ public class OrderEventServiceImpl implements IOrderEventService {
         this.orderRepository = orderRepository;
     }
 
-
     @Transactional
     @Override
-    public IOrderEvent create(IOrderEvent orderEvent) throws OrderEventServiceException {
-        logger.info("Saving OrderEvent to db: {}", orderEvent);
-        UUID orderGuid = orderEvent.getIdOrder().getGuid();
+    public IOrderEvent create(IOrderEvent iOrderEvent, UUID orderGuid) throws OrderEventServiceException {
+        logger.info("Saving OrderEvent to db: {}", iOrderEvent);
+        OrderEvent orderEvent = new OrderEvent();
+
+        Order actualOrder;
 
         try {
-            orderRepository.findByGuid(orderGuid);
+            actualOrder = orderRepository.findByGuid(orderGuid);
         } catch (EntityNotFoundException e) {
             logger.error("There is no order for order event with order guid: {}", orderGuid);
             throw new OrderServiceException("There is no order for order event with order guid: " + orderGuid);
         }
 
+        orderEvent.setIdOrder(actualOrder);
+
         try {
-            orderEventRepository.save((OrderEvent) orderEvent);
+            orderEventRepository.save(orderEvent);
         } catch (PersistenceException e) {
             logger.error("Order event wasn`t saved: {}", orderEvent);
             throw new OrderServiceException("Order event wasn`t saved");

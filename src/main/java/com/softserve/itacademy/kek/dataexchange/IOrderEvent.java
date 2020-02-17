@@ -1,20 +1,14 @@
 package com.softserve.itacademy.kek.dataexchange;
 
-import com.softserve.itacademy.kek.models.Actor;
-import com.softserve.itacademy.kek.models.Order;
-import com.softserve.itacademy.kek.models.OrderEventType;
-
 import java.util.UUID;
 
 public interface IOrderEvent {
 
-    Long getIdOrderEvent();
+    IOrder getIdOrder();
 
-    public Order getIdOrder();
+    IActor getIdActor();
 
-    Actor getIdActor();
-
-    OrderEventType getIdOrderEventType();
+    IOrderEventType getIdOrderEventType();
 
     UUID getGuid();
 

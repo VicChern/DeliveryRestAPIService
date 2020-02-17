@@ -1,6 +1,9 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.persistence.CascadeType;
+import com.softserve.itacademy.kek.dataexchange.IActor;
+import com.softserve.itacademy.kek.dataexchange.ITenant;
+import com.softserve.itacademy.kek.dataexchange.IUser;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +21,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_actor")
-public class Actor implements Serializable {
+public class Actor implements IActor, Serializable {
 
     @Id
     @Column(name = "id_actor")
@@ -50,7 +53,7 @@ public class Actor implements Serializable {
         this.idActor = idActor;
     }
 
-    public Tenant getIdTenant() {
+    public ITenant getIdTenant() {
         return idTenant;
     }
 
@@ -58,7 +61,7 @@ public class Actor implements Serializable {
         this.idTenant = idTenant;
     }
 
-    public User getIdUser() {
+    public IUser getIdUser() {
         return idUser;
     }
 
