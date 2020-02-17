@@ -1,6 +1,4 @@
-package com.softserve.itacademy.kek.models;
-
-import com.softserve.itacademy.kek.dataexchange.IUserDetails;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,18 +11,20 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.softserve.itacademy.kek.models.ITenantDetails;
+
 @Entity
-@Table(name = "o2o_user_details")
-public class UserDetails implements IUserDetails, Serializable {
+@Table(name = "o2o_tenant_details")
+public class TenantDetails implements ITenantDetails, Serializable {
 
     @Id
-    @Column(name = "id_user")
-    private Long idUser;
+    @Column(name = "id_tenant")
+    private Long idTenant;
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "id_user", insertable = false, updatable = false)
-    private User user;
+    @JoinColumn(name = "id_tenant", insertable = false, updatable = false)
+    private Tenant tenant;
 
     @Size(max = 4096)
     @Column(name = "payload", length = 4096)
@@ -34,12 +34,12 @@ public class UserDetails implements IUserDetails, Serializable {
     @Column(name = "image_url", length = 512)
     private String imageUrl;
 
-    public Long getIdUser() {
-        return idUser;
+    public Long getIdTenant() {
+        return idTenant;
     }
 
-    public void setIdUser(Long idUser) {
-        this.idUser = idUser;
+    public void setIdTenant(Long idTenant) {
+        this.idTenant = idTenant;
     }
 
     public String getPayload() {
@@ -58,34 +58,33 @@ public class UserDetails implements IUserDetails, Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public User getUser() {
-        return user;
+    public Tenant getTenant() {
+        return tenant;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserDetails that = (UserDetails) o;
-        return Objects.equals(idUser, that.idUser) &&
-                Objects.equals(user, that.user) &&
+        TenantDetails that = (TenantDetails) o;
+        return Objects.equals(idTenant, that.idTenant) &&
                 Objects.equals(payload, that.payload) &&
                 Objects.equals(imageUrl, that.imageUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idUser, user, payload, imageUrl);
+        return Objects.hash(idTenant, payload, imageUrl);
     }
 
     @Override
     public String toString() {
-        return "UserDetails{" +
-                "id=" + idUser +
+        return "TenantDetails{" +
+                "id=" + idTenant +
                 ", payload='" + payload + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';

@@ -1,9 +1,9 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.dataexchange.IOrderEvent;
-import com.softserve.itacademy.kek.models.Order;
-
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.impl.Order;
 
 /**
  * Service interface for {@link IOrderEvent}

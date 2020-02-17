@@ -12,11 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.AddressServiceException;
-import com.softserve.itacademy.kek.exception.UserServiceException;
-import com.softserve.itacademy.kek.dataexchange.IAddress;
-import com.softserve.itacademy.kek.models.Address;
-import com.softserve.itacademy.kek.models.Tenant;
-import com.softserve.itacademy.kek.models.User;
+import com.softserve.itacademy.kek.models.IAddress;
+import com.softserve.itacademy.kek.models.impl.Address;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.AddressRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;

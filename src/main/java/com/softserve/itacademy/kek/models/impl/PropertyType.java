@@ -1,6 +1,4 @@
-package com.softserve.itacademy.kek.models;
-
-import com.softserve.itacademy.kek.dataexchange.IPropertyType;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,13 +11,15 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.softserve.itacademy.kek.models.IPropertyType;
+
 @Entity
 @Table(name = "def_property_type")
 public class PropertyType implements IPropertyType, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="id_property_type")
+    @Column(name = "id_property_type")
     private Long idPropertyType;
 
     @NotNull

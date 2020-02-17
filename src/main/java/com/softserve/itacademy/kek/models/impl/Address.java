@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.models;
+package com.softserve.itacademy.kek.models.impl;
 
 
 import javax.persistence.Column;
@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.softserve.itacademy.kek.dataexchange.IAddress;
+import com.softserve.itacademy.kek.models.IAddress;
 
 @Entity
 @Table(name = "obj_address")

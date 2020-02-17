@@ -1,8 +1,8 @@
-package com.softserve.itacademy.kek.dataexchange;
-
-import com.softserve.itacademy.kek.models.Tenant;
+package com.softserve.itacademy.kek.models;
 
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.impl.Tenant;
 
 public interface IOrder {
 

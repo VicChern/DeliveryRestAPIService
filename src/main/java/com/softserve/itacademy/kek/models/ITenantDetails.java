@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.dataexchange;
+package com.softserve.itacademy.kek.models;
 
 /**
  * Interface for Tenant details data exchange with service layer

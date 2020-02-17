@@ -1,6 +1,4 @@
-package com.softserve.itacademy.kek.models;
-
-import com.softserve.itacademy.kek.dataexchange.IOrderDetails;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.softserve.itacademy.kek.models.IOrderDetails;
 
 @Entity
 @Table(name = "o2o_order_details")

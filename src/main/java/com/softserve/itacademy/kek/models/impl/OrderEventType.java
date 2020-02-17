@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.models;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,26 +11,28 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.softserve.itacademy.kek.models.IOrderEventType;
+
 @Entity
-@Table(name = "def_identity_type")
-public class IdentityType implements Serializable {
+@Table(name = "def_order_event_type")
+public class OrderEventType implements IOrderEventType, Serializable {
 
     @Id
+    @Column(name = "id_order_event_type")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_identity_type")
-    private Long idIdentityType;
+    private Long idOrderEventType;
 
     @NotNull
     @Size(min = 1, max = 256)
-    @Column(name = "name", nullable = false, unique = true, length = 256)
+    @Column(name = "name", unique = true, nullable = false, length = 256)
     private String name;
 
-    public Long getIdIdentityType() {
-        return idIdentityType;
+    public Long getIdOrderEventType() {
+        return idOrderEventType;
     }
 
-    public void setIdIdentityType(Long idIdentityType) {
-        this.idIdentityType = idIdentityType;
+    public void setIdOrderEventType(Long idOrderEventType) {
+        this.idOrderEventType = idOrderEventType;
     }
 
     public String getName() {
@@ -45,20 +47,20 @@ public class IdentityType implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        IdentityType that = (IdentityType) o;
-        return Objects.equals(idIdentityType, that.idIdentityType) &&
+        OrderEventType that = (OrderEventType) o;
+        return Objects.equals(idOrderEventType, that.idOrderEventType) &&
                 Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idIdentityType, name);
+        return Objects.hash(idOrderEventType, name);
     }
 
     @Override
     public String toString() {
-        return "IdentityType{" +
-                "idIdentityType=" + idIdentityType +
+        return "OrderEventType{" +
+                "idOrderEventType=" + idOrderEventType +
                 ", name='" + name + '\'' +
                 '}';
     }
