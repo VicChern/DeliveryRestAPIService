@@ -1,9 +1,10 @@
 package com.softserve.itacademy.kek.repositories;
 
-import com.softserve.itacademy.kek.models.Tenant;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.UUID;
+import com.softserve.itacademy.kek.models.Tenant;
 
 public interface TenantRepository extends JpaRepository<Tenant, Long> {
 

@@ -1,7 +1,8 @@
 package com.softserve.itacademy.kek.repositories;
 
-import com.softserve.itacademy.kek.models.TenantDetails;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TenantDetailsRepository extends CrudRepository<TenantDetails, Long> {
+import com.softserve.itacademy.kek.models.TenantDetails;
+
+public interface TenantDetailsRepository extends JpaRepository<TenantDetails, Long> {
 }

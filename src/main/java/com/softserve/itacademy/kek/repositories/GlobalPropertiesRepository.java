@@ -1,7 +1,8 @@
 package com.softserve.itacademy.kek.repositories;
 
-import com.softserve.itacademy.kek.models.GlobalProperties;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GlobalPropertiesRepository extends CrudRepository<GlobalProperties, Long> {
+import com.softserve.itacademy.kek.models.GlobalProperties;
+
+public interface GlobalPropertiesRepository extends JpaRepository<GlobalProperties, Long> {
 }
