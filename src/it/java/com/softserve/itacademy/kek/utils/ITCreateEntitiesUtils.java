@@ -236,10 +236,16 @@ public class ITCreateEntitiesUtils {
     public static Order getOrder(Tenant tenant) {
         Order order = new Order();
 
-        order.setIdTenant(tenant);
+        order.setTenant(tenant);
         order.setGuid(UUID.randomUUID());
         order.setSummary(createRandomLetterString(128));
 
+        OrderDetails orderDetails = new OrderDetails();
+        orderDetails.setImageUrl(createRandomLetterString(128));
+        orderDetails.setPayload(createRandomLetterString(128));
+        order.setOrderDetails(orderDetails);
+        orderDetails.setOrder(order);
+//        tenant.addOrder(order);
         return order;
     }
 

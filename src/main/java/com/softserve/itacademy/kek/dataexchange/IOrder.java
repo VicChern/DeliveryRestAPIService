@@ -8,7 +8,7 @@ public interface IOrder {
 
     Long getIdOrder();
 
-    Tenant getIdTenant();
+    Tenant getTenant();
 
     UUID getGuid();
 

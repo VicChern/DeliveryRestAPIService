@@ -60,8 +60,9 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     public void tearDown() {
         orderEventRepository.deleteAll();
         actorRepository.deleteAll();
-        userRepository.deleteAll();
+        orderRepository.deleteAll();
         tenantRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Rollback
