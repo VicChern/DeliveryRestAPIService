@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.models.impl;
 
+import com.softserve.itacademy.kek.modelInterfaces.IOrderDetails;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
