@@ -30,7 +30,7 @@ public interface IUserService {
      *
      * @param guid user guid
      */
-    void delete(UUID guid);
+    void deleteByGuid(UUID guid);
 
     /**
      * Returns user data by user guid

@@ -15,7 +15,7 @@ public interface IOrderEventService {
      * @param orderEvent order event
      * @return saved order event
      */
-    IOrderEvent save(IOrderEvent orderEvent);
+    IOrderEvent create(IOrderEvent orderEvent);
 
     /**
      * Gets order event by {@link IOrderEvent} guid
