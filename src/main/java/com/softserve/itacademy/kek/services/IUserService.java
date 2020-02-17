@@ -2,7 +2,7 @@ package com.softserve.itacademy.kek.services;
 
 import java.util.UUID;
 
-import com.softserve.itacademy.kek.modelInterfaces.IUser;
+import com.softserve.itacademy.kek.dataexchange.IUser;
 
 /**
  * Service for work with user

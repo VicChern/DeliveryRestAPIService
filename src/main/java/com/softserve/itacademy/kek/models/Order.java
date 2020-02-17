@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
-import com.softserve.itacademy.kek.modelInterfaces.IOrder;
+import com.softserve.itacademy.kek.dataexchange.IOrder;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

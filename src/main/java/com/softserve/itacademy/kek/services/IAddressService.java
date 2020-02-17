@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.services;
 import java.util.List;
 import java.util.UUID;
 
-import com.softserve.itacademy.kek.modelInterfaces.IAddress;
+import com.softserve.itacademy.kek.dataexchange.IAddress;
 
 /**
  * Service interface for {@link IAddress}

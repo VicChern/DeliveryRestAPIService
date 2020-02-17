@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.softserve.itacademy.kek.modelInterfaces.IAddress;
+import com.softserve.itacademy.kek.dataexchange.IAddress;
 
 @Entity
 @Table(name = "obj_address")

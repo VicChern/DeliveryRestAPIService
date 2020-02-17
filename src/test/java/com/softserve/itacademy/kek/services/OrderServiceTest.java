@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.modelInterfaces.IOrder;
+import com.softserve.itacademy.kek.dataexchange.IOrder;
 import com.softserve.itacademy.kek.models.Order;
 import com.softserve.itacademy.kek.models.Tenant;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
