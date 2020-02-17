@@ -54,7 +54,7 @@ public class Tenant implements ITenant, Serializable {
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
     private List<Address> addressList;
 
-    @OneToMany
+    @OneToMany(mappedBy = "idTenant", fetch = FetchType.LAZY)
     private List<Order> orderList;
 
     public Long getIdTenant() {
