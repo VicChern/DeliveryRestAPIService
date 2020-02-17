@@ -1,9 +1,8 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.modelInterfaces.IAddress;
-
-import java.util.List;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.modelInterfaces.IAddress;
 
 /**
  * Service interface for {@link IAddress}
@@ -11,78 +10,88 @@ import java.util.UUID;
 public interface IAddressService {
 
     /**
-     * Returns all addresses for tenant by tenant guid
+     * Creates tenant address
+     *
+     * @param addressData address data
+     * @param tenantGuid  tenant guid
+     * @return created tenant address
+     */
+    IAddress createAddressForTenant(IAddress addressData, UUID tenantGuid);
+
+    /**
+     * Updates tenant address
+     *
+     * @param addressData address data
+     * @param tenantGuid  tenant guid
+     * @return updated tenant address
+     */
+    IAddress updateAddressForTenant(IAddress addressData, UUID tenantGuid);
+
+    /**
+     * Deletes tenant address
+     *
+     * @param addressGuid address guid
+     * @param tenantGuid  tenant guid
+     */
+    void deleteAddressForTenant(UUID addressGuid, UUID tenantGuid);
+
+    /**
+     * Gets tenant address
+     *
+     * @param addressGuid address guid
+     * @param tenantGuid  tenant guid
+     * @return tenant address
+     */
+    IAddress getAddressForTenant(UUID addressGuid, UUID tenantGuid);
+
+    /**
+     * Returns all tenant addresses
+     *
      * @param tenantGuid tenant guid
-     * @return addresses by tenant guid
+     * @return tenant addresses
      */
-    List<IAddress> getAddressesByTenantGuid(UUID tenantGuid);
+    Iterable<IAddress> getAddressForTenantAll(UUID tenantGuid);
 
     /**
-     * Creates address for tenant by tenant guid
-     * @param address address for creating
-     * @param tenantGuid tenant guid
-     * @return created address
+     * Creates user address
+     *
+     * @param addressData address data
+     * @param userGuid    user guid
+     * @return created user address
      */
-    IAddress createAddressForTenant(IAddress address, UUID tenantGuid);
+    IAddress createAddressForUser(IAddress addressData, UUID userGuid);
 
     /**
-     * Gets address by tenant guid and address guid
-     * @param tenantGuid tenant guid
+     * Updates user address
+     *
+     * @param addressData address data
+     * @param userGuid    user guid
+     * @return updated user address
+     */
+    IAddress updateAddressForUser(IAddress addressData, UUID userGuid);
+
+    /**
+     * Deletes user address
+     *
      * @param addressGuid address guid
-     * @return address
+     * @param userGuid    user guid
      */
-    IAddress getAddressForTenantByGuid(UUID tenantGuid, UUID addressGuid);
+    void deleteAddressForUser(UUID addressGuid, UUID userGuid);
 
     /**
-     * Updates address by tenant guid and address guid
-     * @param tenantGuid tenant guid
+     * Returns user address
+     *
      * @param addressGuid address guid
-     * @return updated address
+     * @param userGuid    user guid
+     * @return user address
      */
-    IAddress updateAddressForTenantByGuid(UUID tenantGuid, UUID addressGuid, IAddress address);
+    IAddress getAddressForUser(UUID addressGuid, UUID userGuid);
 
     /**
-     * Deletes address by tenant guid and address guid
-     * @param tenantGuid tenant guid
-     * @param addressGuid address guid
-     */
-    void deleteAddressForTenantByGuid(UUID tenantGuid, UUID addressGuid);
-
-    /**
-     * Returns all addresses for user by tenant guid
+     * Returns all user addresses
+     *
      * @param userGuid user guid
-     * @return addresses by user guid
+     * @return user addresses
      */
-    List<IAddress> getAddressesByUserGuid(UUID userGuid);
-
-    /**
-     * Creates address for user by user guid
-     * @param address address for creating
-     * @param userGuid user guid
-     * @return created address
-     */
-    IAddress createAddressForUser(IAddress address, UUID userGuid);
-
-    /**
-     * Gets address by user guid and address guid
-     * @param userGuid user guid
-     * @param addressGuid address guid
-     * @return address
-     */
-    IAddress getAddressForUserByGuid(UUID userGuid, UUID addressGuid);
-
-    /**
-     * Updates address by user guid and address guid
-     * @param userGuid user guid
-     * @param addressGuid address guid
-     * @return updated address
-     */
-    IAddress updateAddressForUserByGuid(UUID userGuid, UUID addressGuid, IAddress address);
-
-    /**
-     * Deletes address by user guid and address guid
-     * @param userGuid user guid
-     * @param addressGuid address guid
-     */
-    void deleteAddressForUserByGuid(UUID userGuid, UUID addressGuid);
+    Iterable<IAddress> getAddressForUserAll(UUID userGuid);
 }

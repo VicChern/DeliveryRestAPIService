@@ -16,9 +16,11 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.softserve.itacademy.kek.modelInterfaces.IAddress;
+
 @Entity
 @Table(name = "obj_address")
-public class Address implements Serializable {
+public class Address implements IAddress, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,7 +2,6 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -17,13 +16,12 @@ import com.softserve.itacademy.kek.modelInterfaces.IUserDetails;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.models.UserDetails;
 import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.services.ITenantService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
 public class UserServiceImpl implements IUserService {
 
-    final Logger logger = LoggerFactory.getLogger(ITenantService.class);
+    final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
 
@@ -34,69 +32,69 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional
     @Override
-    public IUser create(IUser user) {
-        logger.info("Insert User into DB: {}", user);
+    public IUser create(IUser userData) {
+        logger.info("Insert User into DB: {}", userData);
 
-        User actualUser = new User();
+        User user = new User();
 
-        actualUser.setGuid(UUID.randomUUID());
-        actualUser.setName(user.getName());
-        actualUser.setNickname(user.getNickname());
-        actualUser.setEmail(user.getEmail());
-        actualUser.setPhoneNumber(user.getPhoneNumber());
+        user.setGuid(UUID.randomUUID());
+        user.setName(userData.getName());
+        user.setNickname(userData.getNickname());
+        user.setEmail(userData.getEmail());
+        user.setPhoneNumber(userData.getPhoneNumber());
 
-        UserDetails actualDetails = new UserDetails();
+        UserDetails details = new UserDetails();
+        user.setUserDetails(details);
 
-        IUserDetails details = user.getUserDetails();
-        if (details != null) {
-            actualDetails.setImageUrl(details.getImageUrl());
-            actualDetails.setPayload(details.getPayload());
+        IUserDetails detailsData = userData.getUserDetails();
+        if (detailsData != null) {
+            details.setImageUrl(detailsData.getImageUrl());
+            details.setPayload(detailsData.getPayload());
         }
-
-        actualUser.setUserDetails(actualDetails);
 
         try {
-            actualUser = userRepository.save(actualUser);
+            user = userRepository.save(user);
         } catch (PersistenceException | ConstraintViolationException ex) {
-            logger.error("User wasn't inserted into DB: {}", actualUser, ex);
-            throw new UserServiceException("User wasn't saved");
+            logger.error("User wasn't inserted into DB: " + user, ex);
+            throw new UserServiceException("User wasn't inserted");
         }
 
-        logger.info("User was inserted into DB: guid = {}", actualUser.getGuid());
+        logger.info("User was inserted into DB: {}", user);
 
-        return actualUser;
+        return user;
     }
 
     @Transactional
     @Override
-    public IUser update(IUser user) {
-        logger.info("Update User in DB: {}", user);
+    public IUser update(IUser userData) {
+        logger.info("Update User in DB: {}", userData);
 
-        User actualUser = findActualUser(user.getGuid());
-        actualUser.setName(user.getName());
-        actualUser.setNickname(user.getNickname());
-        actualUser.setEmail(user.getEmail());
-        actualUser.setPhoneNumber(user.getPhoneNumber());
+        User user = findUserByGuid(userData.getGuid());
+        user.setName(userData.getName());
+        user.setNickname(userData.getNickname());
+        user.setEmail(userData.getEmail());
+        user.setPhoneNumber(userData.getPhoneNumber());
 
-        IUserDetails details = user.getUserDetails();
-        if (details != null) {
-            UserDetails actualDetails = new UserDetails();
-            actualDetails.setIdUser(actualUser.getIdUser());
-            actualDetails.setImageUrl(details.getImageUrl());
-            actualDetails.setPayload(details.getPayload());
-            actualUser.setUserDetails(actualDetails);
+        IUserDetails detailsData = userData.getUserDetails();
+        if (detailsData != null) {
+            UserDetails details = new UserDetails();
+            user.setUserDetails(details);
+
+            details.setIdUser(user.getIdUser());
+            details.setImageUrl(detailsData.getImageUrl());
+            details.setPayload(detailsData.getPayload());
         }
 
         try {
-            actualUser = userRepository.save(actualUser);
+            user = userRepository.save(user);
         } catch (PersistenceException | ConstraintViolationException ex) {
-            logger.error("User wasn't updated in DB: {}", actualUser);
-            throw new UserServiceException("User wasn't saved");
+            logger.error("User wasn't updated in DB: " + user, ex);
+            throw new UserServiceException("User wasn't updated");
         }
 
-        logger.info("User was updated in DB: guid = {}", actualUser.getGuid());
+        logger.info("User was updated in DB: {}", user);
 
-        return actualUser;
+        return user;
     }
 
     @Transactional
@@ -104,38 +102,41 @@ public class UserServiceImpl implements IUserService {
     public void delete(UUID guid) {
         logger.info("Delete User from DB: guid = {}", guid);
 
-        User actualUser = findActualUser(guid);
+        User user = findUserByGuid(guid);
 
         try {
-            userRepository.deleteById(actualUser.getIdUser());
+            userRepository.deleteById(user.getIdUser());
         } catch (PersistenceException ex) {
-            logger.error("User wasn't deleted from DB: {}", actualUser);
+            logger.error("User wasn't deleted from DB: " + user, ex);
             throw new UserServiceException("User wasn't deleted");
         }
 
-        logger.info("User was deleted from DB: guid = {}", actualUser.getGuid());
+        logger.info("User was deleted from DB: {}", user);
     }
 
     @Transactional(readOnly = true)
     @Override
     public IUser getByGuid(UUID guid) {
-        return findActualUser(guid);
+        logger.info("Get User from DB: guid = {}", guid);
+        return findUserByGuid(guid);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Iterable<IUser> getAll() {
         logger.info("Get all Users");
+
         Iterable<? extends IUser> users = userRepository.findAll();
+
         return (Iterable<IUser>) users;
     }
 
-    private User findActualUser(UUID guid) {
+    private User findUserByGuid(UUID guid) {
         logger.info("Find User in DB: guid = {}", guid);
 
         User user = userRepository.findByGuid(guid);
         if (user == null) {
-            logger.error("User wasn't found in DB: guid = {}", guid);
+            logger.warn("User wasn't found in DB: guid = {}", guid);
             throw new UserServiceException("User wasn't found");
         }
         return user;
