@@ -17,7 +17,7 @@ public interface IOrderService {
      * @param order order
      * @return saved order
      */
-    IOrder save(IOrder order);
+    IOrder create(IOrder order);
 
     /**
      * Gets all orders
@@ -48,6 +48,5 @@ public interface IOrderService {
      *
      * @param guid
      */
-    void delete(UUID guid);
-
+    void deleteByGuid(UUID guid);
 }

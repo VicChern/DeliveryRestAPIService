@@ -100,7 +100,7 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional
     @Override
-    public void delete(UUID guid) {
+    public void deleteByGuid(UUID guid) {
         logger.info("Delete User from DB: guid = {}", guid);
 
         User user = findUserByGuid(guid);

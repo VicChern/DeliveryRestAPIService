@@ -17,7 +17,7 @@ public interface IAddressService {
      * @param tenantGuid  tenant guid
      * @return created tenant address
      */
-    IAddress createAddressForTenant(IAddress addressData, UUID tenantGuid);
+    IAddress createForTenant(IAddress addressData, UUID tenantGuid);
 
     /**
      * Updates tenant address
@@ -26,7 +26,7 @@ public interface IAddressService {
      * @param tenantGuid  tenant guid
      * @return updated tenant address
      */
-    IAddress updateAddressForTenant(IAddress addressData, UUID tenantGuid);
+    IAddress updateForTenant(IAddress addressData, UUID tenantGuid);
 
     /**
      * Deletes tenant address
@@ -34,7 +34,7 @@ public interface IAddressService {
      * @param addressGuid address guid
      * @param tenantGuid  tenant guid
      */
-    void deleteAddressForTenant(UUID addressGuid, UUID tenantGuid);
+    void deleteForTenant(UUID addressGuid, UUID tenantGuid);
 
     /**
      * Gets tenant address
@@ -43,7 +43,7 @@ public interface IAddressService {
      * @param tenantGuid  tenant guid
      * @return tenant address
      */
-    IAddress getAddressForTenant(UUID addressGuid, UUID tenantGuid);
+    IAddress getForTenant(UUID addressGuid, UUID tenantGuid);
 
     /**
      * Returns all tenant addresses
@@ -51,7 +51,7 @@ public interface IAddressService {
      * @param tenantGuid tenant guid
      * @return tenant addresses
      */
-    List<IAddress> getAddressAllForTenant(UUID tenantGuid);
+    List<IAddress> getAllForTenant(UUID tenantGuid);
 
     /**
      * Creates user address
@@ -60,7 +60,7 @@ public interface IAddressService {
      * @param userGuid    user guid
      * @return created user address
      */
-    IAddress createAddressForUser(IAddress addressData, UUID userGuid);
+    IAddress createForUser(IAddress addressData, UUID userGuid);
 
     /**
      * Updates user address
@@ -69,7 +69,7 @@ public interface IAddressService {
      * @param userGuid    user guid
      * @return updated user address
      */
-    IAddress updateAddressForUser(IAddress addressData, UUID userGuid);
+    IAddress updateForUser(IAddress addressData, UUID userGuid);
 
     /**
      * Deletes user address
@@ -77,7 +77,7 @@ public interface IAddressService {
      * @param addressGuid address guid
      * @param userGuid    user guid
      */
-    void deleteAddressForUser(UUID addressGuid, UUID userGuid);
+    void deleteForUser(UUID addressGuid, UUID userGuid);
 
     /**
      * Returns user address
@@ -86,7 +86,7 @@ public interface IAddressService {
      * @param userGuid    user guid
      * @return user address
      */
-    IAddress getAddressForUser(UUID addressGuid, UUID userGuid);
+    IAddress getForUser(UUID addressGuid, UUID userGuid);
 
     /**
      * Returns all user addresses
@@ -94,5 +94,5 @@ public interface IAddressService {
      * @param userGuid user guid
      * @return user addresses
      */
-    List<IAddress> getAddressAllForUser(UUID userGuid);
+    List<IAddress> getAllForUser(UUID userGuid);
 }
