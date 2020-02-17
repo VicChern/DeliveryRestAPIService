@@ -9,14 +9,14 @@ public class OrderDetailsDto {
     private String payload;
 
     @Size(max = 512)
-    private String imageURL;
+    private String imageUrl;
 
     public OrderDetailsDto() {
     }
 
     public OrderDetailsDto(String payload, String imageUrl) {
         this.payload = payload;
-        this.imageURL = imageUrl;
+        this.imageUrl = imageUrl;
     }
 
     public String getPayload() {
@@ -24,7 +24,7 @@ public class OrderDetailsDto {
     }
 
     public String getImageUrl() {
-        return imageURL;
+        return imageUrl;
     }
 
     @Override
@@ -33,19 +33,19 @@ public class OrderDetailsDto {
         if (o == null || getClass() != o.getClass()) return false;
         OrderDetailsDto that = (OrderDetailsDto) o;
         return Objects.equals(payload, that.payload) &&
-                Objects.equals(imageURL, that.imageURL);
+                Objects.equals(imageUrl, that.imageUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(payload, imageURL);
+        return Objects.hash(payload, imageUrl);
     }
 
     @Override
     public String toString() {
         return "OrderDetailsDto{" +
                 "payload='" + payload + '\'' +
-                ", imageURL='" + imageURL + '\'' +
+                ", imageURL='" + imageUrl + '\'' +
                 '}';
     }
 }

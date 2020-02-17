@@ -88,7 +88,7 @@ public class OrderController extends DefaultController {
      * @return Response Entity with {@link OrderDto} object
      */
     @GetMapping(value = "/{id}", produces = "application/vnd.softserve.order+json")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable Long id) {
+    public ResponseEntity<OrderDto> getOrder(@PathVariable String id) {
         OrderDto order = getOrderDtoStub();
 
         logger.info("Sending the specific order ({}) to the client:\n{}", id, order);

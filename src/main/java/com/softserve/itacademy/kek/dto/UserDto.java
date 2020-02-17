@@ -27,7 +27,6 @@ public class UserDto {
     private String phone;
 
     @NotNull
-    @Size(max = 256)
     private DetailsDto details;
 
     public UserDto() {

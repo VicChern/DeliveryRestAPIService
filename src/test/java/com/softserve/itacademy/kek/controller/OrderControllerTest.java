@@ -51,20 +51,21 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/vnd.softserve.order+json"))
                 .andExpect(jsonPath("$[0].tenant").value("MyTenant"))
-                .andExpect(jsonPath("$[0].guid").value("safgad123"))
+                .andExpect(jsonPath("$[0].guid").value("123"))
                 .andExpect(jsonPath("$[0].details.payload").value("some info"))
                 .andExpect(jsonPath("$[0].details.imageUrl").value("https://mypicture"));
     }
 
     @Test
     public void addOrderTest() throws Exception {
+        System.out.println(gson.toJson(orderDto) + "   kyky");
         mockMvc.perform(post("/orders")
                 .contentType("application/vnd.softserve.order+json")
                 .accept("application/vnd.softserve.order+json")
                 .content(gson.toJson(orderDto)))
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.tenant").value("MyTenant"))
-                .andExpect(jsonPath("$.guid").value("safgad123"))
+                .andExpect(jsonPath("$.guid").value("123"))
                 .andExpect(jsonPath("$.details.payload").value("some info"))
                 .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"));
     }
@@ -75,7 +76,7 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/vnd.softserve.order+json"))
                 .andExpect(jsonPath("$.tenant").value("MyTenant"))
-                .andExpect(jsonPath("$.guid").value("safgad123"))
+                .andExpect(jsonPath("$.guid").value("123"))
                 .andExpect(jsonPath("$.details.payload").value("some info"))
                 .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"));
     }
@@ -88,7 +89,7 @@ public class OrderControllerTest {
                 .content(gson.toJson(orderDto)))
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.tenant").value("MyTenant"))
-                .andExpect(jsonPath("$.guid").value("safgad123"))
+                .andExpect(jsonPath("$.guid").value("123"))
                 .andExpect(jsonPath("$.details.payload").value("some info"))
                 .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"));
     }

@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.controller;
 
+import java.util.Arrays;
+
 import com.google.gson.Gson;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
@@ -57,6 +59,7 @@ public class UserControllerTest {
 
     @Test
     public void addUserTest() throws Exception {
+        System.out.println("kyky" + gson.toJson(userDto));
         mockMvc.perform(post("/users")
                 .contentType("application/vnd.softserve.user+json")
                 .accept("application/vnd.softserve.user+json")
@@ -121,17 +124,17 @@ public class UserControllerTest {
 
     @Test
     public void addUserAddressesTest() throws Exception {
+        System.out.println(gson.toJson(addressDto));
         mockMvc.perform(post("/users/1/addresses")
                 .contentType("application/vnd.softserve.address+json")
                 .accept("application/vnd.softserve.address+json")
-                .content(gson.toJson(addressDto)))
-                .andExpect(status().isAccepted())
+                .content(gson.toJson(Arrays.asList(addressDto))))
                 .andExpect(status().isAccepted())
                 .andExpect(content().contentType("application/vnd.softserve.address+json"))
-                .andExpect(jsonPath("$.guid").value("guid12345qwert"))
-                .andExpect(jsonPath("$.alias").value("alias"))
-                .andExpect(jsonPath("$.address").value("Leipzigzskaya 15v"))
-                .andExpect(jsonPath("$.notes").value("Some notes..."));
+                .andExpect(jsonPath("$[0].guid").value("guid12345qwert"))
+                .andExpect(jsonPath("$[0].alias").value("alias"))
+                .andExpect(jsonPath("$[0].address").value("Leipzigzskaya 15v"))
+                .andExpect(jsonPath("$[0].notes").value("Some notes..."));
     }
 
     @Test
