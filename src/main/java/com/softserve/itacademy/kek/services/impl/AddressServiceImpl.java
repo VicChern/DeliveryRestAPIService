@@ -60,7 +60,7 @@ public class AddressServiceImpl implements IAddressService {
             address = addressRepository.save(address);
         } catch (PersistenceException | ConstraintViolationException ex) {
             logger.error("Tenant address wasn't inserted into DB: " + address, ex);
-            throw new UserServiceException("Tenant address wasn't inserted");
+            throw new AddressServiceException("Tenant address wasn't inserted");
         }
 
         logger.info("Tenant address was inserted into DB: tenant.guid = {}, address = {}", tenantGuid, address);
@@ -86,7 +86,7 @@ public class AddressServiceImpl implements IAddressService {
             address = addressRepository.save(address);
         } catch (PersistenceException | ConstraintViolationException ex) {
             logger.error("Tenant address wasn't updated in DB: " + address, ex);
-            throw new UserServiceException("Tenant address wasn't updated");
+            throw new AddressServiceException("Tenant address wasn't updated");
         }
 
         logger.info("Tenant address was updated in DB: tenant.guid = {}, address = {}", tenantGuid, address);
@@ -155,7 +155,7 @@ public class AddressServiceImpl implements IAddressService {
             address = addressRepository.save(address);
         } catch (PersistenceException | ConstraintViolationException ex) {
             logger.error("User address wasn't inserted into DB: " + address, ex);
-            throw new UserServiceException("User address wasn't inserted");
+            throw new AddressServiceException("User address wasn't inserted");
         }
 
         logger.info("User address was inserted into DB: user.guid = {}, address = {}", userGuid, address);
@@ -181,7 +181,7 @@ public class AddressServiceImpl implements IAddressService {
             address = addressRepository.save(address);
         } catch (PersistenceException | ConstraintViolationException ex) {
             logger.error("User address wasn't updated in DB: " + address, ex);
-            throw new UserServiceException("User address wasn't updated");
+            throw new AddressServiceException("User address wasn't updated");
         }
 
         logger.info("User address was updated in DB: user.guid = {}, address = {}", userGuid, address);
