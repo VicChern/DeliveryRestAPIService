@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.service.impl;
+package com.softserve.itacademy.kek.services.impl;
 
 
 import com.google.api.gax.paging.Page;
@@ -9,8 +9,8 @@ import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.service.model.impl.CloudStorageObject;
-import com.softserve.itacademy.kek.service.ICloudStorageService;
+import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
+import com.softserve.itacademy.kek.services.ICloudStorageService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.apache.log4j.Logger;
