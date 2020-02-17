@@ -4,6 +4,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,4 +27,12 @@ public class DefaultController {
         logger.warn("Sending the error message to the client");
         return ResponseEntity.ok(response.toString());
     }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+    public ResponseEntity<String> validationExceptionHandler(Exception ex) {
+        logger.error("An error occurred:", ex);
+        logger.warn("Sending the error message to the client");
+        return ResponseEntity.badRequest().body("Not valid request");
+    }
+
 }
