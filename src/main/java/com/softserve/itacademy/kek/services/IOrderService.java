@@ -8,7 +8,6 @@ import java.util.UUID;
 /**
  * Service interface for {@link IOrder}
  */
-
 public interface IOrderService {
 
     /**

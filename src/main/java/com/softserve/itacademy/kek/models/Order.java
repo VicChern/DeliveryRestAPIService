@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.models;
 
 import com.softserve.itacademy.kek.dataexchange.IOrder;
+import com.softserve.itacademy.kek.dataexchange.IOrderDetails;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -81,7 +82,7 @@ public class Order implements IOrder, Serializable {
         this.summary = summary;
     }
 
-    public OrderDetails getOrderDetails() {
+    public IOrderDetails getOrderDetails() {
         return orderDetails;
     }
 

@@ -6,8 +6,6 @@ import java.util.UUID;
 
 public interface IOrder {
 
-    Long getIdOrder();
-
     Tenant getTenant();
 
     UUID getGuid();
