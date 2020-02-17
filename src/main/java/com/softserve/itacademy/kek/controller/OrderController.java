@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.controller;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.dto.OrderDetailsDto;
@@ -27,6 +27,8 @@ import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 @RestController
 @RequestMapping(path = "/orders")
 public class OrderController extends DefaultController {
+
+
 
     final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
@@ -75,7 +77,7 @@ public class OrderController extends DefaultController {
      * @param order DTO object as a JSON
      * @return created {@link OrderDto} object
      */
-    @PostMapping
+    @PostMapping(consumes = "application/vnd.softserve.order+json", produces = "application/vnd.softserve.order+json")
     public ResponseEntity<OrderDto> addOrder(@RequestBody @Valid OrderDto order) {
         logger.info("Order has been sent:\n{}", order);
         return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
@@ -88,7 +90,7 @@ public class OrderController extends DefaultController {
      * @return Response Entity with {@link OrderDto} object
      */
     @GetMapping(value = "/{id}", produces = "application/vnd.softserve.order+json")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable String id) {
+    public ResponseEntity<OrderDto> getOrder(@PathVariable Long id) {
         OrderDto order = getOrderDtoStub();
 
         logger.info("Sending the specific order ({}) to the client:\n{}", id, order);
@@ -147,7 +149,6 @@ public class OrderController extends DefaultController {
      */
     @PostMapping(value = "/{id}/events", consumes = "application/vnd.softserve.event+json",
             produces = "application/vnd.softserve.event+json")
-    @ResponseStatus()
     public ResponseEntity<OrderEventDto> addEvent(@PathVariable String id, @RequestBody @Valid OrderEventDto body) {
         logger.info("Sending the created order({}) events to the client", id);
         logger.info("Event have been added: {}", body);

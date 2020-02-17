@@ -167,8 +167,9 @@ public class TenantController extends DefaultController {
      */
     @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
-    public ResponseEntity<TenantPropertiesDto> addTenantProperties(@PathVariable String guid,
-                                                                   @RequestBody @Valid TenantPropertiesDto body) {
+    public ResponseEntity<List<TenantPropertiesDto>> addTenantProperties(@PathVariable String guid,
+                                                                   @RequestBody @Valid List<TenantPropertiesDto> body) {
+
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, body);
         logger.info("Sending the created tenant's({}) properties to the client", body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
