@@ -6,15 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.services.ITenantService;
-import com.softserve.itacademy.kek.services.IUserService;
+import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.ITenant;
@@ -68,6 +60,7 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
 
     @Rollback
 //    @Test(groups = {"integration-tests"})
+    @Test
     public void createSuccess() {
         //when
         ITenant savedTenant  = tenantService.create(tenant);

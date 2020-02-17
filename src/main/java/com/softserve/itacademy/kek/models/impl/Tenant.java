@@ -1,8 +1,6 @@
 package com.softserve.itacademy.kek.models.impl;
 
 
-import com.softserve.itacademy.kek.modelInterfaces.ITenant;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -51,7 +50,7 @@ public class Tenant implements ITenant, Serializable {
     private TenantDetails tenantDetails;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<TenantProperties> tenantPropertiesList;
+    private List<TenantProperties> tenantPropertiesList = new ArrayList<>();
 
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
     private List<Address> addressList;

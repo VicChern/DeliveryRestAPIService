@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
