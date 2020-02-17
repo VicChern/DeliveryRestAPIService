@@ -1,9 +1,9 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.dataexchange.ITenantProperties;
-
 import java.util.List;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.ITenantProperties;
 
 /**
  * Service interface for {@link ITenantProperties}

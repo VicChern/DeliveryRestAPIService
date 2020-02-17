@@ -1,8 +1,4 @@
-package com.softserve.itacademy.kek.models;
-
-import com.softserve.itacademy.kek.dataexchange.IPropertyType;
-import com.softserve.itacademy.kek.dataexchange.ITenant;
-import com.softserve.itacademy.kek.dataexchange.ITenantProperties;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,31 +7,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
-@Table(name = "obj_tenant_properties")
-public class TenantProperties implements ITenantProperties, Serializable {
+@Table(name = "obj_global_properties")
+public class GlobalProperties implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_property")
     private Long idProperty;
-
-    @NotNull
-    @Column(name = "guid", unique = true, nullable = false)
-    private UUID guid;
-
-    @ManyToOne
-    @JoinColumn(name = "id_tenant", nullable = false)
-    Tenant tenant;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_Property_Type", nullable = false)
@@ -43,7 +29,7 @@ public class TenantProperties implements ITenantProperties, Serializable {
 
     @NotNull
     @Size(min = 1, max = 256)
-    @Column(name = "key", nullable = false, unique = true, length = 256)
+    @Column(name = "key", unique = true, nullable = false, length = 256)
     private String key;
 
     @NotNull
@@ -59,12 +45,12 @@ public class TenantProperties implements ITenantProperties, Serializable {
         this.idProperty = idProperty;
     }
 
-    public UUID getGuid() {
-        return guid;
+    public PropertyType getPropertyType() {
+        return propertyType;
     }
 
-    public void setGuid(UUID guid) {
-        this.guid = guid;
+    public void setPropertyType(PropertyType propertyType) {
+        this.propertyType = propertyType;
     }
 
     public String getKey() {
@@ -83,30 +69,12 @@ public class TenantProperties implements ITenantProperties, Serializable {
         this.value = value;
     }
 
-    public ITenant getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(ITenant tenant) {
-        this.tenant = (Tenant) tenant;
-    }
-
-    public IPropertyType getPropertyType() {
-        return propertyType;
-    }
-
-    public void setPropertyType(IPropertyType propertyType) {
-        this.propertyType = (PropertyType) propertyType;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TenantProperties that = (TenantProperties) o;
+        GlobalProperties that = (GlobalProperties) o;
         return Objects.equals(idProperty, that.idProperty) &&
-                Objects.equals(guid, that.guid) &&
-                Objects.equals(tenant, that.tenant) &&
                 Objects.equals(propertyType, that.propertyType) &&
                 Objects.equals(key, that.key) &&
                 Objects.equals(value, that.value);
@@ -114,15 +82,13 @@ public class TenantProperties implements ITenantProperties, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idProperty, guid, tenant, propertyType, key, value);
+        return Objects.hash(idProperty, propertyType, key, value);
     }
 
     @Override
     public String toString() {
-        return "TenantProperties{" +
+        return "GlobalProperties{" +
                 "idProperty=" + idProperty +
-                ", guid=" + guid +
-                ", tenant=" + tenant +
                 ", propertyType=" + propertyType +
                 ", key='" + key + '\'' +
                 ", value='" + value + '\'' +

@@ -1,13 +1,11 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import com.softserve.itacademy.kek.exception.TenantServiceException;
-import com.softserve.itacademy.kek.models.Tenant;
-import com.softserve.itacademy.kek.dataexchange.ITenant;
-import com.softserve.itacademy.kek.models.TenantDetails;
-import com.softserve.itacademy.kek.models.User;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.services.ITenantService;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +13,14 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.softserve.itacademy.kek.exception.TenantServiceException;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.models.impl.TenantDetails;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.repositories.UserRepository;
+import com.softserve.itacademy.kek.services.ITenantService;
 
 /**
  * Service implementation for {@link ITenantService}

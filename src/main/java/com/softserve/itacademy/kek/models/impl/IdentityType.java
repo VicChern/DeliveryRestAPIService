@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.models;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,25 +12,25 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "def_actor_role")
-public class ActorRole implements Serializable {
+@Table(name = "def_identity_type")
+public class IdentityType implements Serializable {
 
     @Id
-    @Column(name = "id_actor_role")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idActorRole;
+    @Column(name = "id_identity_type")
+    private Long idIdentityType;
 
     @NotNull
     @Size(min = 1, max = 256)
-    @Column(name = "name", unique = true, nullable = false, length = 256)
+    @Column(name = "name", nullable = false, unique = true, length = 256)
     private String name;
 
-    public Long getIdActorRole() {
-        return idActorRole;
+    public Long getIdIdentityType() {
+        return idIdentityType;
     }
 
-    public void setIdActorRole(Long idActorRole) {
-        this.idActorRole = idActorRole;
+    public void setIdIdentityType(Long idIdentityType) {
+        this.idIdentityType = idIdentityType;
     }
 
     public String getName() {
@@ -45,20 +45,20 @@ public class ActorRole implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ActorRole actorRole = (ActorRole) o;
-        return Objects.equals(idActorRole, actorRole.idActorRole) &&
-                Objects.equals(name, actorRole.name);
+        IdentityType that = (IdentityType) o;
+        return Objects.equals(idIdentityType, that.idIdentityType) &&
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idActorRole, name);
+        return Objects.hash(idIdentityType, name);
     }
 
     @Override
     public String toString() {
-        return "ActorRole{" +
-                "idActorRole=" + idActorRole +
+        return "IdentityType{" +
+                "idIdentityType=" + idIdentityType +
                 ", name='" + name + '\'' +
                 '}';
     }

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.softserve.itacademy.kek.models.OrderEvent;
+import com.softserve.itacademy.kek.models.impl.OrderEvent;
 
 public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
 
