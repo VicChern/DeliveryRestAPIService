@@ -55,8 +55,8 @@ public class Tenant implements ITenant, Serializable {
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
     private List<Address> addressList;
 
-    @OneToMany(mappedBy = "idTenant", fetch = FetchType.LAZY)
-    private List<Order> orderList;
+    @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
+    private List<Order> orderList = new ArrayList<>();;
 
     public Long getIdTenant() {
         return idTenant;
@@ -114,6 +114,23 @@ public class Tenant implements ITenant, Serializable {
         this.addressList = addressList;
     }
 
+    public void setTenantOwner(User tenantOwner) {
+        this.tenantOwner = tenantOwner;
+    }
+
+    public void setTenantDetails(TenantDetails tenantDetails) {
+        this.tenantDetails = tenantDetails;
+        tenantDetails.setTenant(this);
+    }
+
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
+    }
+
     // see bidirectional @OneToMany association https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
     public void addTenantProperty(TenantProperties tenantProperty) {
         tenantPropertiesList.add( tenantProperty );
@@ -125,20 +142,15 @@ public class Tenant implements ITenant, Serializable {
         tenantProperty.setTenant( null );
     }
 
-    public void setTenantOwner(User tenantOwner) {
-        this.tenantOwner = tenantOwner;
+    // see bidirectional @OneToMany association https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
+    public void addOrder(Order order) {
+        orderList.add( order );
+        order.setTenant( this );
     }
 
-    public void setTenantDetails(TenantDetails tenantDetails) {
-        this.tenantDetails = tenantDetails;
-    }
-
-    public List<Order> getOrderList() {
-        return orderList;
-    }
-
-    public void setOrderList(List<Order> orderList) {
-        this.orderList = orderList;
+    public void removeTenantProperty(Order order) {
+        orderList.remove( order );
+        order.setTenant( null );
     }
 
     @Override

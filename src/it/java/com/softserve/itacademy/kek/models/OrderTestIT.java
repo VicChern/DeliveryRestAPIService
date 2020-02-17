@@ -49,6 +49,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
 
     @AfterMethod
     public void tearDown() {
+        orderRepository.deleteAll();
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }
