@@ -37,7 +37,7 @@ public class OrderServiceImpl implements IOrderService {
 
     @Transactional
     @Override
-    public IOrder save(IOrder order) throws OrderServiceException {
+    public IOrder create(IOrder order) throws OrderServiceException {
         logger.info("Saving Order to db: {}", order);
 
         Order actualOrder = new Order();
@@ -148,7 +148,7 @@ public class OrderServiceImpl implements IOrderService {
 
     @Transactional
     @Override
-    public void delete(UUID guid) throws OrderServiceException {
+    public void deleteByGuid(UUID guid) throws OrderServiceException {
         logger.info("Deleting Order from db by guid: {}", guid);
 
         Order actualOrder = (Order) getByGuid(guid);

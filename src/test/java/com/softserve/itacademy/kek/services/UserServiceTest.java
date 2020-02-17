@@ -94,7 +94,7 @@ public class UserServiceTest {
 
         when(userRepository.findByGuid(guid)).thenReturn(foundUser);
 
-        userService.delete(guid);
+        userService.deleteByGuid(guid);
 
         ArgumentCaptor<Long> acUserID = ArgumentCaptor.forClass(Long.class);
 

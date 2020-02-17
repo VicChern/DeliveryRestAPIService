@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.services;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.softserve.itacademy.kek.dataexchange.IUser;
@@ -29,7 +30,7 @@ public interface IUserService {
      *
      * @param guid user guid
      */
-    void delete(UUID guid);
+    void deleteByGuid(UUID guid);
 
     /**
      * Returns user data by user guid
@@ -44,5 +45,5 @@ public interface IUserService {
      *
      * @return all users
      */
-    Iterable<IUser> getAll();
+    List<IUser> getAll();
 }

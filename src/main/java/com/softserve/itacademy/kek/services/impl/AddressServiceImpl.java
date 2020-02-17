@@ -44,7 +44,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public IAddress createAddressForTenant(IAddress addressData, UUID tenantGuid) {
+    public IAddress createForTenant(IAddress addressData, UUID tenantGuid) {
         logger.info("Insert Tenant address into DB: tenant.guid = {}, address = {}", tenantGuid, addressData);
 
         Address address = new Address();
@@ -70,7 +70,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public IAddress updateAddressForTenant(IAddress addressData, UUID tenantGuid) {
+    public IAddress updateForTenant(IAddress addressData, UUID tenantGuid) {
         logger.info("Update Tenant address in DB: tenant.guid = {}, address = {}", tenantGuid, addressData);
 
         Address address = findAddressByGuid(addressData.getGuid());
@@ -96,7 +96,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public void deleteAddressForTenant(UUID addressGuid, UUID tenantGuid) {
+    public void deleteForTenant(UUID addressGuid, UUID tenantGuid) {
         logger.info("Delete Tenant address from DB: tenant.guid = {}, address.guid = {}", tenantGuid, addressGuid);
 
         Address address = findAddressByGuid(addressGuid);
@@ -116,7 +116,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional(readOnly = true)
     @Override
-    public IAddress getAddressForTenant(UUID addressGuid, UUID tenantGuid) {
+    public IAddress getForTenant(UUID addressGuid, UUID tenantGuid) {
         logger.info("Get Tenant address from DB: tenant.guid = {}, address.guid = {}", tenantGuid, addressGuid);
 
         Address address = findAddressByGuid(addressGuid);
@@ -129,7 +129,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<IAddress> getAddressAllForTenant(UUID tenantGuid) {
+    public List<IAddress> getAllForTenant(UUID tenantGuid) {
         logger.info("Get Tenant address list: tenant.guid = {}", tenantGuid);
 
         List<? extends IAddress> addresses = addressRepository.findAllByTenantGuid(tenantGuid);
@@ -139,7 +139,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public IAddress createAddressForUser(IAddress addressData, UUID userGuid) {
+    public IAddress createForUser(IAddress addressData, UUID userGuid) {
         logger.info("Insert User address into DB: user.guid = {}, address = {}", userGuid, addressData);
 
         Address address = new Address();
@@ -165,7 +165,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public IAddress updateAddressForUser(IAddress addressData, UUID userGuid) {
+    public IAddress updateForUser(IAddress addressData, UUID userGuid) {
         logger.info("Update User address in DB: user.guid = {}, address = {}", userGuid, addressData);
 
         Address address = findAddressByGuid(addressData.getGuid());
@@ -191,7 +191,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public void deleteAddressForUser(UUID addressGuid, UUID userGuid) {
+    public void deleteForUser(UUID addressGuid, UUID userGuid) {
         logger.info("Delete User address from DB: user.guid = {}, address.guid = {}", userGuid, addressGuid);
 
         Address address = findAddressByGuid(addressGuid);
@@ -211,7 +211,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional(readOnly = true)
     @Override
-    public IAddress getAddressForUser(UUID addressGuid, UUID userGuid) {
+    public IAddress getForUser(UUID addressGuid, UUID userGuid) {
         logger.info("Get User address from DB: user.guid = {}, address.guid = {}", userGuid, addressGuid);
 
         Address address = findAddressByGuid(addressGuid);
@@ -224,7 +224,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<IAddress> getAddressAllForUser(UUID userGuid) {
+    public List<IAddress> getAllForUser(UUID userGuid) {
         logger.info("Get User address list: user.guid = {}", userGuid);
 
         List<? extends IAddress> addresses = addressRepository.findAllByUserGuid(userGuid);
