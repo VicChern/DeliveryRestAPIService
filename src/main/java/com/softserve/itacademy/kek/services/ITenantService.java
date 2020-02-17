@@ -1,10 +1,10 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.models.Tenant;
-import com.softserve.itacademy.kek.dataexchange.ITenant;
-
 import java.util.List;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.impl.Tenant;
 
 /**
  * Service interface for {@link ITenant}

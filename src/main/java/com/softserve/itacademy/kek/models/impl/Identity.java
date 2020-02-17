@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.models;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

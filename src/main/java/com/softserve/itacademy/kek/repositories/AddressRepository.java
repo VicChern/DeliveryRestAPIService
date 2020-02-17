@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.softserve.itacademy.kek.models.Address;
+import com.softserve.itacademy.kek.models.impl.Address;
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
 

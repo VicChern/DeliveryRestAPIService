@@ -1,20 +1,21 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.dataexchange.IOrder;
-import com.softserve.itacademy.kek.models.Order;
-import com.softserve.itacademy.kek.models.Tenant;
-import com.softserve.itacademy.kek.repositories.OrderEventRepository;
-import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
-import com.softserve.itacademy.kek.repositories.OrderRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.services.impl.OrderServiceImpl;
+import java.util.UUID;
+
 import org.mockito.ArgumentCaptor;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.UUID;
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.repositories.OrderEventRepository;
+import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
+import com.softserve.itacademy.kek.repositories.OrderRepository;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.services.impl.OrderServiceImpl;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;

@@ -1,26 +1,27 @@
 package com.softserve.itacademy.kek.utils;
 
-import com.softserve.itacademy.kek.models.Actor;
-import com.softserve.itacademy.kek.models.ActorRole;
-import com.softserve.itacademy.kek.models.Address;
-import com.softserve.itacademy.kek.models.GlobalProperties;
-import com.softserve.itacademy.kek.models.Identity;
-import com.softserve.itacademy.kek.models.IdentityType;
-import com.softserve.itacademy.kek.models.Order;
-import com.softserve.itacademy.kek.models.OrderDetails;
-import com.softserve.itacademy.kek.models.OrderEvent;
-import com.softserve.itacademy.kek.models.OrderEventType;
-import com.softserve.itacademy.kek.models.PropertyType;
-import com.softserve.itacademy.kek.models.Tenant;
-import com.softserve.itacademy.kek.models.TenantDetails;
-import com.softserve.itacademy.kek.models.TenantProperties;
-import com.softserve.itacademy.kek.models.User;
-import com.softserve.itacademy.kek.models.UserDetails;
-import net.bytebuddy.utility.RandomString;
-
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+
+import net.bytebuddy.utility.RandomString;
+
+import com.softserve.itacademy.kek.models.impl.Actor;
+import com.softserve.itacademy.kek.models.impl.ActorRole;
+import com.softserve.itacademy.kek.models.impl.Address;
+import com.softserve.itacademy.kek.models.impl.GlobalProperties;
+import com.softserve.itacademy.kek.models.impl.Identity;
+import com.softserve.itacademy.kek.models.impl.IdentityType;
+import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.OrderDetails;
+import com.softserve.itacademy.kek.models.impl.OrderEvent;
+import com.softserve.itacademy.kek.models.impl.OrderEventType;
+import com.softserve.itacademy.kek.models.impl.PropertyType;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.models.impl.TenantDetails;
+import com.softserve.itacademy.kek.models.impl.TenantProperties;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.models.impl.UserDetails;
 
 /**
  * Util class for creating entities in integration tests

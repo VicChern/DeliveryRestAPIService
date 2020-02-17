@@ -1,7 +1,4 @@
-package com.softserve.itacademy.kek.models;
-
-import com.softserve.itacademy.kek.dataexchange.IOrder;
-import com.softserve.itacademy.kek.dataexchange.IOrderDetails;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,6 +18,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderDetails;
 
 @Entity
 @Table(name = "obj_order")

@@ -1,22 +1,23 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import com.softserve.itacademy.kek.dataexchange.IOrderEvent;
-import com.softserve.itacademy.kek.exception.OrderEventServiceException;
-import com.softserve.itacademy.kek.exception.OrderServiceException;
-import com.softserve.itacademy.kek.models.Order;
-import com.softserve.itacademy.kek.models.OrderEvent;
-import com.softserve.itacademy.kek.repositories.OrderEventRepository;
-import com.softserve.itacademy.kek.repositories.OrderRepository;
-import com.softserve.itacademy.kek.services.IOrderEventService;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceException;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
-import java.util.UUID;
+import com.softserve.itacademy.kek.exception.OrderEventServiceException;
+import com.softserve.itacademy.kek.exception.OrderServiceException;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.OrderEvent;
+import com.softserve.itacademy.kek.repositories.OrderEventRepository;
+import com.softserve.itacademy.kek.repositories.OrderRepository;
+import com.softserve.itacademy.kek.services.IOrderEventService;
 
 /**
  * Service implementation for {@link IOrderEventService}

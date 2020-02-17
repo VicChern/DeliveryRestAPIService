@@ -1,8 +1,4 @@
-package com.softserve.itacademy.kek.models;
-
-import com.softserve.itacademy.kek.dataexchange.IActor;
-import com.softserve.itacademy.kek.dataexchange.ITenant;
-import com.softserve.itacademy.kek.dataexchange.IUser;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +14,10 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IActor;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.IUser;
 
 @Entity
 @Table(name = "obj_actor")

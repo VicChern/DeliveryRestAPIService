@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.softserve.itacademy.kek.dataexchange.IUser;
-import com.softserve.itacademy.kek.dataexchange.IUserDetails;
 import com.softserve.itacademy.kek.exception.UserServiceException;
-import com.softserve.itacademy.kek.models.User;
-import com.softserve.itacademy.kek.models.UserDetails;
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.IUserDetails;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.models.impl.UserDetails;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IUserService;
 

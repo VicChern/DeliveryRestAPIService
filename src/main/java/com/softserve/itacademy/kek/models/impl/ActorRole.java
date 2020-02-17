@@ -1,6 +1,4 @@
-package com.softserve.itacademy.kek.models;
-
-import com.softserve.itacademy.kek.dataexchange.IOrderEventType;
+package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,25 +12,25 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "def_order_event_type")
-public class OrderEventType implements IOrderEventType, Serializable {
+@Table(name = "def_actor_role")
+public class ActorRole implements Serializable {
 
     @Id
-    @Column(name = "id_order_event_type")
+    @Column(name = "id_actor_role")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idOrderEventType;
+    private Long idActorRole;
 
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "name", unique = true, nullable = false, length = 256)
     private String name;
 
-    public Long getIdOrderEventType() {
-        return idOrderEventType;
+    public Long getIdActorRole() {
+        return idActorRole;
     }
 
-    public void setIdOrderEventType(Long idOrderEventType) {
-        this.idOrderEventType = idOrderEventType;
+    public void setIdActorRole(Long idActorRole) {
+        this.idActorRole = idActorRole;
     }
 
     public String getName() {
@@ -47,20 +45,20 @@ public class OrderEventType implements IOrderEventType, Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrderEventType that = (OrderEventType) o;
-        return Objects.equals(idOrderEventType, that.idOrderEventType) &&
-                Objects.equals(name, that.name);
+        ActorRole actorRole = (ActorRole) o;
+        return Objects.equals(idActorRole, actorRole.idActorRole) &&
+                Objects.equals(name, actorRole.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idOrderEventType, name);
+        return Objects.hash(idActorRole, name);
     }
 
     @Override
     public String toString() {
-        return "OrderEventType{" +
-                "idOrderEventType=" + idOrderEventType +
+        return "ActorRole{" +
+                "idActorRole=" + idActorRole +
                 ", name='" + name + '\'' +
                 '}';
     }
