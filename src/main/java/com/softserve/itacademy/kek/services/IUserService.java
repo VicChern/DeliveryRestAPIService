@@ -10,26 +10,30 @@ import com.softserve.itacademy.kek.modelInterfaces.IUser;
 public interface IUserService {
     /**
      * Inserts new user to db
-     * @param user user data
+     *
+     * @param userData user data
      * @return inserted user data
      */
-    IUser create(IUser user);
+    IUser create(IUser userData);
 
     /**
      * Updates user
-     * @param user user data
+     *
+     * @param userData user data
      * @return updated user data
      */
-    IUser update(IUser user);
+    IUser update(IUser userData);
 
     /**
      * Deletes user in DB by user guid
+     *
      * @param guid user guid
      */
     void delete(UUID guid);
 
     /**
      * Returns user data by user guid
+     *
      * @param guid user guid
      * @return user data
      */
@@ -37,6 +41,7 @@ public interface IUserService {
 
     /**
      * Returns all users
+     *
      * @return all users
      */
     Iterable<IUser> getAll();
