@@ -79,20 +79,6 @@ public class ITCreateEntitiesUtils {
         return user;
     }
 
-
-    public static User getUser() {
-        User user = new User();
-        user.setName(RandomString.make());
-        user.setGuid(UUID.randomUUID());
-        user.setNickname(randomString());
-        user.setPhoneNumber(PHONE_NUMBER_PART
-                .concat(String.valueOf(getRandomIntegerInRange(10, 99))));
-        user.setEmail(randomString() + GMAIL_COM);
-        UserDetails userDetails = new UserDetails();
-        userDetails.setUser(user);
-        user.setUserDetails(userDetails);
-        return user;
-    }
     /**
      * Creates {@link UserDetails} with valid fields, but without {@link User}
      *
