@@ -67,7 +67,7 @@ public class TenantServiceImpl implements ITenantService {
             tenantRepository.save(tenantForSaving);
         } catch (PersistenceException ex) {
             LOGGER.error("Tenant wasn't saved: {}", tenantForSaving);
-            throw new TenantServiceException("Tenant wasn't saved");
+            throw new TenantServiceException("Tenant wasn't saved: " + tenant);
         }
 
         LOGGER.info("Tenant was saved: " + tenantForSaving);

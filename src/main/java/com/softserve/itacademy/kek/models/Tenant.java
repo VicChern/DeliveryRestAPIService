@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.models;
 
 
+import com.softserve.itacademy.kek.modelInterfaces.ITenantDetails;
 import com.softserve.itacademy.kek.modelInterfaces.ITenant;
 import com.softserve.itacademy.kek.modelInterfaces.ITenantDetails;
 import com.softserve.itacademy.kek.modelInterfaces.IUser;
@@ -19,6 +20,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -49,7 +51,7 @@ public class Tenant implements ITenant, Serializable {
     private TenantDetails tenantDetails;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<TenantProperties> tenantPropertiesList;
+    private List<TenantProperties> tenantPropertiesList  = new ArrayList<>();
 
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
     private List<Address> addressList;
@@ -111,6 +113,17 @@ public class Tenant implements ITenant, Serializable {
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
+    }
+
+    // see bidirectional @OneToMany association https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
+    public void addTenantProperty(TenantProperties tenantProperty) {
+        tenantPropertiesList.add( tenantProperty );
+        tenantProperty.setTenant( this );
+    }
+
+    public void removeTenantProperty(TenantProperties tenantProperty) {
+        tenantPropertiesList.remove( tenantProperty );
+        tenantProperty.setTenant( null );
     }
 
     public void setTenantOwner(User tenantOwner) {
