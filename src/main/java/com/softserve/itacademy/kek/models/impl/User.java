@@ -116,10 +116,6 @@ public class User implements IUser, Serializable {
         this.nickname = nickname;
     }
 
-    public IUserDetails getUserDetailsData() {
-        return getUserDetails();
-    }
-
     public IUserDetails getUserDetails() {
         return userDetails;
     }
