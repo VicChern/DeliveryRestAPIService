@@ -16,11 +16,11 @@ import org.testng.annotations.Test;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_512;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderDetails;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getUser;
 import static org.testng.Assert.assertEquals;
 
 
@@ -88,7 +88,7 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
     }
 
     private Order getOrderForOrderDetails() {
-        User user = getUser();
+        User user = createOrdinaryUser(1);
         Tenant tenant = getTenant(user);
 
         userRepository.save(user);

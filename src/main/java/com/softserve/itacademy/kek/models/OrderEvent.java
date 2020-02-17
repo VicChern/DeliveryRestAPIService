@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.modelInterfaces.IOrderEvent;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +19,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_order_event")
-public class OrderEvent implements Serializable {
+public class OrderEvent implements IOrderEvent, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

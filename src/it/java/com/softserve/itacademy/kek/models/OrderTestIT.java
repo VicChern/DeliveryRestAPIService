@@ -17,10 +17,10 @@ import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getUser;
 
 @Rollback
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
@@ -38,13 +38,10 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     private Order order1;
     private Order order2;
 
-    @Autowired
-    private OrderRepository repository;
-
     @BeforeMethod
     public void setUp() {
-        order1 = getOrder(getTenantForOrder());
-        order2 = getOrder(getTenantForOrder());
+        order1 = getOrder(getTenantForOrder(1));
+        order2 = getOrder(getTenantForOrder(2));
     }
 
     @AfterMethod
@@ -99,8 +96,8 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order1);
     }
 
-    private Tenant getTenantForOrder() {
-        User user = getUser();
+    private Tenant getTenantForOrder(int i) {
+        User user = createOrdinaryUser(i);
         Tenant tenant = getTenant(user);
 
         userRepository.save(user);

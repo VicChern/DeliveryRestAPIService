@@ -48,6 +48,6 @@ public interface IOrderService {
      *
      * @param guid
      */
-    void deleteByGuid(UUID guid);
+    void delete(UUID guid);
 
 }

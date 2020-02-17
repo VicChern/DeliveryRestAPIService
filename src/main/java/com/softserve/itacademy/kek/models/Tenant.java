@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek.models;
 
 
-import com.softserve.itacademy.kek.modelInterfaces.ITenantDetails;
 import com.softserve.itacademy.kek.modelInterfaces.ITenant;
+import com.softserve.itacademy.kek.modelInterfaces.ITenantDetails;
 import com.softserve.itacademy.kek.modelInterfaces.IUser;
 
 import javax.persistence.CascadeType;
@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -50,10 +49,13 @@ public class Tenant implements ITenant, Serializable {
     private TenantDetails tenantDetails;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<TenantProperties> tenantPropertiesList  = new ArrayList<>();
+    private List<TenantProperties> tenantPropertiesList;
 
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
     private List<Address> addressList;
+
+    @OneToMany
+    private List<Order> orderList;
 
     public Long getIdTenant() {
         return idTenant;
@@ -93,7 +95,6 @@ public class Tenant implements ITenant, Serializable {
 
     public void setTenantDetails(ITenantDetails tenantDetails) {
         this.tenantDetails = (TenantDetails) tenantDetails;
-//        ((TenantDetails) tenantDetails).setTenant(this);
     }
 
     public List<TenantProperties> getTenantPropertiesList() {
@@ -112,15 +113,20 @@ public class Tenant implements ITenant, Serializable {
         this.addressList = addressList;
     }
 
-    // see bidirectional @OneToMany association https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
-    public void addTenantProperty(TenantProperties tenantProperty) {
-        tenantPropertiesList.add( tenantProperty );
-        tenantProperty.setTenant( this );
+    public void setTenantOwner(User tenantOwner) {
+        this.tenantOwner = tenantOwner;
     }
 
-    public void removeTenantProperty(TenantProperties tenantProperty) {
-        tenantPropertiesList.remove( tenantProperty );
-        tenantProperty.setTenant( null );
+    public void setTenantDetails(TenantDetails tenantDetails) {
+        this.tenantDetails = tenantDetails;
+    }
+
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
     }
 
     @Override
