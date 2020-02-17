@@ -1,13 +1,13 @@
 package com.softserve.itacademy.kek.controller;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 // TODO: Add logger
@@ -59,7 +59,7 @@ public class SseController {
 
     /**
      * Creating emitter for 3 minutes(can be changed) and pushing message every 5 seconds
-     * data sending "message" for now, should be changed for actual coordinates
+     * data sending coordinates "0;0" for now, should be changed for actual coordinates
      *
      * @return
      */
@@ -72,7 +72,7 @@ public class SseController {
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             try {
-                for (; isConnected; ) {
+                while (isConnected) {
                     SseEmitter.SseEventBuilder event = SseEmitter.event()
                             .data(coordinates, MediaType.TEXT_EVENT_STREAM);
                     emitter.send(event);

@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.dto;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-public class DetailsDto {
+public class OrderDetailsDto {
 
     @Size(max = 4096)
     private String payload;
@@ -11,10 +11,10 @@ public class DetailsDto {
     @Size(max = 512)
     private String imageUrl;
 
-    public DetailsDto() {
+    public OrderDetailsDto() {
     }
 
-    public DetailsDto(String payload, String imageUrl) {
+    public OrderDetailsDto(String payload, String imageUrl) {
         this.payload = payload;
         this.imageUrl = imageUrl;
     }
@@ -30,8 +30,8 @@ public class DetailsDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DetailsDto)) return false;
-        DetailsDto that = (DetailsDto) o;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderDetailsDto that = (OrderDetailsDto) o;
         return Objects.equals(payload, that.payload) &&
                 Objects.equals(imageUrl, that.imageUrl);
     }
@@ -43,9 +43,9 @@ public class DetailsDto {
 
     @Override
     public String toString() {
-        return "DetailsDto{" +
+        return "OrderDetailsDto{" +
                 "payload='" + payload + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
+                ", imageURL='" + imageUrl + '\'' +
                 '}';
     }
 }

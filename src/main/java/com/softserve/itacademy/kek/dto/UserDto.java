@@ -1,16 +1,36 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.google.gson.annotations.SerializedName;
-
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class UserDto {
+
+    @NotNull
+    @Size(max = 256)
     private String guid;
+
+    @NotNull
+    @Size(max = 256)
     private String name;
+
+    @NotNull
+    @Size(max = 256)
     private String nickname;
+
+    @NotNull
+    @Size(max = 256)
     private String email;
+
+    @NotNull
+    @Size(max = 256)
     private String phone;
+
+    @NotNull
     private DetailsDto details;
+
+    public UserDto() {
+    }
 
     public UserDto(String guid, String name, String nickName, String email, String phone, DetailsDto detailsDto) {
         this.guid = guid;
