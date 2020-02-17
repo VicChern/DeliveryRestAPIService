@@ -15,7 +15,7 @@ public interface ITenantPropertiesService {
      * @param tenantGuid tenant guid
      * @return tenantProperties by tenant guid
      */
-    List<ITenantProperties> getTenantPropertiesByTenantGuid(UUID tenantGuid);
+    List<ITenantProperties> getAllForTenant(UUID tenantGuid);
 
     /**
      * Creates tenantProperty for tenant by tenant guid
@@ -23,7 +23,7 @@ public interface ITenantPropertiesService {
      * @param tenantGuid tenant guid
      * @return created tenantProperties
      */
-    List<ITenantProperties> createTenantPropertiesForTenant(List<ITenantProperties> tenantProperties, UUID tenantGuid);
+    List<ITenantProperties> create(List<ITenantProperties> tenantProperties, UUID tenantGuid);
 
     /**
      * Gets tenantProperty by tenant guid and tenantProperty guid
@@ -31,22 +31,22 @@ public interface ITenantPropertiesService {
      * @param tenantPropertyGuid tenantProperty  guid
      * @return tenantProperty
      */
-    ITenantProperties getTenantPropertyForTenantByGuid(UUID tenantGuid, UUID tenantPropertyGuid);
+    ITenantProperties get(UUID tenantGuid, UUID tenantPropertyGuid);
 
     /**
      * Updates tenantProperty by tenant guid and tenantProperty guid
      * @param tenantGuid tenant guid
      * @param tenantPropertyGuid tenantProperty guid
-     * @param tenantProperty tenantProperty
+     * @param iTenantProperty tenantProperty
      * @return updated tenantProperty
      */
-    ITenantProperties updateTenantPropertyForTenantByGuid(UUID tenantGuid, UUID tenantPropertyGuid, ITenantProperties tenantProperty);
+    ITenantProperties update(UUID tenantGuid, UUID tenantPropertyGuid, ITenantProperties iTenantProperty);
 
     /**
      * Deletes tenantProperty by tenant guid and tenantProperty guid
      * @param tenantGuid tenant guid
-     * @param tenantProperty tenantProperty guid
+     * @param tenantPropertyGuid tenantProperty guid
      */
-    void deleteTenantPropertyForTenantByGuid(UUID tenantGuid, UUID tenantProperty);
+    void delete(UUID tenantGuid, UUID tenantPropertyGuid);
 
 }
