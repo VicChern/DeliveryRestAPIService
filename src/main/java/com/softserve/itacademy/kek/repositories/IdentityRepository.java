@@ -1,7 +1,8 @@
 package com.softserve.itacademy.kek.repositories;
 
-import com.softserve.itacademy.kek.models.Identity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IdentityRepository extends CrudRepository<Identity, Long> {
+import com.softserve.itacademy.kek.models.Identity;
+
+public interface IdentityRepository extends JpaRepository<Identity, Long> {
 }

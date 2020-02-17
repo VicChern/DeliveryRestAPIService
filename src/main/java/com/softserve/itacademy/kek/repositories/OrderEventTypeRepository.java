@@ -1,7 +1,8 @@
 package com.softserve.itacademy.kek.repositories;
 
-import com.softserve.itacademy.kek.models.OrderEventType;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrderEventTypeRepository extends CrudRepository<OrderEventType, Long> {
+import com.softserve.itacademy.kek.models.OrderEventType;
+
+public interface OrderEventTypeRepository extends JpaRepository<OrderEventType, Long> {
 }
