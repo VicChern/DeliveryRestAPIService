@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -10,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.dataexchange.IUser;
 import com.softserve.itacademy.kek.dataexchange.IUserDetails;
+import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.models.User;
 import com.softserve.itacademy.kek.models.UserDetails;
 import com.softserve.itacademy.kek.repositories.UserRepository;
@@ -123,12 +124,12 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional(readOnly = true)
     @Override
-    public Iterable<IUser> getAll() {
+    public List<IUser> getAll() {
         logger.info("Get all Users");
 
-        Iterable<? extends IUser> users = userRepository.findAll();
+        List<? extends IUser> users = userRepository.findAll();
 
-        return (Iterable<IUser>) users;
+        return (List<IUser>) users;
     }
 
     private User findUserByGuid(UUID guid) {
