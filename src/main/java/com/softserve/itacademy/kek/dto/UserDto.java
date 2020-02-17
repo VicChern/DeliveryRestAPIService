@@ -1,17 +1,16 @@
 package com.softserve.itacademy.kek.dto;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class UserDto {
-
     @NotNull
     @Size(max = 256)
     private String guid;
 
-    @NotNull
-    @Size(max = 256)
+    @NotEmpty
     private String name;
 
     @NotNull
@@ -22,8 +21,7 @@ public class UserDto {
     @Size(max = 256)
     private String email;
 
-    @NotNull
-    @Size(max = 256)
+    @NotEmpty
     private String phone;
 
     @NotNull

@@ -14,7 +14,7 @@ public class DetailsDto {
     public DetailsDto() {
     }
 
-    public DetailsDto(String payload, String imageUrl) {
+    public DetailsDto (String payload, String imageUrl) {
         this.payload = payload;
         this.imageUrl = imageUrl;
     }
