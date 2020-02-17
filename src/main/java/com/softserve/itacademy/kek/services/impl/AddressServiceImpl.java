@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -128,8 +129,12 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional(readOnly = true)
     @Override
-    public Iterable<IAddress> getAddressForTenantAll(UUID tenantGuid) {
-        return null;
+    public List<IAddress> getAddressAllForTenant(UUID tenantGuid) {
+        logger.info("Get Tenant address list: tenant.guid = {}", tenantGuid);
+
+        List<? extends IAddress> addresses = addressRepository.findAllByTenantGuid(tenantGuid);
+
+        return (List<IAddress>) addresses;
     }
 
     @Transactional
@@ -219,14 +224,12 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional(readOnly = true)
     @Override
-    public Iterable<IAddress> getAddressForUserAll(UUID userGuid) {
-        return null;
-    }
+    public List<IAddress> getAddressAllForUser(UUID userGuid) {
+        logger.info("Get User address list: user.guid = {}", userGuid);
 
-    private Address transform(IAddress iAddress) {
-        Address address = new Address();
-        address.setAddress(iAddress.getAddress());
-        return address;
+        List<? extends IAddress> addresses = addressRepository.findAllByUserGuid(userGuid);
+
+        return (List<IAddress>) addresses;
     }
 
     private Address findAddressByGuid(UUID guid) {
