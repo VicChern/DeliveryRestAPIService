@@ -1,9 +1,8 @@
 package com.softserve.itacademy.kek.security;
 
-import com.auth0.AuthenticationController;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.JwkProviderBuilder;
-import com.softserve.itacademy.kek.controller.LogoutController;
+import com.softserve.itacademy.kek.controller.AuthController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -39,14 +37,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String baseURL;
 
     @Bean
-    public LogoutSuccessHandler logoutSuccessHandler() {
-        return new LogoutController();
-    }
-
-    @Bean
-    public AuthenticationController authenticationController() {
+    public com.auth0.AuthenticationController authenticationController() {
         JwkProvider jwkProvider = new JwkProviderBuilder(domain).build();
-        return AuthenticationController.newBuilder(domain, clientId, clientSecret)
+        return com.auth0.AuthenticationController.newBuilder(domain, clientId, clientSecret)
                 .withJwkProvider(jwkProvider)
                 .build();
     }
@@ -66,9 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl(baseURL + "/logout")
-                .logoutSuccessHandler(logoutSuccessHandler())
-                .permitAll()
-        ;
+                .logoutSuccessHandler(new AuthController())
+                .permitAll();
     }
 
     public String getDomain() {

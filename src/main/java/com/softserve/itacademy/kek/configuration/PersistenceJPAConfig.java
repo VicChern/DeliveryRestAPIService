@@ -31,7 +31,7 @@ public class PersistenceJPAConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(Environment env) {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource(env));
-        em.setPackagesToScan(new String[]{"com.softserve.itacademy.kek.models"});
+        em.setPackagesToScan("com.softserve.itacademy.kek.models");
 
         final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
