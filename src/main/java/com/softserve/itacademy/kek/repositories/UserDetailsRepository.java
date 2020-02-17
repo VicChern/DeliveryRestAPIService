@@ -1,7 +1,8 @@
 package com.softserve.itacademy.kek.repositories;
 
-import com.softserve.itacademy.kek.models.UserDetails;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserDetailsRepository extends CrudRepository<UserDetails, Long> {
+import com.softserve.itacademy.kek.models.UserDetails;
+
+public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> {
 }
