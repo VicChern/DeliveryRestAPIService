@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek.models;
 
 
-import com.softserve.itacademy.kek.modelInterfaces.ITenantDetails;
 import com.softserve.itacademy.kek.modelInterfaces.ITenant;
+import com.softserve.itacademy.kek.modelInterfaces.ITenantDetails;
 import com.softserve.itacademy.kek.modelInterfaces.IUser;
 
 import javax.persistence.CascadeType;
@@ -54,6 +54,9 @@ public class Tenant implements ITenant, Serializable {
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
     private List<Address> addressList;
 
+    @OneToMany
+    private List<Order> orderList;
+
     public Long getIdTenant() {
         return idTenant;
     }
@@ -92,7 +95,6 @@ public class Tenant implements ITenant, Serializable {
 
     public void setTenantDetails(ITenantDetails tenantDetails) {
         this.tenantDetails = (TenantDetails) tenantDetails;
-//        ((TenantDetails) tenantDetails).setTenant(this);
     }
 
     public List<TenantProperties> getTenantPropertiesList() {
@@ -109,6 +111,22 @@ public class Tenant implements ITenant, Serializable {
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
+    }
+
+    public void setTenantOwner(User tenantOwner) {
+        this.tenantOwner = tenantOwner;
+    }
+
+    public void setTenantDetails(TenantDetails tenantDetails) {
+        this.tenantDetails = tenantDetails;
+    }
+
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
     }
 
     @Override

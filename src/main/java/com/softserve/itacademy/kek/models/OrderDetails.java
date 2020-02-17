@@ -1,10 +1,13 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.modelInterfaces.IOrderDetails;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -14,7 +17,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "o2o_order_details")
-public class OrderDetails implements Serializable {
+public class OrderDetails implements IOrderDetails, Serializable {
 
     @Id
     @Column(name = "id_order")
@@ -22,6 +25,7 @@ public class OrderDetails implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId
+    @JoinColumn(name = "id_order", insertable = false, updatable = false)
     private Order order;
 
     @Size(max = 4096)
@@ -35,6 +39,7 @@ public class OrderDetails implements Serializable {
     public Long getIdOrder() {
         return idOrder;
     }
+
     public void setIdOrder(Long idOrder) {
         this.idOrder = idOrder;
     }
