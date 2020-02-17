@@ -177,8 +177,8 @@ public class ITCreateEntitiesUtils {
     public static TenantProperties getTenantProperties(Tenant tenant, PropertyType type) {
         TenantProperties properties = new TenantProperties();
         properties.setGuid(UUID.randomUUID());
-        properties.setKey(RandomString.make());
-        properties.setValue(RandomString.make());
+        properties.setKey(createRandomLetterString(64));
+        properties.setValue(createRandomLetterString(256));
         properties.setTenant(tenant);
         properties.setPropertyType(type);
         return properties;
@@ -240,8 +240,8 @@ public class ITCreateEntitiesUtils {
 
     public static PropertyType getPropertyType() {
         PropertyType propertyType = new PropertyType();
-        propertyType.setName(randomString());
-        propertyType.setSchema(randomString());
+        propertyType.setName(createRandomLetterString(64));
+        propertyType.setSchema(createRandomLetterString(64));
         return propertyType;
     }
 
