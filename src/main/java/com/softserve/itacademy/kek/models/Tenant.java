@@ -55,8 +55,8 @@ public class Tenant implements ITenant, Serializable {
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
     private List<Address> addressList;
 
-    @OneToMany(mappedBy = "idTenant", fetch = FetchType.LAZY)
-    private List<Order> orderList;
+    @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
+    private List<Order> orderList = new ArrayList<>();;
 
     public Long getIdTenant() {
         return idTenant;
@@ -114,23 +114,13 @@ public class Tenant implements ITenant, Serializable {
         this.addressList = addressList;
     }
 
-    // see bidirectional @OneToMany association https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
-    public void addTenantProperty(TenantProperties tenantProperty) {
-        tenantPropertiesList.add( tenantProperty );
-        tenantProperty.setTenant( this );
-    }
-
-    public void removeTenantProperty(TenantProperties tenantProperty) {
-        tenantPropertiesList.remove(tenantProperty);
-        tenantProperty.setTenant(null);
-    }
-
     public void setTenantOwner(User tenantOwner) {
         this.tenantOwner = tenantOwner;
     }
 
     public void setTenantDetails(TenantDetails tenantDetails) {
         this.tenantDetails = tenantDetails;
+        tenantDetails.setTenant(this);
     }
 
     public List<Order> getOrderList() {
@@ -139,6 +129,28 @@ public class Tenant implements ITenant, Serializable {
 
     public void setOrderList(List<Order> orderList) {
         this.orderList = orderList;
+    }
+
+    // see bidirectional @OneToMany association https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
+    public void addTenantProperty(TenantProperties tenantProperty) {
+        tenantPropertiesList.add( tenantProperty );
+        tenantProperty.setTenant( this );
+    }
+
+    public void removeTenantProperty(TenantProperties tenantProperty) {
+        tenantPropertiesList.remove( tenantProperty );
+        tenantProperty.setTenant( null );
+    }
+
+    // see bidirectional @OneToMany association https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
+    public void addOrder(Order order) {
+        orderList.add( order );
+        order.setTenant( this );
+    }
+
+    public void removeTenantProperty(Order order) {
+        orderList.remove( order );
+        order.setTenant( null );
     }
 
     @Override

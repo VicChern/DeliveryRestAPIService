@@ -31,8 +31,8 @@ public class Order implements IOrder, Serializable {
     private Long idOrder;
 
     @ManyToOne
-    @JoinColumn(name = "id_tenant", insertable = false, updatable = false)
-    private Tenant idTenant;
+    @JoinColumn(name = "id_tenant")
+    private Tenant tenant;
 
     @NotNull
     @Column(name = "guid", unique = true, nullable = false)
@@ -57,12 +57,12 @@ public class Order implements IOrder, Serializable {
         this.idOrder = idOrder;
     }
 
-    public Tenant getIdTenant() {
-        return idTenant;
+    public Tenant getTenant() {
+        return tenant;
     }
 
-    public void setIdTenant(Tenant idTenant) {
-        this.idTenant = idTenant;
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
     }
 
     public UUID getGuid() {
@@ -103,7 +103,7 @@ public class Order implements IOrder, Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
         return Objects.equals(idOrder, order.idOrder) &&
-                Objects.equals(idTenant, order.idTenant) &&
+                Objects.equals(tenant, order.tenant) &&
                 Objects.equals(guid, order.guid) &&
                 Objects.equals(summary, order.summary) &&
                 Objects.equals(orderDetails, order.orderDetails) &&
@@ -112,14 +112,14 @@ public class Order implements IOrder, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idOrder, idTenant, guid, summary, orderDetails, orderEventList);
+        return Objects.hash(idOrder, tenant, guid, summary, orderDetails, orderEventList);
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "idOrder=" + idOrder +
-                ", tenant=" + idTenant +
+                ", tenant=" + tenant +
                 ", guid=" + guid +
                 ", summary='" + summary + '\'' +
                 ", orderDetails=" + orderDetails +

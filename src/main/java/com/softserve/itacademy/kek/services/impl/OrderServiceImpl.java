@@ -44,7 +44,7 @@ public class OrderServiceImpl implements IOrderService {
 
         actualOrder = (Order) order;
 
-        UUID tenantGuid = actualOrder.getIdTenant().getGuid();
+        UUID tenantGuid = actualOrder.getTenant().getGuid();
 
         OrderDetails actualDetails = new OrderDetails();
         IOrderDetails details = actualOrder.getOrderDetails();

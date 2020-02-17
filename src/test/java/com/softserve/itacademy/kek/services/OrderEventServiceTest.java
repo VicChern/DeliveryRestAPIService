@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 /**
  * Unit test User Service {@link OrderEventServiceImpl}
  */
-@Test(groups = {"unit-tests"})
+//@Test(groups = {"unit-tests"})
+@Test
 public class OrderEventServiceTest {
 }
