@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.models;
 
-import com.softserve.itacademy.kek.modelInterfaces.IPropertyType;
+import com.softserve.itacademy.kek.dataexchange.IPropertyType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek.service;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.modelInterfaces.ITenant;
-import com.softserve.itacademy.kek.modelInterfaces.IUser;
+import com.softserve.itacademy.kek.dataexchange.ITenant;
+import com.softserve.itacademy.kek.dataexchange.IUser;
 import com.softserve.itacademy.kek.models.Tenant;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;

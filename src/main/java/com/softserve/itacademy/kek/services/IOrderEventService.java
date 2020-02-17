@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.modelInterfaces.IOrderEvent;
+import com.softserve.itacademy.kek.dataexchange.IOrderEvent;
 
 import java.util.UUID;
 

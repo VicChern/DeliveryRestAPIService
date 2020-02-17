@@ -1,7 +1,7 @@
 package com.softserve.itacademy.kek.services.impl;
 
 import com.softserve.itacademy.kek.exception.TenantPropertiesServiceException;
-import com.softserve.itacademy.kek.modelInterfaces.ITenantProperties;
+import com.softserve.itacademy.kek.dataexchange.ITenantProperties;
 import com.softserve.itacademy.kek.models.PropertyType;
 import com.softserve.itacademy.kek.models.Tenant;
 import com.softserve.itacademy.kek.models.TenantProperties;
