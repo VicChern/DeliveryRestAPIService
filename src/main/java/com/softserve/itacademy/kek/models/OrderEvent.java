@@ -1,6 +1,9 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.dataexchange.IActor;
+import com.softserve.itacademy.kek.dataexchange.IOrder;
 import com.softserve.itacademy.kek.dataexchange.IOrderEvent;
+import com.softserve.itacademy.kek.dataexchange.IOrderEventType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +30,7 @@ public class OrderEvent implements IOrderEvent, Serializable {
     private Long idOrderEvent;
 
     @ManyToOne
-    @JoinColumn(name = "id_order", insertable = false, updatable = false)
+    @JoinColumn(name = "id_order")
     private Order idOrder;
 
     @ManyToOne
@@ -55,7 +58,7 @@ public class OrderEvent implements IOrderEvent, Serializable {
         this.idOrderEvent = idOrderEvent;
     }
 
-    public Order getIdOrder() {
+    public IOrder getIdOrder() {
         return idOrder;
     }
 
@@ -63,7 +66,7 @@ public class OrderEvent implements IOrderEvent, Serializable {
         this.idOrder = idOrder;
     }
 
-    public Actor getIdActor() {
+    public IActor getIdActor() {
         return idActor;
     }
 
@@ -71,7 +74,7 @@ public class OrderEvent implements IOrderEvent, Serializable {
         this.idActor = idActor;
     }
 
-    public OrderEventType getIdOrderEventType() {
+    public IOrderEventType getIdOrderEventType() {
         return idOrderEventType;
     }
 

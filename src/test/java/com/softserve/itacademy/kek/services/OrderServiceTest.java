@@ -3,6 +3,8 @@ package com.softserve.itacademy.kek.services;
 import com.softserve.itacademy.kek.dataexchange.IOrder;
 import com.softserve.itacademy.kek.models.Order;
 import com.softserve.itacademy.kek.models.Tenant;
+import com.softserve.itacademy.kek.repositories.OrderEventRepository;
+import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.services.impl.OrderServiceImpl;
@@ -36,16 +38,22 @@ public class OrderServiceTest {
 
     private TenantRepository tenantRepository;
 
+    private OrderEventRepository orderEventRepository;
+
+    private OrderEventTypeRepository orderEventTypeRepository;
+
     @BeforeClass
     public void setUp() {
         orderRepository = mock(OrderRepository.class);
         tenantRepository = mock(TenantRepository.class);
-        orderService = new OrderServiceImpl(orderRepository, tenantRepository);
+        orderEventRepository = mock(OrderEventRepository.class);
+        orderEventTypeRepository = mock(OrderEventTypeRepository.class);
+        orderService = new OrderServiceImpl(orderRepository, tenantRepository, orderEventRepository, orderEventTypeRepository);
     }
 
     @AfterMethod
     void tearDown() {
-        reset(orderRepository, tenantRepository);
+        reset(orderRepository, tenantRepository, orderEventRepository);
     }
 
     @Test
@@ -64,7 +72,7 @@ public class OrderServiceTest {
         Order actualOrder = acOrder.getValue();
 
         Assert.assertNotNull(createdOrder);
-        Assert.assertNotNull(actualOrder.getIdOrder());
+        Assert.assertNotNull(actualOrder.getGuid());
         Assert.assertNotNull(actualOrder.getOrderDetails());
     }
 

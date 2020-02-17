@@ -1,10 +1,15 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.dataexchange.IOrder;
 import com.softserve.itacademy.kek.dataexchange.IOrderDetails;
+import com.softserve.itacademy.kek.exception.OrderEventServiceException;
+import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.Order;
 import com.softserve.itacademy.kek.models.OrderDetails;
+import com.softserve.itacademy.kek.models.OrderEvent;
+import com.softserve.itacademy.kek.models.OrderEventType;
+import com.softserve.itacademy.kek.repositories.OrderEventRepository;
+import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.services.IOrderService;
@@ -28,11 +33,15 @@ public class OrderServiceImpl implements IOrderService {
 
     private final OrderRepository orderRepository;
     private final TenantRepository tenantRepository;
+    private final OrderEventRepository orderEventRepository;
+    private final OrderEventTypeRepository orderEventTypeRepository;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, TenantRepository tenantRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, TenantRepository tenantRepository, OrderEventRepository orderEventRepository, OrderEventTypeRepository orderEventTypeRepository) {
         this.orderRepository = orderRepository;
         this.tenantRepository = tenantRepository;
+        this.orderEventRepository = orderEventRepository;
+        this.orderEventTypeRepository = orderEventTypeRepository;
     }
 
     @Transactional
@@ -42,7 +51,10 @@ public class OrderServiceImpl implements IOrderService {
 
         Order actualOrder = new Order();
 
-        actualOrder = (Order) order;
+        actualOrder.setOrderDetails((OrderDetails) order.getOrderDetails());
+        actualOrder.setGuid(order.getGuid());
+        actualOrder.setSummary(order.getSummary());
+        actualOrder.setTenant(order.getTenant());
 
         UUID tenantGuid = actualOrder.getTenant().getGuid();
 
@@ -55,6 +67,7 @@ public class OrderServiceImpl implements IOrderService {
         }
 
         actualOrder.setOrderDetails(actualDetails);
+        actualDetails.setOrder(actualOrder);
 
         try {
             tenantRepository.findByGuid(tenantGuid);
@@ -70,8 +83,36 @@ public class OrderServiceImpl implements IOrderService {
             throw new OrderServiceException("Order wasn`t saved");
         }
 
+        createOrderEvent(actualOrder);
+
         logger.info("Order was saved: {}", actualOrder);
         return actualOrder;
+    }
+
+    @Transactional
+    public void createOrderEvent(IOrder order) {
+        logger.info("Saving orderEvent for order: {}", order);
+
+        OrderEvent orderEvent = new OrderEvent();
+        orderEvent.setIdOrder((Order) order);
+        orderEvent.setGuid(UUID.randomUUID());
+        orderEvent.setPayload("Created order");
+
+        OrderEventType orderEventType = new OrderEventType();
+
+        orderEventType.setName("CREATED");
+//        orderEventType.setIdOrderEventType(1L);
+
+        orderEventTypeRepository.save(orderEventType);
+
+        orderEvent.setIdOrderEventType(orderEventType);
+
+        try {
+            orderEventRepository.save(orderEvent);
+        } catch (PersistenceException e) {
+            logger.error("OrderEvent for Order: {} wasn`t save", order);
+            throw new OrderEventServiceException("OrderEvent for Order: " + order + " wasn`t save");
+        }
     }
 
     @Transactional(readOnly = true)
@@ -112,21 +153,24 @@ public class OrderServiceImpl implements IOrderService {
     public IOrder update(IOrder order, UUID guid) {
         logger.info("Updating order: {}, with guid: {}", order, guid);
 
-        Order actualOrder = (Order) order;
+        Order actualOrder = orderRepository.findByGuid(guid);
+
+        actualOrder.setOrderDetails((OrderDetails) order.getOrderDetails());
+        actualOrder.setGuid(order.getGuid());
+        actualOrder.setSummary(order.getSummary());
+        actualOrder.setTenant(order.getTenant());
 
         IOrderDetails details = order.getOrderDetails();
+        OrderDetails actualDetails = new OrderDetails();
+
         if (details != null) {
-            OrderDetails actualDetails = new OrderDetails();
             actualDetails.setIdOrder(details.getIdOrder());
             actualDetails.setImageUrl(details.getImageUrl());
             actualDetails.setPayload(details.getPayload());
 
-            actualOrder.setOrderDetails(actualDetails);
-        } else {
-            OrderDetails actualDetails = new OrderDetails();
-
-            actualOrder.setOrderDetails(actualDetails);
         }
+
+        actualOrder.setOrderDetails(actualDetails);
 
         try {
             orderRepository.findByGuid(guid);
@@ -151,12 +195,19 @@ public class OrderServiceImpl implements IOrderService {
     public void deleteByGuid(UUID guid) throws OrderServiceException {
         logger.info("Deleting Order from db by guid: {}", guid);
 
-        Order actualOrder = (Order) getByGuid(guid);
+        Order actualOrder;
+
+        try {
+            actualOrder = orderRepository.findByGuid(guid);
+        } catch (EntityNotFoundException e) {
+            logger.error("Order with guid: {}, wasn`t found", guid);
+            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
+        }
 
         try {
             orderRepository.deleteById(actualOrder.getIdOrder());
         } catch (PersistenceException e) {
-            logger.error("Order wasn`t deleted from db", actualOrder);
+            logger.error("Order wasn`t deleted from db: {}", actualOrder);
             throw new OrderServiceException("Order wasn`t deleted: " + actualOrder);
         }
 
