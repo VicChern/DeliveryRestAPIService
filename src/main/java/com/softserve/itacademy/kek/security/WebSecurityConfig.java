@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.security;
 
+import com.auth0.AuthenticationController;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.JwkProviderBuilder;
 import com.softserve.itacademy.kek.controller.AuthController;
@@ -37,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String baseURL;
 
     @Bean
-    public com.auth0.AuthenticationController authenticationController() {
+    public AuthenticationController authenticationController() {
         JwkProvider jwkProvider = new JwkProviderBuilder(domain).build();
         return com.auth0.AuthenticationController.newBuilder(domain, clientId, clientSecret)
                 .withJwkProvider(jwkProvider)
