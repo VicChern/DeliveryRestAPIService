@@ -1,9 +1,11 @@
 package com.softserve.itacademy.kek.controller;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,11 +22,27 @@ import com.softserve.itacademy.kek.dto.AddressListDto;
 import com.softserve.itacademy.kek.dto.DetailsDto;
 import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.dto.UserListDto;
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
 @RequestMapping(path = "/users")
 public class UserController extends DefaultController {
     final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    private final IUserService userService;
+
+    @Autowired
+    public UserController(IUserService userService) {
+        this.userService = userService;
+    }
+
+    private UserDto transform(IUser user) {
+        DetailsDto userDetailsDto = new DetailsDto(user.getUserDetails().getPayload(), user.getUserDetails().getImageUrl());
+        UserDto userDto = new UserDto(user.getGuid(), user.getName(), user.getNickname(), user.getEmail(),
+                user.getPhoneNumber(), userDetailsDto);
+        return userDto;
+    }
 
     /**
      * Temporary method for UserDto stub
@@ -33,7 +51,8 @@ public class UserController extends DefaultController {
      */
     private UserDto getUserDtoStub() {
         DetailsDto detailsDto = new DetailsDto("some payload", "http://awesomepicture.com");
-        UserDto userDto = new UserDto("guid12345qwert", "Petro", "pict", "pict@email.com", "(098)123-45-67", detailsDto);
+        UserDto userDto = new UserDto(UUID.fromString("guid12345qwert"), "Petro", "pict", "pict@email.com",
+                "(098)123-45-67", detailsDto);
         return userDto;
     }
 
@@ -52,14 +71,14 @@ public class UserController extends DefaultController {
      *
      * @return Response entity with list of {@link UserListDto} objects as a JSON
      */
-    @GetMapping(produces = "application/vnd.softserve.user+json")
+    @GetMapping(produces = "application/vnd.softserve.userList+json")
     public ResponseEntity<UserListDto> getUserList() {
         logger.info("Client requested the list of all users");
 
         UserListDto userList = new UserListDto();
         userList.addUser(getUserDtoStub());
 
-        logger.info("Sending list of all users to the client:\n" + userList);
+        logger.info("Sending list of all users to the client:\n{}", userList);
         return ResponseEntity
                 .ok()
                 .body(userList);
@@ -71,11 +90,18 @@ public class UserController extends DefaultController {
      * @param body {@link UserListDto} object as a JSON
      * @return Response entity with {@link UserListDto} object as a JSON
      */
-    @PostMapping(consumes = "application/vnd.softserve.user+json", produces = {"application/vnd.softserve.user+json", "application/vnd.softserve.error+json"})
+    @PostMapping(consumes = "application/vnd.softserve.userList+json",
+            produces = "application/vnd.softserve.userList+json")
     public ResponseEntity<UserListDto> addUser(@RequestBody @Valid UserListDto body) {
-        logger.info("Accepted requested to create a new user:\n" + body);
+        logger.info("Accepted requested to create a new user:\n{}", body);
 
-        logger.info("Sending the created users to the client:\n" + body);
+        IUser createdUser = userService.create(body.getUserList().get(0));
+        UserDto userDto = transform(createdUser);
+
+        body = new UserListDto();
+        body.addUser(userDto);
+
+        logger.info("Sending the created users to the client:\n{}", body);
         return ResponseEntity
                 .ok()
                 .body(body);
@@ -89,11 +115,11 @@ public class UserController extends DefaultController {
      */
     @GetMapping(value = "/{id}", produces = "application/vnd.softserve.user+json")
     public ResponseEntity<UserDto> getUser(@PathVariable String id) {
-        logger.info("Client requested the user " + id);
+        logger.info("Client requested the user {}", id);
 
         UserDto userDto = getUserDtoStub();
 
-        logger.info("Sending the user to the client:\n" + userDto);
+        logger.info("Sending the user to the client:\n{}", userDto);
         return ResponseEntity
                 .ok()
                 .body(userDto);
@@ -109,9 +135,9 @@ public class UserController extends DefaultController {
     @PutMapping(value = "/{id}", consumes = "application/vnd.softserve.user+json",
             produces = "application/vnd.softserve.user+json")
     public ResponseEntity<UserDto> modifyUser(@PathVariable String id, @RequestBody @Valid UserDto body) {
-        logger.info("Accepted modified user from the client:\n" + body);
+        logger.info("Accepted modified user from the client:\n{}", body);
 
-        logger.info("Sending the modified user to the client:\n" + body);
+        logger.info("Sending the modified user to the client:\n{}", body);
         return ResponseEntity
                 .ok()
                 .body(body);
@@ -124,9 +150,9 @@ public class UserController extends DefaultController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable String id) {
-        logger.info("Accepted request to delete the user " + id);
-        logger.info("User (" + id + ") successfully deleted");
+        logger.info("Accepted request to delete the user {}", id);
 
+        logger.info("User ({}) successfully deleted", id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -136,14 +162,14 @@ public class UserController extends DefaultController {
      * @param id user ID from the URN
      * @return Response Entity with list of the {@link AddressListDto} objects as a JSON
      */
-    @GetMapping(value = "/{id}/addresses", produces = "application/vnd.softserve.address+json")
+    @GetMapping(value = "/{id}/addresses", produces = "application/vnd.softserve.addressList+json")
     public ResponseEntity<AddressListDto> getUserAddresses(@PathVariable String id) {
-        logger.info("Client requested all the addresses of the employee " + id);
+        logger.info("Client requested all the addresses of the employee {}", id);
 
         AddressListDto addressesList = new AddressListDto();
         addressesList.addAddress(getAddressDtoStub());
 
-        logger.info("Sending the list of addresses of the user " + id + " to the client:\n" + addressesList);
+        logger.info("Sending the list of addresses of the user {} to the client:\n", addressesList);
         return ResponseEntity
                 .ok()
                 .body(addressesList);
@@ -156,13 +182,13 @@ public class UserController extends DefaultController {
      * @param body list of address objects as a JSON
      * @return Response entity with list of the {@link AddressListDto} objects as a JSON
      */
-    @PostMapping(value = "/{id}/addresses", consumes = "application/vnd.softserve.address+json",
-            produces = "application/vnd.softserve.address+json")
+    @PostMapping(value = "/{id}/addresses", consumes = "application/vnd.softserve.addressList+json",
+            produces = "application/vnd.softserve.addressList+json")
     public ResponseEntity<AddressListDto> addUserAddresses(@PathVariable String id,
                                                            @RequestBody @Valid AddressListDto body) {
-        logger.info("Accepted requested to create a new addresses for user:" + id + ":\n" + body);
+        logger.info("Accepted requested to create a new addresses for user:{}:\n", body);
 
-        logger.info("Sending the created users's addresses to the client:\n" + body);
+        logger.info("Sending the created users's addresses to the client:\n{}", body);
         return ResponseEntity
                 .ok()
                 .body(body);
@@ -177,11 +203,11 @@ public class UserController extends DefaultController {
      */
     @GetMapping(value = "/{id}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
     public ResponseEntity<AddressDto> getUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
-        logger.info("Client requested the address " + addrGuid + " of the employee " + id);
+        logger.info("Client requested the address {} of the employee {}", addrGuid, id);
 
         AddressDto addressDto = getAddressDtoStub();
 
-        logger.info("Sending the address of the user " + id + " to the client:\n" + addressDto);
+        logger.info("Sending the address of the user {} to the client:\n{}", id, addressDto);
         return ResponseEntity
                 .ok()
                 .body(addressDto);
@@ -200,9 +226,9 @@ public class UserController extends DefaultController {
     public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("id") String id,
                                                         @PathVariable("addrguid") String addrGuid,
                                                         @RequestBody @Valid AddressDto body) {
-        logger.info("Accepted modified address of the user " + id + " from the client:\n" + body);
+        logger.info("Accepted modified address of the user {} from the client:\n{}", id, body);
 
-        logger.info("Sending the modified address of the user " + id + " to the client:\n" + body);
+        logger.info("Sending the modified address of the user {} to the client:\n{}", id, body);
         return ResponseEntity
                 .ok()
                 .body(body);
@@ -216,9 +242,9 @@ public class UserController extends DefaultController {
      */
     @DeleteMapping("/{id}/addresses/{addrguid}")
     public ResponseEntity deleteUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
-        logger.info("Accepted request to delete the address " + addrGuid + " ot the user " + id);
+        logger.info("Accepted request to delete the address {} ot the user {}", addrGuid, id);
 
-        logger.info("the address " + addrGuid + " ot the user " + id + " successfully deleted");
+        logger.info("the address {} ot the user {} successfully deleted", addrGuid, id);
 
         return new ResponseEntity(HttpStatus.OK);
     }
