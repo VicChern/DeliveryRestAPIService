@@ -12,7 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.softserve.itacademy.kek.dto.ErrorsDto;
+import com.softserve.itacademy.kek.dto.ErrorListDto;
 
 @RestController
 public class DefaultController {
@@ -25,9 +25,9 @@ public class DefaultController {
      * @return the error message as a JSON
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorsDto> defaultExceptionHandler(Exception ex) {
+    public ResponseEntity<ErrorListDto> defaultExceptionHandler(Exception ex) {
         logger.error("An error occurred:", ex);
-        ErrorsDto errors = new ErrorsDto(new LinkedList<>());
+        ErrorListDto errors = new ErrorListDto(new LinkedList<>());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/vnd.softserve.error+json");
@@ -42,10 +42,10 @@ public class DefaultController {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorsDto> validationExceptionHandler(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ErrorListDto> validationExceptionHandler(HttpMessageNotReadableException ex) {
         logger.error("An error occurred:", ex);
 
-        ErrorsDto errors = new ErrorsDto(new LinkedList<>());
+        ErrorListDto errors = new ErrorListDto(new LinkedList<>());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/vnd.softserve.error+json");
@@ -63,13 +63,13 @@ public class DefaultController {
      * Handles the DTO validation exceptions
      *
      * @param ex caught exception
-     * @return a ResponseEntity instance with the {@link ErrorsDto} object
+     * @return a ResponseEntity instance with the {@link ErrorListDto} object
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorsDto> dtoValidationHandler(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorListDto> dtoValidationHandler(MethodArgumentNotValidException ex) {
         logger.error("An error occurred:", ex);
 
-        ErrorsDto errors = new ErrorsDto(new LinkedList<>());
+        ErrorListDto errors = new ErrorListDto(new LinkedList<>());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/vnd.softserve.error+json");
@@ -80,7 +80,7 @@ public class DefaultController {
 
         logger.warn("Sending the error message to the client");
         return ResponseEntity
-                .ok()
+                .badRequest()
                 .headers(headers)
                 .body(errors);
     }
