@@ -9,7 +9,7 @@ import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.service_model.impl.CloudStorageObject;
+import com.softserve.itacademy.kek.service.model.impl.CloudStorageObject;
 import com.softserve.itacademy.kek.service.ICloudStorageService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
