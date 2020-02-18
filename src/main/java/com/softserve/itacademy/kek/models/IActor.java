@@ -4,9 +4,9 @@ import java.util.UUID;
 
 public interface IActor {
 
-    ITenant getIdTenant();
+    ITenant getTenant();
 
-    IUser getIdUser();
+    IUser getUser();
 
     UUID getGuid();
 

@@ -11,12 +11,13 @@ import com.softserve.itacademy.kek.models.impl.Order;
 public interface IOrderService {
 
     /**
-     * Saved new {@link Order} to db
+     * Saved new {@link Order} for customer with customerGuid to db
      *
      * @param order order
+     * @param customerGuid customerGuid
      * @return saved order
      */
-    IOrder create(IOrder order);
+    IOrder create(IOrder order, UUID customerGuid);
 
     /**
      * Gets all orders

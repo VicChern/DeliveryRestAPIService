@@ -284,10 +284,22 @@ public class ITCreateEntitiesUtils {
     public static Actor getActor(User user, Tenant tenant) {
         Actor actor = new Actor();
 
-        actor.setIdTenant(tenant);
-        actor.setIdUser(user);
+        actor.setTenant(tenant);
+        actor.setUser(user);
         actor.setGuid(UUID.randomUUID());
         actor.setAlias(createRandomLetterString(128));
+
+        return actor;
+    }
+
+    public static Actor getActor(User user, Tenant tenant, ActorRole actorRole) {
+        Actor actor = new Actor();
+
+        actor.setTenant(tenant);
+        actor.setUser(user);
+        actor.setGuid(UUID.randomUUID());
+        actor.setAlias(createRandomLetterString(128));
+        actor.getActorRoles().add(actorRole);
 
         return actor;
     }
@@ -295,7 +307,7 @@ public class ITCreateEntitiesUtils {
     public static ActorRole getActorRole() {
         ActorRole actorRole = new ActorRole();
 
-        actorRole.setName(createRandomLetterString(128));
+        actorRole.setName("CUSTOMER");
 
         return actorRole;
     }
