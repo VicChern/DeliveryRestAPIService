@@ -59,7 +59,6 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-//    @Test(groups = {"integration-tests"})
     @Test
     public void createSuccess() {
         //when

@@ -24,8 +24,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit test User Service {@link UserServiceImpl}
  */
-//@Test(groups = {"unit-tests"})
-@Test
+@Test(groups = {"unit-tests"})
 public class UserServiceTest {
 
     private IUserService userService;

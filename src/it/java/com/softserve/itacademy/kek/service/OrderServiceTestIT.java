@@ -25,7 +25,7 @@ import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
 import static org.testng.Assert.assertNotNull;
 
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
-public class OrderSeviceTestIT extends AbstractTestNGSpringContextTests {
+public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private UserRepository userRepository;

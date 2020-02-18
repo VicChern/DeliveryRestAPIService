@@ -53,10 +53,6 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
 
     @BeforeMethod
     public void setUp() {
-//        tenantPropertiesRepository.deleteAll();
-//        tenantRepository.deleteAll();
-//        userRepository.deleteAll();
-
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
 
