@@ -1,26 +1,27 @@
 package com.softserve.itacademy.kek.utils;
 
-import com.softserve.itacademy.kek.models.Actor;
-import com.softserve.itacademy.kek.models.ActorRole;
-import com.softserve.itacademy.kek.models.Address;
-import com.softserve.itacademy.kek.models.GlobalProperties;
-import com.softserve.itacademy.kek.models.Identity;
-import com.softserve.itacademy.kek.models.IdentityType;
-import com.softserve.itacademy.kek.models.Order;
-import com.softserve.itacademy.kek.models.OrderDetails;
-import com.softserve.itacademy.kek.models.OrderEvent;
-import com.softserve.itacademy.kek.models.OrderEventType;
-import com.softserve.itacademy.kek.models.PropertyType;
-import com.softserve.itacademy.kek.models.Tenant;
-import com.softserve.itacademy.kek.models.TenantDetails;
-import com.softserve.itacademy.kek.models.TenantProperties;
-import com.softserve.itacademy.kek.models.User;
-import com.softserve.itacademy.kek.models.UserDetails;
-import net.bytebuddy.utility.RandomString;
-
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+
+import net.bytebuddy.utility.RandomString;
+
+import com.softserve.itacademy.kek.models.impl.Actor;
+import com.softserve.itacademy.kek.models.impl.ActorRole;
+import com.softserve.itacademy.kek.models.impl.Address;
+import com.softserve.itacademy.kek.models.impl.GlobalProperties;
+import com.softserve.itacademy.kek.models.impl.Identity;
+import com.softserve.itacademy.kek.models.impl.IdentityType;
+import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.OrderDetails;
+import com.softserve.itacademy.kek.models.impl.OrderEvent;
+import com.softserve.itacademy.kek.models.impl.OrderEventType;
+import com.softserve.itacademy.kek.models.impl.PropertyType;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.models.impl.TenantDetails;
+import com.softserve.itacademy.kek.models.impl.TenantProperties;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.models.impl.UserDetails;
 
 /**
  * Util class for creating entities in integration tests
@@ -79,20 +80,6 @@ public class ITCreateEntitiesUtils {
         return user;
     }
 
-
-    public static User getUser() {
-        User user = new User();
-        user.setName(RandomString.make());
-        user.setGuid(UUID.randomUUID());
-        user.setNickname(randomString());
-        user.setPhoneNumber(PHONE_NUMBER_PART
-                .concat(String.valueOf(getRandomIntegerInRange(10, 99))));
-        user.setEmail(randomString() + GMAIL_COM);
-        UserDetails userDetails = new UserDetails();
-        userDetails.setUser(user);
-        user.setUserDetails(userDetails);
-        return user;
-    }
     /**
      * Creates {@link UserDetails} with valid fields, but without {@link User}
      *
@@ -176,8 +163,9 @@ public class ITCreateEntitiesUtils {
 
     public static TenantProperties getTenantProperties(Tenant tenant, PropertyType type) {
         TenantProperties properties = new TenantProperties();
-        properties.setKey(RandomString.make());
-        properties.setValue(RandomString.make());
+        properties.setGuid(UUID.randomUUID());
+        properties.setKey(createRandomLetterString(64));
+        properties.setValue(createRandomLetterString(256));
         properties.setTenant(tenant);
         properties.setPropertyType(type);
         return properties;
@@ -193,14 +181,6 @@ public class ITCreateEntitiesUtils {
         tenantDetails.setPayload(createRandomLetterString(500));
         tenantDetails.setImageUrl(createRandomLetterString(60));
         return tenantDetails;
-    }
-
-    public static TenantProperties getTenantProperties(Tenant tenant) {
-        TenantProperties properties = new TenantProperties();
-        properties.setKey(randomString());
-        properties.setValue(randomString());
-        properties.setTenant(tenant);
-        return properties;
     }
 
     //================================================= Address entity =================================================
@@ -247,8 +227,8 @@ public class ITCreateEntitiesUtils {
 
     public static PropertyType getPropertyType() {
         PropertyType propertyType = new PropertyType();
-        propertyType.setName(randomString());
-        propertyType.setSchema(randomString());
+        propertyType.setName(createRandomLetterString(64));
+        propertyType.setSchema(createRandomLetterString(64));
         return propertyType;
     }
 
@@ -257,10 +237,16 @@ public class ITCreateEntitiesUtils {
     public static Order getOrder(Tenant tenant) {
         Order order = new Order();
 
-        order.setIdTenant(tenant);
+        order.setTenant(tenant);
         order.setGuid(UUID.randomUUID());
         order.setSummary(createRandomLetterString(128));
 
+        OrderDetails orderDetails = new OrderDetails();
+        orderDetails.setImageUrl(createRandomLetterString(128));
+        orderDetails.setPayload(createRandomLetterString(128));
+        order.setOrderDetails(orderDetails);
+        orderDetails.setOrder(order);
+//        tenant.addOrder(order);
         return order;
     }
 
