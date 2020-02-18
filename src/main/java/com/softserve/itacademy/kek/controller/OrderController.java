@@ -1,9 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.softserve.itacademy.kek.dto.OrderDetailsDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.OrderEventDto;
+import com.softserve.itacademy.kek.dto.OrderEventListDto;
 import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
+import com.softserve.itacademy.kek.dto.OrderListDto;
 
 
 @RestController
 @RequestMapping(path = "/orders")
 public class OrderController extends DefaultController {
-
-
-
     final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     /**
@@ -58,29 +54,35 @@ public class OrderController extends DefaultController {
     /**
      * Get information about orders
      *
-     * @return Response Entity with list of {@link OrderDto} objects
+     * @return Response Entity with list of {@link OrderListDto} objects
      */
     @GetMapping(produces = "application/vnd.softserve.order+json")
-    public ResponseEntity<List<OrderDto>> getOrderList() {
+    public ResponseEntity<OrderListDto> getOrderList() {
         logger.info("Client requested the list of all orders");
 
-        List<OrderDto> orderList = new ArrayList<>();
-        orderList.add(getOrderDtoStub());
+        OrderListDto orderList = new OrderListDto();
+        orderList.addOrder(getOrderDtoStub());
 
         logger.info("Sending list of all orders to the client:\n{}", orderList);
-        return new ResponseEntity<>(orderList, HttpStatus.OK);
+        return ResponseEntity
+                .ok()
+                .body(orderList);
     }
 
     /**
      * Creates a new order
      *
-     * @param order DTO object as a JSON
-     * @return created {@link OrderDto} object
+     * @param orders object as a JSON
+     * @return created {@link OrderListDto} object
      */
     @PostMapping(consumes = "application/vnd.softserve.order+json", produces = "application/vnd.softserve.order+json")
-    public ResponseEntity<OrderDto> addOrder(@RequestBody @Valid OrderDto order) {
-        logger.info("Order has been sent:\n{}", order);
-        return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
+    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto orders) {
+        logger.info("Orders has been accepted:\n{}", orders);
+
+        logger.info("Sending the created orders to the client:\n{}", orders);
+        return ResponseEntity
+                .ok()
+                .body(orders);
     }
 
     /**
@@ -94,7 +96,9 @@ public class OrderController extends DefaultController {
         OrderDto order = getOrderDtoStub();
 
         logger.info("Sending the specific order ({}) to the client:\n{}", id, order);
-        return new ResponseEntity<>(order, HttpStatus.OK);
+        return ResponseEntity
+                .ok()
+                .body(order);
     }
 
     /**
@@ -108,8 +112,11 @@ public class OrderController extends DefaultController {
             produces = "application/vnd.softserve.order+json")
     public ResponseEntity<OrderDto> modifyOrder(@PathVariable String id, @RequestBody @Valid OrderDto order) {
         logger.info("Sending the modified order({}) to the client", id);
+
         logger.info("Order was modified:\n{}", order);
-        return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
+        return ResponseEntity
+                .ok()
+                .body(order);
     }
 
     /**
@@ -127,17 +134,17 @@ public class OrderController extends DefaultController {
      * Finds events of the specific order
      *
      * @param id order ID from the URN
-     * @return list of the {@link OrderEventDto} objects
+     * @return list of the {@link OrderEventListDto} objects
      */
     @GetMapping(value = "/{id}/events", produces = "application/vnd.softserve.event+json")
-    public ResponseEntity<List<OrderEventDto>> getEvents(@PathVariable String id) {
+    public ResponseEntity<OrderEventListDto> getEvents(@PathVariable String id) {
+        OrderEventListDto orderEventList = new OrderEventListDto(id);
+        orderEventList.addOrderEvent(getOrderEventStub());
+
         logger.info("Sending the list of order ({}) events to the client", id);
-
-        List<OrderEventDto> orders = new ArrayList<>();
-        orders.add(getOrderEventStub());
-
-        logger.info("Sending the list: {}", orders);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        return ResponseEntity
+                .ok()
+                .body(orderEventList);
     }
 
     /**
@@ -150,8 +157,11 @@ public class OrderController extends DefaultController {
     @PostMapping(value = "/{id}/events", consumes = "application/vnd.softserve.event+json",
             produces = "application/vnd.softserve.event+json")
     public ResponseEntity<OrderEventDto> addEvent(@PathVariable String id, @RequestBody @Valid OrderEventDto body) {
-        logger.info("Sending the created order({}) events to the client", id);
+        logger.info("Sending the created event({}) to the client", id);
+
         logger.info("Event have been added: {}", body);
-        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
+        return ResponseEntity
+                .ok()
+                .body(body);
     }
 }

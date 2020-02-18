@@ -1,15 +1,16 @@
 package com.softserve.itacademy.kek.dto;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class OrderDto {
 
-    @NotNull
+    @NotEmpty
     private String tenant;
 
-    @NotNull
+    @NotEmpty
     private String user;
 
     @NotNull
