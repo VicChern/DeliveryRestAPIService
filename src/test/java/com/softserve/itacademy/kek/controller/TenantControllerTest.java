@@ -1,6 +1,9 @@
 package com.softserve.itacademy.kek.controller;
 
 import com.google.gson.Gson;
+import com.softserve.itacademy.kek.dto.AddressListDto;
+import com.softserve.itacademy.kek.dto.TenantListDto;
+import com.softserve.itacademy.kek.dto.TenantPropertiesListDto;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,8 +28,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TenantControllerTest {
     private final Gson gson = new Gson();
     private TenantDto tenantDto;
+    private TenantListDto tenantListDto;
     private TenantPropertiesDto tenantPropertiesDto;
+    private TenantPropertiesListDto tenantPropertiesListDto;
     private AddressDto addressDto;
+    private AddressListDto addressListDto;
 
 
     @InjectMocks
@@ -38,9 +44,12 @@ public class TenantControllerTest {
     public void setup() {
         TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
         tenantDto = new TenantDto("guid12345qwawt", "Petro", "pict", detailsDto);
+        tenantListDto = new TenantListDto().addTenant(tenantDto);
         tenantPropertiesDto = new TenantPropertiesDto(
                 "guid12345qwawt", "glovo", "additional info", "workingDay", "Wednesday");
+        tenantPropertiesListDto = new TenantPropertiesListDto().addProperties(tenantPropertiesDto);
         addressDto = new AddressDto("guid12345qwert", "alias", "Leipzigzskaya 15v", "Some notes...");
+        addressListDto = new AddressListDto().addAddress(addressDto);
 
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
@@ -50,21 +59,22 @@ public class TenantControllerTest {
     public void getTenantListTest() throws Exception {
         mockMvc.perform(get("/tenants"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.tenant+json"))
-                .andExpect(jsonPath("$[0].guid").value("guid12345qwawt"))
-                .andExpect(jsonPath("$[0].owner").value("Petro"))
-                .andExpect(jsonPath("$[0].name").value("pict"))
-                .andExpect(jsonPath("$[0].details.payload").value("some payload"))
-                .andExpect(jsonPath("$[0].details.imageUrl").value("http://awesomepicture.com"));
+                .andExpect(content().contentType("application/vnd.softserve.tenantList+json"))
+                .andExpect(jsonPath("$.tenantList.[0].guid").value("guid12345qwawt"))
+                .andExpect(jsonPath("$.tenantList.[0].owner").value("Petro"))
+                .andExpect(jsonPath("$.tenantList.[0].name").value("pict"))
+                .andExpect(jsonPath("$.tenantList.[0].details.payload").value("some payload"))
+                .andExpect(jsonPath("$.tenantList.[0].details.imageUrl").value("http://awesomepicture.com"));
     }
 
+    //???
     @Test
     public void addTenantTest() throws Exception {
         mockMvc.perform(post("/tenants")
-                .contentType("application/vnd.softserve.tenant+json")
-                .accept("application/vnd.softserve.tenant+json")
-                .content(gson.toJson(tenantDto)))
-                .andExpect(status().isAccepted())
+                .contentType("application/vnd.softserve.tenantList+json")
+                .accept("application/vnd.softserve.tenantList+json")
+                .content(gson.toJson(tenantListDto)))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.guid").value("guid12345qwawt"))
                 .andExpect(jsonPath("$.owner").value("Petro"))
                 .andExpect(jsonPath("$.name").value("pict"))
@@ -84,14 +94,13 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.details.imageUrl").value("http://awesomepicture.com"));
     }
 
-
     @Test
     public void modifyTenantTest() throws Exception {
         mockMvc.perform(put("/tenants/guid12345qwawt")
                 .contentType("application/vnd.softserve.tenant+json")
                 .accept("application/vnd.softserve.tenant+json")
                 .content(gson.toJson(tenantDto)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.guid").value("guid12345qwawt"))
                 .andExpect(jsonPath("$.owner").value("Petro"))
                 .andExpect(jsonPath("$.name").value("pict"))
@@ -99,19 +108,17 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.details.imageUrl").value("http://awesomepicture.com"));
     }
 
-
     @Test
     public void deleteTenantTest() throws Exception {
         mockMvc.perform(delete("/tenants/guid12345qwawt"))
                 .andExpect(status().isOk());
     }
 
-
-    @Test
+    @Test //???
     public void getTenantPropertiesTest() throws Exception {
         mockMvc.perform(get("/tenants/guid12345qwawt/properties"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.tenantproperty+json"))
+                .andExpect(content().contentType("application/vnd.softserve.tenantPropertyList+json"))
                 .andExpect(jsonPath("$[0].guid").value("guid12345qwawt"))
                 .andExpect(jsonPath("$[0].tenant").value("glovo"))
                 .andExpect(jsonPath("$[0].type").value("additional info"))
@@ -120,14 +127,14 @@ public class TenantControllerTest {
     }
 
 
-    @Test
+    @Test //???
     public void addTenantPropertiesTest() throws Exception {
         mockMvc.perform(post("/tenants/guid12345qwawt/properties")
-                .contentType("application/vnd.softserve.tenantproperty+json")
-                .accept("application/vnd.softserve.tenantproperty+json")
+                .contentType("application/vnd.softserve.tenantPropertyList+json")
+                .accept("application/vnd.softserve.tenantPropertyList+json")
                 .content(gson.toJson(tenantPropertiesDto)))
-                .andExpect(status().isAccepted())
-                .andExpect(content().contentType("application/vnd.softserve.tenantproperty+json"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/vnd.softserve.tenantPropertyList+json"))
                 .andExpect(jsonPath("$.guid").value("guid12345qwawt"))
                 .andExpect(jsonPath("$.tenant").value("glovo"))
                 .andExpect(jsonPath("$.type").value("additional info"))
@@ -155,7 +162,7 @@ public class TenantControllerTest {
                 .contentType("application/vnd.softserve.tenantproperty+json")
                 .accept("application/vnd.softserve.tenantproperty+json")
                 .content(gson.toJson(tenantPropertiesDto)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(content().contentType("application/vnd.softserve.tenantproperty+json"))
                 .andExpect(jsonPath("$.guid").value("guid12345qwawt"))
                 .andExpect(jsonPath("$.tenant").value("glovo"))
@@ -171,25 +178,25 @@ public class TenantControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
+    @Test//???
     public void getTenantAddressesTest() throws Exception {
         mockMvc.perform(get("/tenants/1/addresses"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.address+json"))
+                .andExpect(content().contentType("application/vnd.softserve.addressList+json"))
                 .andExpect(jsonPath("$[0].guid").value("guid12345qwert"))
                 .andExpect(jsonPath("$[0].alias").value("alias"))
                 .andExpect(jsonPath("$[0].address").value("Leipzigzskaya 15v"))
                 .andExpect(jsonPath("$[0].notes").value("Some notes..."));
     }
 
-    @Test
+    @Test//???
     public void addTenantAddressesTest() throws Exception {
         mockMvc.perform(post("/tenants/1/addresses")
                 .contentType("application/vnd.softserve.address+json")
                 .accept("application/vnd.softserve.address+json")
                 .content(gson.toJson(addressDto)))
-                .andExpect(status().isAccepted())
-                .andExpect(content().contentType("application/vnd.softserve.address+json"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/vnd.softserve.addressList+json"))
                 .andExpect(jsonPath("$.guid").value("guid12345qwert"))
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andExpect(jsonPath("$.address").value("Leipzigzskaya 15v"))
@@ -213,7 +220,7 @@ public class TenantControllerTest {
                 .contentType("application/vnd.softserve.address+json")
                 .accept("application/vnd.softserve.address+json")
                 .content(gson.toJson(addressDto)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(content().contentType("application/vnd.softserve.address+json"))
                 .andExpect(jsonPath("$.guid").value("guid12345qwert"))
                 .andExpect(jsonPath("$.alias").value("alias"))
