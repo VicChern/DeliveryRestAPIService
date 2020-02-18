@@ -1,7 +1,8 @@
 package com.softserve.itacademy.kek.repositories;
 
-import com.softserve.itacademy.kek.models.PropertyType;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PropertyTypeRepository extends CrudRepository<PropertyType, Long> {
+import com.softserve.itacademy.kek.models.impl.PropertyType;
+
+public interface PropertyTypeRepository extends JpaRepository<PropertyType, Long> {
 }

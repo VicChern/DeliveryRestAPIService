@@ -1,9 +1,8 @@
 package com.softserve.itacademy.kek.models;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.repositories.OrderRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
+import javax.validation.ConstraintViolationException;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
@@ -13,14 +12,20 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.validation.ConstraintViolationException;
-import java.util.UUID;
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
+import com.softserve.itacademy.kek.repositories.OrderRepository;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.repositories.UserRepository;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getUser;
 
 @Rollback
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
@@ -34,17 +39,16 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     private TenantRepository tenantRepository;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private OrderDetailsRepository orderDetailsRepository;
 
     private Order order1;
     private Order order2;
 
-    @Autowired
-    private OrderRepository repository;
-
     @BeforeMethod
     public void setUp() {
-        order1 = getOrder(getTenantForOrder());
-        order2 = getOrder(getTenantForOrder());
+        order1 = getOrder(getTenantForOrder(1));
+        order2 = getOrder(getTenantForOrder(2));
     }
 
     @AfterMethod
@@ -99,8 +103,8 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order1);
     }
 
-    private Tenant getTenantForOrder() {
-        User user = getUser();
+    private Tenant getTenantForOrder(int i) {
+        User user = createOrdinaryUser(i);
         Tenant tenant = getTenant(user);
 
         userRepository.save(user);
