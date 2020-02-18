@@ -1,7 +1,9 @@
 package com.softserve.itacademy.kek.controller;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +24,9 @@ import com.softserve.itacademy.kek.dto.AddressListDto;
 import com.softserve.itacademy.kek.dto.DetailsDto;
 import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.dto.UserListDto;
+import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
@@ -31,39 +35,23 @@ public class UserController extends DefaultController {
     final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final IUserService userService;
+    private final IAddressService addressService;
 
     @Autowired
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService, IAddressService addressService) {
         this.userService = userService;
+        this.addressService = addressService;
     }
 
-    private UserDto transform(IUser user) {
+    private UserDto transformUser(IUser user) {
         DetailsDto userDetailsDto = new DetailsDto(user.getUserDetails().getPayload(), user.getUserDetails().getImageUrl());
         UserDto userDto = new UserDto(user.getGuid(), user.getName(), user.getNickname(), user.getEmail(),
                 user.getPhoneNumber(), userDetailsDto);
         return userDto;
     }
 
-    /**
-     * Temporary method for UserDto stub
-     *
-     * @return {@link UserDto} stub
-     */
-    private UserDto getUserDtoStub() {
-        DetailsDto detailsDto = new DetailsDto("some payload", "http://awesomepicture.com");
-        UserDto userDto = new UserDto(UUID.fromString("guid12345qwert"), "Petro", "pict", "pict@email.com",
-                "(098)123-45-67", detailsDto);
-        return userDto;
-    }
-
-    /**
-     * Temporary method for AddressDto
-     *
-     * @return {@link AddressDto} stub
-     */
-    private AddressDto getAddressDtoStub() {
-        AddressDto addressDto = new AddressDto("guid12345qwert", "alias", "Leipzigzskaya 15v", "Some notes...");
-        return addressDto;
+    private AddressDto transformAddress(IAddress address) {
+        return new AddressDto(address.getGuid(), address.getAlias(), address.getAddress(), address.getNotes());
     }
 
     /**
@@ -75,49 +63,55 @@ public class UserController extends DefaultController {
     public ResponseEntity<UserListDto> getUserList() {
         logger.info("Client requested the list of all users");
 
-        UserListDto userList = new UserListDto();
-        userList.addUser(getUserDtoStub());
+        List<IUser> userList = userService.getAll();
+        UserListDto userListDto = new UserListDto(userList
+                .stream()
+                .map(this::transformUser)
+                .collect(Collectors.toList()));
 
-        logger.info("Sending list of all users to the client:\n{}", userList);
+        logger.info("Sending list of all users to the client:\n{}", userListDto);
         return ResponseEntity
                 .ok()
-                .body(userList);
+                .body(userListDto);
     }
 
     /**
      * Creates a new user
      *
-     * @param body {@link UserListDto} object as a JSON
+     * @param newUserDto {@link UserListDto} object as a JSON
      * @return Response entity with {@link UserListDto} object as a JSON
      */
     @PostMapping(consumes = "application/vnd.softserve.userList+json",
             produces = "application/vnd.softserve.userList+json")
-    public ResponseEntity<UserListDto> addUser(@RequestBody @Valid UserListDto body) {
-        logger.info("Accepted requested to create a new user:\n{}", body);
+    public ResponseEntity<UserListDto> addUser(@RequestBody @Valid UserListDto newUserDto) {
+        logger.info("Accepted requested to create a new user:\n{}", newUserDto);
+        UserListDto createdUsersDto = new UserListDto();
 
-        IUser createdUser = userService.create(body.getUserList().get(0));
-        UserDto userDto = transform(createdUser);
+        for (UserDto newUser : newUserDto.getUserList()) {
+            IUser createdUser = userService.create(newUser);
+            UserDto createdUserDto = transformUser(createdUser);
 
-        body = new UserListDto();
-        body.addUser(userDto);
+            createdUsersDto.addUser(createdUserDto);
+        }
 
-        logger.info("Sending the created users to the client:\n{}", body);
+        logger.info("Sending the created users to the client:\n{}", createdUsersDto);
         return ResponseEntity
                 .ok()
-                .body(body);
+                .body(createdUsersDto);
     }
 
     /**
      * Returns information about the requested user
      *
-     * @param id user ID from the URN
+     * @param guid user ID from the URN
      * @return Response entity with {@link UserDto} object as a JSON
      */
-    @GetMapping(value = "/{id}", produces = "application/vnd.softserve.user+json")
-    public ResponseEntity<UserDto> getUser(@PathVariable String id) {
-        logger.info("Client requested the user {}", id);
+    @GetMapping(value = "/{guid}", produces = "application/vnd.softserve.user+json")
+    public ResponseEntity<UserDto> getUser(@PathVariable String guid) {
+        logger.info("Client requested the user {}", guid);
 
-        UserDto userDto = getUserDtoStub();
+        IUser user = userService.getByGuid(UUID.fromString(guid));
+        UserDto userDto = transformUser(user);
 
         logger.info("Sending the user to the client:\n{}", userDto);
         return ResponseEntity
@@ -128,86 +122,103 @@ public class UserController extends DefaultController {
     /**
      * Modifies information of the specified user
      *
-     * @param id   user ID from the URN
-     * @param body user object as a JSON
+     * @param guid user guid from the URN
+     * @param user user object as a JSON
      * @return Response entity with {@link UserDto} object as a JSON
      */
-    @PutMapping(value = "/{id}", consumes = "application/vnd.softserve.user+json",
+    @PutMapping(value = "/{guid}", consumes = "application/vnd.softserve.user+json",
             produces = "application/vnd.softserve.user+json")
-    public ResponseEntity<UserDto> modifyUser(@PathVariable String id, @RequestBody @Valid UserDto body) {
-        logger.info("Accepted modified user from the client:\n{}", body);
+    public ResponseEntity<UserDto> modifyUser(@PathVariable String guid, @RequestBody @Valid UserDto user) {
+        logger.info("Accepted modified user from the client:\n{}", user);
 
-        logger.info("Sending the modified user to the client:\n{}", body);
+        IUser modifiedUser = userService.update(user);
+        UserDto modifiedUserDto = transformUser(modifiedUser);
+
+        logger.info("Sending the modified user to the client:\n{}", modifiedUserDto);
         return ResponseEntity
                 .ok()
-                .body(body);
+                .body(modifiedUserDto);
     }
 
     /**
      * Removes the specified user
      *
-     * @param id user ID from the URN
+     * @param guid user guid from the URN
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable String id) {
-        logger.info("Accepted request to delete the user {}", id);
+    @DeleteMapping("/{guid}")
+    public ResponseEntity deleteUser(@PathVariable String guid) {
+        logger.info("Accepted request to delete the user {}", guid);
 
-        logger.info("User ({}) successfully deleted", id);
+        userService.deleteByGuid(UUID.fromString(guid));
+
+        logger.info("User ({}) successfully deleted", guid);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
      * Finds addresses of the specific user
      *
-     * @param id user ID from the URN
+     * @param guid user guid from the URN
      * @return Response Entity with list of the {@link AddressListDto} objects as a JSON
      */
-    @GetMapping(value = "/{id}/addresses", produces = "application/vnd.softserve.addressList+json")
-    public ResponseEntity<AddressListDto> getUserAddresses(@PathVariable String id) {
-        logger.info("Client requested all the addresses of the employee {}", id);
+    @GetMapping(value = "/{guid}/addresses", produces = "application/vnd.softserve.addressList+json")
+    public ResponseEntity<AddressListDto> getUserAddresses(@PathVariable String guid) {
+        logger.info("Client requested all the addresses of the employee {}", guid);
 
-        AddressListDto addressesList = new AddressListDto();
-        addressesList.addAddress(getAddressDtoStub());
+        List<IAddress> addresses = addressService.getAllForUser(UUID.fromString(guid));
+        AddressListDto addressListDto = new AddressListDto(addresses
+                .stream()
+                .map(this::transformAddress)
+                .collect(Collectors.toList()));
 
-        logger.info("Sending the list of addresses of the user {} to the client:\n", addressesList);
+        logger.info("Sending the list of addresses of the user {} to the client:\n", addressListDto);
         return ResponseEntity
                 .ok()
-                .body(addressesList);
+                .body(addressListDto);
     }
 
     /**
      * Adds a new addresses for the specific user
      *
-     * @param id   user ID from the URN
-     * @param body list of address objects as a JSON
+     * @param guid            user guid from the URN
+     * @param newAddressesDto list of address objects as a JSON
      * @return Response entity with list of the {@link AddressListDto} objects as a JSON
      */
-    @PostMapping(value = "/{id}/addresses", consumes = "application/vnd.softserve.addressList+json",
+    @PostMapping(value = "/{guid}/addresses", consumes = "application/vnd.softserve.addressList+json",
             produces = "application/vnd.softserve.addressList+json")
-    public ResponseEntity<AddressListDto> addUserAddresses(@PathVariable String id,
-                                                           @RequestBody @Valid AddressListDto body) {
-        logger.info("Accepted requested to create a new addresses for user:{}:\n", body);
+    public ResponseEntity<AddressListDto> addUserAddresses(@PathVariable String guid,
+                                                           @RequestBody @Valid AddressListDto newAddressesDto) {
+        logger.info("Accepted requested to create a new addresses for user:{}:\n", newAddressesDto);
+        AddressListDto createdAddresses = new AddressListDto();
 
-        logger.info("Sending the created users's addresses to the client:\n{}", body);
+        for (AddressDto newAddress : newAddressesDto.getAddressList()) {
+            IAddress createdAddress = addressService.createForUser(newAddress, UUID.fromString(guid));
+            AddressDto addressDto = transformAddress(createdAddress);
+
+            createdAddresses.addAddress(addressDto);
+        }
+
+        logger.info("Sending the created users's addresses to the client:\n{}", createdAddresses);
         return ResponseEntity
                 .ok()
-                .body(body);
+                .body(createdAddresses);
     }
 
     /**
      * Finds addresses of the specific user
      *
-     * @param id       user ID from the URN
-     * @param addrGuid address ID from the URN
+     * @param guid     user guid from the URN
+     * @param addrGuid address guid from the URN
      * @return Response entity with {@link AddressDto} object as a JSON
      */
-    @GetMapping(value = "/{id}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
-    public ResponseEntity<AddressDto> getUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
-        logger.info("Client requested the address {} of the employee {}", addrGuid, id);
+    @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
+    public ResponseEntity<AddressDto> getUserAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
+        logger.info("Client requested the address {} of the employee {}", addrGuid, guid);
 
-        AddressDto addressDto = getAddressDtoStub();
+        IAddress address = addressService.getForUser(UUID.fromString(addrGuid), UUID.fromString(guid));
+        AddressDto addressDto = transformAddress(address);
 
-        logger.info("Sending the address of the user {} to the client:\n{}", id, addressDto);
+        logger.info("Sending the address of the user {} to the client:\n{}", guid, addressDto);
         return ResponseEntity
                 .ok()
                 .body(addressDto);
@@ -216,36 +227,40 @@ public class UserController extends DefaultController {
     /**
      * Modifies the specific user address tenant property
      *
-     * @param id       user ID from the URN
-     * @param addrGuid address ID from the URN
-     * @param body     address object as a JSON
+     * @param guid       user guid from the URN
+     * @param addrGuid   address guid from the URN
+     * @param addressDto address object as a JSON
      * @return Response Entity with {@link AddressDto} object as a JSON
      */
-    @PutMapping(value = "/{id}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
+    @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("id") String id,
+    public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("guid") String guid,
                                                         @PathVariable("addrguid") String addrGuid,
-                                                        @RequestBody @Valid AddressDto body) {
-        logger.info("Accepted modified address of the user {} from the client:\n{}", id, body);
+                                                        @RequestBody @Valid AddressDto addressDto) {
+        logger.info("Accepted modified address of the user {} from the client:\n{}", guid, addressDto);
 
-        logger.info("Sending the modified address of the user {} to the client:\n{}", id, body);
+        IAddress modifiedAddress = addressService.updateForUser(addressDto, UUID.fromString(guid));
+        AddressDto modifiedAddressDto = transformAddress(modifiedAddress);
+
+        logger.info("Sending the modified address of the user {} to the client:\n{}", guid, modifiedAddressDto);
         return ResponseEntity
                 .ok()
-                .body(body);
+                .body(modifiedAddressDto);
     }
 
     /**
      * Deletes the specific user address
      *
-     * @param id       user ID from the URN
+     * @param guid     user ID from the URN
      * @param addrGuid address ID from the URN
      */
-    @DeleteMapping("/{id}/addresses/{addrguid}")
-    public ResponseEntity deleteUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
-        logger.info("Accepted request to delete the address {} ot the user {}", addrGuid, id);
+    @DeleteMapping("/{guid}/addresses/{addrguid}")
+    public ResponseEntity deleteUserAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
+        logger.info("Accepted request to delete the address {} ot the user {}", addrGuid, guid);
 
-        logger.info("the address {} ot the user {} successfully deleted", addrGuid, id);
+        addressService.deleteForUser(UUID.fromString(addrGuid), UUID.fromString(guid));
 
+        logger.info("The address {} ot the user {} successfully deleted", addrGuid, guid);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
