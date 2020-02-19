@@ -81,23 +81,18 @@ public class UserController extends DefaultController {
      * @param newUserDto {@link UserListDto} object as a JSON
      * @return Response entity with {@link UserListDto} object as a JSON
      */
-    @PostMapping(consumes = "application/vnd.softserve.userList+json",
-            produces = "application/vnd.softserve.userList+json")
-    public ResponseEntity<UserListDto> addUser(@RequestBody @Valid UserListDto newUserDto) {
+    @PostMapping(consumes = "application/vnd.softserve.user+json",
+            produces = "application/vnd.softserve.user+json")
+    public ResponseEntity<UserDto> addUser(@RequestBody @Valid UserDto newUserDto) {
         logger.info("Accepted requested to create a new user:\n{}", newUserDto);
-        UserListDto createdUsersDto = new UserListDto();
 
-        for (UserDto newUser : newUserDto.getUserList()) {
-            IUser createdUser = userService.create(newUser);
-            UserDto createdUserDto = transformUser(createdUser);
+        IUser createdUser = userService.create(newUserDto);
+        UserDto createdUserDto = transformUser(createdUser);
 
-            createdUsersDto.addUser(createdUserDto);
-        }
-
-        logger.info("Sending the created users to the client:\n{}", createdUsersDto);
+        logger.info("Sending the created users to the client:\n{}", createdUserDto);
         return ResponseEntity
                 .ok()
-                .body(createdUsersDto);
+                .body(createdUserDto);
     }
 
     /**
