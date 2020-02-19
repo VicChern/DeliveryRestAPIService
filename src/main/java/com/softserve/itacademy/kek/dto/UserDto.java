@@ -44,26 +44,32 @@ public class UserDto implements IUser {
         this.userDetails = detailsDto;
     }
 
+    @Override
     public UUID getGuid() {
         return guid;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getNickname() {
         return nickname;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
+    @Override
     public DetailsDto getUserDetails() {
         return userDetails;
     }

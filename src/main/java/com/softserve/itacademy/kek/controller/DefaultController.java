@@ -30,7 +30,7 @@ public class DefaultController {
         ErrorListDto errors = new ErrorListDto(new LinkedList<>());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, "application/vnd.softserve.error+json");
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/vnd.softserve.errorList+json");
 
         errors.addError(ex.getMessage());
 
