@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.controller;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public class TenantController extends DefaultController {
      * @return {@link AddressDto} stub
      */
     private AddressDto getTenantAddressDtoStub() {
-        return new AddressDto("guid12345qwert", "alias", "Leipzigzskaya 15v", "Some notes...");
+        return new AddressDto(UUID.fromString("guid12345qwert"), "alias", "Leipzigzskaya 15v", "Some notes...");
 
     }
 

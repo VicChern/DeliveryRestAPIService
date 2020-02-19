@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.controller;
 
+import java.util.UUID;
+
 import com.google.gson.Gson;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
@@ -40,7 +42,7 @@ public class TenantControllerTest {
         tenantDto = new TenantDto("guid12345qwawt", "Petro", "pict", detailsDto);
         tenantPropertiesDto = new TenantPropertiesDto(
                 "guid12345qwawt", "glovo", "additional info", "workingDay", "Wednesday");
-        addressDto = new AddressDto("guid12345qwert", "alias", "Leipzigzskaya 15v", "Some notes...");
+        addressDto = new AddressDto(UUID.fromString("guid12345qwert"), "alias", "Leipzigzskaya 15v", "Some notes...");
 
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();

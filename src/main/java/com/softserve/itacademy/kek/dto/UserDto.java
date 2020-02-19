@@ -4,11 +4,14 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
+import java.util.UUID;
 
-public class UserDto {
-    @NotNull
-    @Size(max = 256)
-    private String guid;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.softserve.itacademy.kek.models.IUser;
+
+public class UserDto implements IUser {
+    private UUID guid;
 
     @NotEmpty
     private String name;
@@ -22,45 +25,53 @@ public class UserDto {
     private String email;
 
     @NotEmpty
-    private String phone;
+    @JsonProperty("phone")
+    private String phoneNumber;
 
     @NotNull
-    private DetailsDto details;
+    @JsonProperty("details")
+    private DetailsDto userDetails;
 
     public UserDto() {
     }
 
-    public UserDto(String guid, String name, String nickName, String email, String phone, DetailsDto detailsDto) {
+    public UserDto(UUID guid, String name, String nickName, String email, String phoneNumber, DetailsDto detailsDto) {
         this.guid = guid;
         this.name = name;
         this.nickname = nickName;
         this.email = email;
-        this.phone = phone;
-        this.details = detailsDto;
+        this.phoneNumber = phoneNumber;
+        this.userDetails = detailsDto;
     }
 
-    public String getGuid() {
+    @Override
+    public UUID getGuid() {
         return guid;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getNickname() {
         return nickname;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
-    public String getPhone() {
-        return phone;
+    @Override
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public DetailsDto getDetails() {
-        return details;
+    @Override
+    public DetailsDto getUserDetails() {
+        return userDetails;
     }
 
     @Override
@@ -72,13 +83,13 @@ public class UserDto {
                 Objects.equals(name, userDto.name) &&
                 Objects.equals(nickname, userDto.nickname) &&
                 Objects.equals(email, userDto.email) &&
-                Objects.equals(phone, userDto.phone) &&
-                Objects.equals(details, userDto.details);
+                Objects.equals(phoneNumber, userDto.phoneNumber) &&
+                Objects.equals(userDetails, userDto.userDetails);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guid, name, nickname, email, phone, details);
+        return Objects.hash(guid, name, nickname, email, phoneNumber, userDetails);
     }
 
     @Override
@@ -88,8 +99,8 @@ public class UserDto {
                 ", name='" + name + '\'' +
                 ", nickName='" + nickname + '\'' +
                 ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", detailsDto=" + details +
+                ", phone='" + phoneNumber + '\'' +
+                ", detailsDto=" + userDetails +
                 '}';
     }
 }
