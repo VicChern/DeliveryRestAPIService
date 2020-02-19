@@ -24,16 +24,6 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo());
     }
 
-//    @Bean
-//    public Docket api(){
-//        return new Docket(DocumentationType.SWAGGER_2)
-//                .select()
-//                .apis(RequestHandlerSelectors.any())
-//                .paths(PathSelectors.regex("/api/.*"))
-//                .build()
-//                .apiInfo(apiInfo());
-//    }
-
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("KEK")
