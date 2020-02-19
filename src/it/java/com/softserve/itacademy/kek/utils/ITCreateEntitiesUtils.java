@@ -304,10 +304,10 @@ public class ITCreateEntitiesUtils {
         return actor;
     }
 
-    public static ActorRole getActorRole() {
+    public static ActorRole getActorRole(String name) {
         ActorRole actorRole = new ActorRole();
 
-        actorRole.setName("CUSTOMER");
+        actorRole.setName(name);
 
         return actorRole;
     }

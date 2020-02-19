@@ -15,7 +15,7 @@ export class MapsService {
 //   }
 
   getSomeTestCodeFromBack() {
-    return this.http.get<any>('./api/v1/users/83');
+    return this.http.get<any>('./api/v1/users/');
   }
 
   getSseEmitter() {
