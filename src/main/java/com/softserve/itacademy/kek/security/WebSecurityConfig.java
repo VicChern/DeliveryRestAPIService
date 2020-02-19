@@ -3,7 +3,6 @@ package com.softserve.itacademy.kek.security;
 import com.auth0.AuthenticationController;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.JwkProviderBuilder;
-import com.softserve.itacademy.kek.controller.AuthController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -32,10 +32,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final String clientSecret = System.getenv("KekWord");
 
     /**
-     * This is base url path to our project
+     * This is url path to user info page
      */
-    @Value(value = "${base.url.path}")
-    private String baseURL;
+
+    @Value(value = "${secured.profile.url}")
+    private String profileURL;
+
+
+    @Value(value = "${login.url}")
+    private String loginURL;
+
+    @Value(value = "${logout.url}")
+    private String logoutURL;
 
     @Bean
     public AuthenticationController authenticationController() {
@@ -45,22 +53,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .build();
     }
 
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        return new LogoutSuccessHandlerImpl();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
 
         http
                 .authorizeRequests()
-                .antMatchers(baseURL + "/profile/**")
+                .antMatchers(profileURL)
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage(baseURL + "/login")
-                .successForwardUrl(baseURL + "/profile")
+                .loginPage(loginURL)
+                .successForwardUrl(profileURL)
                 .and()
                 .logout()
-                .logoutUrl(baseURL + "/logout")
-                .logoutSuccessHandler(new AuthController())
+                .logoutUrl(logoutURL)
+                .logoutSuccessHandler(logoutSuccessHandler())
                 .permitAll();
     }
 
