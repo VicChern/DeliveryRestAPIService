@@ -2,13 +2,22 @@ package com.softserve.itacademy.kek.controller;
 
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.AddressListDto;
+import com.softserve.itacademy.kek.dto.DetailsDto;
 import com.softserve.itacademy.kek.dto.TenantDetailsDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.TenantListDto;
 import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
 import com.softserve.itacademy.kek.dto.TenantPropertiesListDto;
+import com.softserve.itacademy.kek.dto.UserDto;
+import com.softserve.itacademy.kek.dto.UserListDto;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.models.impl.TenantDetails;
+import com.softserve.itacademy.kek.services.ITenantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,13 +31,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/tenants")
 public class TenantController extends DefaultController {
     final static Logger logger = LoggerFactory.getLogger(TenantController.class);
+
+    private final ITenantService tenantService;
+
+    @Autowired
+    public TenantController(ITenantService userService) {
+        this.tenantService = userService;
+    }
 
     /**
      * Temporary method for TenantDto stub
@@ -36,10 +51,16 @@ public class TenantController extends DefaultController {
      * @return {@link TenantDto} stub
      */
     private TenantDto getTenantDtoStub() {
-        TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
-        TenantDto tenantDto = new TenantDto("guid12345qwawt", "Petro", "pict", detailsDto);
+         TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
+         TenantDto tenantDto = new TenantDto(UUID.fromString("guid12345qwawt"), "tenant", "Petro", detailsDto);
         return tenantDto;
 
+    }
+
+    private TenantDto transform(ITenant tenant) {
+        TenantDetailsDto tenantDetailsDto = new TenantDetailsDto(tenant.getTenantDetails().getPayload(), tenant.getTenantDetails().getImageUrl());
+        TenantDto tenantDto = new TenantDto(tenant.getGuid(), tenant.getName(), tenant.getTenantOwner(), tenantDetailsDto);
+        return tenantDto;
     }
 
     /**
@@ -89,6 +110,12 @@ public class TenantController extends DefaultController {
     @PostMapping(consumes = "application/vnd.softserve.tenantList+json", produces = "application/vnd.softserve.tenantList+json")
     public ResponseEntity<TenantListDto> addTenant(@RequestBody @Valid TenantListDto body) {
         logger.info("Accepted requested to create a new tenant:\n{}", body);
+
+        ITenant createdTenant = tenantService.create(body.getTenantList().get(0));
+        TenantDto tenantDto = transform(createdTenant);
+
+        body = new TenantListDto();
+        body.addTenant(tenantDto);
 
         logger.info("Sending the created tenants to the client:\n" + body);
         return ResponseEntity
@@ -175,7 +202,7 @@ public class TenantController extends DefaultController {
     @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantPropertyList+json",
             produces = "application/vnd.softserve.tenantPropertyList+json")
     public ResponseEntity<TenantPropertiesListDto> addTenantProperties(@PathVariable String guid,
-                                                                         @RequestBody @Valid TenantPropertiesListDto body) {
+                                                                       @RequestBody @Valid TenantPropertiesListDto body) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, body);
 
         logger.info("Sending the created tenant's({}) properties to the client", body);
@@ -220,7 +247,7 @@ public class TenantController extends DefaultController {
 
         logger.info("Sending the modified property of the tenant {} to the client:\n{}", guid, body);
 
-        return  ResponseEntity
+        return ResponseEntity
                 .ok()
                 .body(body);
     }

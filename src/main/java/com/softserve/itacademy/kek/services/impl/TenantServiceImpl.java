@@ -83,7 +83,7 @@ public class TenantServiceImpl implements ITenantService {
         LOGGER.info("Getting all Tenants from db");
         List<ITenant> tenants = new ArrayList<>();
 
-        tenantRepository.findAll().forEach(tenants::add);
+        tenants.addAll(tenantRepository.findAll());
         if (tenants.isEmpty()) {
             LOGGER.error("No one tenant was found.");
             throw new TenantServiceException("No one tenant was found.");
