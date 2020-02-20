@@ -65,7 +65,7 @@ public class OrderController extends DefaultController {
 
         logger.info("Sending list of all orders to the client:\n{}", orderList);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(orderList);
     }
 
@@ -81,7 +81,7 @@ public class OrderController extends DefaultController {
 
         logger.info("Sending the created orders to the client:\n{}", orders);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.CREATED)
                 .body(orders);
     }
 
@@ -97,7 +97,7 @@ public class OrderController extends DefaultController {
 
         logger.info("Sending the specific order ({}) to the client:\n{}", id, order);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(order);
     }
 
@@ -115,7 +115,7 @@ public class OrderController extends DefaultController {
 
         logger.info("Order was modified:\n{}", order);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(order);
     }
 
@@ -127,7 +127,9 @@ public class OrderController extends DefaultController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteOrder(@PathVariable String id) {
         logger.info("Order ({}) successfully deleted", id);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     /**
@@ -143,7 +145,7 @@ public class OrderController extends DefaultController {
 
         logger.info("Sending the list of order ({}) events to the client", id);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(orderEventList);
     }
 
@@ -161,7 +163,7 @@ public class OrderController extends DefaultController {
 
         logger.info("Event have been added: {}", body);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.CREATED)
                 .body(body);
     }
 }
