@@ -1,6 +1,24 @@
 package com.softserve.itacademy.kek.service.impl;
 
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
+import com.softserve.itacademy.kek.service.AbstractService;
+import com.softserve.itacademy.kek.service.ICloudStorageService;
+import com.softserve.itacademy.kek.service.model.ICloudStorageObject;
+import com.softserve.itacademy.kek.service.model.impl.CloudStorageObject;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -10,31 +28,19 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.service.AbstractService;
-import com.softserve.itacademy.kek.service.ICloudStorageService;
-import com.softserve.itacademy.kek.service.model.ICloudStorageObject;
-import com.softserve.itacademy.kek.service.model.impl.CloudStorageObject;
-
 @Component
 public class CloudStorageService extends AbstractService implements ICloudStorageService {
     private static final Logger logger = LoggerFactory.getLogger(CloudStorageService.class);
 
     @Value("gcp.storage.filename")
     private String storagePropertiesFileName;
+
+    public CloudStorageService() {
+    }
+
+    public CloudStorageService(String storagePropertiesFileName) {
+        this.storagePropertiesFileName = storagePropertiesFileName;
+    }
 
     @Override
     public ICloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {
