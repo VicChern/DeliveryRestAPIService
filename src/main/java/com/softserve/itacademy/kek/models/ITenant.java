@@ -26,7 +26,7 @@ public interface ITenant {
      *
      * @return tenant owner
      */
-    String getTenantOwner();
+    IUser getTenantOwner();
 
     /**
      * Returns tenant details

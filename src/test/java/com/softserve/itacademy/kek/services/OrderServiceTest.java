@@ -2,6 +2,8 @@ package com.softserve.itacademy.kek.services;
 
 import java.util.UUID;
 
+import com.softserve.itacademy.kek.repositories.ActorRepository;
+import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
 import org.mockito.ArgumentCaptor;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -40,8 +42,12 @@ public class OrderServiceTest {
     private TenantRepository tenantRepository;
 
     private OrderEventRepository orderEventRepository;
+    private ActorRepository actorRepository;
+    private ActorRoleRepository actorRoleRepository;
 
     private OrderEventTypeRepository orderEventTypeRepository;
+    private IUserService userService;
+    private ITenantService tenantService;
 
     @BeforeClass
     public void setUp() {
@@ -49,32 +55,31 @@ public class OrderServiceTest {
         tenantRepository = mock(TenantRepository.class);
         orderEventRepository = mock(OrderEventRepository.class);
         orderEventTypeRepository = mock(OrderEventTypeRepository.class);
-        orderService = new OrderServiceImpl(orderRepository, tenantRepository, orderEventRepository, orderEventTypeRepository);
+        actorRepository = mock(ActorRepository.class);
+        userService = mock(IUserService.class);
+        actorRoleRepository = mock(ActorRoleRepository.class);
+        tenantService = mock(ITenantService.class);
+        orderService = new OrderServiceImpl(
+                orderRepository,
+                tenantRepository,
+                orderEventRepository,
+                actorRepository,
+                orderEventTypeRepository,
+                actorRoleRepository,
+                userService,
+                tenantService);
     }
 
     @AfterMethod
     void tearDown() {
-        reset(orderRepository, tenantRepository, orderEventRepository);
-    }
-
-    @Test
-    public void createOrderSuccess() throws Exception {
-        Order testOrder = createOrderForTest(1L, null);
-
-        when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
-
-        IOrder createdOrder = orderService.create(testOrder);
-
-        ArgumentCaptor<Order> acOrder = ArgumentCaptor.forClass(Order.class);
-
-        verify(orderRepository, times(1)).save(any(Order.class));
-        verify(orderRepository).save(acOrder.capture());
-
-        Order actualOrder = acOrder.getValue();
-
-        Assert.assertNotNull(createdOrder);
-        Assert.assertNotNull(actualOrder.getGuid());
-        Assert.assertNotNull(actualOrder.getOrderDetails());
+        reset(orderRepository,
+                tenantRepository,
+                orderEventRepository,
+                actorRepository,
+                orderEventTypeRepository,
+                actorRoleRepository,
+                userService,
+                tenantService);
     }
 
     @Test

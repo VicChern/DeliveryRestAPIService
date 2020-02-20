@@ -11,49 +11,56 @@ import java.util.UUID;
 
 public class TenantDto implements ITenant {
 
-    @NotNull
     private UUID guid;
-    private String tenantOwner;
+    private IUser owner;
 
     @NotNull
     @Size(max = 256)
     private String name;
-    private ITenantDetails details;
+    private TenantDetailsDto details;
+    private ITenantDetails tenantDetails;
 
     public TenantDto() {
     }
 
-    public TenantDto(UUID guid, String owner, String name, ITenantDetails details) {
+    public TenantDto(UUID guid, IUser owner, String name, TenantDetailsDto details) {
         this.guid = guid;
-        this.tenantOwner = owner;
+        this.owner = owner;
         this.name = name;
         this.details = details;
     }
 
-    @Override
     public UUID getGuid() {
         return guid;
     }
 
-    @Override
+    public IUser getOwner() {
+        return owner;
+    }
+
     public String getName() {
         return name;
     }
 
     @Override
-    public String getTenantOwner() {
-        return tenantOwner;
+    public IUser getTenantOwner() {
+        return new UserDto();
     }
 
     @Override
     public ITenantDetails getTenantDetails() {
+        return tenantDetails;
+    }
+
+    public TenantDetailsDto getDetails() {
         return details;
     }
+
     @Override
     public String toString() {
         return "TenantDto{" +
                 "guid='" + guid + '\'' +
-                ", owner='" + tenantOwner + '\'' +
+                ", owner='" + owner + '\'' +
                 ", name='" + name + '\'' +
                 ", details=" + details +
                 '}';
@@ -62,16 +69,16 @@ public class TenantDto implements ITenant {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TenantDto)) return false;
         TenantDto tenantDto = (TenantDto) o;
-        return Objects.equals(guid, tenantDto.guid) &&
-                Objects.equals(tenantOwner, tenantDto.tenantOwner) &&
-                Objects.equals(name, tenantDto.name) &&
-                Objects.equals(details, tenantDto.details);
+        return guid.equals(tenantDto.guid) &&
+                owner.equals(tenantDto.owner) &&
+                name.equals(tenantDto.name) &&
+                details.equals(tenantDto.details);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guid, tenantOwner, name, details);
+        return Objects.hash(guid, owner, name, details);
     }
 }

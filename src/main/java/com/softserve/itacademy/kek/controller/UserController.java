@@ -71,7 +71,7 @@ public class UserController extends DefaultController {
 
         logger.info("Sending list of all users to the client:\n{}", userListDto);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(userListDto);
     }
 
@@ -91,7 +91,7 @@ public class UserController extends DefaultController {
 
         logger.info("Sending the created users to the client:\n{}", createdUserDto);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.CREATED)
                 .body(createdUserDto);
     }
 
@@ -110,7 +110,7 @@ public class UserController extends DefaultController {
 
         logger.info("Sending the user to the client:\n{}", userDto);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(userDto);
     }
 
@@ -131,7 +131,7 @@ public class UserController extends DefaultController {
 
         logger.info("Sending the modified user to the client:\n{}", modifiedUserDto);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(modifiedUserDto);
     }
 
@@ -147,7 +147,9 @@ public class UserController extends DefaultController {
         userService.deleteByGuid(UUID.fromString(guid));
 
         logger.info("User ({}) successfully deleted", guid);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     /**
@@ -168,7 +170,7 @@ public class UserController extends DefaultController {
 
         logger.info("Sending the list of addresses of the user {} to the client:\n", addressListDto);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(addressListDto);
     }
 
@@ -195,7 +197,7 @@ public class UserController extends DefaultController {
 
         logger.info("Sending the created users's addresses to the client:\n{}", createdAddresses);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.CREATED)
                 .body(createdAddresses);
     }
 
@@ -215,7 +217,7 @@ public class UserController extends DefaultController {
 
         logger.info("Sending the address of the user {} to the client:\n{}", guid, addressDto);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(addressDto);
     }
 
@@ -239,7 +241,7 @@ public class UserController extends DefaultController {
 
         logger.info("Sending the modified address of the user {} to the client:\n{}", guid, modifiedAddressDto);
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.OK)
                 .body(modifiedAddressDto);
     }
 
@@ -256,6 +258,8 @@ public class UserController extends DefaultController {
         addressService.deleteForUser(UUID.fromString(addrGuid), UUID.fromString(guid));
 
         logger.info("The address {} ot the user {} successfully deleted", addrGuid, guid);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
     }
 }

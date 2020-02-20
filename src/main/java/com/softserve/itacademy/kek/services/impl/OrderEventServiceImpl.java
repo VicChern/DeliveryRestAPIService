@@ -4,6 +4,9 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import java.util.UUID;
 
+import com.softserve.itacademy.kek.models.IOrderEventType;
+import com.softserve.itacademy.kek.models.impl.OrderEventType;
+import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +31,15 @@ public class OrderEventServiceImpl implements IOrderEventService {
     final Logger logger = LoggerFactory.getLogger(IOrderEventService.class);
 
     private final OrderEventRepository orderEventRepository;
+    private final OrderEventTypeRepository orderEventTypeRepository;
     private final OrderRepository orderRepository;
 
     @Autowired
-    public OrderEventServiceImpl(OrderEventRepository orderEventRepository, OrderRepository orderRepository) {
+    public OrderEventServiceImpl(OrderEventRepository orderEventRepository,
+                                 OrderEventTypeRepository orderEventTypeRepository,
+                                 OrderRepository orderRepository) {
         this.orderEventRepository = orderEventRepository;
+        this.orderEventTypeRepository = orderEventTypeRepository;
         this.orderRepository = orderRepository;
     }
 
@@ -52,6 +59,42 @@ public class OrderEventServiceImpl implements IOrderEventService {
         }
 
         orderEvent.setIdOrder(actualOrder);
+
+        try {
+            orderEventRepository.save(orderEvent);
+        } catch (PersistenceException e) {
+            logger.error("Order event wasn`t saved: {}", orderEvent);
+            throw new OrderServiceException("Order event wasn`t saved");
+        }
+
+        logger.info("Order event was saved: {}", orderEvent);
+        return orderEvent;
+    }
+
+    @Transactional
+//    @Override
+    public IOrderEvent create(IOrderEvent iOrderEvent, UUID orderGuid, IOrderEventType iOrderEventType) throws OrderEventServiceException {
+        logger.info("Saving OrderEvent to db: {}", iOrderEvent);
+        OrderEvent orderEvent = new OrderEvent();
+
+        Order actualOrder;
+
+        try {
+            actualOrder = orderRepository.findByGuid(orderGuid);
+        } catch (EntityNotFoundException e) {
+            logger.error("There is no order for order event with order guid: {}", orderGuid);
+            throw new OrderServiceException("There is no order for order event with order guid: " + orderGuid);
+        }
+
+        orderEvent.setIdOrder(actualOrder);
+
+        OrderEventType orderEventType = new OrderEventType();
+        orderEventType.setName(iOrderEventType.getName());
+        OrderEventType savedOrderEventType = orderEventTypeRepository.save(orderEventType);
+
+        orderEvent.setIdOrderEventType(savedOrderEventType);
+
+//        orderEventTypeRepository.save()
 
         try {
             orderEventRepository.save(orderEvent);

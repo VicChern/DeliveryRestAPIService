@@ -83,7 +83,7 @@ public class TenantServiceImpl implements ITenantService {
         LOGGER.info("Getting all Tenants from db");
         List<ITenant> tenants = new ArrayList<>();
 
-        tenants.addAll(tenantRepository.findAll());
+        tenantRepository.findAll().forEach(tenants::add);
         if (tenants.isEmpty()) {
             LOGGER.error("No one tenant was found.");
             throw new TenantServiceException("No one tenant was found.");
@@ -97,7 +97,7 @@ public class TenantServiceImpl implements ITenantService {
     @Override
     public ITenant getByGuid(UUID guid) {
         LOGGER.info("Get Tenant by guid from db: {}", guid);
-        ITenant tenant;
+        Tenant tenant;
 
         tenant = tenantRepository.findByGuid(guid);
         if(tenant == null) {

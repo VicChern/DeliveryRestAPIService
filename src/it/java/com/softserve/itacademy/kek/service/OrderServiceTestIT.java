@@ -1,9 +1,14 @@
 package com.softserve.itacademy.kek.service;
 
+import com.softserve.itacademy.kek.models.impl.ActorRole;
+import com.softserve.itacademy.kek.models.impl.OrderEventType;
+import com.softserve.itacademy.kek.repositories.ActorRepository;
+import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -34,22 +39,71 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
+    private ActorRepository actorRepository;
+
+
+    @Autowired
     private IOrderService orderService;
     @Autowired
     private OrderEventTypeRepository orderEventTypeRepository;
     @Autowired
     private OrderEventRepository orderEventRepository;
+    @Autowired
+    private ActorRoleRepository actorRoleRepository;
+
+
+    private ActorRole actorRole1;
+    private ActorRole actorRole2;
+
+    private OrderEventType orderEventType1;
+    private OrderEventType orderEventType2;
+    private OrderEventType orderEventType3;
+    private OrderEventType orderEventType4;
 
     private User user;
+    private User customer;
     private Tenant tenant;
     private Order order;
 
     @BeforeMethod
     public void setUp() {
+
+        actorRoleRepository.deleteAll();
+        orderEventTypeRepository.deleteAll();
+
+        actorRole1 = new ActorRole();
+        actorRole1.setName("CUSTOMER");
+        actorRole2 = new ActorRole();
+        actorRole2.setName("CURRIER");
+
+        orderEventType1 = new OrderEventType();
+        orderEventType1.setName("CREATED");
+
+        orderEventType2 = new OrderEventType();
+        orderEventType2.setName("ASSIGNED");
+
+        orderEventType3 = new OrderEventType();
+        orderEventType3.setName("STARTED");
+
+        orderEventType4 = new OrderEventType();
+        orderEventType4.setName("DELIVERED");
+
+        actorRoleRepository.save(actorRole1);
+        actorRoleRepository.save(actorRole2);
+
+        orderEventTypeRepository.save(orderEventType1);
+        orderEventTypeRepository.save(orderEventType2);
+        orderEventTypeRepository.save(orderEventType3);
+        orderEventTypeRepository.save(orderEventType4);
+
         user = createOrdinaryUser(1);
+        customer = createOrdinaryUser(2);
         tenant = createOrdinaryTenant(1);
 
         User savedUser = userRepository.save(user);
+        assertNotNull(savedUser);
+
+        User savedCustomer = userRepository.save(customer);
         assertNotNull(savedUser);
 
         tenant.setTenantOwner(savedUser);
@@ -63,17 +117,24 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @AfterMethod
     public void tearDown() {
         orderEventRepository.deleteAll();
-        orderEventTypeRepository.deleteAll();
+        actorRepository.deleteAll();
         orderRepository.deleteAll();
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }
 
+    @AfterClass
+    public void afterClass() {
+        actorRoleRepository.deleteAll();
+        orderEventTypeRepository.deleteAll();
+    }
+
+
     @Rollback
     @Test
     public void createSuccess() {
         //when
-        orderService.create(order);
+        orderService.create(order, customer.getGuid());
     }
 
 }

@@ -3,7 +3,9 @@ package com.softserve.itacademy.kek.services;
 import java.util.UUID;
 
 import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Order;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service interface for {@link IOrder}
@@ -11,12 +13,23 @@ import com.softserve.itacademy.kek.models.impl.Order;
 public interface IOrderService {
 
     /**
-     * Saved new {@link Order} to db
+     * Saved new {@link Order} for customer with customerGuid to db
      *
      * @param order order
+     * @param customerGuid customerGuid
      * @return saved order
      */
-    IOrder create(IOrder order);
+    IOrder create(IOrder order, UUID customerGuid);
+
+    /**
+     * Saved new {@link Order} for customer with customerGuid to db
+     *
+     * @param orderGuid orderGuid
+     * @param actorGuid actorGuid
+     * @param iOrderEvent order event
+     * @return saved order
+     */
+    IOrderEvent createOrderEvent(UUID orderGuid, UUID actorGuid, IOrderEvent iOrderEvent);
 
     /**
      * Gets all orders
