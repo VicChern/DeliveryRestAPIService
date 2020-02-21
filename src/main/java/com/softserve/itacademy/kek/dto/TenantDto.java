@@ -12,18 +12,19 @@ import java.util.UUID;
 public class TenantDto implements ITenant {
 
     private UUID guid;
-    private IUser owner;
+    private String owner;
 
     @NotNull
     @Size(max = 256)
     private String name;
     private TenantDetailsDto details;
     private ITenantDetails tenantDetails;
+    private IUser tenantOwner;
 
     public TenantDto() {
     }
 
-    public TenantDto(UUID guid, IUser owner, String name, TenantDetailsDto details) {
+    public TenantDto(UUID guid, String owner, String name, TenantDetailsDto details) {
         this.guid = guid;
         this.owner = owner;
         this.name = name;
@@ -34,7 +35,7 @@ public class TenantDto implements ITenant {
         return guid;
     }
 
-    public IUser getOwner() {
+    public String getOwner() {
         return owner;
     }
 
@@ -44,7 +45,7 @@ public class TenantDto implements ITenant {
 
     @Override
     public IUser getTenantOwner() {
-        return new UserDto();
+        return new UserDto(UUID.fromString(owner),null,null,null,null,null);
     }
 
     @Override

@@ -67,10 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .successForwardUrl(profileURL)
                 .and()
                 .logout()
-
                 .logoutUrl(logoutURL)
-                .logoutUrl(baseURL + "/logout")
-                .logoutSuccessHandler(logoutSuccessHandler())
                 .permitAll();
     }
 

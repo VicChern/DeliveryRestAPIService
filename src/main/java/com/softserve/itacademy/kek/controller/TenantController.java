@@ -6,18 +6,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.softserve.itacademy.kek.dto.DetailsDto;
 import com.softserve.itacademy.kek.dto.TenantListDto;
-import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.TenantDetails;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,23 +50,13 @@ public class TenantController extends DefaultController {
 
     private TenantDto transformTenant(ITenant tenant) {
         TenantDetailsDto tenantDetailsDto = new TenantDetailsDto(tenant.getTenantDetails().getPayload(), tenant.getTenantDetails().getImageUrl());
-        TenantDto tenantDto = new TenantDto(tenant.getGuid(),tenant.getTenantOwner(),tenant.getName(),tenantDetailsDto);
+        TenantDto tenantDto = new TenantDto(tenant.getGuid(),"Petro",tenant.getName(),tenantDetailsDto);
         return tenantDto;
     }
 
     private AddressDto transformAddress(IAddress address) {
         return new AddressDto(address.getGuid(), address.getAlias(), address.getAddress(), address.getNotes());
     }
-
-    /**
-     * Temporary method for TenantDto stub
-     *
-     * @return {@link TenantDto} stub
-     */
-//    private TenantDto getTenantDtoStub() {
-//        TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
-//        return new TenantDto(UUID.fromString("guid12345qwawt"), "Petro", "pict", detailsDto);
-//    }
 
     /**
      * Temporary method for TenantPropertiesDto stub
@@ -127,7 +111,7 @@ public class TenantController extends DefaultController {
         TenantDto createUserDto = transformTenant(createTenant);
 
         return  ResponseEntity
-                .ok()
+                .status(HttpStatus.CREATED)
                 .body(createUserDto);
     }
 
@@ -186,7 +170,9 @@ public class TenantController extends DefaultController {
         tenantService.deleteByGuid(UUID.fromString(guid));
 
         logger.info("Tenant({}}) was successfully deleted", guid);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     /**
@@ -204,7 +190,9 @@ public class TenantController extends DefaultController {
 
         logger.info("Sending the list of tenant's({}) properties to the client:\n{}", tenantPropertiesList, guid);
 
-        return new ResponseEntity<>(tenantPropertiesList, HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(tenantPropertiesList);
     }
 
     /**
@@ -221,7 +209,9 @@ public class TenantController extends DefaultController {
 
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, body);
         logger.info("Sending the created tenant's({}) properties to the client", body);
-        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
+        return ResponseEntity
+                .ok()
+                .body(body);
     }
 
     /**
@@ -251,13 +241,14 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}/properties/{propguid}", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid,
                                                                     @PathVariable("propguid") String propGuid,
                                                                     @RequestBody @Valid TenantPropertiesDto body) {
         logger.info("Sending the modified tenant's({}) property({}) to the client", guid, propGuid);
         logger.info("Sending the modified property of the tenant {} to the client:\n{}", guid, body);
-        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
+        return ResponseEntity
+                .ok()
+                .body(body);
     }
 
     /**
@@ -271,7 +262,9 @@ public class TenantController extends DefaultController {
         logger.info("Accepted request to delete the property {} ot the tenant {}", propGuid, guid);
         logger.info("the property {} ot the tenant {} successfully deleted", propGuid, guid);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return  ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
     }
 
     /**
