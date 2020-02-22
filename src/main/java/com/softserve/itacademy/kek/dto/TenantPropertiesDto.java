@@ -1,13 +1,18 @@
 package com.softserve.itacademy.kek.dto;
 
+import com.softserve.itacademy.kek.models.IPropertyType;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.ITenantProperties;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
+import java.util.UUID;
 
-public class TenantPropertiesDto {
-    private String guid;
-    private String tenant;
-    private String type;
+public class TenantPropertiesDto implements ITenantProperties {
+    private UUID guid;
+    private ITenant tenant;
+    private IPropertyType propertyType;
 
     @NotNull
     @Size(max = 256)
@@ -20,30 +25,36 @@ public class TenantPropertiesDto {
     public TenantPropertiesDto() {
     }
 
-    public TenantPropertiesDto(String guid, String tenant, String type, String key, String value) {
+    public TenantPropertiesDto(UUID guid, ITenant tenant, IPropertyType type, String key, String value) {
         this.guid = guid;
         this.tenant = tenant;
-        this.type = type;
+        this.propertyType = type;
         this.key = key;
         this.value = value;
     }
 
-    public String getGuid() {
+    @Override
+    public UUID getGuid() {
         return guid;
     }
 
-    public String getTenant() {
+    @Override
+    public ITenant getTenant() {
         return tenant;
     }
 
-    public String getType() {
-        return type;
+    @Override
+    public IPropertyType getPropertyType() {
+        return propertyType;
     }
 
+
+    @Override
     public String getKey() {
         return key;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
@@ -53,7 +64,7 @@ public class TenantPropertiesDto {
         return "TenantPropertiesDTO{" +
                 "guid='" + guid + '\'' +
                 ", tenant='" + tenant + '\'' +
-                ", type='" + type + '\'' +
+                ", type='" + propertyType + '\'' +
                 ", key='" + key + '\'' +
                 ", value='" + value + '\'' +
                 '}';
@@ -66,13 +77,13 @@ public class TenantPropertiesDto {
         TenantPropertiesDto that = (TenantPropertiesDto) o;
         return guid.equals(that.guid) &&
                 tenant.equals(that.tenant) &&
-                type.equals(that.type) &&
+                propertyType.equals(that.propertyType) &&
                 key.equals(that.key) &&
                 value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guid, tenant, type, key, value);
+        return Objects.hash(guid, tenant, propertyType, key, value);
     }
 }

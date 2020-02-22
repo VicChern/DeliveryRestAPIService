@@ -37,6 +37,7 @@ public interface ITenant {
 
     /**
      * Default method to get tenant owner guid
+     *
      * @return tenant owner guid
      */
     default UUID getOwner() {
