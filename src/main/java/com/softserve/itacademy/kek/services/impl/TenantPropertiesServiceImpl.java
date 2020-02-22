@@ -1,18 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.persistence.PersistenceException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.softserve.itacademy.kek.exception.TenantPropertiesServiceException;
 import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
@@ -21,6 +8,18 @@ import com.softserve.itacademy.kek.models.impl.TenantProperties;
 import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.PersistenceException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
@@ -60,7 +59,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
         Tenant tenant = tenantRepository.findByGuid(tenantGuid);
 
-        if(tenant == null) {
+        if (tenant == null) {
             LOGGER.error("There is no Tenant in db for tenant guid: {}", tenantGuid);
             throw new TenantPropertiesServiceException("Tenant wasn't found for tenant guid: " + tenantGuid);
         }
@@ -124,11 +123,19 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
         // update tenant property
         PropertyType propertyType = (PropertyType) tenantProperty.getPropertyType();
-        if (iTenantProperty.getPropertyType().getName() != null ) { propertyType.setName(iTenantProperty.getPropertyType().getName()); }
-        if (iTenantProperty.getPropertyType().getSchema() != null ) { propertyType.setSchema(iTenantProperty.getPropertyType().getSchema()); }
+        if (iTenantProperty.getPropertyType().getName() != null) {
+            propertyType.setName(iTenantProperty.getPropertyType().getName());
+        }
+        if (iTenantProperty.getPropertyType().getSchema() != null) {
+            propertyType.setSchema(iTenantProperty.getPropertyType().getSchema());
+        }
 
-        if (iTenantProperty.getKey() != null ) { tenantProperty.setKey(iTenantProperty.getKey()); }
-        if (iTenantProperty.getValue() != null ) { tenantProperty.setValue(iTenantProperty.getValue()); }
+        if (iTenantProperty.getKey() != null) {
+            tenantProperty.setKey(iTenantProperty.getKey());
+        }
+        if (iTenantProperty.getValue() != null) {
+            tenantProperty.setValue(iTenantProperty.getValue());
+        }
 
         tenantProperty.setPropertyType(propertyType);
 

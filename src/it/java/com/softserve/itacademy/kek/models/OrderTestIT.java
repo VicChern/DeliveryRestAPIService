@@ -1,8 +1,13 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.validation.ConstraintViolationException;
-import java.util.UUID;
-
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
+import com.softserve.itacademy.kek.repositories.OrderRepository;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
@@ -12,14 +17,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.impl.Order;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
-import com.softserve.itacademy.kek.repositories.OrderRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
+import javax.validation.ConstraintViolationException;
+import java.util.UUID;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;

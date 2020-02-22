@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.validation.ConstraintViolationException;
-import java.util.Optional;
-
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.models.impl.PropertyType;
+import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,9 +13,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.impl.PropertyType;
-import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
+import javax.validation.ConstraintViolationException;
+import java.util.Optional;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
@@ -30,8 +29,8 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
     private PropertyType propertyType1;
     private PropertyType propertyType2;
 
-    @DataProvider(name="illegal_names")
-    public static Object[][] names(){
+    @DataProvider(name = "illegal_names")
+    public static Object[][] names() {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_256 + 1)}, {""}};
     }
 
@@ -64,7 +63,7 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
         repository.save(propertyType1);
     }
 
-    @Test(dataProvider = "illegal_names",expectedExceptions = ConstraintViolationException.class)
+    @Test(dataProvider = "illegal_names", expectedExceptions = ConstraintViolationException.class)
     public void testPropertyTypeIsNotSavedWithNameMoreThanMaxLengthOrEmpty(String name) {
         propertyType1.setName(name);
         //when

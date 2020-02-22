@@ -27,6 +27,7 @@ public class EmbeddedTomcatApp {
      * - port = 8080
      * - contextPath = \
      * - appBase = .
+     *
      * @throws IOException in case when the properties file is not found
      */
     public EmbeddedTomcatApp() throws IOException {

@@ -1,8 +1,10 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.validation.ConstraintViolationException;
-import java.util.Optional;
-
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.models.impl.GlobalProperties;
+import com.softserve.itacademy.kek.models.impl.PropertyType;
+import com.softserve.itacademy.kek.repositories.GlobalPropertiesRepository;
+import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,11 +15,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.impl.GlobalProperties;
-import com.softserve.itacademy.kek.models.impl.PropertyType;
-import com.softserve.itacademy.kek.repositories.GlobalPropertiesRepository;
-import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
+import javax.validation.ConstraintViolationException;
+import java.util.Optional;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
@@ -36,13 +35,13 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
     private GlobalProperties properties1;
     private GlobalProperties properties2;
 
-    @DataProvider(name="illegal_keys")
-    public static Object[][] keys(){
+    @DataProvider(name = "illegal_keys")
+    public static Object[][] keys() {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_256 + 1)}, {""}};
     }
 
-    @DataProvider(name="illegal_values")
-    public static Object[][] values(){
+    @DataProvider(name = "illegal_values")
+    public static Object[][] values() {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_4096 + 1)}, {""}};
     }
 

@@ -1,7 +1,11 @@
 package com.softserve.itacademy.kek.controller;
 
-import javax.validation.Valid;
-
+import com.softserve.itacademy.kek.dto.OrderDetailsDto;
+import com.softserve.itacademy.kek.dto.OrderDto;
+import com.softserve.itacademy.kek.dto.OrderEventDto;
+import com.softserve.itacademy.kek.dto.OrderEventListDto;
+import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
+import com.softserve.itacademy.kek.dto.OrderListDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,12 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.softserve.itacademy.kek.dto.OrderDetailsDto;
-import com.softserve.itacademy.kek.dto.OrderDto;
-import com.softserve.itacademy.kek.dto.OrderEventDto;
-import com.softserve.itacademy.kek.dto.OrderEventListDto;
-import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
-import com.softserve.itacademy.kek.dto.OrderListDto;
+import javax.validation.Valid;
 
 
 @RestController

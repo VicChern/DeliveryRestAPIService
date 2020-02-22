@@ -1,7 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;

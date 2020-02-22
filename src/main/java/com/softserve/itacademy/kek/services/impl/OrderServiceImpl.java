@@ -1,17 +1,25 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
-import java.util.Collections;
-import java.util.UUID;
-
+import com.softserve.itacademy.kek.exception.OrderEventServiceException;
+import com.softserve.itacademy.kek.exception.OrderServiceException;
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderDetails;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
+import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.OrderDetails;
+import com.softserve.itacademy.kek.models.impl.OrderEvent;
+import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
+import com.softserve.itacademy.kek.repositories.OrderEventRepository;
+import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
+import com.softserve.itacademy.kek.repositories.OrderRepository;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.services.IOrderService;
 import com.softserve.itacademy.kek.services.ITenantService;
 import com.softserve.itacademy.kek.services.IUserService;
 import org.slf4j.Logger;
@@ -20,19 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.softserve.itacademy.kek.exception.OrderEventServiceException;
-import com.softserve.itacademy.kek.exception.OrderServiceException;
-import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderDetails;
-import com.softserve.itacademy.kek.models.impl.Order;
-import com.softserve.itacademy.kek.models.impl.OrderDetails;
-import com.softserve.itacademy.kek.models.impl.OrderEvent;
-import com.softserve.itacademy.kek.models.impl.OrderEventType;
-import com.softserve.itacademy.kek.repositories.OrderEventRepository;
-import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
-import com.softserve.itacademy.kek.repositories.OrderRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.services.IOrderService;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceException;
+import java.util.Collections;
+import java.util.UUID;
 
 /**
  * Service implementation for {@link IOrderService}
@@ -40,15 +39,13 @@ import com.softserve.itacademy.kek.services.IOrderService;
 @Service
 public class OrderServiceImpl implements IOrderService {
 
-    final Logger logger = LoggerFactory.getLogger(IOrderService.class);
     private final static String CUSTOMER = "CUSTOMER";
     private final static String CURRIER = "CURRIER";
-
     private final static String CREATED = "CREATED";
     private final static String ASSIGNED = "ASSIGNED";
     private final static String STARTED = "STARTED";
     private final static String DELIVERED = "DELIVERED";
-
+    final Logger logger = LoggerFactory.getLogger(IOrderService.class);
     private final OrderRepository orderRepository;
     private final TenantRepository tenantRepository;
     private final OrderEventRepository orderEventRepository;
@@ -115,8 +112,8 @@ public class OrderServiceImpl implements IOrderService {
 
     private OrderEventType getOrderEventType(String name) {
         OrderEventType orderEventType = orderEventTypeRepository.findByName(name);
-        if(orderEventType == null ) {
-            logger.error("OrderEventType wasn`t find for name: {}", name );
+        if (orderEventType == null) {
+            logger.error("OrderEventType wasn`t find for name: {}", name);
             throw new OrderServiceException("OrderEventType wasn`t find for name: " + name);
         }
         return orderEventType;
@@ -242,7 +239,7 @@ public class OrderServiceImpl implements IOrderService {
 
     private Actor getActorByGuid(UUID guid) {
         Actor actor = actorRepository.findByGuid(guid);
-        if(actor == null ) {
+        if (actor == null) {
             logger.error("Actor wasn`t find for guid: {}", guid);
             throw new OrderServiceException("Actor wasn`t find for guid: " + guid);
         }
@@ -260,7 +257,7 @@ public class OrderServiceImpl implements IOrderService {
             return actorRepository.save(actor);
         } catch (PersistenceException e) {
             logger.error("Actor wasn`t saved for tenant: {}, user: {}, actorRole: {}", tenant, user, actorRole);
-            throw new OrderServiceException("Actor wasn`t saved for tenant: " + tenant +  ", user: " + user +  ", actorRole: " + actorRole);
+            throw new OrderServiceException("Actor wasn`t saved for tenant: " + tenant + ", user: " + user + ", actorRole: " + actorRole);
         }
     }
 
@@ -273,7 +270,7 @@ public class OrderServiceImpl implements IOrderService {
 
         Actor actor = actorRepository.findByGuid(userGuid);
         // if actor doesn't exist yet
-        if(actor == null || !actor.getTenant().getGuid().equals(tenant.getGuid())) {
+        if (actor == null || !actor.getTenant().getGuid().equals(tenant.getGuid())) {
             ActorRole actorRole = actorRoleRepository.findByName(CURRIER);
             User user = (User) userService.getByGuid(userGuid);
             actor = saveActor(tenant, user, actorRole);
@@ -292,7 +289,7 @@ public class OrderServiceImpl implements IOrderService {
             orderEventRepository.save(orderEvent);
         } catch (PersistenceException e) {
             logger.error("OrderEvent for order: {}, actor: {}, orderEventType: {} wasn`t saved", order, actor, orderEventType);
-            throw new OrderEventServiceException("OrderEvent for order: " + orderGuid + ", actor: " + userGuid + ", orderEventTypeName: " + orderEventTypeName +" wasn`t saved");
+            throw new OrderEventServiceException("OrderEvent for order: " + orderGuid + ", actor: " + userGuid + ", orderEventTypeName: " + orderEventTypeName + " wasn`t saved");
         }
 
         return orderEvent;

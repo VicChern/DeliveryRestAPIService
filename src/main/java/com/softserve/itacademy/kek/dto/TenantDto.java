@@ -45,7 +45,7 @@ public class TenantDto implements ITenant {
 
     @Override
     public IUser getTenantOwner() {
-        return new UserDto(UUID.fromString(owner),null,null,null,null,null);
+        return new UserDto(UUID.fromString(owner), null, null, null, null, null);
     }
 
     @Override

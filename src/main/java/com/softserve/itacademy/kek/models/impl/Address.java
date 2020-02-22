@@ -1,6 +1,8 @@
 package com.softserve.itacademy.kek.models.impl;
 
 
+import com.softserve.itacademy.kek.models.IAddress;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,8 +17,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
-
-import com.softserve.itacademy.kek.models.IAddress;
 
 @Entity
 @Table(name = "obj_address")

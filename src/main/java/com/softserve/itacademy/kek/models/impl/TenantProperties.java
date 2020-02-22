@@ -1,5 +1,9 @@
 package com.softserve.itacademy.kek.models.impl;
 
+import com.softserve.itacademy.kek.models.IPropertyType;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.ITenantProperties;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,27 +20,20 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.softserve.itacademy.kek.models.IPropertyType;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.ITenantProperties;
-
 @Entity
 @Table(name = "obj_tenant_properties")
 public class TenantProperties implements ITenantProperties, Serializable {
 
+    @ManyToOne
+    @JoinColumn(name = "id_tenant", nullable = false)
+    Tenant tenant;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_property")
     private Long idProperty;
-
     @NotNull
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
-
-    @ManyToOne
-    @JoinColumn(name = "id_tenant", nullable = false)
-    Tenant tenant;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_Property_Type", nullable = false)
     private PropertyType propertyType;

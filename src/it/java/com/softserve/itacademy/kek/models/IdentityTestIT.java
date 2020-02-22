@@ -1,9 +1,12 @@
 package com.softserve.itacademy.kek.models;
 
-import javax.validation.ConstraintViolationException;
-import java.util.Optional;
-import java.util.Random;
-
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.models.impl.Identity;
+import com.softserve.itacademy.kek.models.impl.IdentityType;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.IdentityRepository;
+import com.softserve.itacademy.kek.repositories.IdentityTypeRepository;
+import com.softserve.itacademy.kek.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,13 +15,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.impl.Identity;
-import com.softserve.itacademy.kek.models.impl.IdentityType;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.IdentityRepository;
-import com.softserve.itacademy.kek.repositories.IdentityTypeRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
+import javax.validation.ConstraintViolationException;
+import java.util.Optional;
+import java.util.Random;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
@@ -92,7 +91,7 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
         identity.setUser(savedUser);
 
         //when
-       identityRepository.save(identity);
+        identityRepository.save(identity);
 
         //then
         assertEquals(1, identityRepository.findAll().spliterator().estimateSize());

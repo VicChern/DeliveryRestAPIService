@@ -23,10 +23,6 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
         this.jwt = jwt;
     }
 
-    private boolean hasExpired() {
-        return jwt.getExpiresAt().before(new Date());
-    }
-
     private static Collection<? extends GrantedAuthority> readAuthorities(DecodedJWT jwt) {
         Claim rolesClaim = jwt.getClaim("https://access.control/roles");
         if (rolesClaim.isNull()) {
@@ -43,6 +39,9 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
         return authorities;
     }
 
+    private boolean hasExpired() {
+        return jwt.getExpiresAt().before(new Date());
+    }
 
     @Override
     public String getCredentials() {
@@ -55,16 +54,16 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
     }
 
     @Override
+    public boolean isAuthenticated() {
+        return !invalidated && !hasExpired();
+    }
+
+    @Override
     public void setAuthenticated(boolean authenticated) {
         if (authenticated) {
             throw new IllegalArgumentException("Create a new Authentication object to authenticate");
         }
         invalidated = true;
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return !invalidated && !hasExpired();
     }
 
     /**

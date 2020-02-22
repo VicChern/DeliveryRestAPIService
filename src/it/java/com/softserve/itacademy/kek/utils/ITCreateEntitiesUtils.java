@@ -1,11 +1,5 @@
 package com.softserve.itacademy.kek.utils;
 
-import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-
-import net.bytebuddy.utility.RandomString;
-
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Address;
@@ -22,6 +16,11 @@ import com.softserve.itacademy.kek.models.impl.TenantDetails;
 import com.softserve.itacademy.kek.models.impl.TenantProperties;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.models.impl.UserDetails;
+import net.bytebuddy.utility.RandomString;
+
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Util class for creating entities in integration tests
@@ -93,6 +92,7 @@ public class ITCreateEntitiesUtils {
     }
 
     //================================================ Identity entity =================================================
+
     /**
      * Creates {@link Identity} with valid fields
      *
@@ -117,6 +117,7 @@ public class ITCreateEntitiesUtils {
     }
 
     //================================================== Tenant entity =================================================
+
     /**
      * Creates {@link Tenant} with simple fields (guid, name) depending on {@param i}
      *
@@ -132,6 +133,7 @@ public class ITCreateEntitiesUtils {
 
     /**
      * Creates {@link Tenant} with simple fields (guid, name) and empty {@link TenantDetails}
+     *
      * @param guid
      * @param name
      * @return tenant
@@ -184,6 +186,7 @@ public class ITCreateEntitiesUtils {
     }
 
     //================================================= Address entity =================================================
+
     /**
      * Creates {@link Address} with simple fields (guid, alias, address, notes)
      *
@@ -204,6 +207,7 @@ public class ITCreateEntitiesUtils {
 
     /**
      * Creates {@link Address} with simple fields (guid, alias, address, notes) depending on {@param i}
+     *
      * @param i
      * @return address
      */
@@ -314,6 +318,7 @@ public class ITCreateEntitiesUtils {
 
 
     //================================================== common methods ==================================================
+
     /**
      * Creates random {@link String} with chars from 'a' to 'z' and from 'A' to 'Z' according to ASCII table
      *

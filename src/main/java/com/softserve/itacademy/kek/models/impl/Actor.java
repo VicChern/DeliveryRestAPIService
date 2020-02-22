@@ -1,5 +1,9 @@
 package com.softserve.itacademy.kek.models.impl;
 
+import com.softserve.itacademy.kek.models.IActor;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.IUser;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,10 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
-import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.IUser;
 
 @Entity
 @Table(name = "obj_actor")

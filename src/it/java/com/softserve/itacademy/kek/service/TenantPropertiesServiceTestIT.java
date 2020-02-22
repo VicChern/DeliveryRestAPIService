@@ -1,18 +1,5 @@
 package com.softserve.itacademy.kek.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
@@ -23,6 +10,18 @@ import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
@@ -49,14 +48,14 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
     private User user;
     private Tenant tenant;
     private TenantProperties tenantProperty;
-    private  List<ITenantProperties> tenantProperties;
+    private List<ITenantProperties> tenantProperties;
 
     @BeforeMethod
     public void setUp() {
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
 
-        User savedUser  = userRepository.save(user);
+        User savedUser = userRepository.save(user);
         assertNotNull(savedUser);
 
         tenant.setTenantOwner(savedUser);
@@ -80,7 +79,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
     @Test
     public void createSuccess() {
         //when
-       List<ITenantProperties> savedTenantProperties = tenantPropertiesService.create(tenantProperties, tenant.getGuid() );
+        List<ITenantProperties> savedTenantProperties = tenantPropertiesService.create(tenantProperties, tenant.getGuid());
 
         //then
         assertNotNull(savedTenantProperties);
@@ -137,8 +136,8 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
 
         //when
         ITenantProperties receivedTenantProperty = tenantPropertiesService.get(
-                        tenant.getGuid(),
-                        savedTenantProperties.get(0).getGuid());
+                tenant.getGuid(),
+                savedTenantProperties.get(0).getGuid());
 
         //then
         assertNotNull(receivedTenantProperty);

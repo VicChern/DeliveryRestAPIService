@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.models.impl;
 
+import com.softserve.itacademy.kek.models.IPropertyType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,8 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
-
-import com.softserve.itacademy.kek.models.IPropertyType;
 
 @Entity
 @Table(name = "def_property_type")

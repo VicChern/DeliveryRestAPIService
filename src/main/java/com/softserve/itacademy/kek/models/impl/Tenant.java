@@ -1,6 +1,10 @@
 package com.softserve.itacademy.kek.models.impl;
 
 
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.ITenantDetails;
+import com.softserve.itacademy.kek.models.IUser;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,10 +24,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.ITenantDetails;
-import com.softserve.itacademy.kek.models.IUser;
-
 @Entity
 @Table(name = "obj_tenant")
 public class Tenant implements ITenant, Serializable {
@@ -34,7 +34,7 @@ public class Tenant implements ITenant, Serializable {
     private Long idTenant;
 
     @OneToOne
-    @JoinColumn(name ="id_tenant_owner")
+    @JoinColumn(name = "id_tenant_owner")
     private User tenantOwner;
 
     @NotNull
@@ -56,7 +56,7 @@ public class Tenant implements ITenant, Serializable {
     private List<Address> addressList;
 
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
-    private List<Order> orderList = new ArrayList<>();;
+    private List<Order> orderList = new ArrayList<>();
 
     public Long getIdTenant() {
         return idTenant;
@@ -68,6 +68,10 @@ public class Tenant implements ITenant, Serializable {
 
     public UUID getGuid() {
         return guid;
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
     }
 
     public String getName() {
@@ -83,11 +87,11 @@ public class Tenant implements ITenant, Serializable {
     }
 
     public void setTenantOwner(IUser tenantOwner) {
-        this.tenantOwner = (User)tenantOwner;
+        this.tenantOwner = (User) tenantOwner;
     }
 
-    public void setGuid(UUID guid) {
-        this.guid = guid;
+    public void setTenantOwner(User tenantOwner) {
+        this.tenantOwner = tenantOwner;
     }
 
     public ITenantDetails getTenantDetails() {
@@ -96,6 +100,11 @@ public class Tenant implements ITenant, Serializable {
 
     public void setTenantDetails(ITenantDetails tenantDetails) {
         this.tenantDetails = (TenantDetails) tenantDetails;
+    }
+
+    public void setTenantDetails(TenantDetails tenantDetails) {
+        this.tenantDetails = tenantDetails;
+        tenantDetails.setTenant(this);
     }
 
     public List<TenantProperties> getTenantPropertiesList() {
@@ -114,15 +123,6 @@ public class Tenant implements ITenant, Serializable {
         this.addressList = addressList;
     }
 
-    public void setTenantOwner(User tenantOwner) {
-        this.tenantOwner = tenantOwner;
-    }
-
-    public void setTenantDetails(TenantDetails tenantDetails) {
-        this.tenantDetails = tenantDetails;
-        tenantDetails.setTenant(this);
-    }
-
     public List<Order> getOrderList() {
         return orderList;
     }
@@ -133,24 +133,24 @@ public class Tenant implements ITenant, Serializable {
 
     // see bidirectional @OneToMany association https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
     public void addTenantProperty(TenantProperties tenantProperty) {
-        tenantPropertiesList.add( tenantProperty );
-        tenantProperty.setTenant( this );
+        tenantPropertiesList.add(tenantProperty);
+        tenantProperty.setTenant(this);
     }
 
     public void removeTenantProperty(TenantProperties tenantProperty) {
-        tenantPropertiesList.remove( tenantProperty );
-        tenantProperty.setTenant( null );
+        tenantPropertiesList.remove(tenantProperty);
+        tenantProperty.setTenant(null);
     }
 
     // see bidirectional @OneToMany association https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many
     public void addOrder(Order order) {
-        orderList.add( order );
-        order.setTenant( this );
+        orderList.add(order);
+        order.setTenant(this);
     }
 
     public void removeTenantProperty(Order order) {
-        orderList.remove( order );
-        order.setTenant( null );
+        orderList.remove(order);
+        order.setTenant(null);
     }
 
     @Override

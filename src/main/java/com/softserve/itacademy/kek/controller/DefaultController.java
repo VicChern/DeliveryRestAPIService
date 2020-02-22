@@ -1,7 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
-import java.util.LinkedList;
-
+import com.softserve.itacademy.kek.dto.ErrorListDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.softserve.itacademy.kek.dto.ErrorListDto;
+import java.util.LinkedList;
 
 @RestController
 public class DefaultController {
