@@ -39,10 +39,10 @@ public class TenantControllerTest {
     @BeforeTest
     public void setup() {
         TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
-        tenantDto = new TenantDto(UUID.fromString("96bf88ae-d8b5-4b3c-82f5-65e70083f1b1"), "Petro", "pict", detailsDto);
+        tenantDto = new TenantDto(UUID.fromString("guid12345qwawt"), UUID.fromString("Petro"), "pict", detailsDto);
         tenantPropertiesDto = new TenantPropertiesDto(
-                "96bf88ae-d8b5-4b3c-82f5-65e70083f1b1", "glovo", "additional info", "workingDay", "Wednesday");
-        addressDto = new AddressDto(UUID.fromString("96bf88ae-d8b5-4b3c-82f5-65e70083f1b1"), "alias", "Leipzigzskaya 15v", "Some notes...");
+                "guid12345qwawt", "glovo", "additional info", "workingDay", "Wednesday");
+        addressDto = new AddressDto(UUID.fromString("guid12345qwert"), "alias", "Leipzigzskaya 15v", "Some notes...");
 
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();

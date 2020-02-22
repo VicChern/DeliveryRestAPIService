@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantDetails;
 import com.softserve.itacademy.kek.models.IUser;
@@ -12,40 +13,39 @@ import java.util.UUID;
 public class TenantDto implements ITenant {
 
     private UUID guid;
-    private String owner;
+
+    private UUID owner;
 
     @NotNull
     @Size(max = 256)
     private String name;
-    private TenantDetailsDto details;
-    private ITenantDetails tenantDetails;
-    private IUser tenantOwner;
+
+    @JsonProperty("details")
+    private TenantDetailsDto tenantDetails;
 
     public TenantDto() {
     }
 
-    public TenantDto(UUID guid, String owner, String name, TenantDetailsDto details) {
+    public TenantDto(UUID guid, UUID owner, String name, TenantDetailsDto details) {
         this.guid = guid;
         this.owner = owner;
         this.name = name;
-        this.details = details;
+        this.tenantDetails = details;
     }
 
+    @Override
     public UUID getGuid() {
         return guid;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
+    @Override
     public String getName() {
         return name;
     }
 
     @Override
     public IUser getTenantOwner() {
-        return new UserDto(UUID.fromString(owner), null, null, null, null, null);
+        return new UserDto(owner, null, null, null, null, null);
     }
 
     @Override
@@ -53,9 +53,6 @@ public class TenantDto implements ITenant {
         return tenantDetails;
     }
 
-    public TenantDetailsDto getDetails() {
-        return details;
-    }
 
     @Override
     public String toString() {
@@ -63,7 +60,7 @@ public class TenantDto implements ITenant {
                 "guid='" + guid + '\'' +
                 ", owner='" + owner + '\'' +
                 ", name='" + name + '\'' +
-                ", details=" + details +
+                ", details=" + tenantDetails +
                 '}';
     }
 
@@ -75,11 +72,11 @@ public class TenantDto implements ITenant {
         return guid.equals(tenantDto.guid) &&
                 owner.equals(tenantDto.owner) &&
                 name.equals(tenantDto.name) &&
-                details.equals(tenantDto.details);
+                tenantDetails.equals(tenantDto.tenantDetails);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guid, owner, name, details);
+        return Objects.hash(guid, owner, name, tenantDetails);
     }
 }

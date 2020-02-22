@@ -1,15 +1,14 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.softserve.itacademy.kek.dto.AddressDto;
-import com.softserve.itacademy.kek.dto.TenantDetailsDto;
-import com.softserve.itacademy.kek.dto.TenantDto;
-import com.softserve.itacademy.kek.dto.TenantListDto;
-import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
-import com.softserve.itacademy.kek.models.IAddress;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.services.IAddressService;
-import com.softserve.itacademy.kek.services.ITenantPropertiesService;
+import com.softserve.itacademy.kek.models.impl.TenantDetails;
 import com.softserve.itacademy.kek.services.ITenantService;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import com.softserve.itacademy.kek.dto.AddressDto;
+import com.softserve.itacademy.kek.dto.TenantDetailsDto;
+import com.softserve.itacademy.kek.dto.TenantDto;
+import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
 
 @RestController
 @RequestMapping(path = "/tenants")
@@ -37,24 +35,28 @@ public class TenantController extends DefaultController {
     final static Logger logger = LoggerFactory.getLogger(TenantController.class);
 
     private final ITenantService tenantService;
-    private final IAddressService addressService;
-    private final ITenantPropertiesService tenantPropertiesService;
 
     @Autowired
-    public TenantController(ITenantService tenantService, IAddressService addressService, ITenantPropertiesService tenantPropertiesService) {
+    public TenantController(ITenantService tenantService) {
         this.tenantService = tenantService;
-        this.addressService = addressService;
-        this.tenantPropertiesService = tenantPropertiesService;
     }
 
-    private TenantDto transformTenant(ITenant tenant) {
-        TenantDetailsDto tenantDetailsDto = new TenantDetailsDto(tenant.getTenantDetails().getPayload(), tenant.getTenantDetails().getImageUrl());
-        TenantDto tenantDto = new TenantDto(tenant.getGuid(), "Petro", tenant.getName(), tenantDetailsDto);
-        return tenantDto;
+    // Build Response (stub, temporary method)
+    private String getJSON(String id, String status) {
+        JSONObject json = new JSONObject();
+        json.put("tenantID", id);
+        json.put("status", status);
+        return json.toString();
     }
 
-    private AddressDto transformAddress(IAddress address) {
-        return new AddressDto(address.getGuid(), address.getAlias(), address.getAddress(), address.getNotes());
+    /**
+     * Temporary method for TenantDto stub
+     *
+     * @return {@link TenantDto} stub
+     */
+    private TenantDto getTenantDtoStub() {
+        TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
+        return new TenantDto(UUID.fromString("guid12345qwawt"), UUID.fromString("Petro"), "pict", detailsDto);
     }
 
     /**
@@ -83,37 +85,29 @@ public class TenantController extends DefaultController {
      * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
     @GetMapping(produces = "application/vnd.softserve.tenant+json")
-    public ResponseEntity<TenantListDto> getTenantList() {
+    public ResponseEntity<List<TenantDto>> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
-        List<ITenant> tenantList = tenantService.getAll();
-        TenantListDto tenantListDto = new TenantListDto(tenantList
-                .stream()
-                .map(this::transformTenant)
-                .collect(Collectors.toList()));
+        List<TenantDto> tenantList = new ArrayList<>();
+        tenantList.add(getTenantDtoStub());
 
         logger.info("Sending list of all tenants to the client:\n{}", tenantList);
-        return ResponseEntity
-                .ok()
-                .body(tenantListDto);
+        return new ResponseEntity<>(tenantList, HttpStatus.OK);
     }
 
     /**
      * Creates a new tenant
      *
-     * @param newTenantDto {@link TenantDto} object as a JSON
+     * @param body {@link TenantDto} object as a JSON
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PostMapping(consumes = "application/vnd.softserve.tenant+json", produces = "application/vnd.softserve.tenant+json")
-    public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto newTenantDto) {
-        logger.info("Accepted requested to create a new tenant:\n{}", newTenantDto);
+    public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto body) {
+        logger.info("Accepted requested to create a new tenant:\n{}", body);
 
-        ITenant createTenant = tenantService.create(newTenantDto);
-        TenantDto createUserDto = transformTenant(createTenant);
+        ITenant iTenant = tenantService.create(body);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(createUserDto);
+        return new ResponseEntity<>(transform(iTenant), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -126,37 +120,27 @@ public class TenantController extends DefaultController {
     public ResponseEntity<TenantDto> getTenant(@PathVariable String guid) {
         logger.info("Client requested the tenant {}", guid);
 
-        ITenant tenant = tenantService.getByGuid(UUID.fromString(guid));
-
-        TenantDto tenantDto = transformTenant(tenant);
+        TenantDto tenantDto = getTenantDtoStub();
 
         logger.info("Sending the specific tenant({}) to the client", guid);
-        return ResponseEntity
-                .ok()
-                .body(tenantDto);
+        return new ResponseEntity<>(tenantDto, HttpStatus.OK);
     }
 
 
     /**
      * Modifies information of the specified tenant
      *
-     * @param guid   tenant ID from the URL
-     * @param tenant tenant object
+     * @param guid tenant ID from the URL
+     * @param body tenant object
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PutMapping(value = "/{guid}", consumes = "application/vnd.softserve.tenant+json",
             produces = "application/vnd.softserve.tenant+json")
     @ResponseStatus()
-    public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
-        logger.info("Accepted modified tenant from the client:\n{}", tenant);
-
-        ITenant modifiedTenant = tenantService.update(tenant, UUID.fromString(guid));
-        TenantDto modifiedTenantDto = transformTenant(modifiedTenant);
-
-        logger.info("Sending the modified tenant to the client:\n{}", tenant);
-        return ResponseEntity
-                .ok()
-                .body(modifiedTenantDto);
+    public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto body) {
+        logger.info("Accepted modified tenant from the client:\n{}", body);
+        logger.info("Sending the modified tenant to the client:\n{}", body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -167,13 +151,8 @@ public class TenantController extends DefaultController {
     @DeleteMapping("/{guid}")
     public ResponseEntity deleteTenant(@PathVariable String guid) {
         logger.info("Accepted request to delete the tenant {}", guid);
-
-        tenantService.deleteByGuid(UUID.fromString(guid));
-
         logger.info("Tenant({}}) was successfully deleted", guid);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
@@ -191,9 +170,7 @@ public class TenantController extends DefaultController {
 
         logger.info("Sending the list of tenant's({}) properties to the client:\n{}", tenantPropertiesList, guid);
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(tenantPropertiesList);
+        return new ResponseEntity<>(tenantPropertiesList, HttpStatus.OK);
     }
 
     /**
@@ -206,13 +183,11 @@ public class TenantController extends DefaultController {
     @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
     public ResponseEntity<List<TenantPropertiesDto>> addTenantProperties(@PathVariable String guid,
-                                                                         @RequestBody @Valid List<TenantPropertiesDto> body) {
+                                                                   @RequestBody @Valid List<TenantPropertiesDto> body) {
 
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, body);
         logger.info("Sending the created tenant's({}) properties to the client", body);
-        return ResponseEntity
-                .ok()
-                .body(body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -229,9 +204,7 @@ public class TenantController extends DefaultController {
         TenantPropertiesDto tenantPropertiesDto = getTenantPropertiesDtoStub();
 
         logger.info("Sending specific property of the tenant {} to the client:\n{}", guid, tenantPropertiesDto);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(tenantPropertiesDto);
+        return new ResponseEntity<>(tenantPropertiesDto, HttpStatus.OK);
     }
 
     /**
@@ -244,14 +217,13 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}/properties/{propguid}", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid,
                                                                     @PathVariable("propguid") String propGuid,
                                                                     @RequestBody @Valid TenantPropertiesDto body) {
         logger.info("Sending the modified tenant's({}) property({}) to the client", guid, propGuid);
         logger.info("Sending the modified property of the tenant {} to the client:\n{}", guid, body);
-        return ResponseEntity
-                .ok()
-                .body(body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -265,9 +237,7 @@ public class TenantController extends DefaultController {
         logger.info("Accepted request to delete the property {} ot the tenant {}", propGuid, guid);
         logger.info("the property {} ot the tenant {} successfully deleted", propGuid, guid);
 
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
@@ -284,9 +254,7 @@ public class TenantController extends DefaultController {
         addressesList.add(getTenantAddressDtoStub());
 
         logger.info("Sending the list of addresses of the tenant {} to the client:\n{}", guid, addressesList);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(addressesList);
+        return new ResponseEntity<>(addressesList, HttpStatus.OK);
     }
 
     /**
@@ -301,9 +269,7 @@ public class TenantController extends DefaultController {
     @ResponseStatus()
     public ResponseEntity<AddressDto> addTenantAddresses(@PathVariable String guid, @RequestBody @Valid AddressDto body) {
         logger.info("Accepted requested to create a new address for tenant: {} :\n{}", guid, body);
-        return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body(body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -320,9 +286,7 @@ public class TenantController extends DefaultController {
         AddressDto addressDto = getTenantAddressDtoStub();
 
         logger.info("Sending the address of the tenant {} to the client:\n{}", guid, addressDto);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(addressDto);
+        return new ResponseEntity<>(addressDto, HttpStatus.OK);
     }
 
     /**
@@ -340,9 +304,7 @@ public class TenantController extends DefaultController {
                                                           @RequestBody @Valid AddressDto body) {
         logger.info("Accepted modified address of the tenant {} from the client:\n{}", guid, body);
         logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, body);
-        return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body(body);
+        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -356,8 +318,17 @@ public class TenantController extends DefaultController {
         logger.info("Accepted request to delete the address {} ot the tenant {}", addrGuid, guid);
         logger.info("the address {} ot the tenant {} successfully deleted", addrGuid, guid);
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    /**
+     * Transform {@link ITenant} to {@link TenantDto}
+     * @param iTenant iTenant
+     * @return tenantDto
+     */
+    private TenantDto transform(ITenant iTenant) {
+        TenantDetailsDto tenantDetailsDto = new TenantDetailsDto(iTenant.getTenantDetails().getPayload(), iTenant.getTenantDetails().getImageUrl());
+        TenantDto tenantDto = new TenantDto(iTenant.getGuid(), iTenant.getOwner(), iTenant.getName(),tenantDetailsDto);
+        return tenantDto;
     }
 }
