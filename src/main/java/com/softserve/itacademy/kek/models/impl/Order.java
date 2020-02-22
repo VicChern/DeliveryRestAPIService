@@ -44,7 +44,7 @@ public class Order implements IOrder, Serializable {
     @Column(name = "summary", nullable = false, length = 256)
     private String summary;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private OrderDetails orderDetails;
 
     @OneToMany(mappedBy = "idOrder", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

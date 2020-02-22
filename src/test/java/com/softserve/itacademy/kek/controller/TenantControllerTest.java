@@ -39,7 +39,7 @@ public class TenantControllerTest {
     @BeforeTest
     public void setup() {
         TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
-        tenantDto = new TenantDto("guid12345qwawt", "Petro", "pict", detailsDto);
+        tenantDto = new TenantDto(UUID.fromString("guid12345qwawt"), UUID.fromString("Petro"), "pict", detailsDto);
         tenantPropertiesDto = new TenantPropertiesDto(
                 "guid12345qwawt", "glovo", "additional info", "workingDay", "Wednesday");
         addressDto = new AddressDto(UUID.fromString("guid12345qwert"), "alias", "Leipzigzskaya 15v", "Some notes...");

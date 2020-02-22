@@ -56,7 +56,7 @@ public class User implements IUser, Serializable {
     @Column(name = "nickname", nullable = false, unique = true, length = 256)
     private String nickname;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private UserDetails userDetails;
 
     @OneToOne(mappedBy = "tenantOwner", cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, orphanRemoval = true)

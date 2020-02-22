@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.impl.TenantDetails;
+import com.softserve.itacademy.kek.services.ITenantService;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +34,13 @@ import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
 public class TenantController extends DefaultController {
     final static Logger logger = LoggerFactory.getLogger(TenantController.class);
 
+    private final ITenantService tenantService;
+
+    @Autowired
+    public TenantController(ITenantService tenantService) {
+        this.tenantService = tenantService;
+    }
+
     // Build Response (stub, temporary method)
     private String getJSON(String id, String status) {
         JSONObject json = new JSONObject();
@@ -45,7 +56,7 @@ public class TenantController extends DefaultController {
      */
     private TenantDto getTenantDtoStub() {
         TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
-        return new TenantDto("guid12345qwawt", "Petro", "pict", detailsDto);
+        return new TenantDto(UUID.fromString("guid12345qwawt"), UUID.fromString("Petro"), "pict", detailsDto);
     }
 
     /**
@@ -93,7 +104,10 @@ public class TenantController extends DefaultController {
     @PostMapping(consumes = "application/vnd.softserve.tenant+json", produces = "application/vnd.softserve.tenant+json")
     public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto body) {
         logger.info("Accepted requested to create a new tenant:\n{}", body);
-        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
+
+        ITenant iTenant = tenantService.create(body);
+
+        return new ResponseEntity<>(transform(iTenant), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -305,5 +319,16 @@ public class TenantController extends DefaultController {
         logger.info("the address {} ot the tenant {} successfully deleted", addrGuid, guid);
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    /**
+     * Transform {@link ITenant} to {@link TenantDto}
+     * @param iTenant iTenant
+     * @return tenantDto
+     */
+    private TenantDto transform(ITenant iTenant) {
+        TenantDetailsDto tenantDetailsDto = new TenantDetailsDto(iTenant.getTenantDetails().getPayload(), iTenant.getTenantDetails().getImageUrl());
+        TenantDto tenantDto = new TenantDto(iTenant.getGuid(), iTenant.getOwner(), iTenant.getName(),tenantDetailsDto);
+        return tenantDto;
     }
 }
