@@ -234,7 +234,7 @@ public class TenantController extends DefaultController {
     @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
     public ResponseEntity<List<ITenantProperties>> addTenantProperties(@PathVariable String guid,
-                                                                         @RequestBody List<ITenantProperties> tenantPropertiesDto) {
+                                                                       @RequestBody List<ITenantProperties> tenantPropertiesDto) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesDto);
 
         List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDto, UUID.fromString(guid));
@@ -319,7 +319,7 @@ public class TenantController extends DefaultController {
     public ResponseEntity<AddressListDto> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
 
-        List<IAddress> addresses = addressService.getAllForUser(UUID.fromString(guid));
+        List<IAddress> addresses = addressService.getAllForTenant(UUID.fromString(guid));
         AddressListDto addressListDto = new AddressListDto(addresses
                 .stream()
                 .map(this::transformAddress)
@@ -340,13 +340,12 @@ public class TenantController extends DefaultController {
      */
     @PostMapping(value = "/{guid}/addresses", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    @ResponseStatus()
     public ResponseEntity<AddressListDto> addTenantAddresses(@PathVariable String guid, @RequestBody @Valid AddressListDto newAddressesDto) {
         logger.info("Accepted requested to create a new addresses for user:{}:\n", newAddressesDto);
         AddressListDto createdAddresses = new AddressListDto();
 
         for (AddressDto newAddress : newAddressesDto.getAddressList()) {
-            IAddress createdAddress = addressService.createForUser(newAddress, UUID.fromString(guid));
+            IAddress createdAddress = addressService.createForTenant(newAddress, UUID.fromString(guid));
             AddressDto addressDto = transformAddress(createdAddress);
 
             createdAddresses.addAddress(addressDto);
@@ -369,7 +368,7 @@ public class TenantController extends DefaultController {
     public ResponseEntity<AddressDto> getTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address {} of the tenant {}", addrGuid, guid);
 
-        IAddress address = addressService.getForUser(UUID.fromString(addrGuid), UUID.fromString(guid));
+        IAddress address = addressService.getForTenant(UUID.fromString(addrGuid), UUID.fromString(guid));
         AddressDto addressDto = transformAddress(address);
 
         logger.info("Sending the address of the user {} to the client:\n{}", guid, addressDto);
@@ -393,13 +392,13 @@ public class TenantController extends DefaultController {
                                                           @RequestBody @Valid AddressDto tenantAddressDto) {
         logger.info("Accepted modified address of the tenant {} from the client:\n{}", guid, tenantAddressDto);
 
-        IAddress modifiedAddress = addressService.updateForUser(tenantAddressDto, UUID.fromString(guid));
+        IAddress modifiedAddress = addressService.updateForTenant(tenantAddressDto, UUID.fromString(guid));
         AddressDto modifiedAddressDto = transformAddress(modifiedAddress);
 
         logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, tenantAddressDto);
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body(tenantAddressDto);
+                .body(modifiedAddressDto);
     }
 
     /**

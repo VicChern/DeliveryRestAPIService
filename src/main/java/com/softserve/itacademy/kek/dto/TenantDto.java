@@ -13,10 +13,8 @@ import java.util.UUID;
 public class TenantDto implements ITenant {
 
     private UUID guid;
-
     private UUID owner;
 
-    @NotNull
     @Size(max = 256)
     private String name;
 

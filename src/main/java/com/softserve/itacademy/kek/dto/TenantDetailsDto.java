@@ -21,10 +21,12 @@ public class TenantDetailsDto implements ITenantDetails {
         this.imageUrl = imageUrl;
     }
 
+    @Override
     public String getPayload() {
         return payload;
     }
 
+    @Override
     public String getImageUrl() {
         return imageUrl;
     }
