@@ -45,7 +45,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     @BeforeMethod
     public void setUp() {
         Tenant tenant1 = getTenantForActor(1);
-        actor1= getActor((User)tenant1.getTenantOwner(), tenant1);
+        actor1 = getActor((User) tenant1.getTenantOwner(), tenant1);
     }
 
     @AfterMethod
@@ -61,7 +61,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
         actorRepository.save(actor1);
 
         Tenant tenant2 = getTenantForActor(2);
-        actor2 = getActor((User)tenant2.getTenantOwner(), tenant2);
+        actor2 = getActor((User) tenant2.getTenantOwner(), tenant2);
 
         UUID guid = actor1.getGuid();
         actor2.setGuid(guid);

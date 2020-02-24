@@ -1,20 +1,6 @@
 package com.softserve.itacademy.kek.services.impl;
 
 
-import com.google.api.gax.paging.Page;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
-import com.softserve.itacademy.kek.services.ICloudStorageService;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import org.apache.log4j.Logger;
-
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -22,6 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+
+import com.google.api.gax.paging.Page;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import org.apache.log4j.Logger;
+
+import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
+import com.softserve.itacademy.kek.services.ICloudStorageService;
+import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
 
 
 public class CloudStorageService implements ICloudStorageService {

@@ -84,7 +84,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions =  ConstraintViolationException.class)
+    @Test(expectedExceptions = ConstraintViolationException.class)
     public void testOrderEventIsNotSavedWithNullGuid() {
         orderEvent1 = orderEvent2;
         orderEvent1.setGuid(null);
@@ -110,7 +110,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions =  ConstraintViolationException.class)
+    @Test(expectedExceptions = ConstraintViolationException.class)
     public void testUserIsNotSavedWithNullPayload() {
         orderEvent1.setPayload(null);
 
