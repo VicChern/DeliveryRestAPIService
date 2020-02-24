@@ -7,12 +7,14 @@ public interface ITenantDetails {
 
     /**
      * Returns tenant payload
+     *
      * @return tenant payload
      */
     String getPayload();
 
     /**
      * Returns tenant image url
+     *
      * @return tenant image url
      */
     String getImageUrl();

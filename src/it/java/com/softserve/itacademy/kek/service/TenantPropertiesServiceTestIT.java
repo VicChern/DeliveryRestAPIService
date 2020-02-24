@@ -49,14 +49,14 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
     private User user;
     private Tenant tenant;
     private TenantProperties tenantProperty;
-    private  List<ITenantProperties> tenantProperties;
+    private List<ITenantProperties> tenantProperties;
 
     @BeforeMethod
     public void setUp() {
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
 
-        User savedUser  = userRepository.save(user);
+        User savedUser = userRepository.save(user);
         assertNotNull(savedUser);
 
         tenant.setTenantOwner(savedUser);
@@ -80,7 +80,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
     @Test
     public void createSuccess() {
         //when
-       List<ITenantProperties> savedTenantProperties = tenantPropertiesService.create(tenantProperties, tenant.getGuid() );
+        List<ITenantProperties> savedTenantProperties = tenantPropertiesService.create(tenantProperties, tenant.getGuid());
 
         //then
         assertNotNull(savedTenantProperties);
@@ -137,8 +137,8 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
 
         //when
         ITenantProperties receivedTenantProperty = tenantPropertiesService.get(
-                        tenant.getGuid(),
-                        savedTenantProperties.get(0).getGuid());
+                tenant.getGuid(),
+                savedTenantProperties.get(0).getGuid());
 
         //then
         assertNotNull(receivedTenantProperty);

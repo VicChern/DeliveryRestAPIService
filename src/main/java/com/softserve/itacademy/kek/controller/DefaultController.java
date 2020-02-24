@@ -20,7 +20,8 @@ public class DefaultController {
 
     /**
      * ServiceException handler.
-     * @param ex ServiceException for handling.
+     *
+     * @param ex      ServiceException for handling.
      * @param request HttpServletRequest which caused the ServiceException.
      * @return ResponseEntity with HttpStatus and exception message in header.
      */

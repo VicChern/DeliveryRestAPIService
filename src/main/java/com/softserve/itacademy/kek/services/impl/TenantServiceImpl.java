@@ -28,7 +28,7 @@ import com.softserve.itacademy.kek.services.ITenantService;
 @Service
 public class TenantServiceImpl implements ITenantService {
 
-   private final static Logger LOGGER = LoggerFactory.getLogger(ITenantService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ITenantService.class);
 
     private final TenantRepository tenantRepository;
     private final UserRepository userRepository;
@@ -53,10 +53,10 @@ public class TenantServiceImpl implements ITenantService {
         // check if exist user for tenant
         //TODO replace by checking whether the ownerGuid is guid of principal user (when will be added security)
         try {
-         tenantOwner = userRepository.findByGuid(ownerGuid);
+            tenantOwner = userRepository.findByGuid(ownerGuid);
 
-         tenantOwner.setTenant(tenantForSaving);
-         tenantForSaving.setTenantOwner(tenantOwner);
+            tenantOwner.setTenant(tenantForSaving);
+            tenantForSaving.setTenantOwner(tenantOwner);
 
         } catch (EntityNotFoundException ex) {
             LOGGER.error("There is no User in db for Tenant with user guid: {}", ownerGuid);
@@ -100,7 +100,7 @@ public class TenantServiceImpl implements ITenantService {
         ITenant tenant;
 
         tenant = tenantRepository.findByGuid(guid);
-        if(tenant == null) {
+        if (tenant == null) {
             LOGGER.error("There is no Tenant in db for guid: {}", guid);
             throw new TenantServiceException("Tenant wasn't found for guid: " + guid);
         }
@@ -115,18 +115,18 @@ public class TenantServiceImpl implements ITenantService {
         LOGGER.info("Update Tenant by guid: {}", guid);
         Tenant tenantForUpdating;
 
-         tenantForUpdating = tenantRepository.findByGuid(guid);
-         if(tenantForUpdating == null) {
-             LOGGER.error("There is no Tenant in db for guid: {}", guid);
-             throw new TenantServiceException("Tenant wasn't found for guid: " + guid);
-         }
+        tenantForUpdating = tenantRepository.findByGuid(guid);
+        if (tenantForUpdating == null) {
+            LOGGER.error("There is no Tenant in db for guid: {}", guid);
+            throw new TenantServiceException("Tenant wasn't found for guid: " + guid);
+        }
 
-         TenantDetails tenantDetails = new TenantDetails();
-         tenantDetails.setPayload(tenant.getTenantDetails().getPayload());
-         tenantDetails.setImageUrl(tenant.getTenantDetails().getImageUrl());
+        TenantDetails tenantDetails = new TenantDetails();
+        tenantDetails.setPayload(tenant.getTenantDetails().getPayload());
+        tenantDetails.setImageUrl(tenant.getTenantDetails().getImageUrl());
 
-         tenantForUpdating.setTenantDetails(tenantDetails);
-         tenantForUpdating.setName(tenant.getName());
+        tenantForUpdating.setTenantDetails(tenantDetails);
+        tenantForUpdating.setName(tenant.getName());
 
         try {
             tenantRepository.save(tenantForUpdating);

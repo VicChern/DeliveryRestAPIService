@@ -36,13 +36,13 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
     private GlobalProperties properties1;
     private GlobalProperties properties2;
 
-    @DataProvider(name="illegal_keys")
-    public static Object[][] keys(){
+    @DataProvider(name = "illegal_keys")
+    public static Object[][] keys() {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_256 + 1)}, {""}};
     }
 
-    @DataProvider(name="illegal_values")
-    public static Object[][] values(){
+    @DataProvider(name = "illegal_values")
+    public static Object[][] values() {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_4096 + 1)}, {""}};
     }
 

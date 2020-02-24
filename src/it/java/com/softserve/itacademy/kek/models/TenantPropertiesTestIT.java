@@ -47,13 +47,13 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
     private Tenant tenant1;
     private Tenant tenant2;
 
-    @DataProvider(name="illegal_keys")
-    public static Object[][] keys(){
+    @DataProvider(name = "illegal_keys")
+    public static Object[][] keys() {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_256 + 1)}, {""}, {null}};
     }
 
-    @DataProvider(name="illegal_values")
-    public static Object[][] values(){
+    @DataProvider(name = "illegal_values")
+    public static Object[][] values() {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_4096 + 1)}, {""}, {null}};
     }
 

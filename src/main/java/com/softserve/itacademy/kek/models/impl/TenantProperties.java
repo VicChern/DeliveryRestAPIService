@@ -24,19 +24,16 @@ import com.softserve.itacademy.kek.models.ITenantProperties;
 @Table(name = "obj_tenant_properties")
 public class TenantProperties implements ITenantProperties, Serializable {
 
+    @ManyToOne
+    @JoinColumn(name = "id_tenant", nullable = false)
+    Tenant tenant;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_property")
     private Long idProperty;
-
     @NotNull
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
-
-    @ManyToOne
-    @JoinColumn(name = "id_tenant", nullable = false)
-    Tenant tenant;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_Property_Type", nullable = false)
     private PropertyType propertyType;

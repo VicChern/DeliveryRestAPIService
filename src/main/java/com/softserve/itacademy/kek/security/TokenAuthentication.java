@@ -1,17 +1,17 @@
 package com.softserve.itacademy.kek.security;
 
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class TokenAuthentication extends AbstractAuthenticationToken {
 
@@ -21,10 +21,6 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
     public TokenAuthentication(DecodedJWT jwt) {
         super(readAuthorities(jwt));
         this.jwt = jwt;
-    }
-
-    private boolean hasExpired() {
-        return jwt.getExpiresAt().before(new Date());
     }
 
     private static Collection<? extends GrantedAuthority> readAuthorities(DecodedJWT jwt) {
@@ -43,6 +39,9 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
         return authorities;
     }
 
+    private boolean hasExpired() {
+        return jwt.getExpiresAt().before(new Date());
+    }
 
     @Override
     public String getCredentials() {
@@ -55,16 +54,16 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
     }
 
     @Override
+    public boolean isAuthenticated() {
+        return !invalidated && !hasExpired();
+    }
+
+    @Override
     public void setAuthenticated(boolean authenticated) {
         if (authenticated) {
             throw new IllegalArgumentException("Create a new Authentication object to authenticate");
         }
         invalidated = true;
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return !invalidated && !hasExpired();
     }
 
     /**

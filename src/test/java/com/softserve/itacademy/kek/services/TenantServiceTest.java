@@ -53,7 +53,7 @@ public class TenantServiceTest {
     void setUp() {
         tenantRepository = mock(TenantRepository.class);
         userRepository = mock(UserRepository.class);
-        tenantService  = new TenantServiceImpl(tenantRepository, userRepository);
+        tenantService = new TenantServiceImpl(tenantRepository, userRepository);
 
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
@@ -71,8 +71,8 @@ public class TenantServiceTest {
     @Test
     void createSuccess() {
         //given
-        when(userRepository.findByGuid(any(UUID.class))).thenReturn((User) user);
-        when(tenantRepository.save(any(Tenant.class))).thenReturn((Tenant) tenant);
+        when(userRepository.findByGuid(any(UUID.class))).thenReturn(user);
+        when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 
         // when
         ITenant createdTenant = tenantService.create(tenant);
@@ -101,7 +101,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void createThrowsServiceExceptionWhenRepositoryThrowsPersistenceException() {
         //given
-        when(userRepository.findByGuid(any(UUID.class))).thenReturn((User)user);
+        when(userRepository.findByGuid(any(UUID.class))).thenReturn(user);
         when(tenantRepository.save(any(Tenant.class))).thenThrow(PersistenceException.class);
 
         // when
@@ -112,7 +112,7 @@ public class TenantServiceTest {
     @Test
     void getByGuidSuccess() {
         //given
-        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn((Tenant)tenant);
+        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(tenant);
 
         // when
         ITenant gettedTenant = tenantService.getByGuid(tenant.getGuid());
@@ -129,7 +129,7 @@ public class TenantServiceTest {
 
     @Test(expectedExceptions = ServiceException.class)
     void getByGuidThrowsServiceExceptionWhenRepositoryThrowsEntityNotFoundException() {
-       //given
+        //given
         when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(null);
 
         // when
@@ -141,10 +141,10 @@ public class TenantServiceTest {
     @Test
     void updateSuccess() {
         //given
-        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn((Tenant)tenant);
-        when(tenantRepository.save(any(Tenant.class))).thenReturn((Tenant) tenant);
+        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(tenant);
+        when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 
-        Tenant updatedTenant = (Tenant)tenant;
+        Tenant updatedTenant = tenant;
         updatedTenant.setName("newName");
         updatedTenant.setTenantDetails(new TenantDetails());
 
@@ -174,7 +174,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void updateThrowsServiceExceptionWhenRepositoryThrowsPersistenceException() {
         //given
-        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn((Tenant) tenant);
+        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(tenant);
         when(tenantRepository.save(any(Tenant.class))).thenThrow(PersistenceException.class);
 
         // when

@@ -61,7 +61,7 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions =  ConstraintViolationException.class)
+    @Test(expectedExceptions = ConstraintViolationException.class)
     public void testOrderEventTypeIsNotSavedWithNullName() {
         orderEventType1.setName(null);
 
