@@ -46,7 +46,7 @@ public class Tenant implements ITenant, Serializable {
     @Column(name = "name", nullable = false, unique = true, length = 256)
     private String name;
 
-    @OneToOne(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private TenantDetails tenantDetails;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
