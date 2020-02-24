@@ -14,7 +14,7 @@ public interface IOrderService {
     /**
      * Saved new {@link Order} for customer with customerGuid to db
      *
-     * @param order order
+     * @param order        order
      * @param customerGuid customerGuid
      * @return saved order
      */
@@ -23,8 +23,8 @@ public interface IOrderService {
     /**
      * Saved new {@link Order} for customer with customerGuid to db
      *
-     * @param orderGuid orderGuid
-     * @param actorGuid actorGuid
+     * @param orderGuid   orderGuid
+     * @param actorGuid   actorGuid
      * @param iOrderEvent order event
      * @return saved order
      */
