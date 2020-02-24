@@ -30,6 +30,7 @@ public class TenantControllerTest {
     private TenantPropertiesDto tenantPropertiesDto;
     private AddressDto addressDto;
 
+    private UUID guid;
 
     @InjectMocks
     private TenantController controller;
@@ -38,10 +39,11 @@ public class TenantControllerTest {
 
     @BeforeTest
     public void setup() {
+        guid = UUID.randomUUID();
         TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
-        tenantDto = new TenantDto(UUID.fromString("guid12345qwawt"), UUID.fromString("Petro"), "pict", detailsDto);
+        tenantDto = new TenantDto(guid, guid, "pict", detailsDto);
         tenantPropertiesDto = new TenantPropertiesDto(
-                UUID.fromString("guid12345qwawt"), null, "workingDay", "Wednesday");
+               guid, null, "workingDay", "Wednesday");
         addressDto = new AddressDto(UUID.fromString("guid12345qwert"), "alias", "Leipzigzskaya 15v", "Some notes...");
 
         MockitoAnnotations.initMocks(this);
@@ -53,7 +55,7 @@ public class TenantControllerTest {
         mockMvc.perform(get("/tenants"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/vnd.softserve.tenant+json"))
-                .andExpect(jsonPath("$[0].guid").value("guid12345qwawt"))
+                .andExpect(jsonPath("$[0].guid").value(guid.toString()))
                 .andExpect(jsonPath("$[0].owner").value("Petro"))
                 .andExpect(jsonPath("$[0].name").value("pict"))
                 .andExpect(jsonPath("$[0].details.payload").value("some payload"))

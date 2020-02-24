@@ -15,6 +15,8 @@ import com.softserve.itacademy.kek.dto.OrderEventListDto;
 import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 import com.softserve.itacademy.kek.dto.OrderListDto;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,7 +41,7 @@ public class OrderControllerTest {
     @BeforeTest
     public void setup() {
         OrderDetailsDto orderDetails = new OrderDetailsDto("some info", "https://mypicture");
-        orderDto = new OrderDto("MyTenant", "user123", "123", "summary", orderDetails);
+        orderDto = new OrderDto(UUID.randomUUID(), UUID.randomUUID(), "summary", orderDetails);
         orderListDto = new OrderListDto().addOrder(orderDto);
         orderEventDto = new OrderEventDto("wqewqe1r1", "123", "some info", OrderEventTypesDto.DELIVERED);
         orderEventListDto = new OrderEventListDto("qwert1234").addOrderEvent(orderEventDto);

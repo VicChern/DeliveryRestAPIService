@@ -169,7 +169,7 @@ public class OrderServiceImpl implements IOrderService {
         OrderDetails actualDetails = new OrderDetails();
 
         if (details != null) {
-            actualDetails.setIdOrder(details.getIdOrder());
+//            actualDetails.setIdOrder(details.getIdOrder());
             actualDetails.setImageUrl(details.getImageUrl());
             actualDetails.setPayload(details.getPayload());
 

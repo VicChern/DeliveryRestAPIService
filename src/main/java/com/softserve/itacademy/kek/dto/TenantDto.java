@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantDetails;
-import com.softserve.itacademy.kek.models.IUser;
+
 
 import javax.validation.constraints.Size;
 import java.beans.Transient;
@@ -43,7 +43,7 @@ public class TenantDto implements ITenant {
 
     @Transient
     @Override
-    public IUser getTenantOwner() {
+    public UserDto getTenantOwner() {
         return new UserDto(owner, null, null, null, null, null);
     }
 

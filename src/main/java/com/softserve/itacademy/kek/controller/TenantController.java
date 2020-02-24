@@ -241,8 +241,8 @@ public class TenantController extends DefaultController {
      * @param tenantPropertiesDto property object as a JSON
      * @return list of the {@link TenantPropertiesDto} objects as a JSON
      */
-    @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantPropertyList+json",
-            produces = "application/vnd.softserve.tenantPropertyList+json")
+    @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantProperty+json",
+            produces = "application/vnd.softserve.tenantProperty+json")
     public ResponseEntity<List<ITenantProperties>> addTenantProperties(@PathVariable String guid,
                                                                        @RequestBody TenantPropertiesDto tenantPropertiesDto) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesDto);
@@ -253,6 +253,7 @@ public class TenantController extends DefaultController {
         List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDtoList, UUID.fromString(guid));
 
         logger.info("Sending the created tenant's({}) properties to the client", tenantProperties);
+//        TODO: transform to tenantProperties to dto and return it
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .body(tenantPropertiesDtoList);

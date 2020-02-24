@@ -66,6 +66,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
         List<TenantProperties> tenantProperties = new ArrayList<>();
         iTenantProperties.forEach(iTenantProperty -> tenantProperties.add(transform(iTenantProperty)));
+        tenantProperties.forEach(tenantProperty -> tenantProperty.setGuid(UUID.randomUUID()));
 
         tenantProperties.forEach(tenant::addTenantProperty);
 
@@ -83,11 +84,13 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
                 .map(ITenantProperties::getKey)
                 .collect(Collectors.toSet());
 
-        return tenant.getTenantPropertiesList()
+        List<ITenantProperties>  tenantPropertiesList = tenant.getTenantPropertiesList()
                 .stream()
                 .filter(tenantProperty -> keys.contains(tenantProperty.getKey()))
                 .distinct()
                 .collect(Collectors.toList());
+
+        return tenantPropertiesList;
     }
 
     @Transactional(readOnly = true)
@@ -171,12 +174,16 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
     private TenantProperties transform(ITenantProperties iTenantProperties) {
 
+        PropertyType propertyType = new PropertyType();
+        propertyType.setName(iTenantProperties.getPropertyType().getName());
+        propertyType.setSchema(iTenantProperties.getPropertyType().getSchema());
+
         TenantProperties tenantProperties = new TenantProperties();
 
         tenantProperties.setGuid(iTenantProperties.getGuid());
         tenantProperties.setKey(iTenantProperties.getKey());
         tenantProperties.setValue(iTenantProperties.getValue());
-        tenantProperties.setPropertyType(iTenantProperties.getPropertyType());
+        tenantProperties.setPropertyType(propertyType);
 //        tenantProperties.setTenant(iTenantProperties.getTenant());
 
         return tenantProperties;

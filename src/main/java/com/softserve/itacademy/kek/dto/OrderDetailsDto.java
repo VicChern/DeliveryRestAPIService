@@ -1,9 +1,11 @@
 package com.softserve.itacademy.kek.dto;
 
+import com.softserve.itacademy.kek.models.IOrderDetails;
+
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-public class OrderDetailsDto {
+public class OrderDetailsDto implements IOrderDetails {
 
     @Size(max = 4096)
     private String payload;

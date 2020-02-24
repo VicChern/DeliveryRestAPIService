@@ -6,8 +6,12 @@ import com.softserve.itacademy.kek.dto.OrderEventDto;
 import com.softserve.itacademy.kek.dto.OrderEventListDto;
 import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 import com.softserve.itacademy.kek.dto.OrderListDto;
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.services.IOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,12 +24,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.UUID;
 
 
 @RestController
 @RequestMapping(path = "/orders")
 public class OrderController extends DefaultController {
-    final Logger logger = LoggerFactory.getLogger(OrderController.class);
+   private final Logger logger = LoggerFactory.getLogger(OrderController.class);
+
+   private final IOrderService orderService;
+
+   @Autowired
+    public OrderController(IOrderService orderService) {
+        this.orderService = orderService;
+    }
 
     /**
      * Temporary method for OrderDto stub
@@ -34,7 +47,7 @@ public class OrderController extends DefaultController {
      */
     private OrderDto getOrderDtoStub() {
         OrderDetailsDto orderDetails = new OrderDetailsDto("some info", "https://mypicture");
-        OrderDto order = new OrderDto("MyTenant", "user123", "123",
+        OrderDto order = new OrderDto(null, UUID.randomUUID(),
                 "summary", orderDetails);
         return order;
     }
@@ -74,14 +87,24 @@ public class OrderController extends DefaultController {
      * @param orders object as a JSON
      * @return created {@link OrderListDto} object
      */
-    @PostMapping(consumes = "application/vnd.softserve.order+json", produces = "application/vnd.softserve.order+json")
-    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto orders) {
+    @PostMapping(value = "/{customerGuid}", consumes = "application/vnd.softserve.orderList+json", produces = "application/vnd.softserve.orderList+json")
+    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto orders, @PathVariable String customerGuid) {
         logger.info("Orders has been accepted:\n{}", orders);
+
+        IOrder iOrder = orderService.create(orders.getOrderList().get(0), UUID.fromString(customerGuid));
+
+        OrderDto orderDto = transform(iOrder);
 
         logger.info("Sending the created orders to the client:\n{}", orders);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(orders);
+                .body(new OrderListDto().addOrder(orderDto));
+    }
+
+    private OrderDto transform(IOrder iOrder) {
+        OrderDetailsDto orderDetailsDto = new OrderDetailsDto(iOrder.getOrderDetails().getPayload(), iOrder.getOrderDetails().getImageUrl());
+        OrderDto orderDto = new OrderDto(iOrder.getGuid(), iOrder.getTenant().getGuid(), iOrder.getSummary(), orderDetailsDto);
+        return orderDto;
     }
 
     /**
@@ -151,14 +174,16 @@ public class OrderController extends DefaultController {
     /**
      * Adds a new event for the specific order
      *
-     * @param id   order ID from the URN
+     * @param orderGuid   order ID from the URN
      * @param body {@link OrderEventDto} object
      * @return Response Entity with created {@link OrderEventDto} objects
      */
-    @PostMapping(value = "/{id}/events", consumes = "application/vnd.softserve.event+json",
+    @PostMapping(value = "/{actorGuid}/events", consumes = "application/vnd.softserve.event+json",
             produces = "application/vnd.softserve.event+json")
-    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String id, @RequestBody @Valid OrderEventDto body) {
-        logger.info("Sending the created event({}) to the client", id);
+    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String actorGuid,@PathVariable String orderGuid, @RequestBody @Valid OrderEventDto body) {
+        logger.info("Sending the created event({}) to the client", actorGuid);
+
+//        IOrderEvent iOrderEvent = orderService.createOrderEvent(orderGuid, actorGuid, body);
 
         logger.info("Event have been added: {}", body);
         return ResponseEntity
