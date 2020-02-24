@@ -46,7 +46,7 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
 
-        IUser savedUser  = userService.create(user);
+        IUser savedUser = userService.create(user);
         assertNotNull(savedUser);
 
         tenant.setTenantOwner(savedUser);
@@ -62,7 +62,7 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
     @Test
     public void createSuccess() {
         //when
-        ITenant savedTenant  = tenantService.create(tenant);
+        ITenant savedTenant = tenantService.create(tenant);
 
         //then
         assertNotNull(savedTenant);

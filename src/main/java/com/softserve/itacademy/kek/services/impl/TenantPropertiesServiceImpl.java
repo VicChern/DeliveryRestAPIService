@@ -60,7 +60,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
         Tenant tenant = tenantRepository.findByGuid(tenantGuid);
 
-        if(tenant == null) {
+        if (tenant == null) {
             LOGGER.error("There is no Tenant in db for tenant guid: {}", tenantGuid);
             throw new TenantPropertiesServiceException("Tenant wasn't found for tenant guid: " + tenantGuid);
         }
@@ -124,11 +124,19 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
         // update tenant property
         PropertyType propertyType = (PropertyType) tenantProperty.getPropertyType();
-        if (iTenantProperty.getPropertyType().getName() != null ) { propertyType.setName(iTenantProperty.getPropertyType().getName()); }
-        if (iTenantProperty.getPropertyType().getSchema() != null ) { propertyType.setSchema(iTenantProperty.getPropertyType().getSchema()); }
+        if (iTenantProperty.getPropertyType().getName() != null) {
+            propertyType.setName(iTenantProperty.getPropertyType().getName());
+        }
+        if (iTenantProperty.getPropertyType().getSchema() != null) {
+            propertyType.setSchema(iTenantProperty.getPropertyType().getSchema());
+        }
 
-        if (iTenantProperty.getKey() != null ) { tenantProperty.setKey(iTenantProperty.getKey()); }
-        if (iTenantProperty.getValue() != null ) { tenantProperty.setValue(iTenantProperty.getValue()); }
+        if (iTenantProperty.getKey() != null) {
+            tenantProperty.setKey(iTenantProperty.getKey());
+        }
+        if (iTenantProperty.getValue() != null) {
+            tenantProperty.setValue(iTenantProperty.getValue());
+        }
 
         tenantProperty.setPropertyType(propertyType);
 

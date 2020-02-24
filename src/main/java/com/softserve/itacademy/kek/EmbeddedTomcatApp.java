@@ -1,7 +1,12 @@
 package com.softserve.itacademy.kek;
 
-import com.softserve.itacademy.kek.configuration.WebAppInitializer;
-import com.softserve.itacademy.kek.security.SecurityWebAppInitializer;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedHashSet;
+import java.util.Properties;
+import java.util.Set;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -9,12 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.SpringServletContainerInitializer;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedHashSet;
-import java.util.Properties;
-import java.util.Set;
+import com.softserve.itacademy.kek.configuration.WebAppInitializer;
+import com.softserve.itacademy.kek.security.SecurityWebAppInitializer;
 
 public class EmbeddedTomcatApp {
     final Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
@@ -27,6 +28,7 @@ public class EmbeddedTomcatApp {
      * - port = 8080
      * - contextPath = \
      * - appBase = .
+     *
      * @throws IOException in case when the properties file is not found
      */
     public EmbeddedTomcatApp() throws IOException {

@@ -92,7 +92,7 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
         identity.setUser(savedUser);
 
         //when
-       identityRepository.save(identity);
+        identityRepository.save(identity);
 
         //then
         assertEquals(1, identityRepository.findAll().spliterator().estimateSize());

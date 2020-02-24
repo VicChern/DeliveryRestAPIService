@@ -5,7 +5,7 @@ import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 /**
  * Exception for {@link ITenantPropertiesService}
  */
-public class TenantPropertiesServiceException extends BadRequestException{
+public class TenantPropertiesServiceException extends BadRequestException {
 
     public TenantPropertiesServiceException(String message) {
         super(message);
