@@ -172,12 +172,16 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
     private TenantProperties transform(ITenantProperties iTenantProperties) {
 
+        PropertyType propertyType = new PropertyType();
+        propertyType.setName(iTenantProperties.getPropertyType().getName());
+        propertyType.setSchema(iTenantProperties.getPropertyType().getSchema());
+
         TenantProperties tenantProperties = new TenantProperties();
 
         tenantProperties.setGuid(iTenantProperties.getGuid());
         tenantProperties.setKey(iTenantProperties.getKey());
         tenantProperties.setValue(iTenantProperties.getValue());
-        tenantProperties.setPropertyType(iTenantProperties.getPropertyType());
+        tenantProperties.setPropertyType(propertyType);
         tenantProperties.setTenant(iTenantProperties.getTenant());
 
         return tenantProperties;

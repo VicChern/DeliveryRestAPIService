@@ -31,8 +31,8 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod
     public void setUp() {
-        actorRole1 = getActorRole();
-        actorRole2 = getActorRole();
+        actorRole1 = getActorRole("actorRole1");
+        actorRole2 = getActorRole("actorRole2");
     }
 
     @AfterMethod
