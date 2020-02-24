@@ -14,9 +14,11 @@ import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.impl.Actor;
+import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
+import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 
@@ -24,6 +26,7 @@ import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getActor;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getActorRole;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
 
 
@@ -37,6 +40,10 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     private UserRepository userRepository;
     @Autowired
     private ActorRepository actorRepository;
+    @Autowired
+    private ActorRoleRepository actorRoleRepository;
+
+    private ActorRole actorRole;
 
     private Actor actor1;
     private Actor actor2;
@@ -44,13 +51,17 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod
     public void setUp() {
+        actorRole = getActorRole("actorRole");
+        actorRoleRepository.save(actorRole);
+
         Tenant tenant1 = getTenantForActor(1);
-        actor1 = getActor((User) tenant1.getTenantOwner(), tenant1);
+        actor1 = getActor((User) tenant1.getTenantOwner(), tenant1, actorRole);
     }
 
     @AfterMethod
     public void tearDown() {
         actorRepository.deleteAll();
+        actorRoleRepository.deleteAll();
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }

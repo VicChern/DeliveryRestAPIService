@@ -97,9 +97,7 @@ public class TenantServiceImpl implements ITenantService {
     @Override
     public ITenant getByGuid(UUID guid) {
         LOGGER.info("Get Tenant by guid from db: {}", guid);
-        ITenant tenant;
-
-        tenant = tenantRepository.findByGuid(guid);
+        ITenant tenant = tenantRepository.findByGuid(guid);
         if (tenant == null) {
             LOGGER.error("There is no Tenant in db for guid: {}", guid);
             throw new TenantServiceException("Tenant wasn't found for guid: " + guid);
