@@ -41,6 +41,7 @@
         <version.spring.webmvc>5.2.2.RELEASE</version.spring.webmvc>
         <version.spring.test>5.2.2.RELEASE</version.spring.test>
         <version.spring.security.test>5.2.2.RELEASE</version.spring.security.test>
+        <version-spring-plugin-core>1.2.0.RELEASE</version-spring-plugin-core>
 
         <version.org.json>20180813</version.org.json>
         <version.gson>2.8.5</version.gson>
@@ -62,6 +63,9 @@
 
         <version.slf4j.api>1.7.13</version.slf4j.api>
         <version.slf4j.log4j12>1.7.13</version.slf4j.log4j12>
+
+        <version.swagger>2.9.2</version.swagger>
+        <version-jackson-databind>2.10.2</version-jackson-databind>
 
         <version.testng>7.0.0</version.testng>
         <version.mockito>3.1.0</version.mockito>
@@ -252,6 +256,28 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${version.log4j}</version>
+        </dependency>
+
+        <!--Swagger-->
+        <dependency>
+            <groupId>org.springframework.plugin</groupId>
+            <artifactId>spring-plugin-core</artifactId>
+            <version>${version-spring-plugin-core}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${version.swagger}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${version.swagger}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${version-jackson-databind}</version>
         </dependency>
 
 
