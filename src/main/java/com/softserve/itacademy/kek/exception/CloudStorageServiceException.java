@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.exception;
 
-public class CloudStorageServiceException extends RuntimeException {
+public class CloudStorageServiceException extends KekException {
 
     public CloudStorageServiceException(String message) {
         super(message);
