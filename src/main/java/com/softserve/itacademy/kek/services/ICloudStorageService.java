@@ -1,9 +1,9 @@
-package com.softserve.itacademy.kek.service;
-
-import java.util.List;
+package com.softserve.itacademy.kek.services;
 
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.service.model.ICloudStorageObject;
+import com.softserve.itacademy.kek.services.model.ICloudStorageObject;
+
+import java.util.List;
 
 public interface ICloudStorageService {
     /**

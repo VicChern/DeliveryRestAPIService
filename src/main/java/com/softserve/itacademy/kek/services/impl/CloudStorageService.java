@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.service.impl;
+package com.softserve.itacademy.kek.services.impl;
 
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -8,10 +8,10 @@ import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.service.AbstractService;
-import com.softserve.itacademy.kek.service.ICloudStorageService;
-import com.softserve.itacademy.kek.service.model.ICloudStorageObject;
-import com.softserve.itacademy.kek.service.model.impl.CloudStorageObject;
+import com.softserve.itacademy.kek.services.AbstractService;
+import com.softserve.itacademy.kek.services.ICloudStorageService;
+import com.softserve.itacademy.kek.services.model.ICloudStorageObject;
+import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.slf4j.Logger;
@@ -34,13 +34,6 @@ public class CloudStorageService extends AbstractService implements ICloudStorag
 
     @Value("gcp.storage.filename")
     private String storagePropertiesFileName;
-
-    public CloudStorageService() {
-    }
-
-    public CloudStorageService(String storagePropertiesFileName) {
-        this.storagePropertiesFileName = storagePropertiesFileName;
-    }
 
     @Override
     public ICloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {

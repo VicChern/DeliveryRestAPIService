@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.service;
+package com.softserve.itacademy.kek.services;
 
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
