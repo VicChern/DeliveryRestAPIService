@@ -41,7 +41,7 @@ public class TenantControllerTest {
         TenantDetailsDto detailsDto = new TenantDetailsDto("some payload", "http://awesomepicture.com");
         tenantDto = new TenantDto(UUID.fromString("guid12345qwawt"), UUID.fromString("Petro"), "pict", detailsDto);
         tenantPropertiesDto = new TenantPropertiesDto(
-                UUID.fromString("guid12345qwawt"), null, null, "workingDay", "Wednesday");
+                UUID.fromString("guid12345qwawt"), null, "workingDay", "Wednesday");
         addressDto = new AddressDto(UUID.fromString("guid12345qwert"), "alias", "Leipzigzskaya 15v", "Some notes...");
 
         MockitoAnnotations.initMocks(this);

@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.controller;
 
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.AddressListDto;
+import com.softserve.itacademy.kek.dto.PropertyTypeDto;
 import com.softserve.itacademy.kek.dto.TenantDetailsDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.TenantListDto;
@@ -9,6 +10,7 @@ import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantProperties;
+import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -68,9 +71,16 @@ public class TenantController extends DefaultController {
      * @return tenantPropertiesDto
      */
     private TenantPropertiesDto transformProperty(ITenantProperties tenantProperties) {
-        TenantPropertiesDto tenantPropertiesDto = new TenantPropertiesDto(tenantProperties.getGuid(),
-                tenantProperties.getTenant(), tenantProperties.getPropertyType(),
-                tenantProperties.getKey(), tenantProperties.getValue());
+        PropertyTypeDto propertyType = new PropertyTypeDto(
+                tenantProperties.getPropertyType().getName(),
+                tenantProperties.getPropertyType().getSchema());
+
+        TenantPropertiesDto tenantPropertiesDto = new TenantPropertiesDto(
+                tenantProperties.getGuid(),
+//                tenantProperties.getTenant().getGuid(),
+                propertyType,
+                tenantProperties.getKey(),
+                tenantProperties.getValue());
         return tenantPropertiesDto;
     }
 
@@ -231,18 +241,21 @@ public class TenantController extends DefaultController {
      * @param tenantPropertiesDto property object as a JSON
      * @return list of the {@link TenantPropertiesDto} objects as a JSON
      */
-    @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantproperty+json",
-            produces = "application/vnd.softserve.tenantproperty+json")
+    @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantPropertyList+json",
+            produces = "application/vnd.softserve.tenantPropertyList+json")
     public ResponseEntity<List<ITenantProperties>> addTenantProperties(@PathVariable String guid,
-                                                                       @RequestBody List<ITenantProperties> tenantPropertiesDto) {
+                                                                       @RequestBody TenantPropertiesDto tenantPropertiesDto) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesDto);
 
-        List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDto, UUID.fromString(guid));
+        ArrayList<ITenantProperties> tenantPropertiesDtoList = new ArrayList<ITenantProperties>();
+                tenantPropertiesDtoList.add(tenantPropertiesDto);
+
+        List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDtoList, UUID.fromString(guid));
 
         logger.info("Sending the created tenant's({}) properties to the client", tenantProperties);
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body(tenantPropertiesDto);
+                .body(tenantPropertiesDtoList);
     }
 
     /**

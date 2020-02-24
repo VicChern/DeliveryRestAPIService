@@ -5,8 +5,8 @@ import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantDetails;
 import com.softserve.itacademy.kek.models.IUser;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.beans.Transient;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -41,6 +41,7 @@ public class TenantDto implements ITenant {
         return name;
     }
 
+    @Transient
     @Override
     public IUser getTenantOwner() {
         return new UserDto(owner, null, null, null, null, null);

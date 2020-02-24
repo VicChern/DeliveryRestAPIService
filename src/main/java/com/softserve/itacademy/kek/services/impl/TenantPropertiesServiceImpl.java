@@ -177,7 +177,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
         tenantProperties.setKey(iTenantProperties.getKey());
         tenantProperties.setValue(iTenantProperties.getValue());
         tenantProperties.setPropertyType(iTenantProperties.getPropertyType());
-        tenantProperties.setTenant(iTenantProperties.getTenant());
+//        tenantProperties.setTenant(iTenantProperties.getTenant());
 
         return tenantProperties;
     }

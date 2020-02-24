@@ -6,28 +6,28 @@ import com.softserve.itacademy.kek.models.ITenantProperties;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.beans.Transient;
 import java.util.Objects;
 import java.util.UUID;
 
 public class TenantPropertiesDto implements ITenantProperties {
     private UUID guid;
-    private ITenant tenant;
-    private IPropertyType propertyType;
 
-    @NotNull
-    @Size(max = 256)
+    private PropertyTypeDto propertyType;
+
+//    @NotNull
+//    @Size(max = 256)
     private String key;
 
-    @NotNull
-    @Size(max = 1024)
+//    @NotNull
+//    @Size(max = 1024)
     private String value;
 
     public TenantPropertiesDto() {
     }
 
-    public TenantPropertiesDto(UUID guid, ITenant tenant, IPropertyType type, String key, String value) {
+    public TenantPropertiesDto(UUID guid, PropertyTypeDto type, String key, String value) {
         this.guid = guid;
-        this.tenant = tenant;
         this.propertyType = type;
         this.key = key;
         this.value = value;
@@ -36,11 +36,6 @@ public class TenantPropertiesDto implements ITenantProperties {
     @Override
     public UUID getGuid() {
         return guid;
-    }
-
-    @Override
-    public ITenant getTenant() {
-        return tenant;
     }
 
     @Override
@@ -63,7 +58,6 @@ public class TenantPropertiesDto implements ITenantProperties {
     public String toString() {
         return "TenantPropertiesDTO{" +
                 "guid='" + guid + '\'' +
-                ", tenant='" + tenant + '\'' +
                 ", type='" + propertyType + '\'' +
                 ", key='" + key + '\'' +
                 ", value='" + value + '\'' +
@@ -76,7 +70,6 @@ public class TenantPropertiesDto implements ITenantProperties {
         if (!(o instanceof TenantPropertiesDto)) return false;
         TenantPropertiesDto that = (TenantPropertiesDto) o;
         return guid.equals(that.guid) &&
-                tenant.equals(that.tenant) &&
                 propertyType.equals(that.propertyType) &&
                 key.equals(that.key) &&
                 value.equals(that.value);
@@ -84,6 +77,6 @@ public class TenantPropertiesDto implements ITenantProperties {
 
     @Override
     public int hashCode() {
-        return Objects.hash(guid, tenant, propertyType, key, value);
+        return Objects.hash(guid, propertyType, key, value);
     }
 }
