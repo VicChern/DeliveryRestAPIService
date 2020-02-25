@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,14 +14,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantDetails;
@@ -30,7 +25,7 @@ import com.softserve.itacademy.kek.models.IUser;
 
 @Entity
 @Table(name = "obj_tenant")
-public class Tenant implements ITenant, Serializable {
+public class Tenant extends Auditable implements ITenant, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,12 +44,6 @@ public class Tenant implements ITenant, Serializable {
     @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false, unique = true, length = 256)
     private String name;
-
-    @CreatedDate
-    private LocalDateTime creationDate;
-
-    @LastModifiedDate
-    private LocalDateTime updatingDate;
 
     @OneToOne(mappedBy = "tenant", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private TenantDetails tenantDetails;
@@ -90,22 +79,6 @@ public class Tenant implements ITenant, Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getUpdatingDate() {
-        return updatingDate;
-    }
-
-    public void setUpdatingDate(LocalDateTime updatingDate) {
-        this.updatingDate = updatingDate;
     }
 
     public IUser getTenantOwner() {
@@ -188,14 +161,12 @@ public class Tenant implements ITenant, Serializable {
                 Objects.equals(tenantOwner, tenant.tenantOwner) &&
                 Objects.equals(guid, tenant.guid) &&
                 Objects.equals(name, tenant.name) &&
-                Objects.equals(creationDate, tenant.creationDate) &&
-                Objects.equals(updatingDate, tenant.updatingDate) &&
                 Objects.equals(tenantDetails, tenant.tenantDetails);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idTenant, tenantOwner, guid, name, creationDate, updatingDate, tenantDetails);
+        return Objects.hash(idTenant, tenantOwner, guid, name, tenantDetails);
     }
 
     @Override
@@ -205,8 +176,6 @@ public class Tenant implements ITenant, Serializable {
                 ", tenantOwner=" + tenantOwner +
                 ", guid=" + guid +
                 ", name='" + name + '\'' +
-                ", creationDate=" + creationDate +
-                ", updatingDate=" + updatingDate +
                 ", tenantDetails=" + tenantDetails +
                 '}';
     }

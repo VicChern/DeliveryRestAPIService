@@ -22,7 +22,7 @@ import com.softserve.itacademy.kek.models.ITenantProperties;
 
 @Entity
 @Table(name = "obj_tenant_properties")
-public class TenantProperties implements ITenantProperties, Serializable {
+public class TenantProperties extends Auditable implements ITenantProperties, Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_tenant", nullable = false)

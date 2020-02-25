@@ -2,7 +2,6 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -86,8 +85,6 @@ public class OrderServiceImpl implements IOrderService {
         final Tenant tenant = (Tenant) tenantService.getByGuid(iOrder.getTenant().getGuid());
 
         final Order actualOrder = transform(iOrder, tenant);
-        actualOrder.setCreationDate(LocalDateTime.now());
-        actualOrder.setUpdatingDate(LocalDateTime.now());
 
         final Order savedOrder;
         try {
@@ -167,7 +164,6 @@ public class OrderServiceImpl implements IOrderService {
         actualOrder.setGuid(order.getGuid());
         actualOrder.setSummary(order.getSummary());
         actualOrder.setTenant(order.getTenant());
-        actualOrder.setUpdatingDate(LocalDateTime.now());
 
         IOrderDetails details = order.getOrderDetails();
         OrderDetails actualDetails = new OrderDetails();
@@ -288,7 +284,6 @@ public class OrderServiceImpl implements IOrderService {
         orderEvent.setActor(actor);
         orderEvent.setOrderEventType(orderEventType);
         orderEvent.setPayload(payload);
-        orderEvent.setCreationDate(LocalDateTime.now());
 
         try {
             return orderEventRepository.save(orderEvent);

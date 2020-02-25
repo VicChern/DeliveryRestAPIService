@@ -2,7 +2,6 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,8 +43,6 @@ public class UserServiceImpl implements IUserService {
         user.setNickname(userData.getNickname());
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
-        user.setCreationDate(LocalDateTime.now());
-        user.setUpdatingDate(LocalDateTime.now());
 
         UserDetails details = new UserDetails();
         user.setUserDetails(details);
@@ -78,7 +75,6 @@ public class UserServiceImpl implements IUserService {
         user.setNickname(userData.getNickname());
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
-        user.setUpdatingDate(LocalDateTime.now());
 
         IUserDetails detailsData = userData.getUserDetails();
         if (detailsData != null) {

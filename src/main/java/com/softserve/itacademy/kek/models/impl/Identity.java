@@ -18,7 +18,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "obj_identity")
-public class Identity implements Serializable {
+public class Identity extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

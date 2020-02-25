@@ -15,20 +15,16 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderDetails;
 
 @Entity
 @Table(name = "obj_order")
-public class Order implements IOrder, Serializable {
+public class Order extends Auditable implements IOrder, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,12 +43,6 @@ public class Order implements IOrder, Serializable {
     @Size(min = 1, max = 256, message = "summary must be in range 1 ... 256")
     @Column(name = "summary", nullable = false, length = 256)
     private String summary;
-
-    @CreatedDate
-    private LocalDateTime creationDate;
-
-    @LastModifiedDate
-    private LocalDateTime updatingDate;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private OrderDetails orderDetails;
@@ -92,22 +82,6 @@ public class Order implements IOrder, Serializable {
         this.summary = summary;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getUpdatingDate() {
-        return updatingDate;
-    }
-
-    public void setUpdatingDate(LocalDateTime updatingDate) {
-        this.updatingDate = updatingDate;
-    }
-
     public IOrderDetails getOrderDetails() {
         return orderDetails;
     }
@@ -133,15 +107,13 @@ public class Order implements IOrder, Serializable {
                 Objects.equals(tenant, order.tenant) &&
                 Objects.equals(guid, order.guid) &&
                 Objects.equals(summary, order.summary) &&
-                Objects.equals(creationDate, order.creationDate) &&
-                Objects.equals(updatingDate, order.updatingDate) &&
                 Objects.equals(orderDetails, order.orderDetails) &&
                 Objects.equals(orderEventList, order.orderEventList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idOrder, tenant, guid, summary, creationDate, updatingDate, orderDetails, orderEventList);
+        return Objects.hash(idOrder, tenant, guid, summary, orderDetails, orderEventList);
     }
 
     @Override
@@ -151,8 +123,6 @@ public class Order implements IOrder, Serializable {
                 ", tenant=" + tenant +
                 ", guid=" + guid +
                 ", summary='" + summary + '\'' +
-                ", creationDate=" + creationDate +
-                ", updatingDate=" + updatingDate +
                 ", orderDetails=" + orderDetails +
                 ", orderEventList=" + orderEventList +
                 '}';

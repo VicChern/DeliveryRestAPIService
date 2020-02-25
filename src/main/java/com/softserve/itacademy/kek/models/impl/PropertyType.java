@@ -15,7 +15,7 @@ import com.softserve.itacademy.kek.models.IPropertyType;
 
 @Entity
 @Table(name = "def_property_type")
-public class PropertyType implements IPropertyType, Serializable {
+public class PropertyType extends Auditable implements IPropertyType, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -17,7 +17,7 @@ import com.softserve.itacademy.kek.models.IOrderDetails;
 
 @Entity
 @Table(name = "o2o_order_details")
-public class OrderDetails implements IOrderDetails, Serializable {
+public class OrderDetails extends Auditable implements IOrderDetails, Serializable {
 
     @Id
     @Column(name = "id_order")

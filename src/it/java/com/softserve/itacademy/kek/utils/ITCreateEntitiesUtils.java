@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.utils;
 
-import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -72,8 +71,6 @@ public class ITCreateEntitiesUtils {
         user.setNickname(nickName);
         user.setPhoneNumber(phoneNumber);
         user.setEmail(email);
-        user.setCreationDate(LocalDateTime.now());
-        user.setUpdatingDate(LocalDateTime.now());
 
         UserDetails userDetails = new UserDetails();
 
@@ -146,8 +143,6 @@ public class ITCreateEntitiesUtils {
         Tenant tenant = new Tenant();
         tenant.setName(name);
         tenant.setGuid(guid);
-        tenant.setCreationDate(LocalDateTime.now());
-        tenant.setUpdatingDate(LocalDateTime.now());
 
         TenantDetails tenantDetails = new TenantDetails();
 
@@ -161,8 +156,6 @@ public class ITCreateEntitiesUtils {
         Tenant tenant = new Tenant();
         tenant.setGuid(UUID.randomUUID());
         tenant.setName(randomString());
-        tenant.setCreationDate(LocalDateTime.now());
-        tenant.setUpdatingDate(LocalDateTime.now());
 
         tenant.setTenantOwner(user);
 
@@ -253,8 +246,6 @@ public class ITCreateEntitiesUtils {
         order.setTenant(tenant);
         order.setGuid(UUID.randomUUID());
         order.setSummary(createRandomLetterString(128));
-        order.setCreationDate(LocalDateTime.now());
-        order.setUpdatingDate(LocalDateTime.now());
 
         OrderDetails orderDetails = new OrderDetails();
         orderDetails.setImageUrl(createRandomLetterString(128));
@@ -280,7 +271,6 @@ public class ITCreateEntitiesUtils {
         orderEvent.setOrderEventType(orderEventType);
         orderEvent.setGuid(UUID.randomUUID());
         orderEvent.setPayload(createRandomLetterString(MAX_LENGTH_512));
-        orderEvent.setCreationDate(LocalDateTime.now());
 
         return orderEvent;
     }

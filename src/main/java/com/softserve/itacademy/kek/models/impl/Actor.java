@@ -24,7 +24,7 @@ import com.softserve.itacademy.kek.models.IUser;
 
 @Entity
 @Table(name = "obj_actor")
-public class Actor implements IActor, Serializable {
+public class Actor extends Auditable implements IActor, Serializable {
 
     @Id
     @Column(name = "id_actor")

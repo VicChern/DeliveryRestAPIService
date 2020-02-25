@@ -14,69 +14,50 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
 
 @Entity
 @Table(name = "obj_user")
-public class User implements IUser, Serializable {
+public class User extends Auditable implements IUser, Serializable {
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    List<Identity> identityList = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Address> addressList;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
     private Long idUser;
-
     @NotNull
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;
-
     @Email
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "email", nullable = false, unique = true, length = 256)
     private String email;
-
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "phone_number", nullable = false, unique = true, length = 256)
     private String phoneNumber;
-
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false, length = 256)
     private String name;
-
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "nickname", nullable = false, unique = true, length = 256)
     private String nickname;
-
-    @CreatedDate
-    private LocalDateTime creationDate;
-
-    @LastModifiedDate
-    private LocalDateTime updatingDate;
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private UserDetails userDetails;
-
     @OneToOne(mappedBy = "tenantOwner", cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, orphanRemoval = true)
     private Tenant tenant;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    List<Identity> identityList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<Address> addressList;
 
     public Long getIdUser() {
         return idUser;
@@ -124,22 +105,6 @@ public class User implements IUser, Serializable {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getUpdatingDate() {
-        return updatingDate;
-    }
-
-    public void setUpdatingDate(LocalDateTime updatingDate) {
-        this.updatingDate = updatingDate;
     }
 
     public IUserDetails getUserDetails() {
@@ -197,14 +162,12 @@ public class User implements IUser, Serializable {
                 Objects.equals(email, user.email) &&
                 Objects.equals(phoneNumber, user.phoneNumber) &&
                 Objects.equals(name, user.name) &&
-                Objects.equals(nickname, user.nickname) &&
-                Objects.equals(creationDate, user.creationDate) &&
-                Objects.equals(updatingDate, user.updatingDate);
+                Objects.equals(nickname, user.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idUser, guid, email, phoneNumber, name, nickname, creationDate, updatingDate);
+        return Objects.hash(idUser, guid, email, phoneNumber, name, nickname);
     }
 
     @Override
@@ -216,8 +179,6 @@ public class User implements IUser, Serializable {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", name='" + name + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", creationDate=" + creationDate +
-                ", updatingDate=" + updatingDate +
                 ", userDetails=" + userDetails +
                 '}';
     }
