@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.AddressListDto;
 import com.softserve.itacademy.kek.dto.DetailsDto;
@@ -58,7 +59,7 @@ public class UserController extends DefaultController {
      *
      * @return Response entity with list of {@link UserListDto} objects as a JSON
      */
-    @GetMapping(produces = "application/vnd.softserve.userList+json")
+    @GetMapping(produces = KekMediaType.USER_LIST)
     public ResponseEntity<UserListDto> getUserList() {
         logger.info("Client requested the list of all users");
 
@@ -80,8 +81,8 @@ public class UserController extends DefaultController {
      * @param newUserDto {@link UserListDto} object as a JSON
      * @return Response entity with {@link UserListDto} object as a JSON
      */
-    @PostMapping(consumes = "application/vnd.softserve.user+json",
-            produces = "application/vnd.softserve.user+json")
+    @PostMapping(consumes = KekMediaType.USER,
+            produces = KekMediaType.USER)
     public ResponseEntity<UserDto> addUser(@RequestBody @Valid UserDto newUserDto) {
         logger.info("Accepted requested to create a new user:\n{}", newUserDto);
 
@@ -100,7 +101,7 @@ public class UserController extends DefaultController {
      * @param guid user ID from the URN
      * @return Response entity with {@link UserDto} object as a JSON
      */
-    @GetMapping(value = "/{guid}", produces = "application/vnd.softserve.user+json")
+    @GetMapping(value = "/{guid}", produces = KekMediaType.USER)
     public ResponseEntity<UserDto> getUser(@PathVariable String guid) {
         logger.info("Client requested the user {}", guid);
 
@@ -120,7 +121,7 @@ public class UserController extends DefaultController {
      * @param user user object as a JSON
      * @return Response entity with {@link UserDto} object as a JSON
      */
-    @PutMapping(value = "/{guid}", consumes = "application/vnd.softserve.user+json",
+    @PutMapping(value = "/{guid}", consumes = KekMediaType.USER,
             produces = "application/vnd.softserve.user+json")
     public ResponseEntity<UserDto> modifyUser(@PathVariable String guid, @RequestBody @Valid UserDto user) {
         logger.info("Accepted modified user from the client:\n{}", user);
@@ -157,7 +158,7 @@ public class UserController extends DefaultController {
      * @param guid user guid from the URN
      * @return Response Entity with list of the {@link AddressListDto} objects as a JSON
      */
-    @GetMapping(value = "/{guid}/addresses", produces = "application/vnd.softserve.addressList+json")
+    @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS_LIST)
     public ResponseEntity<AddressListDto> getUserAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses of the employee {}", guid);
 
@@ -180,8 +181,8 @@ public class UserController extends DefaultController {
      * @param newAddressesDto list of address objects as a JSON
      * @return Response entity with list of the {@link AddressListDto} objects as a JSON
      */
-    @PostMapping(value = "/{guid}/addresses", consumes = "application/vnd.softserve.addressList+json",
-            produces = "application/vnd.softserve.addressList+json")
+    @PostMapping(value = "/{guid}/addresses", consumes = KekMediaType.ADDRESS_LIST,
+            produces = KekMediaType.ADDRESS_LIST)
     public ResponseEntity<AddressListDto> addUserAddresses(@PathVariable String guid,
                                                            @RequestBody @Valid AddressListDto newAddressesDto) {
         logger.info("Accepted requested to create a new addresses for user:{}:\n", newAddressesDto);
@@ -207,7 +208,7 @@ public class UserController extends DefaultController {
      * @param addrGuid address guid from the URN
      * @return Response entity with {@link AddressDto} object as a JSON
      */
-    @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
+    @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = KekMediaType.ADDRESS)
     public ResponseEntity<AddressDto> getUserAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address {} of the employee {}", addrGuid, guid);
 
@@ -228,8 +229,8 @@ public class UserController extends DefaultController {
      * @param addressDto address object as a JSON
      * @return Response Entity with {@link AddressDto} object as a JSON
      */
-    @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
-            produces = "application/vnd.softserve.address+json")
+    @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = KekMediaType.ADDRESS,
+            produces = KekMediaType.ADDRESS)
     public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("guid") String guid,
                                                         @PathVariable("addrguid") String addrGuid,
                                                         @RequestBody @Valid AddressDto addressDto) {

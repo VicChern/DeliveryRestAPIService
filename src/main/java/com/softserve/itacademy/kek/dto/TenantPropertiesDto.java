@@ -1,12 +1,8 @@
 package com.softserve.itacademy.kek.dto;
 
 import com.softserve.itacademy.kek.models.IPropertyType;
-import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantProperties;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.beans.Transient;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,11 +11,11 @@ public class TenantPropertiesDto implements ITenantProperties {
 
     private PropertyTypeDto propertyType;
 
-//    @NotNull
+    //    @NotNull
 //    @Size(max = 256)
     private String key;
 
-//    @NotNull
+    //    @NotNull
 //    @Size(max = 1024)
     private String value;
 

@@ -1,7 +1,7 @@
 package com.softserve.itacademy.kek.services;
 
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
+import com.softserve.itacademy.kek.services.model.ICloudStorageObject;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface ICloudStorageService {
      * @return CloudStorageObject with unique GUID
      * @throws CloudStorageServiceException
      */
-    CloudStorageObject uploadBinaryData(byte[] data) throws CloudStorageServiceException;
+    ICloudStorageObject uploadBinaryData(byte[] data) throws CloudStorageServiceException;
 
     /**
      * Gets stored data from Google Cloud Storage bucket by GUID
@@ -22,7 +22,7 @@ public interface ICloudStorageService {
      * @return CloudStorageObject with unique GUID
      * @throws CloudStorageServiceException
      */
-    CloudStorageObject getCloudStorageObject(String guid) throws CloudStorageServiceException;
+    ICloudStorageObject getCloudStorageObject(String guid) throws CloudStorageServiceException;
 
     /**
      * Gets list of stored objects from Google Cloud Storage bucket
@@ -31,5 +31,5 @@ public interface ICloudStorageService {
      * @return list of CloudStorageObjects from bucket
      * @throws CloudStorageServiceException
      */
-    List<CloudStorageObject> getCloudStorageObjects(String filter) throws CloudStorageServiceException;
+    List<ICloudStorageObject> getCloudStorageObjects(String filter) throws CloudStorageServiceException;
 }

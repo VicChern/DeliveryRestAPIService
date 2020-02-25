@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantDetails;
 
-
 import javax.validation.constraints.Size;
 import java.beans.Transient;
 import java.util.Objects;

@@ -84,7 +84,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
                 .map(ITenantProperties::getKey)
                 .collect(Collectors.toSet());
 
-        List<ITenantProperties>  tenantPropertiesList = tenant.getTenantPropertiesList()
+        List<ITenantProperties> tenantPropertiesList = tenant.getTenantPropertiesList()
                 .stream()
                 .filter(tenantProperty -> keys.contains(tenantProperty.getKey()))
                 .distinct()

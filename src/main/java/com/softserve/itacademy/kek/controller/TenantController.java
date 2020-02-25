@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.AddressListDto;
 import com.softserve.itacademy.kek.dto.PropertyTypeDto;
@@ -7,10 +8,10 @@ import com.softserve.itacademy.kek.dto.TenantDetailsDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.TenantListDto;
 import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
+import com.softserve.itacademy.kek.dto.TenantPropertiesListDto;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantProperties;
-import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -122,7 +122,7 @@ public class TenantController extends DefaultController {
      *
      * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
-    @GetMapping(produces = "application/vnd.softserve.tenant+json")
+    @GetMapping(produces = KekMediaType.TENANT)
     public ResponseEntity<TenantListDto> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
@@ -141,17 +141,17 @@ public class TenantController extends DefaultController {
     /**
      * Creates a new tenant
      *
-     * @param body {@link TenantDto} object as a JSON
+     * @param tenantDto {@link TenantDto} object as a JSON
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
-    @PostMapping(consumes = "application/vnd.softserve.tenant+json", produces = "application/vnd.softserve.tenant+json")
-    public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto body) {
-        logger.info("Accepted requested to create a new tenant:\n{}", body);
+    @PostMapping(consumes = KekMediaType.TENANT, produces = KekMediaType.TENANT)
+    public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto tenantDto) {
+        logger.info("Accepted requested to create a new tenant:\n{}", tenantDto);
 
-        ITenant iTenant = tenantService.create(body);
+        ITenant iTenant = tenantService.create(tenantDto);
 
         return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
+                .status(HttpStatus.CREATED)
                 .body(transform(iTenant));
     }
 
@@ -161,7 +161,7 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from the URL
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
-    @GetMapping(value = "/{guid}", produces = "application/vnd.softserve.tenant+json")
+    @GetMapping(value = "/{guid}", produces = KekMediaType.TENANT)
     public ResponseEntity<TenantDto> getTenant(@PathVariable String guid) {
         logger.info("Client requested the tenant {}", guid);
 
@@ -182,8 +182,8 @@ public class TenantController extends DefaultController {
      * @param tenant tenant object
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
-    @PutMapping(value = "/{guid}", consumes = "application/vnd.softserve.tenant+json",
-            produces = "application/vnd.softserve.tenant+json")
+    @PutMapping(value = "/{guid}", consumes = KekMediaType.TENANT,
+            produces = KekMediaType.TENANT)
     @ResponseStatus()
     public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
         logger.info("Accepted modified tenant from the client:\n{}", tenant);
@@ -210,7 +210,7 @@ public class TenantController extends DefaultController {
 
         logger.info("Tenant({}}) was successfully deleted", guid);
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 
@@ -220,18 +220,23 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from URL
      * @return Response Entity with a List of (@link TenantPropertiesDTO) objects as a JSON
      */
-    @GetMapping(value = "/{guid}/properties", produces = "application/vnd.softserve.tenantproperty+json")
-    public ResponseEntity<List<TenantPropertiesDto>> getTenantProperties(@PathVariable String guid) {
+    @GetMapping(value = "/{guid}/properties", produces = KekMediaType.TENANT_PROPERTY)
+    public ResponseEntity<TenantPropertiesListDto> getTenantProperties(@PathVariable String guid) {
         logger.info("Client requested all the properties of the tenant {}", guid);
 
-        List<TenantPropertiesDto> tenantPropertiesList = new ArrayList<>();
-        tenantPropertiesList.add(getTenantPropertiesDtoStub());
+        List<ITenantProperties> tenantProperties = tenantPropertiesService.getAllForTenant(UUID.fromString(guid));
 
-        logger.info("Sending the list of tenant's({}) properties to the client:\n{}", tenantPropertiesList, guid);
+        TenantPropertiesListDto tenantPropertiesListDto = new TenantPropertiesListDto(tenantProperties
+                .stream()
+                .map(this::transformProperty)
+                .collect(Collectors.toList()));
+
+
+        logger.info("Sending the list of tenant's({}) properties to the client:\n{}", tenantPropertiesListDto, guid);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(tenantPropertiesList);
+                .body(tenantPropertiesListDto);
     }
 
     /**
@@ -241,14 +246,14 @@ public class TenantController extends DefaultController {
      * @param tenantPropertiesDto property object as a JSON
      * @return list of the {@link TenantPropertiesDto} objects as a JSON
      */
-    @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantProperty+json",
-            produces = "application/vnd.softserve.tenantProperty+json")
+    @PostMapping(value = "/{guid}/properties", consumes = KekMediaType.TENANT_PROPERTY,
+            produces = KekMediaType.TENANT_PROPERTY)
     public ResponseEntity<List<ITenantProperties>> addTenantProperties(@PathVariable String guid,
                                                                        @RequestBody TenantPropertiesDto tenantPropertiesDto) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesDto);
 
-        ArrayList<ITenantProperties> tenantPropertiesDtoList = new ArrayList<ITenantProperties>();
-                tenantPropertiesDtoList.add(tenantPropertiesDto);
+        ArrayList<ITenantProperties> tenantPropertiesDtoList = new ArrayList<>();
+        tenantPropertiesDtoList.add(tenantPropertiesDto);
 
         List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDtoList, UUID.fromString(guid));
 
@@ -266,7 +271,7 @@ public class TenantController extends DefaultController {
      * @param propGuid ID of the tenant specific property
      * @return Response entity with a specific tenant property {@link TenantPropertiesDto}
      */
-    @GetMapping(value = "/{guid}/properties/{propguid}", produces = "application/vnd.softserve.tenantproperty+json")
+    @GetMapping(value = "/{guid}/properties/{propguid}", produces = KekMediaType.TENANT_PROPERTY)
     public ResponseEntity<TenantPropertiesDto> getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Sending the tenant's({}) specific property({}) to the client", guid, propGuid);
 
@@ -287,8 +292,8 @@ public class TenantController extends DefaultController {
      * @param tenantPropertiesDto The tenant property to modify
      * @return Response entity with modified tenant property object{@link TenantPropertiesDto}
      */
-    @PutMapping(value = "/{guid}/properties/{propguid}", consumes = "application/vnd.softserve.tenantproperty+json",
-            produces = "application/vnd.softserve.tenantproperty+json")
+    @PutMapping(value = "/{guid}/properties/{propguid}", consumes = KekMediaType.TENANT_PROPERTY,
+            produces = KekMediaType.TENANT_PROPERTY)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid,
                                                                     @PathVariable("propguid") String propGuid,
@@ -329,7 +334,7 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from URN tenant property
      * @return Response entity with a list of tenant addresses{@link AddressDto}
      */
-    @GetMapping(value = "/{guid}/addresses", produces = "application/vnd.softserve.address+json")
+    @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS)
     public ResponseEntity<AddressListDto> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
 
@@ -352,8 +357,8 @@ public class TenantController extends DefaultController {
      * @param newAddressesDto address object as a JSON
      * @return Response entity with a {@link AddressDto} object as a JSON
      */
-    @PostMapping(value = "/{guid}/addresses", consumes = "application/vnd.softserve.address+json",
-            produces = "application/vnd.softserve.address+json")
+    @PostMapping(value = "/{guid}/addresses", consumes = KekMediaType.ADDRESS,
+            produces = KekMediaType.ADDRESS)
     public ResponseEntity<AddressListDto> addTenantAddresses(@PathVariable String guid, @RequestBody @Valid AddressListDto newAddressesDto) {
         logger.info("Accepted requested to create a new addresses for user:{}:\n", newAddressesDto);
         AddressListDto createdAddresses = new AddressListDto();
@@ -378,7 +383,7 @@ public class TenantController extends DefaultController {
      * @param addrGuid ID of the specific address
      * @return Response Entity with a specific tenant tenant property{@link TenantPropertiesDto}
      */
-    @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
+    @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = KekMediaType.ADDRESS)
     public ResponseEntity<AddressDto> getTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address {} of the tenant {}", addrGuid, guid);
 
@@ -399,8 +404,8 @@ public class TenantController extends DefaultController {
      * @param tenantAddressDto The tenant address to modify
      * @return Response entity with modified tenant address{@link AddressDto} object
      */
-    @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
-            produces = "application/vnd.softserve.address+json")
+    @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = KekMediaType.ADDRESS,
+            produces = KekMediaType.ADDRESS)
     public ResponseEntity<AddressDto> modifyTenantAddress(@PathVariable("guid") String guid,
                                                           @PathVariable("addrguid") String addrGuid,
                                                           @RequestBody @Valid AddressDto tenantAddressDto) {
