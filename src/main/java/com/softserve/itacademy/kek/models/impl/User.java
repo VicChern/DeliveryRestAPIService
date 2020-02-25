@@ -26,38 +26,47 @@ import com.softserve.itacademy.kek.models.IUserDetails;
 @Table(name = "obj_user")
 public class User extends Auditable implements IUser, Serializable {
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    List<Identity> identityList = new ArrayList<>();
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<Address> addressList;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
     private Long idUser;
+
     @NotNull
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;
+
     @Email
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "email", nullable = false, unique = true, length = 256)
     private String email;
+
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "phone_number", nullable = false, unique = true, length = 256)
     private String phoneNumber;
+
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false, length = 256)
     private String name;
+
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "nickname", nullable = false, unique = true, length = 256)
     private String nickname;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private UserDetails userDetails;
+
     @OneToOne(mappedBy = "tenantOwner", cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, orphanRemoval = true)
     private Tenant tenant;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    List<Identity> identityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<Address> addressList;
 
     public Long getIdUser() {
         return idUser;

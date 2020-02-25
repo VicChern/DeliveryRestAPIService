@@ -156,7 +156,6 @@ public class ITCreateEntitiesUtils {
         Tenant tenant = new Tenant();
         tenant.setGuid(UUID.randomUUID());
         tenant.setName(randomString());
-
         tenant.setTenantOwner(user);
 
         TenantDetails tenantDetails = new TenantDetails();
