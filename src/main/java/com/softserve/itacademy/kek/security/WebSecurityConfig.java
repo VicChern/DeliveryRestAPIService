@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import com.softserve.itacademy.kek.controller.AuthController;
+
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:server.properties")

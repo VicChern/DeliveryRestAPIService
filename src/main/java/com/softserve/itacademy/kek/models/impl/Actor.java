@@ -1,9 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.IUser;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IActor;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.IUser;
 
 @Entity
 @Table(name = "obj_actor")
@@ -108,23 +108,21 @@ public class Actor implements IActor, Serializable {
                 Objects.equals(tenant, actor.tenant) &&
                 Objects.equals(user, actor.user) &&
                 Objects.equals(guid, actor.guid) &&
-                Objects.equals(actorRoles, actor.actorRoles) &&
                 Objects.equals(alias, actor.alias);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idActor, tenant, user, guid, actorRoles, alias);
+        return Objects.hash(idActor, tenant, user, guid, alias);
     }
 
     @Override
     public String toString() {
         return "Actor{" +
                 "idActor=" + idActor +
-                ", tenant=" + tenant +
-                ", user=" + user +
+                ", idTenant=" + tenant +
+                ", idUser=" + user +
                 ", guid=" + guid +
-                ", actorRoles=" + actorRoles +
                 ", alias='" + alias + '\'' +
                 '}';
     }

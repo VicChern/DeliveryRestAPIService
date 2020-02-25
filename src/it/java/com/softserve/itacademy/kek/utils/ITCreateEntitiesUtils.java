@@ -1,5 +1,11 @@
 package com.softserve.itacademy.kek.utils;
 
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import net.bytebuddy.utility.RandomString;
+
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Address;
@@ -16,11 +22,6 @@ import com.softserve.itacademy.kek.models.impl.TenantDetails;
 import com.softserve.itacademy.kek.models.impl.TenantProperties;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.models.impl.UserDetails;
-import net.bytebuddy.utility.RandomString;
-
-import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Util class for creating entities in integration tests
@@ -310,9 +311,7 @@ public class ITCreateEntitiesUtils {
 
     public static ActorRole getActorRole(String name) {
         ActorRole actorRole = new ActorRole();
-
         actorRole.setName(name);
-
         return actorRole;
     }
 
