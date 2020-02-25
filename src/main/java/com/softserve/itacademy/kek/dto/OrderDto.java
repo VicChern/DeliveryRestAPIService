@@ -6,7 +6,6 @@ import com.softserve.itacademy.kek.models.ITenant;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import java.beans.Transient;
 import java.util.Objects;
 import java.util.UUID;
@@ -53,7 +52,7 @@ public class OrderDto implements IOrder {
     @Transient
     @Override
     public ITenant getTenant() {
-        return new TenantDto(tenantGuid, null,null, null);
+        return new TenantDto(tenantGuid, null, null, null);
     }
 
     @Override

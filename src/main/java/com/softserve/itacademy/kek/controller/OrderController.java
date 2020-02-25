@@ -7,7 +7,6 @@ import com.softserve.itacademy.kek.dto.OrderEventListDto;
 import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 import com.softserve.itacademy.kek.dto.OrderListDto;
 import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.services.IOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,18 +23,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.UUID;
 
 
 @RestController
 @RequestMapping(path = "/orders")
 public class OrderController extends DefaultController {
-   private final Logger logger = LoggerFactory.getLogger(OrderController.class);
+    private final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-   private final IOrderService orderService;
+    private final IOrderService orderService;
 
-   @Autowired
+    @Autowired
     public OrderController(IOrderService orderService) {
         this.orderService = orderService;
     }
@@ -174,13 +172,13 @@ public class OrderController extends DefaultController {
     /**
      * Adds a new event for the specific order
      *
-     * @param orderGuid   order ID from the URN
-     * @param body {@link OrderEventDto} object
+     * @param orderGuid order ID from the URN
+     * @param body      {@link OrderEventDto} object
      * @return Response Entity with created {@link OrderEventDto} objects
      */
     @PostMapping(value = "/{actorGuid}/events", consumes = "application/vnd.softserve.event+json",
             produces = "application/vnd.softserve.event+json")
-    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String actorGuid,@PathVariable String orderGuid, @RequestBody @Valid OrderEventDto body) {
+    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String actorGuid, @PathVariable String orderGuid, @RequestBody @Valid OrderEventDto body) {
         logger.info("Sending the created event({}) to the client", actorGuid);
 
 //        IOrderEvent iOrderEvent = orderService.createOrderEvent(orderGuid, actorGuid, body);

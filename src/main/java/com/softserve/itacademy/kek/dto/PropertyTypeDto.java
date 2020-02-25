@@ -2,16 +2,13 @@ package com.softserve.itacademy.kek.dto;
 
 import com.softserve.itacademy.kek.models.IPropertyType;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 public class PropertyTypeDto implements IPropertyType {
 
-//    @NotNull
+    //    @NotNull
 //    @Size(min = 1, max = 256)
     private String name;
 
-//    @NotNull
+    //    @NotNull
 //    @Size(min = 1)
     private String schema;
 
