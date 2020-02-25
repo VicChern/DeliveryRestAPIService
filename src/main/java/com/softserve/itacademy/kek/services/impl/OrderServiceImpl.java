@@ -163,7 +163,7 @@ public class OrderServiceImpl implements IOrderService {
         actualOrder.setOrderDetails((OrderDetails) order.getOrderDetails());
         actualOrder.setGuid(order.getGuid());
         actualOrder.setSummary(order.getSummary());
-        actualOrder.setTenant(order.getTenant());
+//        actualOrder.setTenant(order.getTenant());
 
         IOrderDetails details = order.getOrderDetails();
         OrderDetails actualDetails = new OrderDetails();
