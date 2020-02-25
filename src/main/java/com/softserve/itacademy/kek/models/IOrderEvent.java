@@ -4,11 +4,11 @@ import java.util.UUID;
 
 public interface IOrderEvent {
 
-    IOrder getIdOrder();
+    IOrder getOrder();
 
-    IActor getIdActor();
+    IActor getActor();
 
-    IOrderEventType getIdOrderEventType();
+    IOrderEventType getOrderEventType();
 
     UUID getGuid();
 

@@ -12,8 +12,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedDate;
 
 import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.IOrder;
@@ -31,15 +34,15 @@ public class OrderEvent implements IOrderEvent, Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_order")
-    private Order idOrder;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "id_actor")
-    private Actor idActor;
+    private Actor actor;
 
     @OneToOne
     @JoinColumn(name = "id_order_event_type")
-    private OrderEventType idOrderEventType;
+    private OrderEventType orderEventType;
 
     @NotNull
     @Column(name = "guid", unique = true, nullable = false)
@@ -50,6 +53,9 @@ public class OrderEvent implements IOrderEvent, Serializable {
     @Column(name = "payload", nullable = false, length = 1024)
     private String payload;
 
+    @CreatedDate
+    private LocalDateTime creationDate;
+
     public Long getIdOrderEvent() {
         return idOrderEvent;
     }
@@ -58,28 +64,28 @@ public class OrderEvent implements IOrderEvent, Serializable {
         this.idOrderEvent = idOrderEvent;
     }
 
-    public IOrder getIdOrder() {
-        return idOrder;
+    public IOrder getOrder() {
+        return order;
     }
 
-    public void setIdOrder(Order idOrder) {
-        this.idOrder = idOrder;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
-    public IActor getIdActor() {
-        return idActor;
+    public IActor getActor() {
+        return actor;
     }
 
-    public void setIdActor(Actor idActor) {
-        this.idActor = idActor;
+    public void setActor(Actor actor) {
+        this.actor = actor;
     }
 
-    public IOrderEventType getIdOrderEventType() {
-        return idOrderEventType;
+    public IOrderEventType getOrderEventType() {
+        return orderEventType;
     }
 
-    public void setIdOrderEventType(OrderEventType idOrderEventType) {
-        this.idOrderEventType = idOrderEventType;
+    public void setOrderEventType(OrderEventType orderEventType) {
+        this.orderEventType = orderEventType;
     }
 
     public UUID getGuid() {
@@ -98,31 +104,40 @@ public class OrderEvent implements IOrderEvent, Serializable {
         this.payload = payload;
     }
 
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderEvent that = (OrderEvent) o;
         return Objects.equals(idOrderEvent, that.idOrderEvent) &&
-                Objects.equals(idOrder, that.idOrder) &&
-                Objects.equals(idActor, that.idActor) &&
-                Objects.equals(idOrderEventType, that.idOrderEventType) &&
+                Objects.equals(orderEventType, that.orderEventType) &&
                 Objects.equals(guid, that.guid) &&
-                Objects.equals(payload, that.payload);
+                Objects.equals(payload, that.payload) &&
+                Objects.equals(creationDate, that.creationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idOrderEvent, idOrder, idActor, idOrderEventType, guid, payload);
+        return Objects.hash(idOrderEvent, orderEventType, guid, payload, creationDate);
     }
 
     @Override
     public String toString() {
         return "OrderEvent{" +
                 "idOrderEvent=" + idOrderEvent +
-                ", idOrderEventType=" + idOrderEventType +
+                ", idActor=" + actor +
+                ", idOrderEventType=" + orderEventType +
                 ", guid=" + guid +
                 ", payload='" + payload + '\'' +
+                ", creationDate=" + creationDate +
                 '}';
     }
 }

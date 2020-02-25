@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -107,7 +108,7 @@ public class OrderServiceImpl implements IOrderService {
     public IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, IOrderEvent iOrderEvent) {
         logger.info("Saving orderEvent for order: {} and actor : {}, orderEvent: {}", orderGuid, userGuid, iOrderEvent);
 
-        return createOrderEvent(orderGuid, userGuid, iOrderEvent.getIdOrderEventType().getName(), iOrderEvent.getPayload());
+        return createOrderEvent(orderGuid, userGuid, iOrderEvent.getOrderEventType().getName(), iOrderEvent.getPayload());
     }
 
     private OrderEventType getOrderEventType(String name) {
@@ -279,11 +280,12 @@ public class OrderServiceImpl implements IOrderService {
         final OrderEventType orderEventType = getOrderEventType(orderEventTypeName);
 
         final OrderEvent orderEvent = new OrderEvent();
-        orderEvent.setIdOrder(order);
+        orderEvent.setOrder(order);
         orderEvent.setGuid(UUID.randomUUID());
-        orderEvent.setIdActor(actor);
-        orderEvent.setIdOrderEventType(orderEventType);
+        orderEvent.setActor(actor);
+        orderEvent.setOrderEventType(orderEventType);
         orderEvent.setPayload(payload);
+        orderEvent.setCreationDate(LocalDateTime.now());
 
         try {
             return orderEventRepository.save(orderEvent);
