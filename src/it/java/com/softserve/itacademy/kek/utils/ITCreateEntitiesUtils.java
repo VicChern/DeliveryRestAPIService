@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.utils;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -143,6 +144,8 @@ public class ITCreateEntitiesUtils {
         Tenant tenant = new Tenant();
         tenant.setName(name);
         tenant.setGuid(guid);
+        tenant.setCreationDate(LocalDateTime.now());
+        tenant.setUpdatingDate(LocalDateTime.now());
 
         TenantDetails tenantDetails = new TenantDetails();
 
@@ -156,6 +159,9 @@ public class ITCreateEntitiesUtils {
         Tenant tenant = new Tenant();
         tenant.setGuid(UUID.randomUUID());
         tenant.setName(randomString());
+        tenant.setCreationDate(LocalDateTime.now());
+        tenant.setUpdatingDate(LocalDateTime.now());
+
         tenant.setTenantOwner(user);
 
         TenantDetails tenantDetails = new TenantDetails();

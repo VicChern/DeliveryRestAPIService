@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,6 +58,8 @@ public class TenantServiceImpl implements ITenantService {
 
             tenantOwner.setTenant(tenantForSaving);
             tenantForSaving.setTenantOwner(tenantOwner);
+            tenantForSaving.setCreationDate(LocalDateTime.now());
+            tenantForSaving.setUpdatingDate(LocalDateTime.now());
 
         } catch (EntityNotFoundException ex) {
             LOGGER.error("There is no User in db for Tenant with user guid: {}", ownerGuid);
@@ -125,6 +128,7 @@ public class TenantServiceImpl implements ITenantService {
 
         tenantForUpdating.setTenantDetails(tenantDetails);
         tenantForUpdating.setName(tenant.getName());
+        tenantForUpdating.setUpdatingDate(LocalDateTime.now());
 
         try {
             tenantRepository.save(tenantForUpdating);
