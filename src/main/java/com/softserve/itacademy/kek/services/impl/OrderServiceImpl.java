@@ -86,6 +86,8 @@ public class OrderServiceImpl implements IOrderService {
         final Tenant tenant = (Tenant) tenantService.getByGuid(iOrder.getTenant().getGuid());
 
         final Order actualOrder = transform(iOrder, tenant);
+        actualOrder.setCreationDate(LocalDateTime.now());
+        actualOrder.setUpdatingDate(LocalDateTime.now());
 
         final Order savedOrder;
         try {
@@ -165,6 +167,7 @@ public class OrderServiceImpl implements IOrderService {
         actualOrder.setGuid(order.getGuid());
         actualOrder.setSummary(order.getSummary());
         actualOrder.setTenant(order.getTenant());
+        actualOrder.setUpdatingDate(LocalDateTime.now());
 
         IOrderDetails details = order.getOrderDetails();
         OrderDetails actualDetails = new OrderDetails();

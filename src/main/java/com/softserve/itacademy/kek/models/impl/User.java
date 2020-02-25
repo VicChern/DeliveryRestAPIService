@@ -14,10 +14,14 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
@@ -55,6 +59,12 @@ public class User implements IUser, Serializable {
     @Size(min = 1, max = 256)
     @Column(name = "nickname", nullable = false, unique = true, length = 256)
     private String nickname;
+
+    @CreatedDate
+    private LocalDateTime creationDate;
+
+    @LastModifiedDate
+    private LocalDateTime updatingDate;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private UserDetails userDetails;
@@ -116,6 +126,22 @@ public class User implements IUser, Serializable {
         this.nickname = nickname;
     }
 
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getUpdatingDate() {
+        return updatingDate;
+    }
+
+    public void setUpdatingDate(LocalDateTime updatingDate) {
+        this.updatingDate = updatingDate;
+    }
+
     public IUserDetails getUserDetails() {
         return userDetails;
     }
@@ -171,12 +197,14 @@ public class User implements IUser, Serializable {
                 Objects.equals(email, user.email) &&
                 Objects.equals(phoneNumber, user.phoneNumber) &&
                 Objects.equals(name, user.name) &&
-                Objects.equals(nickname, user.nickname);
+                Objects.equals(nickname, user.nickname) &&
+                Objects.equals(creationDate, user.creationDate) &&
+                Objects.equals(updatingDate, user.updatingDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idUser, guid, email, phoneNumber, name, nickname);
+        return Objects.hash(idUser, guid, email, phoneNumber, name, nickname, creationDate, updatingDate);
     }
 
     @Override
@@ -188,6 +216,8 @@ public class User implements IUser, Serializable {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", name='" + name + '\'' +
                 ", nickname='" + nickname + '\'' +
+                ", creationDate=" + creationDate +
+                ", updatingDate=" + updatingDate +
                 ", userDetails=" + userDetails +
                 '}';
     }
