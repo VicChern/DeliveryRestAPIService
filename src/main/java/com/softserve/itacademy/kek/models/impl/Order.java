@@ -47,7 +47,7 @@ public class Order implements IOrder, Serializable {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private OrderDetails orderDetails;
 
-    @OneToMany(mappedBy = "idOrder", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderEvent> orderEventList;
 
     public Long getIdOrder() {
