@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.controller;
 
+import java.util.UUID;
+
 import com.google.gson.Gson;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
@@ -15,8 +17,6 @@ import com.softserve.itacademy.kek.dto.OrderEventListDto;
 import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 import com.softserve.itacademy.kek.dto.OrderListDto;
 
-import java.util.UUID;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,10 +28,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Test(groups = {"unit-tests"})
 public class OrderControllerTest {
     private final Gson gson = new Gson();
+
     private OrderEventDto orderEventDto;
     private OrderEventListDto orderEventListDto;
     private OrderDto orderDto;
     private OrderListDto orderListDto;
+    private OrderDetailsDto orderDetailsDto;
+
+    private UUID guid;
+    private UUID tenant;
 
     @InjectMocks
     private OrderController controller;
@@ -40,11 +45,13 @@ public class OrderControllerTest {
 
     @BeforeTest
     public void setup() {
-        OrderDetailsDto orderDetails = new OrderDetailsDto("some info", "https://mypicture");
-        orderDto = new OrderDto(UUID.randomUUID(), UUID.randomUUID(), "summary", orderDetails);
+        guid = UUID.randomUUID();
+        tenant = UUID.randomUUID();
+        orderDetailsDto = new OrderDetailsDto("some info", "https://mypicture");
+        orderDto = new OrderDto(guid, tenant, "summary", orderDetailsDto);
         orderListDto = new OrderListDto().addOrder(orderDto);
-        orderEventDto = new OrderEventDto("wqewqe1r1", "123", "some info", OrderEventTypesDto.DELIVERED);
-        orderEventListDto = new OrderEventListDto("qwert1234").addOrderEvent(orderEventDto);
+        orderEventDto = new OrderEventDto(UUID.randomUUID(), orderDto, "some info", OrderEventTypesDto.DELIVERED);
+        orderEventListDto = new OrderEventListDto(UUID.randomUUID()).addOrderEvent(orderEventDto);
 
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
@@ -56,8 +63,8 @@ public class OrderControllerTest {
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/vnd.softserve.order+json"))
-                .andExpect(jsonPath("$.orderList[0].tenant").value("MyTenant"))
-                .andExpect(jsonPath("$.orderList[0].guid").value("123"))
+                .andExpect(jsonPath("$.orderList[0].tenant").value(tenant))
+                .andExpect(jsonPath("$.orderList[0].guid").value(guid))
                 .andExpect(jsonPath("$.orderList[0].details.payload").value("some info"))
                 .andExpect(jsonPath("$.orderList[0].details.imageUrl").value("https://mypicture"));
     }
