@@ -15,7 +15,7 @@ import com.softserve.itacademy.kek.models.IUserDetails;
 
 @Entity
 @Table(name = "o2o_user_details")
-public class UserDetails extends Auditable implements IUserDetails, Serializable {
+public class UserDetails extends AbstractEntity implements IUserDetails, Serializable {
 
     @Id
     @Column(name = "id_user")

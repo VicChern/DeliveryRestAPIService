@@ -26,7 +26,7 @@ import com.softserve.itacademy.kek.models.IUser;
 
 @Entity
 @Table(name = "obj_tenant")
-public class Tenant extends Auditable implements ITenant, Serializable {
+public class Tenant extends AbstractEntity implements ITenant, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

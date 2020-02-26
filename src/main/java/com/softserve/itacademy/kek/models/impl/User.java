@@ -24,7 +24,7 @@ import com.softserve.itacademy.kek.models.IUserDetails;
 
 @Entity
 @Table(name = "obj_user")
-public class User extends Auditable implements IUser, Serializable {
+public class User extends AbstractEntity implements IUser, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

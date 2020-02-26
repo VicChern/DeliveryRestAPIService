@@ -24,7 +24,7 @@ import com.softserve.itacademy.kek.models.IOrderDetails;
 
 @Entity
 @Table(name = "obj_order")
-public class Order extends Auditable implements IOrder, Serializable {
+public class Order extends AbstractEntity implements IOrder, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
