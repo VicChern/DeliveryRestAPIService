@@ -77,18 +77,8 @@ public class TenantServiceImpl implements ITenantService {
     @Transactional(readOnly = true)
     @Override
     public List<ITenant> getAll() {
-
         LOGGER.info("Getting all Tenants from db");
-        List<ITenant> tenants = new ArrayList<>();
-
-        tenantRepository.findAll().forEach(tenants::add);
-        if (tenants.isEmpty()) {
-            LOGGER.error("No one tenant was found.");
-            throw new TenantServiceException("No one tenant was found.");
-        }
-
-        LOGGER.info("Tenants was found: {}", tenants);
-        return tenants;
+        return new ArrayList<>(tenantRepository.findAll());
     }
 
     @Transactional(readOnly = true)
@@ -100,7 +90,7 @@ public class TenantServiceImpl implements ITenantService {
             return tenantRepository.findByGuid(guid).orElseThrow();
         } catch (NoSuchElementException ex) {
             LOGGER.error("There is no Tenant in db for guid: {}", guid);
-            throw new TenantServiceException("Tenant wasn't found for guid: " + guid);
+            throw new TenantServiceException(ex, "Tenant wasn't found for guid: " + guid);
         }
     }
 
@@ -109,9 +99,9 @@ public class TenantServiceImpl implements ITenantService {
     public ITenant update(ITenant iTenant, UUID guid) {
         LOGGER.info("Update Tenant by guid: {}", guid);
 
-        Tenant tenantForUpdating = (Tenant) getByGuid(guid);
+        final Tenant tenantForUpdating = (Tenant) getByGuid(guid);
 
-        TenantDetails tenantDetails = (TenantDetails) tenantForUpdating.getTenantDetails();
+        final TenantDetails tenantDetails = (TenantDetails) tenantForUpdating.getTenantDetails();
         tenantDetails.setPayload(iTenant.getTenantDetails().getPayload());
         tenantDetails.setImageUrl(iTenant.getTenantDetails().getImageUrl());
 
@@ -131,6 +121,7 @@ public class TenantServiceImpl implements ITenantService {
     public void deleteByGuid(UUID guid) {
         LOGGER.info("Delete Tenant by guid: {}", guid);
 
+        final Tenant tenant = (Tenant) getByGuid(guid);
         try {
             tenantRepository.removeByGuid(guid);
         } catch (EmptyResultDataAccessException ex) {

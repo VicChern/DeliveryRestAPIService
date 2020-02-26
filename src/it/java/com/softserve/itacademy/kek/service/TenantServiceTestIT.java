@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -56,7 +58,6 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
         userRepository.deleteAll();
     }
 
-    @Rollback
     @Test
     public void createSuccess() {
         //when
@@ -69,4 +70,15 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
         assertEquals(foundTenant, savedTenant);
     }
 
+    @Test
+    public void getAllSuccess() {
+        //given
+        ITenant savedTenant = tenantService.create(tenant);
+
+        //when
+        List<ITenant> tenants = tenantService.getAll();
+
+        assertEquals(tenants.size(), 1);
+        assertEquals(tenants.get(0), savedTenant);
+    }
 }

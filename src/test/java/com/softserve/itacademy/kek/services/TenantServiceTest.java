@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -112,7 +113,7 @@ public class TenantServiceTest {
     @Test
     void getByGuidSuccess() {
         //given
-        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(tenant);
+        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(tenant));
 
         // when
         ITenant gettedTenant = tenantService.getByGuid(tenant.getGuid());
@@ -141,7 +142,7 @@ public class TenantServiceTest {
     @Test
     void updateSuccess() {
         //given
-        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(tenant);
+        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(tenant));
         when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 
         Tenant updatedTenant = tenant;
@@ -174,7 +175,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void updateThrowsServiceExceptionWhenRepositoryThrowsPersistenceException() {
         //given
-        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(tenant);
+        when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(tenant));
         when(tenantRepository.save(any(Tenant.class))).thenThrow(PersistenceException.class);
 
         // when

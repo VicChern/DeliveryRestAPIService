@@ -21,6 +21,7 @@ import com.softserve.itacademy.kek.models.impl.TenantProperties;
 import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
+import com.softserve.itacademy.kek.services.ITenantService;
 
 @Service
 public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
@@ -29,11 +30,15 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
     private final TenantPropertiesRepository tenantPropertiesRepository;
     private final TenantRepository tenantRepository;
+    private final ITenantService tenantService;
 
     @Autowired
-    public TenantPropertiesServiceImpl(TenantPropertiesRepository tenantPropertiesRepository, TenantRepository tenantRepository) {
+    public TenantPropertiesServiceImpl(TenantPropertiesRepository tenantPropertiesRepository,
+                                       TenantRepository tenantRepository,
+                                       ITenantService tenantService) {
         this.tenantPropertiesRepository = tenantPropertiesRepository;
         this.tenantRepository = tenantRepository;
+        this.tenantService = tenantService;
     }
 
     @Transactional(readOnly = true)
@@ -41,16 +46,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
     public List<ITenantProperties> getAllForTenant(UUID tenantGuid) {
         LOGGER.info("Getting all TenantProperties for tenant guid: {}", tenantGuid);
 
-        List<ITenantProperties> tenantProperties = new ArrayList<>(tenantPropertiesRepository.findAll());
-
-        if (tenantProperties.isEmpty()) {
-            LOGGER.error("No one tenantProperties was found for tenant guid: {}", tenantGuid);
-            throw new TenantPropertiesServiceException("No one tenantProperties was found for tenant guid: " + tenantGuid);
-        }
-
-        LOGGER.info("TenantProperties was found: {}", tenantProperties);
-
-        return tenantProperties;
+        return new ArrayList<>(tenantPropertiesRepository.findAll());
     }
 
     @Transactional
@@ -58,12 +54,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
     public List<ITenantProperties> create(List<ITenantProperties> iTenantProperties, UUID tenantGuid) {
         LOGGER.info("Save tenant properties for tenant guid {} to db: {}", tenantGuid, iTenantProperties);
 
-        Tenant tenant = tenantRepository.findByGuid(tenantGuid);
-
-        if (tenant == null) {
-            LOGGER.error("There is no Tenant in db for tenant guid: {}", tenantGuid);
-            throw new TenantPropertiesServiceException("Tenant wasn't found for tenant guid: " + tenantGuid);
-        }
+        Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
 
         List<TenantProperties> tenantProperties = new ArrayList<>();
         iTenantProperties.forEach(iTenantProperty -> tenantProperties.add(transform(iTenantProperty)));
@@ -74,7 +65,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
             tenant = tenantRepository.save(tenant);
         } catch (PersistenceException ex) {
             LOGGER.error("Tenant properties wasn't saved for tenant guid: {}, properties: {}", tenantGuid, iTenantProperties);
-            throw new TenantPropertiesServiceException("Tenant properties wasn't saved for tenant guid: " + tenantGuid);
+            throw new TenantPropertiesServiceException(ex, "Tenant properties wasn't saved for tenant guid: " + tenantGuid);
         }
 
         LOGGER.info("Tenant properties was saved for tenant guid: {}, properties: {}", tenantGuid, iTenantProperties);
