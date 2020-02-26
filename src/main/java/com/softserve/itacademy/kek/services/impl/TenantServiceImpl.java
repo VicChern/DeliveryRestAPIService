@@ -1,8 +1,6 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -10,7 +8,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +43,7 @@ public class TenantServiceImpl implements ITenantService {
     @Transactional
     @Override
     public ITenant create(ITenant iTenant) throws TenantServiceException {
-        LOGGER.info("Save Tenant to db: {}", iTenant);
+        LOGGER.debug("Save Tenant to db: {}", iTenant);
 
         final UUID ownerGuid = iTenant.getTenantOwner().getGuid();
 
@@ -53,16 +52,16 @@ public class TenantServiceImpl implements ITenantService {
 
         // check if exist user for tenant
         //TODO replace by checking whether the ownerGuid is guid of principal user (when will be added security)
-        try {
+
             final User tenantOwner = userRepository.findByGuid(ownerGuid);
+
+            if(tenantOwner == null) {
+                LOGGER.error("There is no User in db for Tenant with user guid: {}", ownerGuid);
+                throw new TenantServiceException(null, "There is no User for Tenant with user guid: " + ownerGuid);
+            }
 
             tenantOwner.setTenant(tenantForSaving);
             tenantForSaving.setTenantOwner(tenantOwner);
-
-        } catch (EntityNotFoundException ex) {
-            LOGGER.error("There is no User in db for Tenant with user guid: {}", ownerGuid);
-            throw new TenantServiceException(ex, "There is no User for Tenant with user guid: " + ownerGuid);
-        }
 
         // save tenant to db
         try {
@@ -73,18 +72,19 @@ public class TenantServiceImpl implements ITenantService {
         }
     }
 
-
     @Transactional(readOnly = true)
     @Override
     public List<ITenant> getAll() {
-        LOGGER.info("Getting all Tenants from db");
-        return new ArrayList<>(tenantRepository.findAll());
+        LOGGER.debug("Getting all Tenants from db");
+        List<? extends ITenant> tenants = tenantRepository.findAll();
+
+        return (List<ITenant>) tenants;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public ITenant getByGuid(UUID guid) {
-        LOGGER.info("Get Tenant by guid from db: {}", guid);
+    public ITenant getByGuid(UUID guid) throws TenantServiceException{
+        LOGGER.debug("Get Tenant by guid from db: {}", guid);
 
         try {
             return tenantRepository.findByGuid(guid).orElseThrow();
@@ -94,10 +94,20 @@ public class TenantServiceImpl implements ITenantService {
         }
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Page<ITenant> getAllPageable(Pageable pageable) {
+        LOGGER.debug("Getting pageable: {} Tenants from db", pageable );
+
+        Page<? extends ITenant> tenants = tenantRepository.findAll(pageable);
+
+        return (Page<ITenant>) tenants;
+    }
+
     @Transactional
     @Override
-    public ITenant update(ITenant iTenant, UUID guid) {
-        LOGGER.info("Update Tenant by guid: {}", guid);
+    public ITenant update(ITenant iTenant, UUID guid) throws TenantServiceException{
+        LOGGER.debug("Update Tenant by guid: {}", guid);
 
         final Tenant tenantForUpdating = (Tenant) getByGuid(guid);
 
@@ -118,21 +128,20 @@ public class TenantServiceImpl implements ITenantService {
 
     @Transactional
     @Override
-    public void deleteByGuid(UUID guid) {
-        LOGGER.info("Delete Tenant by guid: {}", guid);
+    public void deleteByGuid(UUID guid) throws TenantServiceException {
+        LOGGER.debug("Delete Tenant by guid: {}", guid);
 
         final Tenant tenant = (Tenant) getByGuid(guid);
-        try {
-            tenantRepository.removeByGuid(guid);
-        } catch (EmptyResultDataAccessException ex) {
-            LOGGER.error("Tenant wasn't deleted for guid: {}", guid);
-            throw new TenantServiceException(ex, "Tenant wasn't deleted for guid: " + guid);
-        }
+        tenantRepository.delete(tenant);
 
-        LOGGER.info("Tenant was deleted for guid: {}", guid);
+        LOGGER.debug("Tenant was deleted for guid: {}", guid);
     }
 
-
+    /**
+     * Transform {@link ITenant} to {@link Tenant}
+     * @param iTenant iTenant
+     * @return transformed tenant
+     */
     private Tenant transform(ITenant iTenant) {
         TenantDetails tenantDetails = new TenantDetails();
         tenantDetails.setPayload(iTenant.getTenantDetails().getPayload());

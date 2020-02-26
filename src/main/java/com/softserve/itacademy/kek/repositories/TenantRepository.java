@@ -11,5 +11,4 @@ public interface TenantRepository extends JpaRepository<Tenant, Long> {
 
     Optional<Tenant> findByGuid(UUID guid);
 
-    void removeByGuid(UUID guid);
 }

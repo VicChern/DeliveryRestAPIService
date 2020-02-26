@@ -3,7 +3,9 @@ package com.softserve.itacademy.kek.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterMethod;
@@ -78,7 +80,23 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
         //when
         List<ITenant> tenants = tenantService.getAll();
 
+        //then
         assertEquals(tenants.size(), 1);
         assertEquals(tenants.get(0), savedTenant);
     }
+
+    @Test
+    public void getAllPageableSuccess() {
+        //given
+        ITenant savedTenant = tenantService.create(tenant);
+        Pageable pageable = PageRequest.of(0, 1);
+
+        //when
+        Page<ITenant> tenants = tenantService.getAllPageable(pageable);
+
+        //then
+        assertEquals(tenants.getTotalPages(), 1);
+        assertEquals(tenants.getContent().get(0), savedTenant);
+    }
+
 }
