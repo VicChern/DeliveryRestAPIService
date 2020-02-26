@@ -59,7 +59,7 @@ public class OrderController extends DefaultController {
     }
 
     private OrderEventTypesDto transformOrderEventType(IOrderEventType orderEventType) {
-        return OrderEventTypesDto.valueOf(orderEventType.getName());
+//        return OrderEventTypesDto.valueOf(orderEventType.getName());
     }
 
     /**
@@ -71,6 +71,7 @@ public class OrderController extends DefaultController {
     public ResponseEntity<OrderListDto> getOrderList() {
         logger.debug("Client requested the list of all orders");
 
+        //TODO: this will work when fixed OrderService
         List<IOrder> orderList = orderService.getAll();
 
         OrderListDto orderListDto = new OrderListDto(orderList
@@ -88,24 +89,23 @@ public class OrderController extends DefaultController {
     /**
      * Creates a new order
      *
-     * @param orders object as a JSON
-     * @return created {@link OrderListDto} object
+     * @param newOrderDto  {@link OrderDto} order object as a JSON
+     * @param customerGuid order guid from the URN
+     * @return Response entity with {@link OrderListDto} object as a JSON
      */
     @PostMapping(value = "/{customerGuid}",
             consumes = KekMediaType.ORDER_LIST,
             produces = KekMediaType.ORDER_LIST)
-    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto orders, @PathVariable String customerGuid) {
-        logger.debug("Orders has been accepted:\n{}", orders);
+    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderDto newOrderDto, @PathVariable String customerGuid) {
+        logger.debug("Accepted requested to create a new order:\n{}", newOrderDto);
         //TODO: to change this
+        IOrder createdOrder = orderService.create(newOrderDto, UUID.fromString(customerGuid));
+        OrderDto createdOrderDto = transformOrder(createdOrder);
 
-        IOrder iOrder = orderService.create(orders.getOrderList().get(0), UUID.fromString(customerGuid));
-
-        OrderDto orderDto = transformOrder(iOrder);
-
-        logger.debug("Sending the created orders to the client:\n{}", orders);
+        logger.debug("Sending the created order to the client:\n{}", createdOrderDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new OrderListDto().addOrder(orderDto));
+                .body(new OrderListDto().addOrder(createdOrderDto));
     }
 
 
@@ -177,9 +177,9 @@ public class OrderController extends DefaultController {
     public ResponseEntity<OrderEventListDto> getEvents(@PathVariable String guid) {
         logger.info("Client requested all the events of the order {}", guid);
 
-        //TODO: getAllForOrder()
+        //TODO: this will work when fixed OrderEventService
 
-        List<IOrderEvent> events = orderEventService.getAllForOrder(UUID.fromString(guid));
+        List<IOrderEvent> events = orderEventService.getAllEventsForOrder(UUID.fromString(guid));
 
         OrderEventListDto orderEventListDto = new OrderEventListDto(events
                 .stream()
