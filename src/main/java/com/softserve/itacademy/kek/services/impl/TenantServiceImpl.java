@@ -119,7 +119,7 @@ public class TenantServiceImpl implements ITenantService {
             throw new TenantServiceException("Tenant wasn't found for guid: " + guid);
         }
 
-        TenantDetails tenantDetails = new TenantDetails();
+        TenantDetails tenantDetails = (TenantDetails) tenantForUpdating.getTenantDetails();
         tenantDetails.setPayload(tenant.getTenantDetails().getPayload());
         tenantDetails.setImageUrl(tenant.getTenantDetails().getImageUrl());
 

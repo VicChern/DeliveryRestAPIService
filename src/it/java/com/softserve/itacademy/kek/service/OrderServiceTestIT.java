@@ -64,6 +64,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     private User customer;
     private Tenant tenant;
     private Order order;
+    private User savedCustomer;
 
     @BeforeMethod
     public void setUp() {
@@ -103,7 +104,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
         User savedUser = userRepository.save(user);
         assertNotNull(savedUser);
 
-        User savedCustomer = userRepository.save(customer);
+        savedCustomer = userRepository.save(customer);
         assertNotNull(savedUser);
 
         tenant.setTenantOwner(savedUser);
@@ -133,7 +134,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @Test
     public void createSuccess() {
         //when
-        orderService.create(order, customer.getGuid());
+        orderService.create(order, savedCustomer.getGuid());
     }
 
 }

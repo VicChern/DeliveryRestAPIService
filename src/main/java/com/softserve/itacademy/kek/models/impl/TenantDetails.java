@@ -15,7 +15,7 @@ import com.softserve.itacademy.kek.models.ITenantDetails;
 
 @Entity
 @Table(name = "o2o_tenant_details")
-public class TenantDetails implements ITenantDetails, Serializable {
+public class TenantDetails extends AbstractEntity implements ITenantDetails, Serializable {
 
     @Id
     @Column(name = "id_tenant")
