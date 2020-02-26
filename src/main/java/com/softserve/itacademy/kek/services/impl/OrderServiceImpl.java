@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.services.impl;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -83,176 +84,40 @@ public class OrderServiceImpl implements IOrderService {
 
         final User customer = (User) userService.getByGuid(customerGuid);
         final Tenant tenant = (Tenant) tenantService.getByGuid(iOrder.getTenant().getGuid());
-
         final Order actualOrder = transform(iOrder, tenant);
-
         final Order savedOrder;
+
         try {
             savedOrder = orderRepository.save(actualOrder);
+            logger.info("Order was saved: {}", savedOrder);
         } catch (PersistenceException e) {
             logger.error("Order wasn`t saved: {}", actualOrder);
             throw new OrderServiceException("Order wasn`t saved");
         }
 
+        createActorForOrder(tenant, customer, savedOrder);
+
+        return savedOrder;
+    }
+
+    @Transactional(readOnly = true)
+    public void createActorForOrder(Tenant tenant, User customer, Order savedOrder) {
         final ActorRole actorRole = actorRoleRepository.findByName(CUSTOMER);
         final Actor savedActor = saveActor(tenant, customer, actorRole);
 
         createOrderEvent(savedOrder.getGuid(), savedActor.getGuid(), CREATED, "Create order event");
-
-        logger.info("Order was saved: {}", savedOrder);
-        return savedOrder;
     }
 
     @Transactional
-    public IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, IOrderEvent iOrderEvent) {
-        logger.info("Saving orderEvent for order: {} and actor : {}, orderEvent: {}", orderGuid, userGuid, iOrderEvent);
-
-        return createOrderEvent(orderGuid, userGuid, iOrderEvent.getOrderEventType().getName(), iOrderEvent.getPayload());
-    }
-
-    private OrderEventType getOrderEventType(String name) {
-        OrderEventType orderEventType = orderEventTypeRepository.findByName(name);
-        if (orderEventType == null) {
-            logger.error("OrderEventType wasn`t find for name: {}", name);
-            throw new OrderServiceException("OrderEventType wasn`t find for name: " + name);
-        }
-        return orderEventType;
-    }
-
-
-    @Transactional(readOnly = true)
-    @Override
-    public Iterable<IOrder> getAll() throws OrderServiceException {
-        logger.info("Getting all Orders from db");
-        Iterable<? extends IOrder> orderList;
-
-        try {
-            orderList = orderRepository.findAll();
-        } catch (EntityNotFoundException e) {
-            logger.error("Orders weren't find");
-            throw new OrderServiceException("Orders weren't find");
-        }
-
-        return (Iterable<IOrder>) orderList;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public IOrder getByGuid(UUID guid) throws OrderServiceException {
-        logger.info("Getting Order from db by guid");
-        Order order;
-
-        try {
-            order = orderRepository.findByGuid(guid);
-        } catch (EntityNotFoundException e) {
-            logger.error("Order with guid: {}, wasn`t found", guid);
-            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
-        }
-
-        logger.info("Order with guid: {}, was found: {}", guid, order);
-        return order;
-    }
-
-    @Transactional
-    @Override
-    public IOrder update(IOrder order, UUID guid) {
-        logger.info("Updating order: {}, with guid: {}", order, guid);
-
-        Order actualOrder = orderRepository.findByGuid(guid);
-
-        actualOrder.setOrderDetails((OrderDetails) order.getOrderDetails());
-        actualOrder.setGuid(order.getGuid());
-        actualOrder.setSummary(order.getSummary());
-        actualOrder.setTenant(order.getTenant());
-
-        IOrderDetails details = order.getOrderDetails();
-        OrderDetails actualDetails = new OrderDetails();
-
-        if (details != null) {
-//            actualDetails.setIdOrder(details.getIdOrder());
-            actualDetails.setImageUrl(details.getImageUrl());
-            actualDetails.setPayload(details.getPayload());
-
-        }
-
-        actualOrder.setOrderDetails(actualDetails);
-
-        try {
-            orderRepository.findByGuid(guid);
-        } catch (EntityNotFoundException e) {
-            logger.error("Order with guid: {}, wasn`t found", guid);
-            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
-        }
-
-        try {
-            orderRepository.save(actualOrder);
-        } catch (PersistenceException e) {
-            logger.error("Order with guid: {}, wasn`t updated: {}", guid, actualOrder);
-            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t updated: " + actualOrder);
-        }
-
-        logger.info("Order with guid: {}, was updated: {}", guid, actualOrder);
-        return actualOrder;
-    }
-
-    @Transactional
-    @Override
-    public void deleteByGuid(UUID guid) throws OrderServiceException {
-        logger.info("Deleting Order from db by guid: {}", guid);
-
-        Order actualOrder;
-
-        try {
-            actualOrder = orderRepository.findByGuid(guid);
-        } catch (EntityNotFoundException e) {
-            logger.error("Order with guid: {}, wasn`t found", guid);
-            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
-        }
-
-        try {
-            orderRepository.deleteById(actualOrder.getIdOrder());
-        } catch (PersistenceException e) {
-            logger.error("Order wasn`t deleted from db: {}", actualOrder);
-            throw new OrderServiceException("Order wasn`t deleted: " + actualOrder);
-        }
-
-        logger.info("Order with guid: {}, was deleted", guid);
-    }
-
-
-    private Order transform(IOrder iOrder, Tenant tenant) {
-        Order order = new Order();
-
-        OrderDetails actualDetails = new OrderDetails();
-        if (iOrder.getOrderDetails() != null) {
-            actualDetails.setPayload(iOrder.getOrderDetails().getPayload());
-            actualDetails.setImageUrl(iOrder.getOrderDetails().getImageUrl());
-        }
-        order.setOrderDetails(actualDetails);
-        actualDetails.setOrder(order);
-        order.setGuid(UUID.randomUUID());
-        order.setSummary(iOrder.getSummary());
-        order.setTenant(tenant);
-
-        return order;
-    }
-
-    private Actor getActorByGuid(UUID guid) {
-        Actor actor = actorRepository.findByGuid(guid);
-        if (actor == null) {
-            logger.error("Actor wasn`t find for guid: {}", guid);
-            throw new OrderServiceException("Actor wasn`t find for guid: " + guid);
-        }
-        return actor;
-    }
-
-    private Actor saveActor(Tenant tenant, User user, ActorRole actorRole) {
+    public Actor saveActor(Tenant tenant, User user, ActorRole actorRole) {
         final Actor actor = new Actor();
+
         actor.setTenant(tenant);
         actor.setUser(user);
         actor.setActorRoles(Collections.singletonList(actorRole));
         actor.setGuid(UUID.randomUUID());
         actor.setAlias("Actor created");
+
         try {
             return actorRepository.save(actor);
         } catch (PersistenceException e) {
@@ -262,17 +127,18 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Transactional
-    private IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, String orderEventTypeName, String payload) {
+    public IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, String orderEventTypeName, String payload) {
         logger.info("Saving orderEvent for order: {} and actor : {}", orderGuid, userGuid);
 
         final Order order = (Order) getByGuid(orderGuid);
         final Tenant tenant = (Tenant) tenantService.getByGuid(order.getTenant().getGuid());
 
         Actor actor = actorRepository.findByGuid(userGuid);
-        // if actor doesn't exist yet
+
         if (actor == null || !actor.getTenant().getGuid().equals(tenant.getGuid())) {
             ActorRole actorRole = actorRoleRepository.findByName(CURRIER);
             User user = (User) userService.getByGuid(userGuid);
+
             actor = saveActor(tenant, user, actorRole);
         }
 
@@ -293,4 +159,132 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public OrderEventType getOrderEventType(String name) {
+        final OrderEventType orderEventType = orderEventTypeRepository.findByName(name);
+
+        if (orderEventType == null) {
+            logger.error("OrderEventType wasn`t find for name: {}", name);
+            throw new OrderServiceException("OrderEventType wasn`t find for name: " + name);
+        }
+
+        return orderEventType;
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<IOrder> getAll() throws OrderServiceException {
+        logger.info("Getting all Orders from db");
+        final Iterable<? extends IOrder> orderList;
+
+        try {
+            orderList = orderRepository.findAll();
+        } catch (EntityNotFoundException e) {
+            logger.error("Orders weren't find");
+            throw new OrderServiceException("Orders weren't find");
+        }
+
+        return (List<IOrder>) orderList;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public IOrder getByGuid(UUID guid) throws OrderServiceException {
+        logger.info("Getting Order from db by guid");
+        final Order order;
+
+        try {
+            order = orderRepository.findByGuid(guid);
+        } catch (EntityNotFoundException e) {
+            logger.error("Order with guid: {}, wasn`t found", guid);
+            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
+        }
+
+        logger.info("Order with guid: {}, was found: {}", guid, order);
+        return order;
+    }
+
+    @Transactional
+    @Override
+    public IOrder update(IOrder order, UUID guid) {
+        logger.info("Updating order: {}, with guid: {}", order, guid);
+
+        final Order actualOrder = orderRepository.findByGuid(guid);
+        final Tenant actualTenant = tenantRepository.findByGuid(order.getTenant().getGuid()).get();
+        final IOrderDetails details = order.getOrderDetails();
+        final OrderDetails actualDetails = new OrderDetails();
+
+
+        if (details != null) {
+            actualDetails.setImageUrl(details.getImageUrl());
+            actualDetails.setPayload(details.getPayload());
+            actualDetails.setOrder(actualOrder);
+        }
+
+        actualOrder.setOrderDetails(actualDetails);
+        actualOrder.setGuid(order.getGuid());
+        actualOrder.setSummary(order.getSummary());
+        actualOrder.setTenant(actualTenant);
+
+        try {
+            orderRepository.findByGuid(guid);
+        } catch (EntityNotFoundException e) {
+            logger.error("Order with guid: {}, wasn`t found", guid);
+            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
+        }
+
+        try {
+            logger.info("Order with guid: {}, was updated: {}", guid, actualOrder);
+            return orderRepository.save(actualOrder);
+        } catch (PersistenceException e) {
+            logger.error("Order with guid: {}, wasn`t updated: {}", guid, actualOrder);
+            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t updated: " + actualOrder);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteByGuid(UUID guid) throws OrderServiceException {
+        logger.info("Deleting Order from db by guid: {}", guid);
+
+        final Order actualOrder;
+
+        try {
+            actualOrder = orderRepository.findByGuid(guid);
+        } catch (EntityNotFoundException e) {
+            logger.error("Order with guid: {}, wasn`t found", guid);
+            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
+        }
+
+        try {
+            orderRepository.deleteById(actualOrder.getIdOrder());
+        } catch (PersistenceException e) {
+            logger.error("Order wasn`t deleted from db: {}", actualOrder);
+            throw new OrderServiceException("Order wasn`t deleted: " + actualOrder);
+        }
+
+        logger.info("Order with guid: {}, was deleted", guid);
+    }
+
+
+    private Order transform(IOrder iOrder, Tenant tenant) {
+        final Order order = new Order();
+
+        OrderDetails actualDetails = new OrderDetails();
+
+        if (iOrder.getOrderDetails() != null) {
+            actualDetails.setPayload(iOrder.getOrderDetails().getPayload());
+            actualDetails.setImageUrl(iOrder.getOrderDetails().getImageUrl());
+        }
+
+        order.setOrderDetails(actualDetails);
+        order.setGuid(UUID.randomUUID());
+        order.setSummary(iOrder.getSummary());
+        order.setTenant(tenant);
+
+        actualDetails.setOrder(order);
+
+        return order;
+    }
 }
