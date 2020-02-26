@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderDetails;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
@@ -212,17 +211,7 @@ public class OrderServiceImpl implements IOrderService {
 
         final Order actualOrder = orderRepository.findByGuid(guid);
         final Tenant actualTenant = tenantRepository.findByGuid(order.getTenant().getGuid()).get();
-        final IOrderDetails details = order.getOrderDetails();
-        final OrderDetails actualDetails = new OrderDetails();
 
-
-        if (details != null) {
-            actualDetails.setImageUrl(details.getImageUrl());
-            actualDetails.setPayload(details.getPayload());
-            actualDetails.setOrder(actualOrder);
-        }
-
-        actualOrder.setOrderDetails(actualDetails);
         actualOrder.setGuid(order.getGuid());
         actualOrder.setSummary(order.getSummary());
         actualOrder.setTenant(actualTenant);
