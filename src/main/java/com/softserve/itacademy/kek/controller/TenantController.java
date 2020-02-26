@@ -397,7 +397,7 @@ public class TenantController extends DefaultController {
                                                           @RequestBody @Valid AddressDto tenantAddressDto) {
         logger.info("Accepted modified address of the tenant {} from the client:\n{}", guid, tenantAddressDto);
 
-        IAddress modifiedAddress = addressService.updateForTenant(tenantAddressDto, UUID.fromString(guid));
+        IAddress modifiedAddress = addressService.updateForTenant(tenantAddressDto, UUID.fromString(guid), UUID.fromString(addrGuid));
         AddressDto modifiedAddressDto = transformAddress(modifiedAddress);
 
         logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, tenantAddressDto);
