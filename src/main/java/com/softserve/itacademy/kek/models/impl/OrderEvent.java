@@ -22,7 +22,7 @@ import com.softserve.itacademy.kek.models.IOrderEventType;
 
 @Entity
 @Table(name = "obj_order_event")
-public class OrderEvent extends Auditable implements IOrderEvent, Serializable {
+public class OrderEvent extends AbstractEntity implements IOrderEvent, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

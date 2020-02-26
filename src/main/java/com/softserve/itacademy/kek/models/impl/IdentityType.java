@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "def_identity_type")
-public class IdentityType extends Auditable implements Serializable {
+public class IdentityType extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

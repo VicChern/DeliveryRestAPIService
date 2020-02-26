@@ -20,7 +20,7 @@ import com.softserve.itacademy.kek.models.IAddress;
 
 @Entity
 @Table(name = "obj_address")
-public class Address extends Auditable implements IAddress, Serializable {
+public class Address extends AbstractEntity implements IAddress, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
