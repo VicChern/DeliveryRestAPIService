@@ -77,7 +77,6 @@ public class TenantController extends DefaultController {
 
         TenantPropertiesDto tenantPropertiesDto = new TenantPropertiesDto(
                 tenantProperties.getGuid(),
-//                tenantProperties.getTenant().getGuid(),
                 propertyType,
                 tenantProperties.getKey(),
                 tenantProperties.getValue());
@@ -92,19 +91,6 @@ public class TenantController extends DefaultController {
      */
     private AddressDto transformAddress(IAddress address) {
         return new AddressDto(address.getGuid(), address.getAlias(), address.getAddress(), address.getNotes());
-    }
-
-    /**
-     * Temporary method for TenantPropertiesDto stub
-     *
-     * @return {@link TenantPropertiesDto} stub
-     */
-    private TenantPropertiesDto getTenantPropertiesDtoStub() {
-//        return new TenantPropertiesDto(
-//
-//             UUID.fromString("guid12345qwawt"), "glovo", new TenantPropertiesDto(), "workingDay", "Wednesday");
-
-        return new TenantPropertiesDto();
     }
 
     /**
@@ -261,7 +247,7 @@ public class TenantController extends DefaultController {
 //        TODO: transform to tenantProperties to dto and return it
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body(tenantPropertiesDtoList);
+                .body(tenantProperties);
     }
 
     /**

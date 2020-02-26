@@ -78,13 +78,22 @@ public class UserControllerTest {
 
     @Test
     public void addUserTest() throws Exception {
-        String payload = "{\"userList\":[{\"guid\":\"46425414-bda1-4985-a290-88d0457636a1\",\"name\":\"name\",\"nickname\":\"pict\",\"email\":\"pict@email.com\",\"phone\":\"380981049090\",\"details\":{\"payload\":\"some payload\",\"imageUrl\":\"http://awesomepicture.com\"}}]}";
-
+        String payload = "{\n" +
+                "    \"guid\": \"efb92f5a-6524-4e1a-8b76-d7bcf6ac690c\",\n" +
+                "    \"name\": \"Zyama\",\n" +
+                "    \"nickname\": \"zya\",\n" +
+                "    \"email\": \"vakx@email.com\",\n" +
+                "    \"phone\": \"54321\",\n" +
+                "    \"details\": {\n" +
+                "        \"payload\": \"I am Zyama. That is all you need to know!\",\n" +
+                "        \"imageUrl\": \"http://myawesomepic.com/mybeautifulava.jpg\"\n" +
+                "    }\n" +
+                "}";
         when(userService.create(userDto)).thenReturn(userDto);
 
         mockMvc.perform(post("/users")
-                .contentType("application/vnd.softserve.userList+json")
-                .accept("application/vnd.softserve.userList+json")
+                .contentType("application/vnd.softserve.user+json")
+                .accept("application/vnd.softserve.user+json")
                 .content(payload))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
