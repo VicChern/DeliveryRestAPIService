@@ -4,6 +4,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -42,37 +43,34 @@ public class TenantServiceImpl implements ITenantService {
 
     @Transactional
     @Override
-    public ITenant create(ITenant tenant) throws TenantServiceException {
-        LOGGER.info("Save Tenant to db: {}", tenant);
-        User tenantOwner;
-        UUID ownerGuid = tenant.getTenantOwner().getGuid();
-        Tenant tenantForSaving = transform(tenant);
+    public ITenant create(ITenant iTenant) throws TenantServiceException {
+        LOGGER.info("Save Tenant to db: {}", iTenant);
 
+        final UUID ownerGuid = iTenant.getTenantOwner().getGuid();
+
+        final Tenant tenantForSaving = transform(iTenant);
         tenantForSaving.setGuid(UUID.randomUUID());
 
         // check if exist user for tenant
         //TODO replace by checking whether the ownerGuid is guid of principal user (when will be added security)
         try {
-            tenantOwner = userRepository.findByGuid(ownerGuid);
+            final User tenantOwner = userRepository.findByGuid(ownerGuid);
 
             tenantOwner.setTenant(tenantForSaving);
             tenantForSaving.setTenantOwner(tenantOwner);
 
         } catch (EntityNotFoundException ex) {
             LOGGER.error("There is no User in db for Tenant with user guid: {}", ownerGuid);
-            throw new TenantServiceException("There is no User for Tenant with user guid: " + ownerGuid);
+            throw new TenantServiceException(ex, "There is no User for Tenant with user guid: " + ownerGuid);
         }
 
         // save tenant to db
         try {
-            tenantRepository.save(tenantForSaving);
+             return tenantRepository.save(tenantForSaving);
         } catch (PersistenceException ex) {
             LOGGER.error("Tenant wasn't saved: {}", tenantForSaving);
-            throw new TenantServiceException("Tenant wasn't saved: " + tenant);
+            throw new TenantServiceException(ex, "Tenant wasn't saved: " + iTenant);
         }
-
-        LOGGER.info("Tenant was saved: " + tenantForSaving);
-        return tenantForSaving;
     }
 
 
@@ -97,44 +95,35 @@ public class TenantServiceImpl implements ITenantService {
     @Override
     public ITenant getByGuid(UUID guid) {
         LOGGER.info("Get Tenant by guid from db: {}", guid);
-        ITenant tenant = tenantRepository.findByGuid(guid);
-        if (tenant == null) {
+
+        try {
+            return tenantRepository.findByGuid(guid).orElseThrow();
+        } catch (NoSuchElementException ex) {
             LOGGER.error("There is no Tenant in db for guid: {}", guid);
             throw new TenantServiceException("Tenant wasn't found for guid: " + guid);
         }
-
-        LOGGER.info("Tenant was found: " + tenant);
-        return tenant;
     }
 
     @Transactional
     @Override
-    public ITenant update(ITenant tenant, UUID guid) {
+    public ITenant update(ITenant iTenant, UUID guid) {
         LOGGER.info("Update Tenant by guid: {}", guid);
-        Tenant tenantForUpdating;
 
-        tenantForUpdating = tenantRepository.findByGuid(guid);
-        if (tenantForUpdating == null) {
-            LOGGER.error("There is no Tenant in db for guid: {}", guid);
-            throw new TenantServiceException("Tenant wasn't found for guid: " + guid);
-        }
+        Tenant tenantForUpdating = (Tenant) getByGuid(guid);
 
         TenantDetails tenantDetails = (TenantDetails) tenantForUpdating.getTenantDetails();
-        tenantDetails.setPayload(tenant.getTenantDetails().getPayload());
-        tenantDetails.setImageUrl(tenant.getTenantDetails().getImageUrl());
+        tenantDetails.setPayload(iTenant.getTenantDetails().getPayload());
+        tenantDetails.setImageUrl(iTenant.getTenantDetails().getImageUrl());
 
         tenantForUpdating.setTenantDetails(tenantDetails);
-        tenantForUpdating.setName(tenant.getName());
+        tenantForUpdating.setName(iTenant.getName());
 
         try {
-            tenantRepository.save(tenantForUpdating);
+           return tenantRepository.save(tenantForUpdating);
         } catch (PersistenceException ex) {
             LOGGER.error("Tenant wasn't updated for guid: {}", guid);
-            throw new TenantServiceException("Tenant wasn't updated for guid: " + guid);
+            throw new TenantServiceException(ex, "Tenant wasn't updated for guid: " + guid);
         }
-
-        LOGGER.info("Tenant was updated: {}", tenantForUpdating);
-        return tenantForUpdating;
     }
 
     @Transactional
@@ -146,7 +135,7 @@ public class TenantServiceImpl implements ITenantService {
             tenantRepository.removeByGuid(guid);
         } catch (EmptyResultDataAccessException ex) {
             LOGGER.error("Tenant wasn't deleted for guid: {}", guid);
-            throw new TenantServiceException("Tenant wasn't deleted for guid: " + guid);
+            throw new TenantServiceException(ex, "Tenant wasn't deleted for guid: " + guid);
         }
 
         LOGGER.info("Tenant was deleted for guid: {}", guid);

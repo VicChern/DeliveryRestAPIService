@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.impl.Tenant;
 
 /**
  * Service interface for {@link ITenant}
@@ -12,12 +11,12 @@ import com.softserve.itacademy.kek.models.impl.Tenant;
 public interface ITenantService {
 
     /**
-     * Saved new {@link Tenant} to db
+     * Saved new {@link ITenant} to db
      *
-     * @param tenant tenant
+     * @param iTenant tenant
      * @return saved tenant
      */
-    ITenant create(ITenant tenant);
+    ITenant create(ITenant iTenant);
 
     /**
      * Gets all tenants for principal user
@@ -27,24 +26,24 @@ public interface ITenantService {
     List<ITenant> getAll();
 
     /**
-     * Gets tenant by {@link Tenant} guid
+     * Gets tenant by {@link ITenant} guid
      *
-     * @param guid {@link Tenant} guid
+     * @param guid {@link ITenant} guid
      * @return tenant
      */
     ITenant getByGuid(UUID guid);
 
     /**
-     * Updates {@link Tenant}
+     * Updates {@link ITenant}
      *
-     * @param tenant
-     * @param guid   {@link Tenant} guid
+     * @param iTenant
+     * @param guid   {@link ITenant} guid
      * @return updated tenant
      */
-    ITenant update(ITenant tenant, UUID guid);
+    ITenant update(ITenant iTenant, UUID guid);
 
     /**
-     * Deletes {@link Tenant} by guid
+     * Deletes {@link ITenant} by guid
      *
      * @param guid must not be {@literal null}.
      */

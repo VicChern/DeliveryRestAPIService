@@ -13,8 +13,15 @@ public abstract class ServiceException extends RuntimeException {
     @NotNull
     private int errorCode;
 
-    public ServiceException(@NotNull String error, @NotNull int errorCode, @NotNull String message) {
-        super(message);
+    @NotNull
+    private Exception ex;
+
+    public ServiceException(@NotNull Exception ex, @NotNull String message) {
+        super(message, ex);
+    }
+
+    public ServiceException(@NotNull Exception ex, @NotNull String error, @NotNull int errorCode, @NotNull String message) {
+        super(message, ex);
         this.error = error;
         this.errorCode = errorCode;
     }

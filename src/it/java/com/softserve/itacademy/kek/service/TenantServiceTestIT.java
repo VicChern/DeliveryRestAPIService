@@ -64,7 +64,7 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
 
         //then
         assertNotNull(savedTenant);
-        ITenant foundTenant = tenantRepository.findByGuid(savedTenant.getGuid());
+        ITenant foundTenant = tenantRepository.findByGuid(savedTenant.getGuid()).orElse(null);
         assertNotNull(foundTenant);
         assertEquals(foundTenant, savedTenant);
     }
