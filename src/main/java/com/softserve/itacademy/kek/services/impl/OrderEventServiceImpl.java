@@ -57,7 +57,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
             throw new OrderServiceException("There is no order for order event with order guid: " + orderGuid);
         }
 
-        orderEvent.setIdOrder(actualOrder);
+        orderEvent.setOrder(actualOrder);
 
         try {
             orderEventRepository.save(orderEvent);

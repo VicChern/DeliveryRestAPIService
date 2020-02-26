@@ -106,7 +106,7 @@ public class OrderServiceImpl implements IOrderService {
     public IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, IOrderEvent iOrderEvent) {
         logger.info("Saving orderEvent for order: {} and actor : {}, orderEvent: {}", orderGuid, userGuid, iOrderEvent);
 
-        return createOrderEvent(orderGuid, userGuid, iOrderEvent.getIdOrderEventType().getName(), iOrderEvent.getPayload());
+        return createOrderEvent(orderGuid, userGuid, iOrderEvent.getOrderEventType().getName(), iOrderEvent.getPayload());
     }
 
     private OrderEventType getOrderEventType(String name) {
@@ -278,10 +278,10 @@ public class OrderServiceImpl implements IOrderService {
         final OrderEventType orderEventType = getOrderEventType(orderEventTypeName);
 
         final OrderEvent orderEvent = new OrderEvent();
-        orderEvent.setIdOrder(order);
+        orderEvent.setOrder(order);
         orderEvent.setGuid(UUID.randomUUID());
-        orderEvent.setIdActor(actor);
-        orderEvent.setIdOrderEventType(orderEventType);
+        orderEvent.setActor(actor);
+        orderEvent.setOrderEventType(orderEventType);
         orderEvent.setPayload(payload);
 
         try {

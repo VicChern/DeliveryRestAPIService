@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_user")
-public class User implements IUser, Serializable {
+public class User extends AbstractEntity implements IUser, Serializable {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     List<Identity> identityList = new ArrayList<>();

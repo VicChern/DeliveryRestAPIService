@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "def_property_type")
-public class PropertyType implements IPropertyType, Serializable {
+public class PropertyType extends AbstractEntity implements IPropertyType, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

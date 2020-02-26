@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_actor")
-public class Actor implements IActor, Serializable {
+public class Actor extends AbstractEntity implements IActor, Serializable {
 
     @Id
     @Column(name = "id_actor")

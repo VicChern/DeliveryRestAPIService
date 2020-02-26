@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "def_actor_role")
-public class ActorRole implements Serializable {
+public class ActorRole extends AbstractEntity implements Serializable {
 
     @Id
     @Column(name = "id_actor_role")
