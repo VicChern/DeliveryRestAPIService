@@ -58,6 +58,7 @@ public class OrderController extends DefaultController {
         return new OrderEventDto(orderEvent.getGuid(), transformOrder(orderEvent.getIdOrder()), orderEvent.getPayload(), transformOrderEventType(orderEvent.getIdOrderEventType()));
     }
 
+    //TODO: fix it
     private OrderEventTypesDto transformOrderEventType(IOrderEventType orderEventType) {
 //        return OrderEventTypesDto.valueOf(orderEventType.getName());
     }
@@ -98,7 +99,7 @@ public class OrderController extends DefaultController {
             produces = KekMediaType.ORDER_LIST)
     public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderDto newOrderDto, @PathVariable String customerGuid) {
         logger.debug("Accepted requested to create a new order:\n{}", newOrderDto);
-        //TODO: to change this
+
         IOrder createdOrder = orderService.create(newOrderDto, UUID.fromString(customerGuid));
         OrderDto createdOrderDto = transformOrder(createdOrder);
 

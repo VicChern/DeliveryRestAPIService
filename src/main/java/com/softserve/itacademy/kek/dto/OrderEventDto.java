@@ -3,11 +3,18 @@ package com.softserve.itacademy.kek.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
+import java.util.UUID;
 
-public class OrderEventDto {
+import com.softserve.itacademy.kek.models.IActor;
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.IOrderEventType;
+
+public class OrderEventDto implements IOrderEvent {
     @NotNull
-    private String guid;
-    private String orderId;
+    private UUID guid;
+    private OrderDto orderDto;
+
 
     @NotNull
     @Size(max = 1024)
@@ -17,19 +24,19 @@ public class OrderEventDto {
     public OrderEventDto() {
     }
 
-    public OrderEventDto(String guid, String orderId, String payload, OrderEventTypesDto type) {
+    public OrderEventDto(UUID guid, OrderDto orderDto, String payload, OrderEventTypesDto type) {
         this.guid = guid;
-        this.orderId = orderId;
+        this.orderDto = orderDto;
         this.payload = payload;
         this.type = type;
     }
 
-    public String getGuid() {
+    public UUID getGuid() {
         return guid;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public OrderDto getOrderId() {
+        return orderDto;
     }
 
     public String getPayload() {
@@ -46,23 +53,39 @@ public class OrderEventDto {
         if (o == null || getClass() != o.getClass()) return false;
         OrderEventDto that = (OrderEventDto) o;
         return Objects.equals(guid, that.guid) &&
-                Objects.equals(orderId, that.orderId) &&
+                Objects.equals(orderDto, that.orderDto) &&
                 Objects.equals(payload, that.payload) &&
                 type == that.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guid, orderId, payload, type);
+        return Objects.hash(guid, orderDto, payload, type);
     }
 
     @Override
     public String toString() {
         return "OrderEventDto{" +
                 "guid='" + guid + '\'' +
-                ", orderId='" + orderId + '\'' +
+                ", orderId='" + orderDto + '\'' +
                 ", payload='" + payload + '\'' +
                 ", type=" + type +
                 '}';
+    }
+
+    @Override
+    public IOrder getIdOrder() {
+        return orderDto;
+    }
+
+    //TODO: fix it
+    @Override
+    public IActor getIdActor() {
+        return null;
+    }
+
+    @Override
+    public IOrderEventType getIdOrderEventType() {
+        return type;
     }
 }
