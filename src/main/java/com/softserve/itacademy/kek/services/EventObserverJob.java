@@ -41,15 +41,20 @@ public class EventObserverJob {
         this.eventPublisher = eventPublisher;
     }
 
-    @Scheduled(fixedRate = 1000)
-    public void getLastEventByGuid(UUID guid) throws OrderEventServiceException {
-        //TODO:: Change to find last event of TYPE STARTED for order guid{}
-        OrderEvent orderEvent = orderEventRepository.findByGuid(guid);
-        if (orderEvent == null) {
-            LOGGER.warn("Event wasn't found in DB: guid = {}", guid);
-            throw new OrderEventServiceException("Event wasn't found");
-        }
+    //TODO:: Change method naming
+    @Scheduled(fixedRate = 5000)
+    public void getLastEventForStartedDeliverOrders() throws OrderEventServiceException {
+        //TODO:: get last added events for every orderId that has type STARTED but does't have type DELIVERED
 
-        this.eventPublisher.publishEvent(orderEvent);
+        //stub
+        String payload ="{\n" +
+                "  \"location\": {\n" +
+                "    \"lat\": 50.499247,\n" +
+                "    \"lng\": 30.607360\n" +
+                "  }\n" +
+                "}";
+
+        //TODO:: publish {OrderId, geolocation} list or object OR publish List<OrderEvents>
+        this.eventPublisher.publishEvent(payload);
     }
 }
