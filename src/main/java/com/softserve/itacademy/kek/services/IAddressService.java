@@ -26,7 +26,7 @@ public interface IAddressService {
      * @param tenantGuid  tenant guid
      * @return updated tenant address
      */
-    IAddress updateForTenant(IAddress addressData, UUID tenantGuid,  UUID addressGuid);
+    IAddress updateForTenant(IAddress addressData, UUID tenantGuid, UUID addressGuid);
 
     /**
      * Deletes tenant address

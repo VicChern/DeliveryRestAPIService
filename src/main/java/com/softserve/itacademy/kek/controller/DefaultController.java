@@ -1,7 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.softserve.itacademy.kek.exception.ServiceException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.softserve.itacademy.kek.exception.ServiceException;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class DefaultController {

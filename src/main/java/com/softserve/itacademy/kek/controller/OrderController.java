@@ -7,7 +7,6 @@ import com.softserve.itacademy.kek.dto.OrderEventListDto;
 import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 import com.softserve.itacademy.kek.dto.OrderListDto;
 import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.services.IOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

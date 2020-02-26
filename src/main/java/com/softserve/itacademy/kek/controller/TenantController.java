@@ -94,16 +94,6 @@ public class TenantController extends DefaultController {
     }
 
     /**
-     * Temporary method for AddressDto stub
-     *
-     * @return {@link AddressDto} stub
-     */
-    private AddressDto getTenantAddressDtoStub() {
-        return new AddressDto(UUID.fromString("guid12345qwert"), "alias", "Leipzigzskaya 15v", "Some notes...");
-
-    }
-
-    /**
      * Get information about tenants
      *
      * @return Response Entity with a list of {@link TenantDto} objects as a JSON
@@ -160,7 +150,6 @@ public class TenantController extends DefaultController {
                 .body(tenantDto);
     }
 
-
     /**
      * Modifies information of the specified tenant
      *
@@ -170,7 +159,6 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}", consumes = KekMediaType.TENANT,
             produces = KekMediaType.TENANT)
-    @ResponseStatus()
     public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
         logger.info("Accepted modified tenant from the client:\n{}", tenant);
 
@@ -244,7 +232,7 @@ public class TenantController extends DefaultController {
         List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDtoList, UUID.fromString(guid));
 
         logger.info("Sending the created tenant's({}) properties to the client", tenantProperties);
-//        TODO: transform to tenantProperties to dto and return it
+//        TODO: transform the tenantProperties to dto and return it
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .body(tenantProperties);
