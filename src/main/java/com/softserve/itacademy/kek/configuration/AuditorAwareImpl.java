@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.AuditorAware;
 
 /**
- * Implementation of AuditorAware<T> for components that are aware of the application's current auditor
+ * Implementation of AuditorAware for components that are aware of the application's current auditor
  */
 public class AuditorAwareImpl implements AuditorAware<String> {
 
