@@ -212,17 +212,7 @@ public class OrderServiceImpl implements IOrderService {
 
         final Order actualOrder = orderRepository.findByGuid(guid);
         final Tenant actualTenant = tenantRepository.findByGuid(order.getTenant().getGuid()).get();
-        final IOrderDetails details = order.getOrderDetails();
-        final OrderDetails actualDetails = new OrderDetails();
 
-
-        if (details != null) {
-            actualDetails.setImageUrl(details.getImageUrl());
-            actualDetails.setPayload(details.getPayload());
-            actualDetails.setOrder(actualOrder);
-        }
-
-        actualOrder.setOrderDetails(actualDetails);
         actualOrder.setGuid(order.getGuid());
         actualOrder.setSummary(order.getSummary());
         actualOrder.setTenant(actualTenant);
