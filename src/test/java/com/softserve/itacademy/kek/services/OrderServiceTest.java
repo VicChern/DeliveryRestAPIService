@@ -88,26 +88,6 @@ public class OrderServiceTest {
                 tenantService);
     }
 
-//    @Test
-//    public void createOrderSuccess() throws Exception {
-//        Order testOrder = createOrderForTest(1L, null);
-//
-//        when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
-//
-//        IOrder createdOrder = orderService.create(testOrder);
-//
-//        ArgumentCaptor<Order> acOrder = ArgumentCaptor.forClass(Order.class);
-//
-//        verify(orderRepository, times(1)).save(any(Order.class));
-//        verify(orderRepository).save(acOrder.capture());
-//
-//        Order actualOrder = acOrder.getValue();
-//
-//        Assert.assertNotNull(createdOrder);
-//        Assert.assertNotNull(actualOrder.getGuid());
-//        Assert.assertNotNull(actualOrder.getOrderDetails());
-//    }
-
     @Test
     public void updateOrderSuccess() throws Exception {
         Long id = 1L;

@@ -16,7 +16,6 @@ import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
@@ -39,8 +38,6 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     private TenantRepository tenantRepository;
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private OrderDetailsRepository orderDetailsRepository;
 
     private Order order1;
     private Order order2;
