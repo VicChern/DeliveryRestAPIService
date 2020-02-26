@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;;
@@ -20,7 +21,7 @@ public class SseController {
 
     //TODO:: need to be concurrent?
     //This emitter's List represents connections from few clients (like laptop browsers, phone app etc.)
-    //TODO:: Change emitters List to Map with orderId keys (map will represent all connections from different clients for different orderIds)
+    //TODO:: Change emitters List to Map<OrderId, <List<SseEmitter>>> with orderId keys (map will represent all connections from different clients for different orderIds)
     private final List<SseEmitter> EMITTERS = new ArrayList<>();
 
 
@@ -29,22 +30,14 @@ public class SseController {
         //TODO:: Add interceptor to log requests https://www.baeldung.com/spring-http-logging
         logger.info("Getting request to provide last event payload for order guid={}", id);
 
-        //stub
-        String payload = "50.499247, 30.607360";
-
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Cache-Control", "no-store");
 
+        //TODO:: if OrderId is not in emitter list than check in DB last order event type and date -> redirect
+        // client to static endpoint with order info (Order status: delivered at 25.01.2019 14:00 )
+
         //keep connection open for 180 seconds, than browser will reconnect
         SseEmitter emitter = new SseEmitter(180_000L);
-        try {
-            emitter.send(payload);
-            logger.info("Send payload {} for order guid={}", payload, id);
-        }
-        catch (IOException e) {
-            throw new Exception("Can't send geolocation because emitter for order guid=" + id
-                    + "was completed or closed by timeout", e);
-        }
 
         EMITTERS.add(emitter);
 
@@ -57,19 +50,22 @@ public class SseController {
     }
 
 
-//    @EventListener
-//    public void onLastEventPayload(String payload) {
-//        List<SseEmitter> deadEmitters = new ArrayList<>();
-//        EMITTERS.forEach(emitter -> {
-//            try {
-//                emitter.send(payload);
-//            }
-//            catch (IOException e) {
-//                deadEmitters.add(emitter);
-//            }
-//        });
-//
-//        EMITTERS.removeAll(deadEmitters);
-//    }
+    @EventListener
+    public void onLastEventPayload(String payload) {
+        List<SseEmitter> deadEmitters = new ArrayList<>();
+        //TODO:: delete emitters from Emitter list with orderId, that was not received from Publisher (then this orderId was delivered)
+        EMITTERS.forEach(emitter -> {
+            try {
+                emitter.send(payload);
+                logger.info("Send payload {} for order guid=", payload);
+            }
+            catch (IOException e) {
+                deadEmitters.add(emitter);
+                logger.debug("Can't send geolocation because emitter for order guid= was completed or closed by timeout");
+            }
+        });
+
+        EMITTERS.removeAll(deadEmitters);
+    }
 
 }
