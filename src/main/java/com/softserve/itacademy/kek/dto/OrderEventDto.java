@@ -74,18 +74,18 @@ public class OrderEventDto implements IOrderEvent {
     }
 
     @Override
-    public IOrder getIdOrder() {
+    public IOrder getOrder() {
         return orderDto;
     }
 
     //TODO: fix it
     @Override
-    public IActor getIdActor() {
+    public IActor getActor() {
         return null;
     }
 
     @Override
-    public IOrderEventType getIdOrderEventType() {
+    public IOrderEventType getOrderEventType() {
         return type;
     }
 }

@@ -55,7 +55,7 @@ public class OrderController extends DefaultController {
     }
 
     private OrderEventDto transformOrderEvent(IOrderEvent orderEvent) {
-        return new OrderEventDto(orderEvent.getGuid(), transformOrder(orderEvent.getIdOrder()), orderEvent.getPayload(), transformOrderEventType(orderEvent.getIdOrderEventType()));
+        return new OrderEventDto(orderEvent.getGuid(), transformOrder(orderEvent.getOrder()), orderEvent.getPayload(), transformOrderEventType(orderEvent.getIdOrderEventType()));
     }
 
     //TODO: fix it
