@@ -66,7 +66,7 @@ public class EventObserverJob {
         Order order1 = new Order();
         order1.setGuid(UUID.fromString("2589d161-2912-4419-ab5d-2b4c09f9b73c"));
         order1.setIdOrder(1L);
-        orderEvent1.setIdOrder(order1);
+        orderEvent1.setOrder(order1);
 
         OrderEvent orderEvent2 = new OrderEvent();
         orderEvent2.setPayload(json2);
@@ -74,13 +74,13 @@ public class EventObserverJob {
         Order order2 = new Order();
         order2.setGuid(UUID.fromString("740d8f1c-8fbb-4328-933e-79640e15880b"));
         order2.setIdOrder(2L);
-        orderEvent2.setIdOrder(order2);
+        orderEvent2.setOrder(order2);
 
         List<OrderEvent> orderEvents = new ArrayList<>();
         orderEvents.add(orderEvent1);
         orderEvents.add(orderEvent2);
 
-        Function<OrderEvent, UUID> getOrderGuid = oe -> oe.getIdOrder().getGuid();
+        Function<OrderEvent, UUID> getOrderGuid = oe -> oe.getOrder().getGuid();
         Map<UUID, String> ordersToPayloads = orderEvents
                 .stream()
                 .collect(Collectors.toMap(getOrderGuid, OrderEvent::getPayload));
