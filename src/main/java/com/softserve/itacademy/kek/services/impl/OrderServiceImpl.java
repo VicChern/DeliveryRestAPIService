@@ -54,6 +54,7 @@ public class OrderServiceImpl implements IOrderService {
     private final ActorRepository actorRepository;
     private final OrderEventTypeRepository orderEventTypeRepository;
     private final ActorRoleRepository actorRoleRepository;
+
     private final IUserService userService;
     private final ITenantService tenantService;
 
@@ -73,6 +74,7 @@ public class OrderServiceImpl implements IOrderService {
         this.actorRepository = actorRepository;
         this.orderEventTypeRepository = orderEventTypeRepository;
         this.actorRoleRepository = actorRoleRepository;
+
         this.userService = userService;
         this.tenantService = tenantService;
     }
