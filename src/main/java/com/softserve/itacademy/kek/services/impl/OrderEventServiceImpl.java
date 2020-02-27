@@ -40,9 +40,9 @@ public class OrderEventServiceImpl implements IOrderEventService {
     @Override
     public IOrderEvent create(IOrderEvent iOrderEvent, UUID orderGuid) throws OrderEventServiceException {
         logger.info("Saving OrderEvent to db: {}", iOrderEvent);
-        OrderEvent orderEvent = new OrderEvent();
+        final OrderEvent orderEvent = new OrderEvent();
 
-        Order actualOrder;
+        final Order actualOrder;
 
         try {
             actualOrder = orderRepository.findByGuid(orderGuid);
@@ -68,7 +68,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
     @Override
     public IOrderEvent getByGuid(UUID guid) throws OrderEventServiceException {
         logger.info("Getting OrderEvent from db by guid");
-        OrderEvent orderEvent;
+        final OrderEvent orderEvent;
 
         try {
             orderEvent = orderEventRepository.findByGuid(guid);
@@ -80,4 +80,6 @@ public class OrderEventServiceImpl implements IOrderEventService {
         logger.info("Order event with guid: {}, was found: {}", guid, orderEvent);
         return orderEvent;
     }
+
+    //TODO: add getAllEventsForOrder(IOrder order)
 }
