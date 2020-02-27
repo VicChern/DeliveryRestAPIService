@@ -53,22 +53,22 @@ public class TenantServiceImpl implements ITenantService {
         // check if exist user for tenant
         //TODO replace by checking whether the ownerGuid is guid of principal user (when will be added security)
 
-            final User tenantOwner = userRepository.findByGuid(ownerGuid);
+        final User tenantOwner = userRepository.findByGuid(ownerGuid);
 
-            if(tenantOwner == null) {
-                LOGGER.error("There is no User in db for Tenant with user guid: {}", ownerGuid);
-                throw new TenantServiceException(null, "There is no User for Tenant with user guid: " + ownerGuid);
-            }
+        if (tenantOwner == null) {
+            LOGGER.error("There is no User in db for Tenant with user guid: {}", ownerGuid);
+            throw new TenantServiceException("There is no User for Tenant with user guid: " + ownerGuid, null);
+        }
 
-            tenantOwner.setTenant(tenantForSaving);
-            tenantForSaving.setTenantOwner(tenantOwner);
+        tenantOwner.setTenant(tenantForSaving);
+        tenantForSaving.setTenantOwner(tenantOwner);
 
         // save tenant to db
         try {
-             return tenantRepository.save(tenantForSaving);
+            return tenantRepository.save(tenantForSaving);
         } catch (PersistenceException ex) {
             LOGGER.error("Tenant wasn't saved: {}", tenantForSaving);
-            throw new TenantServiceException(ex, "Tenant wasn't saved: " + iTenant);
+            throw new TenantServiceException("Tenant wasn't saved: " + iTenant, ex);
         }
     }
 
@@ -83,21 +83,21 @@ public class TenantServiceImpl implements ITenantService {
 
     @Transactional(readOnly = true)
     @Override
-    public ITenant getByGuid(UUID guid) throws TenantServiceException{
+    public ITenant getByGuid(UUID guid) throws TenantServiceException {
         LOGGER.debug("Get Tenant by guid from db: {}", guid);
 
         try {
             return tenantRepository.findByGuid(guid).orElseThrow();
         } catch (NoSuchElementException ex) {
             LOGGER.error("There is no Tenant in db for guid: {}", guid);
-            throw new TenantServiceException(ex, "Tenant wasn't found for guid: " + guid);
+            throw new TenantServiceException("Tenant wasn't found for guid: " + guid, ex);
         }
     }
 
     @Transactional(readOnly = true)
     @Override
     public Page<ITenant> getAllPageable(Pageable pageable) {
-        LOGGER.debug("Getting pageable: {} Tenants from db", pageable );
+        LOGGER.debug("Getting pageable: {} Tenants from db", pageable);
 
         Page<? extends ITenant> tenants = tenantRepository.findAll(pageable);
 
@@ -106,7 +106,7 @@ public class TenantServiceImpl implements ITenantService {
 
     @Transactional
     @Override
-    public ITenant update(ITenant iTenant, UUID guid) throws TenantServiceException{
+    public ITenant update(ITenant iTenant, UUID guid) throws TenantServiceException {
         LOGGER.debug("Update Tenant by guid: {}", guid);
 
         final Tenant tenantForUpdating = (Tenant) getByGuid(guid);
@@ -119,10 +119,10 @@ public class TenantServiceImpl implements ITenantService {
         tenantForUpdating.setName(iTenant.getName());
 
         try {
-           return tenantRepository.save(tenantForUpdating);
+            return tenantRepository.save(tenantForUpdating);
         } catch (PersistenceException ex) {
             LOGGER.error("Tenant wasn't updated for guid: {}", guid);
-            throw new TenantServiceException(ex, "Tenant wasn't updated for guid: " + guid);
+            throw new TenantServiceException("Tenant wasn't updated for guid: " + guid, ex);
         }
     }
 
@@ -139,6 +139,7 @@ public class TenantServiceImpl implements ITenantService {
 
     /**
      * Transform {@link ITenant} to {@link Tenant}
+     *
      * @param iTenant iTenant
      * @return transformed tenant
      */

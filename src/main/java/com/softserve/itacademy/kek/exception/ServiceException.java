@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Common exception for all services.
  */
-public abstract class ServiceException extends RuntimeException {
+public abstract class ServiceException extends KekException {
 
     @NotNull
     private String error;
@@ -13,11 +13,16 @@ public abstract class ServiceException extends RuntimeException {
     @NotNull
     private int errorCode;
 
-    @NotNull
-    private Exception ex;
+    public ServiceException(String message) {
+        super(message);
+    }
 
-    public ServiceException(@NotNull Exception ex, @NotNull String message) {
+    public ServiceException(@NotNull String message, @NotNull Exception ex) {
         super(message, ex);
+    }
+
+    public ServiceException(Throwable cause) {
+        super(cause);
     }
 
     public ServiceException(@NotNull Exception ex, @NotNull String error, @NotNull int errorCode, @NotNull String message) {

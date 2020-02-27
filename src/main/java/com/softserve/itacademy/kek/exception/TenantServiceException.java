@@ -9,7 +9,7 @@ import com.softserve.itacademy.kek.services.ITenantService;
  */
 public class TenantServiceException extends ServiceException {
 
-    public TenantServiceException(Exception ex, @NotNull String message) {
-        super(ex, message);
+    public TenantServiceException(@NotNull String message, Exception ex) {
+        super(message, ex);
     }
 }

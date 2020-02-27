@@ -13,8 +13,4 @@ public interface TenantPropertiesRepository extends JpaRepository<TenantProperti
 
     Optional<TenantProperties> findByGuidAndTenantGuid(UUID guid, UUID tenantGuid);
 
-    boolean existsTenantPropertiesByGuidAndTenantGuid(UUID guid, UUID tenantGuid);
-
-    void removeByGuidAndTenantGuid(UUID guid, UUID tenantGuid);
-
 }
