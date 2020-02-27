@@ -28,7 +28,6 @@ import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 import com.softserve.itacademy.kek.dto.OrderListDto;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
-import com.softserve.itacademy.kek.models.IOrderEventType;
 import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.IOrderService;
 
@@ -55,13 +54,17 @@ public class OrderController extends DefaultController {
     }
 
     private OrderEventDto transformOrderEvent(IOrderEvent orderEvent) {
-        return new OrderEventDto(orderEvent.getGuid(), transformOrder(orderEvent.getOrder()), orderEvent.getPayload(), transformOrderEventType(orderEvent.getIdOrderEventType()));
+        OrderEventTypesDto orderEventTypesDto = new OrderEventTypesDto();
+        return new OrderEventDto(orderEvent.getGuid(),
+                transformOrder(orderEvent.getOrder()),
+                orderEvent.getPayload(),
+                orderEventTypesDto);
     }
 
     //TODO: fix it
-    private OrderEventTypesDto transformOrderEventType(IOrderEventType orderEventType) {
+//    private OrderEventTypesDto transformOrderEventType(IOrderEventType orderEventType) {
 //        return OrderEventTypesDto.valueOf(orderEventType.getName());
-    }
+//    }
 
     /**
      * Get information about orders
@@ -182,10 +185,11 @@ public class OrderController extends DefaultController {
 
         List<IOrderEvent> events = orderEventService.getAllEventsForOrder(UUID.fromString(guid));
 
-        OrderEventListDto orderEventListDto = new OrderEventListDto(events
-                .stream()
-                .map(this::transformOrderEvent)
-                .collect(Collectors.toList()));
+        OrderEventListDto orderEventListDto = new OrderEventListDto(UUID.fromString(guid),
+                events
+                        .stream()
+                        .map(this::transformOrderEvent)
+                        .collect(Collectors.toList()));
 
         logger.info("Sending the list of events of the order {} to the client", orderEventListDto);
 
@@ -205,10 +209,15 @@ public class OrderController extends DefaultController {
     @PostMapping(value = "/{actorGuid}/events",
             consumes = KekMediaType.EVENT,
             produces = KekMediaType.EVENT)
-    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String actorGuid, @PathVariable String orderGuid, @RequestBody @Valid OrderEventDto orderEventDto) {
+    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String actorGuid,
+                                                  @PathVariable String orderGuid,
+                                                  @RequestBody @Valid OrderEventDto orderEventDto) {
         logger.info("Accepted requested to create a new event for the order {} created by actor {}", orderGuid, actorGuid);
 
-        IOrderEvent createdOrderEvent = orderService.createOrderEvent(UUID.fromString(orderGuid), UUID.fromString(actorGuid), orderEventDto);
+        IOrderEvent createdOrderEvent = orderService.createOrderEvent(UUID.fromString(orderGuid),
+                UUID.fromString(actorGuid),
+                orderEventDto.getType().getName(),
+                orderEventDto.getPayload());
         OrderEventDto createdOrderEventDto = transformOrderEvent(createdOrderEvent);
 
         logger.info("Sending the created order event to the client:\n{}", orderEventDto);
