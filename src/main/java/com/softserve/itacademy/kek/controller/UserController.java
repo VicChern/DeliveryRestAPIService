@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +54,7 @@ public class UserController extends DefaultController {
      * @return Response entity with list of {@link UserDto} objects as a JSON
      */
     @GetMapping(produces = "application/vnd.softserve.user+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<List<UserDto>> getUserList() {
         logger.info("Client requested the list of all users");
 
@@ -70,6 +72,7 @@ public class UserController extends DefaultController {
      * @return Response entity with {@link UserDto} object as a JSON
      */
     @PostMapping(consumes = "application/vnd.softserve.user+json", produces = "application/vnd.softserve.user+json")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<UserDto> addUser(@RequestBody @Valid UserDto body) {
         logger.info("Accepted requested to create a new user:\n" + body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
@@ -82,6 +85,7 @@ public class UserController extends DefaultController {
      * @return Response entity with {@link UserDto} object as a JSON
      */
     @GetMapping(value = "/{id}", produces = "application/vnd.softserve.user+json")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<UserDto> getUser(@PathVariable String id) {
         logger.info("Client requested the user " + id);
 
@@ -100,6 +104,7 @@ public class UserController extends DefaultController {
      */
     @PutMapping(value = "/{id}", consumes = "application/vnd.softserve.user+json",
             produces = "application/vnd.softserve.user+json")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserDto> modifyUser(@PathVariable String id, @RequestBody @Valid UserDto body) {
         logger.info("Accepted modified user from the client:\n" + body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
@@ -111,6 +116,7 @@ public class UserController extends DefaultController {
      * @param id user ID from the URN
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity deleteUser(@PathVariable String id) {
         logger.info("Accepted request to delete the user " + id);
         logger.info("User (" + id + ") successfully deleted");
@@ -125,6 +131,7 @@ public class UserController extends DefaultController {
      * @return Response Entity with list of the {@link AddressDto} objects as a JSON
      */
     @GetMapping(value = "/{id}/addresses", produces = "application/vnd.softserve.address+json")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<List<AddressDto>> getUserAddresses(@PathVariable String id) {
         logger.info("Client requested all the addresses of the employee " + id);
 
@@ -144,6 +151,7 @@ public class UserController extends DefaultController {
      */
     @PostMapping(value = "/{id}/addresses", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<AddressDto>> addUserAddresses(@PathVariable String id,
                                                              @RequestBody @Valid List<AddressDto> body) {
         logger.info("Accepted requested to create a new addresses for user:" + id + ":\n" + body);
@@ -158,6 +166,7 @@ public class UserController extends DefaultController {
      * @return Response entity with {@link AddressDto} object as a JSON
      */
     @GetMapping(value = "/{id}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AddressDto> getUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address " + addrGuid + " of the employee " + id);
 
@@ -177,6 +186,7 @@ public class UserController extends DefaultController {
      */
     @PutMapping(value = "/{id}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("id") String id,
                                                         @PathVariable("addrguid") String addrGuid,
                                                         @RequestBody @Valid AddressDto body) {
@@ -191,6 +201,7 @@ public class UserController extends DefaultController {
      * @param addrGuid address ID from the URN
      */
     @DeleteMapping("/{id}/addresses/{addrguid}")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity deleteUserAddress(@PathVariable("id") String id, @PathVariable("addrguid") String addrGuid) {
         logger.info("Accepted request to delete the address " + addrGuid + " ot the user " + id);
 
