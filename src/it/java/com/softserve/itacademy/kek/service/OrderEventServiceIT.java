@@ -149,11 +149,11 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         //when
         IOrder createdOrder = orderService.create(order, customer.getGuid());
 
-        order.setIdOrder(1L);
+        order.setIdOrder(2L);
 
-        OrderEvent orderEvent1 = getOrderEvent(order, orderEventType2, actorRepository.findById(1L).get());
-        OrderEvent orderEvent2 = getOrderEvent(order, orderEventType3, actorRepository.findById(1L).get());
-        OrderEvent orderEvent3 = getOrderEvent(order, orderEventType4, actorRepository.findById(1L).get());
+        OrderEvent orderEvent1 = getOrderEvent(order, orderEventType2, actorRepository.findById(2L).get());
+        OrderEvent orderEvent2 = getOrderEvent(order, orderEventType3, actorRepository.findById(2L).get());
+        OrderEvent orderEvent3 = getOrderEvent(order, orderEventType4, actorRepository.findById(2L).get());
 
         orderEventRepository.save(orderEvent1);
         orderEventRepository.save(orderEvent2);
