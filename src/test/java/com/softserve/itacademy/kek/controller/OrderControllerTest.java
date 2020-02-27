@@ -1,7 +1,10 @@
 package com.softserve.itacademy.kek.controller;
 
+import java.util.UUID;
+
 import com.google.gson.Gson;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -14,8 +17,7 @@ import com.softserve.itacademy.kek.dto.OrderEventDto;
 import com.softserve.itacademy.kek.dto.OrderEventListDto;
 import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 import com.softserve.itacademy.kek.dto.OrderListDto;
-
-import java.util.UUID;
+import com.softserve.itacademy.kek.services.IOrderService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,23 +30,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Test(groups = {"unit-tests"})
 public class OrderControllerTest {
     private final Gson gson = new Gson();
+
     private OrderEventDto orderEventDto;
     private OrderEventListDto orderEventListDto;
     private OrderDto orderDto;
     private OrderListDto orderListDto;
+    private OrderDetailsDto orderDetailsDto;
+
+    private UUID guid;
+    private UUID tenantGuid;
 
     @InjectMocks
     private OrderController controller;
+    @Mock
+    private IOrderService orderService;
 
     private MockMvc mockMvc;
 
     @BeforeTest
     public void setup() {
-        OrderDetailsDto orderDetails = new OrderDetailsDto("some info", "https://mypicture");
-        orderDto = new OrderDto(UUID.randomUUID(), UUID.randomUUID(), "summary", orderDetails);
+        guid = UUID.fromString("123");
+        tenantGuid = UUID.fromString("MyTenant");
+        orderDetailsDto = new OrderDetailsDto("some info", "https://mypicture");
+        orderDto = new OrderDto(guid, tenantGuid, "summary", orderDetailsDto);
         orderListDto = new OrderListDto().addOrder(orderDto);
-        orderEventDto = new OrderEventDto("wqewqe1r1", "123", "some info", OrderEventTypesDto.DELIVERED);
-        orderEventListDto = new OrderEventListDto("qwert1234").addOrderEvent(orderEventDto);
+        orderEventDto = new OrderEventDto(guid, orderDto, "some info", OrderEventTypesDto.DELIVERED);
+        orderEventListDto = new OrderEventListDto(UUID.randomUUID()).addOrderEvent(orderEventDto);
 
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
@@ -56,8 +67,8 @@ public class OrderControllerTest {
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/vnd.softserve.order+json"))
-                .andExpect(jsonPath("$.orderList[0].tenant").value("MyTenant"))
-                .andExpect(jsonPath("$.orderList[0].guid").value("123"))
+                .andExpect(jsonPath("$.orderList[0].tenantGuid").value(tenantGuid))
+                .andExpect(jsonPath("$.orderList[0].guid").value(guid))
                 .andExpect(jsonPath("$.orderList[0].details.payload").value("some info"))
                 .andExpect(jsonPath("$.orderList[0].details.imageUrl").value("https://mypicture"));
     }
@@ -67,10 +78,11 @@ public class OrderControllerTest {
         mockMvc.perform(post("/orders")
                 .contentType("application/vnd.softserve.order+json")
                 .accept("application/vnd.softserve.order+json")
-                .content(gson.toJson(orderListDto)))
+                .content(gson.toJson(orderDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderList[0].tenant").value("MyTenant"))
+                .andExpect(jsonPath("$.orderList[0].tenantGuid").value("MyTenant"))
                 .andExpect(jsonPath("$.orderList[0].guid").value("123"))
+                .andExpect(jsonPath("$.orderList[0].summary").value("summary"))
                 .andExpect(jsonPath("$.orderList[0].details.payload").value("some info"))
                 .andExpect(jsonPath("$.orderList[0].details.imageUrl").value("https://mypicture"));
     }
@@ -82,6 +94,7 @@ public class OrderControllerTest {
                 .andExpect(content().contentType("application/vnd.softserve.order+json"))
                 .andExpect(jsonPath("$.tenant").value("MyTenant"))
                 .andExpect(jsonPath("$.guid").value("123"))
+                .andExpect(jsonPath("$.orderList[0].summary").value("summary"))
                 .andExpect(jsonPath("$.details.payload").value("some info"))
                 .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"));
     }
@@ -95,6 +108,7 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tenant").value("MyTenant"))
                 .andExpect(jsonPath("$.guid").value("123"))
+                .andExpect(jsonPath("$.orderList[0].summary").value("summary"))
                 .andExpect(jsonPath("$.details.payload").value("some info"))
                 .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"));
     }
@@ -111,7 +125,11 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/vnd.softserve.event+json"))
                 .andExpect(jsonPath("$.orderEventList[0].guid").value("wqewqe1r1"))
-                .andExpect(jsonPath("$.orderEventList[0].orderId").value("123"))
+                .andExpect(jsonPath("$.tenant").value("MyTenant"))
+                .andExpect(jsonPath("$.guid").value("123"))
+                .andExpect(jsonPath("$.orderList[0].summary").value("summary"))
+                .andExpect(jsonPath("$.details.payload").value("some info"))
+                .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"))
                 .andExpect(jsonPath("$.orderEventList[0].payload").value("some info"))
                 .andExpect(jsonPath("$.orderEventList[0].type").value("DELIVERED"));
     }
@@ -125,7 +143,11 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/vnd.softserve.event+json"))
                 .andExpect(jsonPath("$.guid").value("wqewqe1r1"))
-                .andExpect(jsonPath("$.orderId").value("123"))
+                .andExpect(jsonPath("$.tenant").value("MyTenant"))
+                .andExpect(jsonPath("$.guid").value("123"))
+                .andExpect(jsonPath("$.orderList[0].summary").value("summary"))
+                .andExpect(jsonPath("$.details.payload").value("some info"))
+                .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"))
                 .andExpect(jsonPath("$.payload").value("some info"))
                 .andExpect(jsonPath("$.type").value("DELIVERED"));
     }

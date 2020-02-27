@@ -57,7 +57,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
             throw new OrderServiceException("There is no order for order event with order guid: " + orderGuid);
         }
 
-        orderEvent.setIdOrder(actualOrder);
+        orderEvent.setOrder(actualOrder);
 
         try {
             orderEventRepository.save(orderEvent);
@@ -85,13 +85,13 @@ public class OrderEventServiceImpl implements IOrderEventService {
             throw new OrderServiceException("There is no order for order event with order guid: " + orderGuid);
         }
 
-        orderEvent.setIdOrder(actualOrder);
+        orderEvent.setOrder(actualOrder);
 
         OrderEventType orderEventType = new OrderEventType();
         orderEventType.setName(iOrderEventType.getName());
         OrderEventType savedOrderEventType = orderEventTypeRepository.save(orderEventType);
 
-        orderEvent.setIdOrderEventType(savedOrderEventType);
+        orderEvent.setOrderEventType(savedOrderEventType);
 
 //        orderEventTypeRepository.save()
 

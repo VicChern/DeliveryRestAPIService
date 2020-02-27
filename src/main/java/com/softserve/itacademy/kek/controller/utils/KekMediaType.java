@@ -9,6 +9,7 @@ public class KekMediaType {
     public static final String USER = "application/vnd.softserve.user+json";
     public static final String USER_LIST = "application/vnd.softserve.userList+json";
     public static final String ORDER = "application/vnd.softserve.order+json";
+    public static final String ORDER_LIST = "application/vnd.softserve.orderList+json";
     public static final String EVENT = "application/vnd.softserve.event+json";
 
 }

@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_address")
-public class Address implements IAddress, Serializable {
+public class Address extends AbstractEntity implements IAddress, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

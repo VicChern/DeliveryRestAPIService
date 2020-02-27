@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "obj_global_properties")
-public class GlobalProperties implements Serializable {
+public class GlobalProperties extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

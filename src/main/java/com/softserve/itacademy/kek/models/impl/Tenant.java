@@ -26,7 +26,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_tenant")
-public class Tenant implements ITenant, Serializable {
+public class Tenant extends AbstractEntity implements ITenant, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -161,12 +161,13 @@ public class Tenant implements ITenant, Serializable {
         return Objects.equals(idTenant, tenant.idTenant) &&
                 Objects.equals(tenantOwner, tenant.tenantOwner) &&
                 Objects.equals(guid, tenant.guid) &&
-                Objects.equals(name, tenant.name);
+                Objects.equals(name, tenant.name) &&
+                Objects.equals(tenantDetails, tenant.tenantDetails);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idTenant, tenantOwner, guid, name);
+        return Objects.hash(idTenant, tenantOwner, guid, name, tenantDetails);
     }
 
     @Override

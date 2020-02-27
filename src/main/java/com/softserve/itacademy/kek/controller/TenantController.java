@@ -77,7 +77,6 @@ public class TenantController extends DefaultController {
 
         TenantPropertiesDto tenantPropertiesDto = new TenantPropertiesDto(
                 tenantProperties.getGuid(),
-//                tenantProperties.getTenant().getGuid(),
                 propertyType,
                 tenantProperties.getKey(),
                 tenantProperties.getValue());
@@ -92,29 +91,6 @@ public class TenantController extends DefaultController {
      */
     private AddressDto transformAddress(IAddress address) {
         return new AddressDto(address.getGuid(), address.getAlias(), address.getAddress(), address.getNotes());
-    }
-
-    /**
-     * Temporary method for TenantPropertiesDto stub
-     *
-     * @return {@link TenantPropertiesDto} stub
-     */
-    private TenantPropertiesDto getTenantPropertiesDtoStub() {
-//        return new TenantPropertiesDto(
-//
-//             UUID.fromString("guid12345qwawt"), "glovo", new TenantPropertiesDto(), "workingDay", "Wednesday");
-
-        return new TenantPropertiesDto();
-    }
-
-    /**
-     * Temporary method for AddressDto stub
-     *
-     * @return {@link AddressDto} stub
-     */
-    private AddressDto getTenantAddressDtoStub() {
-        return new AddressDto(UUID.fromString("guid12345qwert"), "alias", "Leipzigzskaya 15v", "Some notes...");
-
     }
 
     /**
@@ -174,7 +150,6 @@ public class TenantController extends DefaultController {
                 .body(tenantDto);
     }
 
-
     /**
      * Modifies information of the specified tenant
      *
@@ -184,7 +159,6 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}", consumes = KekMediaType.TENANT,
             produces = KekMediaType.TENANT)
-    @ResponseStatus()
     public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
         logger.info("Accepted modified tenant from the client:\n{}", tenant);
 
@@ -258,10 +232,10 @@ public class TenantController extends DefaultController {
         List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDtoList, UUID.fromString(guid));
 
         logger.info("Sending the created tenant's({}) properties to the client", tenantProperties);
-//        TODO: transform to tenantProperties to dto and return it
+//        TODO: transform the tenantProperties to dto and return it
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body(tenantPropertiesDtoList);
+                .body(tenantProperties);
     }
 
     /**
@@ -411,7 +385,7 @@ public class TenantController extends DefaultController {
                                                           @RequestBody @Valid AddressDto tenantAddressDto) {
         logger.info("Accepted modified address of the tenant {} from the client:\n{}", guid, tenantAddressDto);
 
-        IAddress modifiedAddress = addressService.updateForTenant(tenantAddressDto, UUID.fromString(guid));
+        IAddress modifiedAddress = addressService.updateForTenant(tenantAddressDto, UUID.fromString(guid), UUID.fromString(addrGuid));
         AddressDto modifiedAddressDto = transformAddress(modifiedAddress);
 
         logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, tenantAddressDto);

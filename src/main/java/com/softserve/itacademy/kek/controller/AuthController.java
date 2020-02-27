@@ -1,12 +1,11 @@
 package com.softserve.itacademy.kek.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 import com.auth0.AuthenticationController;
 import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
+import com.softserve.itacademy.kek.security.TokenAuthentication;
+import com.softserve.itacademy.kek.security.TokenUtils;
+import com.softserve.itacademy.kek.security.WebSecurityConfig;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +20,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.softserve.itacademy.kek.security.TokenAuthentication;
-import com.softserve.itacademy.kek.security.TokenUtils;
-import com.softserve.itacademy.kek.security.WebSecurityConfig;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @PropertySource("classpath:server.properties")

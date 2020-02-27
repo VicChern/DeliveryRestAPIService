@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "obj_tenant_properties")
-public class TenantProperties implements ITenantProperties, Serializable {
+public class TenantProperties extends AbstractEntity implements ITenantProperties, Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_tenant", nullable = false)

@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "def_order_event_type")
-public class OrderEventType implements IOrderEventType, Serializable {
+public class OrderEventType extends AbstractEntity implements IOrderEventType, Serializable {
 
     @Id
     @Column(name = "id_order_event_type")
