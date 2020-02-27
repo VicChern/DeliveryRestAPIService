@@ -2,16 +2,21 @@ package com.softserve.itacademy.kek.dto;
 
 import com.softserve.itacademy.kek.models.IOrderEventType;
 
-public class OrderEventTypesDto implements IOrderEventType {
+public enum OrderEventTypesDto implements IOrderEventType {
+    CREATED("CREATED"),
+    ASSIGNED("ASSIGNED"),
+    STARTED("STARTED"),
+    DELIVERED("DELIVERED");
 
-    public static final String CREATED = "CREATED";
-    public static final String ASSIGNED = "ASSIGNED";
-    public static final String STARTED = "STARTED";
-    public static final String DELIVERED = "DELIVERED";
+    private String type;
 
-    //TODO: fix it
+    OrderEventTypesDto(String type) {
+        this.type = type;
+    }
+
     @Override
     public String getName() {
-        return null;
+        return type;
     }
 }
+

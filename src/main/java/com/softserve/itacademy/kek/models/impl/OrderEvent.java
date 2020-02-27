@@ -66,9 +66,9 @@ public class OrderEvent extends AbstractEntity implements IOrderEvent, Serializa
         this.order = order;
     }
 
-    public IActor getActor() {
-        return actor;
-    }
+//    public IActor getActor() {
+//        return actor;
+//    }
 
     public void setActor(Actor actor) {
         this.actor = actor;

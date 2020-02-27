@@ -6,7 +6,7 @@ public interface IOrderEvent {
 
     IOrder getOrder();
 
-    IActor getActor();
+//    IActor getActor();
 
     IOrderEventType getOrderEventType();
 

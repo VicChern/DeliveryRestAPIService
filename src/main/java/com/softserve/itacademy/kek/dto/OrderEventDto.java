@@ -5,7 +5,6 @@ import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.IOrderEventType;
@@ -78,11 +77,10 @@ public class OrderEventDto implements IOrderEvent {
         return orderDto;
     }
 
-    //TODO: fix it
-    @Override
-    public IActor getActor() {
-        return null;
-    }
+//    @Override
+//    public IActor getActor() {
+//        return null;
+//    }
 
     @Override
     public IOrderEventType getOrderEventType() {
