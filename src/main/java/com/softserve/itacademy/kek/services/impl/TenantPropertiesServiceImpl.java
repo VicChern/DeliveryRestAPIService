@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.services.impl;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,7 +22,11 @@ import com.softserve.itacademy.kek.models.impl.TenantProperties;
 import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
+import com.softserve.itacademy.kek.services.ITenantService;
 
+/**
+ * Service implementation for {@link ITenantPropertiesService}
+ */
 @Service
 public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
@@ -29,62 +34,56 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
     private final TenantPropertiesRepository tenantPropertiesRepository;
     private final TenantRepository tenantRepository;
+    private final ITenantService tenantService;
 
     @Autowired
-    public TenantPropertiesServiceImpl(TenantPropertiesRepository tenantPropertiesRepository, TenantRepository tenantRepository) {
+    public TenantPropertiesServiceImpl(TenantPropertiesRepository tenantPropertiesRepository,
+                                       TenantRepository tenantRepository,
+                                       ITenantService tenantService) {
         this.tenantPropertiesRepository = tenantPropertiesRepository;
         this.tenantRepository = tenantRepository;
+        this.tenantService = tenantService;
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<ITenantProperties> getAllForTenant(UUID tenantGuid) {
-        LOGGER.info("Getting all TenantProperties for tenant guid: {}", tenantGuid);
+        LOGGER.debug("Getting all TenantProperties for tenant guid: {}", tenantGuid);
 
-        List<ITenantProperties> tenantProperties = new ArrayList<>(tenantPropertiesRepository.findAll());
+        List<? extends ITenantProperties> tenantProperties = tenantPropertiesRepository.findAll();
 
-        if (tenantProperties.isEmpty()) {
-            LOGGER.error("No one tenantProperties was found for tenant guid: {}", tenantGuid);
-            throw new TenantPropertiesServiceException("No one tenantProperties was found for tenant guid: " + tenantGuid);
-        }
-
-        LOGGER.info("TenantProperties was found: {}", tenantProperties);
-
-        return tenantProperties;
+        return (List<ITenantProperties>) tenantProperties;
     }
 
     @Transactional
     @Override
-    public List<ITenantProperties> create(List<ITenantProperties> iTenantProperties, UUID tenantGuid) {
-        LOGGER.info("Save tenant properties for tenant guid {} to db: {}", tenantGuid, iTenantProperties);
+    public List<ITenantProperties> create(List<ITenantProperties> iTenantProperties, UUID tenantGuid) throws TenantPropertiesServiceException {
+        LOGGER.debug("Save tenant properties for tenant guid {} to db: {}", tenantGuid, iTenantProperties);
 
-        Tenant tenant = tenantRepository.findByGuid(tenantGuid);
-
-        if (tenant == null) {
-            LOGGER.error("There is no Tenant in db for tenant guid: {}", tenantGuid);
-            throw new TenantPropertiesServiceException("Tenant wasn't found for tenant guid: " + tenantGuid);
-        }
+        final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
 
         List<TenantProperties> tenantProperties = new ArrayList<>();
         iTenantProperties.forEach(iTenantProperty -> tenantProperties.add(transform(iTenantProperty)));
 
         tenantProperties.forEach(tenant::addTenantProperty);
 
+        final Tenant updatedTenant;
         try {
-            tenant = tenantRepository.save(tenant);
+            updatedTenant = tenantRepository.save(tenant);
         } catch (PersistenceException ex) {
             LOGGER.error("Tenant properties wasn't saved for tenant guid: {}, properties: {}", tenantGuid, iTenantProperties);
-            throw new TenantPropertiesServiceException("Tenant properties wasn't saved for tenant guid: " + tenantGuid);
+            throw new TenantPropertiesServiceException("Tenant properties wasn't saved for tenant guid: " + tenantGuid, ex);
         }
 
-        LOGGER.info("Tenant properties was saved for tenant guid: {}, properties: {}", tenantGuid, iTenantProperties);
+        LOGGER.debug("Tenant properties was saved for tenant guid: {}, properties: {}", tenantGuid, iTenantProperties);
 
+        // filter out only those tenant properties, that were saved
         Set<String> keys = iTenantProperties
                 .stream()
                 .map(ITenantProperties::getKey)
                 .collect(Collectors.toSet());
 
-        return tenant.getTenantPropertiesList()
+        return updatedTenant.getTenantPropertiesList()
                 .stream()
                 .filter(tenantProperty -> keys.contains(tenantProperty.getKey()))
                 .distinct()
@@ -93,37 +92,30 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
     @Transactional(readOnly = true)
     @Override
-    public ITenantProperties get(UUID tenantGuid, UUID tenantPropertyGuid) {
-        LOGGER.info("Getting TenantProperties by tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
+    public ITenantProperties get(UUID tenantGuid, UUID tenantPropertyGuid) throws TenantPropertiesServiceException {
+        LOGGER.debug("Getting TenantProperties by tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
 
-        ITenantProperties tenantProperty = tenantPropertiesRepository.findByGuidAndTenantGuid(tenantPropertyGuid, tenantGuid);
-
-        if (tenantProperty == null) {
+        try {
+            return tenantPropertiesRepository
+                    .findByGuidAndTenantGuid(tenantPropertyGuid, tenantGuid)
+                    .orElseThrow();
+        } catch (NoSuchElementException ex) {
             LOGGER.error("No one tenantProperties was found by tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
             throw new TenantPropertiesServiceException("No one tenantProperties was found by tenantProperty guid: "
-                    + tenantPropertyGuid + "and tenant guid: " + tenantGuid);
+                    + tenantPropertyGuid + "and tenant guid: " + tenantGuid, ex);
         }
-
-        LOGGER.info("TenantProperties was found: {}", tenantProperty);
-
-        return tenantProperty;
     }
 
     @Transactional
     @Override
-    public ITenantProperties update(UUID tenantGuid, UUID tenantPropertyGuid, ITenantProperties iTenantProperty) {
-        LOGGER.info("Update Tenant property by tenant guid: {} and tenantProperty guid: {}; tenantProperty: {}", tenantGuid, tenantPropertyGuid, iTenantProperty);
+    public ITenantProperties update(UUID tenantGuid, UUID tenantPropertyGuid, ITenantProperties iTenantProperty) throws TenantPropertiesServiceException {
+        LOGGER.debug("Update Tenant property by tenant guid: {} and tenantProperty guid: {}; tenantProperty: {}", tenantGuid, tenantPropertyGuid, iTenantProperty);
 
         // find tenant property for updating
-        TenantProperties tenantProperty = tenantPropertiesRepository.findByGuidAndTenantGuid(tenantPropertyGuid, tenantGuid);
-        if (tenantProperty == null) {
-            LOGGER.error("No one tenantProperties for updating was found by tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
-            throw new TenantPropertiesServiceException("No one tenantProperties for updating was found by tenantProperty guid: "
-                    + tenantPropertyGuid + "and tenant guid: " + tenantGuid);
-        }
+        final TenantProperties tenantProperty = (TenantProperties) get(tenantGuid, tenantPropertyGuid);
 
         // update tenant property
-        PropertyType propertyType = (PropertyType) tenantProperty.getPropertyType();
+        final PropertyType propertyType = (PropertyType) tenantProperty.getPropertyType();
         if (iTenantProperty.getPropertyType().getName() != null) {
             propertyType.setName(iTenantProperty.getPropertyType().getName());
         }
@@ -141,35 +133,32 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
         tenantProperty.setPropertyType(propertyType);
 
         // save updated tenant property
-        TenantProperties updatedTenantProperty;
         try {
-            updatedTenantProperty = tenantPropertiesRepository.save(tenantProperty);
+            return tenantPropertiesRepository.save(tenantProperty);
         } catch (PersistenceException ex) {
             LOGGER.error("Tenant property wasn't updated for tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
             throw new TenantPropertiesServiceException("Tenant wasn't updated for tenant guid: "
-                    + tenantGuid + "and tenantProperty guid: " + tenantPropertyGuid);
+                    + tenantGuid + "and tenantProperty guid: " + tenantPropertyGuid, ex);
         }
-
-        LOGGER.info("Tenant property was updated: {}", updatedTenantProperty);
-        return updatedTenantProperty;
     }
 
     @Transactional
     @Override
-    public void delete(UUID tenantGuid, UUID tenantPropertyGuid) {
-        LOGGER.info("Delete Tenant property by tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
+    public void delete(UUID tenantGuid, UUID tenantPropertyGuid) throws TenantPropertiesServiceException {
+        LOGGER.debug("Delete Tenant property by tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
 
-        if (!tenantPropertiesRepository.existsTenantPropertiesByGuidAndTenantGuid(tenantPropertyGuid, tenantGuid)) {
-            LOGGER.error("No one tenantProperties was found for deleting by tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
-            throw new TenantPropertiesServiceException("No one tenantProperties was found for deleting by tenantProperty guid: "
-                    + tenantPropertyGuid + "and tenant guid: " + tenantGuid);
-        }
+        final TenantProperties tenantProperties = (TenantProperties) get(tenantGuid, tenantPropertyGuid);
+        tenantPropertiesRepository.delete(tenantProperties);
 
-        tenantPropertiesRepository.removeByGuidAndTenantGuid(tenantPropertyGuid, tenantGuid);
-
-        LOGGER.info("Tenant property was deleted for tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
+        LOGGER.debug("Tenant property was deleted for tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
     }
 
+    /**
+     * Transform {@link ITenantProperties} to {@link TenantProperties}
+     *
+     * @param iTenantProperties iTenantProperties
+     * @return transformed tenant properties
+     */
     private TenantProperties transform(ITenantProperties iTenantProperties) {
 
         PropertyType propertyType = new PropertyType();

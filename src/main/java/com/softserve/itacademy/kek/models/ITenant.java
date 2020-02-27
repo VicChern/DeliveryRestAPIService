@@ -35,4 +35,13 @@ public interface ITenant {
      */
     ITenantDetails getTenantDetails();
 
+    /**
+     * Default method to get tenant owner guid
+     *
+     * @return tenant owner guid
+     */
+    default UUID getOwner() {
+        return getTenantOwner().getGuid();
+    }
+
 }
