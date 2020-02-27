@@ -92,12 +92,12 @@ public class OrderEventServiceImpl implements IOrderEventService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<OrderEvent> getAllEventsForOrder(UUID orderGuid) {
+    public List<IOrderEvent> getAllEventsForOrder(UUID orderGuid) {
         LOGGER.info("Getting OrderEvent from db by Order");
 
         Order order = orderRepository.findByGuid(orderGuid);
 
-        final List<OrderEvent> orderEventList;
+        final List<? extends IOrderEvent> orderEventList;
 
         try {
             orderEventList = orderEventRepository.getOrderEventsByOrder(order);
@@ -106,6 +106,6 @@ public class OrderEventServiceImpl implements IOrderEventService {
             throw e;
         }
 
-        return orderEventList;
+        return (List<IOrderEvent>) orderEventList;
     }
 }
