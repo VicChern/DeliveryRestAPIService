@@ -15,7 +15,10 @@ import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.impl.Actor;
+import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
+import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
@@ -48,6 +51,17 @@ public class OrderEventServiceImpl implements IOrderEventService {
     public IOrderEvent create(IOrderEvent iOrderEvent, UUID orderGuid) throws OrderEventServiceException {
         LOGGER.info("Saving OrderEvent to db: {}", iOrderEvent);
         final OrderEvent orderEvent = new OrderEvent();
+
+        final Order order = orderRepository.findByGuid(orderGuid);
+        final Actor actor = actorRepository.findByGuid(iOrderEvent.getActor().getGuid());
+        final OrderEventType orderEventType = orderEventTypeRepository.findByName(iOrderEvent.getOrderEventType().getName());
+
+
+        orderEvent.setOrder(order);
+        orderEvent.setGuid(iOrderEvent.getGuid());
+        orderEvent.setActor(actor);
+        orderEvent.setOrderEventType(orderEventType);
+        orderEvent.setPayload(iOrderEvent.getPayload());
 
         try {
             orderEventRepository.save(orderEvent);
