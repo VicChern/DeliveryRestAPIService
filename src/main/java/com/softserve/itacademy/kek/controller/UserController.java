@@ -79,7 +79,7 @@ public class UserController extends DefaultController {
      * Creates a new user
      *
      * @param newUserDto {@link UserListDto} object as a JSON
-     * @return Response entity with {@link UserListDto} object as a JSON
+     * @return Response entity with {@link UserDto} object as a JSON
      */
     @PostMapping(consumes = KekMediaType.USER,
             produces = KekMediaType.USER)
@@ -121,8 +121,9 @@ public class UserController extends DefaultController {
      * @param user user object as a JSON
      * @return Response entity with {@link UserDto} object as a JSON
      */
-    @PutMapping(value = "/{guid}", consumes = KekMediaType.USER,
-            produces = "application/vnd.softserve.user+json")
+    @PutMapping(value = "/{guid}",
+            consumes = KekMediaType.USER,
+            produces = KekMediaType.USER)
     public ResponseEntity<UserDto> modifyUser(@PathVariable String guid, @RequestBody @Valid UserDto user) {
         logger.info("Accepted modified user from the client:\n{}", user);
 
@@ -181,7 +182,8 @@ public class UserController extends DefaultController {
      * @param newAddressesDto list of address objects as a JSON
      * @return Response entity with list of the {@link AddressListDto} objects as a JSON
      */
-    @PostMapping(value = "/{guid}/addresses", consumes = KekMediaType.ADDRESS_LIST,
+    @PostMapping(value = "/{guid}/addresses",
+            consumes = KekMediaType.ADDRESS_LIST,
             produces = KekMediaType.ADDRESS_LIST)
     public ResponseEntity<AddressListDto> addUserAddresses(@PathVariable String guid,
                                                            @RequestBody @Valid AddressListDto newAddressesDto) {
@@ -209,7 +211,8 @@ public class UserController extends DefaultController {
      * @return Response entity with {@link AddressDto} object as a JSON
      */
     @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = KekMediaType.ADDRESS)
-    public ResponseEntity<AddressDto> getUserAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
+    public ResponseEntity<AddressDto> getUserAddress(@PathVariable("guid") String guid,
+                                                     @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address {} of the employee {}", addrGuid, guid);
 
         IAddress address = addressService.getForUser(UUID.fromString(addrGuid), UUID.fromString(guid));
@@ -229,7 +232,8 @@ public class UserController extends DefaultController {
      * @param addressDto address object as a JSON
      * @return Response Entity with {@link AddressDto} object as a JSON
      */
-    @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = KekMediaType.ADDRESS,
+    @PutMapping(value = "/{guid}/addresses/{addrguid}",
+            consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
     public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("guid") String guid,
                                                         @PathVariable("addrguid") String addrGuid,
@@ -252,7 +256,8 @@ public class UserController extends DefaultController {
      * @param addrGuid address ID from the URN
      */
     @DeleteMapping("/{guid}/addresses/{addrguid}")
-    public ResponseEntity deleteUserAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
+    public ResponseEntity deleteUserAddress(@PathVariable("guid") String guid,
+                                            @PathVariable("addrguid") String addrGuid) {
         logger.info("Accepted request to delete the address {} ot the user {}", addrGuid, guid);
 
         addressService.deleteForUser(UUID.fromString(addrGuid), UUID.fromString(guid));
