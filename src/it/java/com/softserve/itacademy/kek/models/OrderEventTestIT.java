@@ -59,8 +59,8 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod
     public void setUp() {
-        orderEvent1 = getOrderEvent(getOrderForOrderEvent(1), getOrderEventTypeForOrderEvent());
-        orderEvent2 = getOrderEvent(getOrderForOrderEvent(2), getOrderEventTypeForOrderEvent());
+        orderEvent1 = getOrderEvent(getOrderForOrderEvent(1), getOrderEventTypeForOrderEvent(), null);
+        orderEvent2 = getOrderEvent(getOrderForOrderEvent(2), getOrderEventTypeForOrderEvent(), null);
     }
 
     @AfterMethod
