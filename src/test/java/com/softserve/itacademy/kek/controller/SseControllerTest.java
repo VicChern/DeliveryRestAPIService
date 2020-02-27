@@ -4,11 +4,13 @@ import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,9 +30,9 @@ public class SseControllerTest {
 
     @Test
     public void asyncTest() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/request"))
-                .andExpect(request().asyncStarted())
+        MvcResult mvcResult = mockMvc.perform(get("/orders/740d8f1c-8fbb-4328-933e-79640e15880b/events/messaging"))
                 .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.log())
                 .andReturn();
     }
 }
