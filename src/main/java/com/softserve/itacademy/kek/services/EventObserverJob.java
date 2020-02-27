@@ -1,9 +1,6 @@
 package com.softserve.itacademy.kek.services;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -16,16 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
-import com.softserve.itacademy.kek.exception.OrderServiceException;
-import com.softserve.itacademy.kek.exception.UserServiceException;
-import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
-import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.OrderEventRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 
@@ -43,8 +34,8 @@ public class EventObserverJob {
 
 
     public EventObserverJob(OrderEventRepository orderEventRepository,
-                                 OrderRepository orderRepository,
-                                 ApplicationEventPublisher eventPublisher) {
+                            OrderRepository orderRepository,
+                            ApplicationEventPublisher eventPublisher) {
         this.orderEventRepository = orderEventRepository;
         this.orderRepository = orderRepository;
         this.eventPublisher = eventPublisher;
@@ -52,18 +43,18 @@ public class EventObserverJob {
 
 
     @Scheduled(fixedRate = 3000)
-    public void getLastEventForStartedDeliverOrders() throws OrderEventServiceException {
-        //TODO:: get last added events (from Db instead of stub) for every orderId that has type STARTED but does't have type DELIVERED
+    public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
+        //TODO:: get last added events (from Db) for every orderId that has type STARTED but does't have type DELIVERED
 
         //temporary added stub
-        String json1 ="{\n" +
+        String json1 = "{\n" +
                 "  \"location\": {\n" +
                 "    \"lat\": 50.499247,\n" +
                 "    \"lng\": 30.607360\n" +
                 "  }\n" +
                 "}";
 
-        String json2 ="{\n" +
+        String json2 = "{\n" +
                 "  \"location\": {\n" +
                 "    \"lat\": new.Geo,\n" +
                 "    \"lng\": new.Geo\n" +
@@ -94,7 +85,7 @@ public class EventObserverJob {
                 .stream()
                 .collect(Collectors.toMap(getOrderGuid, OrderEvent::getPayload));
 
-        MapWrapper wrapper = new MapWrapper();
+        OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
         wrapper.setMap(ordersToPayloads);
 
         this.eventPublisher.publishEvent(wrapper);

@@ -5,8 +5,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 
-//temporary added class instead of using generics in Spring Events (this class is used by SSE Controller event Listener)
-public class MapWrapper {
+//temporary added class, will be removed when use generics in Spring Events for SSE Controller job
+public class OrderTrackingWrapper {
     Map<UUID, String> map;
 
     public Map<UUID, String> getMap() {
@@ -27,8 +27,8 @@ public class MapWrapper {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MapWrapper)) return false;
-        MapWrapper that = (MapWrapper) o;
+        if (!(o instanceof OrderTrackingWrapper)) return false;
+        OrderTrackingWrapper that = (OrderTrackingWrapper) o;
         return Objects.equals(map, that.map);
     }
 
