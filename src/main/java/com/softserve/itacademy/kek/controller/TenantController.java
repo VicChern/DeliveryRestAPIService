@@ -142,6 +142,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @GetMapping(value = "/{guid}", produces = "application/vnd.softserve.tenant+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantDto> getTenant(@PathVariable String guid) {
         logger.info("Client requested the tenant {}", guid);
 
@@ -153,6 +154,7 @@ public class TenantController extends DefaultController {
                 .status(HttpStatus.OK)
                 .body(tenantDto);
     }
+
 
     /**
      * Modifies information of the specified tenant
