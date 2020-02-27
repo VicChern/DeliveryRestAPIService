@@ -149,6 +149,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         //when
         IOrder createdOrder = orderService.create(order, customer.getGuid());
 
+        order = (Order) createdOrder;
         order.setIdOrder(2L);
 
         OrderEvent orderEvent1 = getOrderEvent(order, orderEventType2, actorRepository.findById(2L).get());
@@ -159,7 +160,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         orderEventRepository.save(orderEvent2);
         orderEventRepository.save(orderEvent3);
 
-        List<OrderEvent> orderEventList = orderEventService.getAllEventsForOrder(order);
+        List<OrderEvent> orderEventList = orderEventService.getAllEventsForOrder(order.getGuid());
 
         //then
         assertEquals(orderEventList.size(), 4);
