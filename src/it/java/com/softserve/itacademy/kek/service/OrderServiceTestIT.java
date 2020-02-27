@@ -51,10 +51,6 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     private ActorRepository actorRepository;
     @Autowired
     private OrderDetailsRepository orderDetailsRepository;
-
-
-    @Autowired
-    private IOrderService orderService;
     @Autowired
     private OrderEventTypeRepository orderEventTypeRepository;
     @Autowired
@@ -62,6 +58,8 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private ActorRoleRepository actorRoleRepository;
 
+    @Autowired
+    private IOrderService orderService;
 
     private ActorRole actorRole1;
     private ActorRole actorRole2;

@@ -46,7 +46,8 @@ public class OrderServiceImpl implements IOrderService {
     private final static String ASSIGNED = "ASSIGNED";
     private final static String STARTED = "STARTED";
     private final static String DELIVERED = "DELIVERED";
-    private final Logger logger = LoggerFactory.getLogger(IOrderService.class);
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(IOrderService.class);
     private final OrderRepository orderRepository;
     private final TenantRepository tenantRepository;
     private final OrderEventRepository orderEventRepository;
@@ -79,7 +80,7 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional
     @Override
     public IOrder create(IOrder iOrder, UUID customerGuid) throws OrderServiceException {
-        logger.info("Saving Order to db: {}", iOrder);
+        LOGGER.info("Saving Order to db: {}", iOrder);
 
         final User customer = (User) userService.getByGuid(customerGuid);
         final Tenant tenant = (Tenant) tenantService.getByGuid(iOrder.getTenant().getGuid());
@@ -88,9 +89,9 @@ public class OrderServiceImpl implements IOrderService {
 
         try {
             savedOrder = orderRepository.save(actualOrder);
-            logger.info("Order was saved: {}", savedOrder);
+            LOGGER.info("Order was saved: {}", savedOrder);
         } catch (PersistenceException e) {
-            logger.error("Order wasn`t saved: {}", actualOrder);
+            LOGGER.error("Order wasn`t saved: {}", actualOrder);
             throw new OrderServiceException("Order wasn`t saved");
         }
 
@@ -120,14 +121,14 @@ public class OrderServiceImpl implements IOrderService {
         try {
             return actorRepository.save(actor);
         } catch (PersistenceException e) {
-            logger.error("Actor wasn`t saved for tenant: {}, user: {}, actorRole: {}", tenant, user, actorRole);
+            LOGGER.error("Actor wasn`t saved for tenant: {}, user: {}, actorRole: {}", tenant, user, actorRole);
             throw new OrderServiceException("Actor wasn`t saved for tenant: " + tenant + ", user: " + user + ", actorRole: " + actorRole);
         }
     }
 
     @Transactional
     public IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, String orderEventTypeName, String payload) {
-        logger.info("Saving orderEvent for order: {} and actor : {}", orderGuid, userGuid);
+        LOGGER.info("Saving orderEvent for order: {} and actor : {}", orderGuid, userGuid);
 
         final Order order = (Order) getByGuid(orderGuid);
         final Tenant tenant = (Tenant) tenantService.getByGuid(order.getTenant().getGuid());
@@ -153,7 +154,7 @@ public class OrderServiceImpl implements IOrderService {
         try {
             return orderEventRepository.save(orderEvent);
         } catch (PersistenceException e) {
-            logger.error("OrderEvent for order: {}, actor: {}, orderEventType: {} wasn`t saved", order, actor, orderEventType);
+            LOGGER.error("OrderEvent for order: {}, actor: {}, orderEventType: {} wasn`t saved", order, actor, orderEventType);
             throw new OrderEventServiceException("OrderEvent for order: " + orderGuid + ", actor: " + userGuid + ", orderEventTypeName: " + orderEventTypeName + " wasn`t saved");
         }
     }
@@ -163,7 +164,7 @@ public class OrderServiceImpl implements IOrderService {
         final OrderEventType orderEventType = orderEventTypeRepository.findByName(name);
 
         if (orderEventType == null) {
-            logger.error("OrderEventType wasn`t find for name: {}", name);
+            LOGGER.error("OrderEventType wasn`t find for name: {}", name);
             throw new OrderServiceException("OrderEventType wasn`t find for name: " + name);
         }
 
@@ -174,13 +175,13 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional(readOnly = true)
     @Override
     public List<IOrder> getAll() throws OrderServiceException {
-        logger.info("Getting all Orders from db");
+        LOGGER.info("Getting all Orders from db");
         final Iterable<? extends IOrder> orderList;
 
         try {
             orderList = orderRepository.findAll();
         } catch (EntityNotFoundException e) {
-            logger.error("Orders weren't find");
+            LOGGER.error("Orders weren't find");
             throw new OrderServiceException("Orders weren't find");
         }
 
@@ -190,24 +191,24 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional(readOnly = true)
     @Override
     public IOrder getByGuid(UUID guid) throws OrderServiceException {
-        logger.info("Getting Order from db by guid");
+        LOGGER.info("Getting Order from db by guid");
         final Order order;
 
         try {
             order = orderRepository.findByGuid(guid);
         } catch (EntityNotFoundException e) {
-            logger.error("Order with guid: {}, wasn`t found", guid);
+            LOGGER.error("Order with guid: {}, wasn`t found", guid);
             throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
         }
 
-        logger.info("Order with guid: {}, was found: {}", guid, order);
+        LOGGER.info("Order with guid: {}, was found: {}", guid, order);
         return order;
     }
 
     @Transactional
     @Override
     public IOrder update(IOrder order, UUID guid) {
-        logger.info("Updating order: {}, with guid: {}", order, guid);
+        LOGGER.info("Updating order: {}, with guid: {}", order, guid);
 
         final Order actualOrder = orderRepository.findByGuid(guid);
         final Tenant actualTenant = tenantRepository.findByGuid(order.getTenant().getGuid()).get();
@@ -219,15 +220,15 @@ public class OrderServiceImpl implements IOrderService {
         try {
             orderRepository.findByGuid(guid);
         } catch (EntityNotFoundException e) {
-            logger.error("Order with guid: {}, wasn`t found", guid);
+            LOGGER.error("Order with guid: {}, wasn`t found", guid);
             throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
         }
 
         try {
-            logger.info("Order with guid: {}, was updated: {}", guid, actualOrder);
+            LOGGER.info("Order with guid: {}, was updated: {}", guid, actualOrder);
             return orderRepository.save(actualOrder);
         } catch (PersistenceException e) {
-            logger.error("Order with guid: {}, wasn`t updated: {}", guid, actualOrder);
+            LOGGER.error("Order with guid: {}, wasn`t updated: {}", guid, actualOrder);
             throw new OrderServiceException("Order with guid: " + guid + ", wasn`t updated: " + actualOrder);
         }
     }
@@ -235,25 +236,25 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional
     @Override
     public void deleteByGuid(UUID guid) throws OrderServiceException {
-        logger.info("Deleting Order from db by guid: {}", guid);
+        LOGGER.info("Deleting Order from db by guid: {}", guid);
 
         final Order actualOrder;
 
         try {
             actualOrder = orderRepository.findByGuid(guid);
         } catch (EntityNotFoundException e) {
-            logger.error("Order with guid: {}, wasn`t found", guid);
+            LOGGER.error("Order with guid: {}, wasn`t found", guid);
             throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
         }
 
         try {
             orderRepository.deleteById(actualOrder.getIdOrder());
         } catch (PersistenceException e) {
-            logger.error("Order wasn`t deleted from db: {}", actualOrder);
+            LOGGER.error("Order wasn`t deleted from db: {}", actualOrder);
             throw new OrderServiceException("Order wasn`t deleted: " + actualOrder);
         }
 
-        logger.info("Order with guid: {}, was deleted", guid);
+        LOGGER.info("Order with guid: {}, was deleted", guid);
     }
 
 
