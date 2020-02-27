@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -66,6 +67,7 @@ public class SseController {
 
     @GetMapping(value = "/request", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Async
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public SseEmitter handleRequest() {
         SseEmitter emitter = new SseEmitter(sessionTimeout);
 
