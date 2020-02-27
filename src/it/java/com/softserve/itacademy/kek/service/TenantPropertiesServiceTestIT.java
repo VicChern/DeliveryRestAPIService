@@ -28,8 +28,8 @@ import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdi
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getPropertyType;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenantProperties;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
@@ -195,6 +195,6 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
         tenantPropertiesService.delete(tenant.getGuid(), savedTenantProperties.get(0).getGuid());
 
         //then
-        assertNull(tenantPropertiesRepository.findByGuidAndTenantGuid(savedTenantProperties.get(0).getGuid(), tenant.getGuid()));
+        assertFalse(tenantPropertiesRepository.findByGuidAndTenantGuid(savedTenantProperties.get(0).getGuid(), tenant.getGuid()).isPresent());
     }
 }

@@ -118,7 +118,6 @@ public class OrderEvent extends AbstractEntity implements IOrderEvent, Serializa
     public String toString() {
         return "OrderEvent{" +
                 "idOrderEvent=" + idOrderEvent +
-                ", idActor=" + actor +
                 ", idOrderEventType=" + orderEventType +
                 ", guid=" + guid +
                 ", payload='" + payload + '\'' +

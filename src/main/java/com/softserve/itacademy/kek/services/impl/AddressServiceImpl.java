@@ -1,5 +1,16 @@
 package com.softserve.itacademy.kek.services.impl;
 
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.softserve.itacademy.kek.exception.AddressServiceException;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.impl.Address;
@@ -9,16 +20,7 @@ import com.softserve.itacademy.kek.repositories.AddressRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IAddressService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolationException;
-import java.util.List;
-import java.util.UUID;
+import com.softserve.itacademy.kek.services.ITenantService;
 
 /**
  * Service implementation for {@link IAddressService}
@@ -27,15 +29,15 @@ import java.util.UUID;
 public class AddressServiceImpl implements IAddressService {
     private final static Logger logger = LoggerFactory.getLogger(AddressServiceImpl.class);
 
-    private final TenantRepository tenantRepository;
+    private final ITenantService tenantService;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
 
     @Autowired
-    public AddressServiceImpl(TenantRepository tenantRepository,
+    public AddressServiceImpl(ITenantService tenantService,
                               UserRepository userRepository,
                               AddressRepository addressRepository) {
-        this.tenantRepository = tenantRepository;
+        this.tenantService = tenantService;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
     }
@@ -46,7 +48,7 @@ public class AddressServiceImpl implements IAddressService {
         logger.info("Insert Tenant address into DB: tenant.guid = {}, address = {}", tenantGuid, addressData);
 
         Address address = new Address();
-        Tenant tenant = findTenantByGuid(tenantGuid);
+        Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
 
         address.setGuid(UUID.randomUUID());
         address.setAddress(addressData.getAddress());
@@ -68,11 +70,11 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public IAddress updateForTenant(IAddress addressData, UUID tenantGuid, UUID addressGuid) {
+    public IAddress updateForTenant(IAddress addressData, UUID tenantGuid) {
         logger.info("Update Tenant address in DB: tenant.guid = {}, address = {}", tenantGuid, addressData);
 
-        Address address = findAddressByGuid(addressGuid);
-        Tenant tenant = findTenantByGuid(tenantGuid);
+        Address address = findAddressByGuid(addressData.getGuid());
+        Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
 
         checkAddressBelongsTenant(address, tenant);
 
@@ -98,7 +100,7 @@ public class AddressServiceImpl implements IAddressService {
         logger.info("Delete Tenant address from DB: tenant.guid = {}, address.guid = {}", tenantGuid, addressGuid);
 
         Address address = findAddressByGuid(addressGuid);
-        Tenant tenant = findTenantByGuid(tenantGuid);
+        Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
 
         checkAddressBelongsTenant(address, tenant);
 
@@ -118,7 +120,7 @@ public class AddressServiceImpl implements IAddressService {
         logger.info("Get Tenant address from DB: tenant.guid = {}, address.guid = {}", tenantGuid, addressGuid);
 
         Address address = findAddressByGuid(addressGuid);
-        Tenant tenant = findTenantByGuid(tenantGuid);
+        Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
 
         checkAddressBelongsTenant(address, tenant);
 
@@ -239,17 +241,6 @@ public class AddressServiceImpl implements IAddressService {
             throw new AddressServiceException("Address wasn't found");
         }
         return address;
-    }
-
-    private Tenant findTenantByGuid(UUID guid) {
-        logger.info("Address Service, find Tenant in DB: guid = {}", guid);
-
-        Tenant tenant = tenantRepository.findByGuid(guid);
-        if (tenant == null) {
-            logger.error("Address Service, Tenant wasn't found in DB: guid = {}", guid);
-            throw new AddressServiceException("Tenant wasn't found");
-        }
-        return tenant;
     }
 
     private User findUserByGuid(UUID guid) {

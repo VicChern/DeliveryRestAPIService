@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class BadRequestException extends ServiceException {
 
     public BadRequestException(String message) {
-        super(HttpStatus.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST.value(), message);
+        super(null, HttpStatus.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST.value(), message);
     }
 }
