@@ -3,7 +3,6 @@ package com.softserve.itacademy.kek.services;
 import java.util.List;
 import java.util.UUID;
 
-import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
@@ -33,8 +32,8 @@ public interface IOrderEventService {
     /**
      * Gets all OrderEvents for current {@link Order} order
      *
-     * @param order order
+     * @param orderGuid {@link Order} guid
      * @return all OrderEvents for order
      */
-    List<OrderEvent> getAllEventsForOrder(IOrder order);
+    List<OrderEvent> getAllEventsForOrder(UUID orderGuid);
 }

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.exception.OrderServiceException;
-import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.Order;
@@ -93,8 +92,10 @@ public class OrderEventServiceImpl implements IOrderEventService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<OrderEvent> getAllEventsForOrder(IOrder order) {
+    public List<OrderEvent> getAllEventsForOrder(UUID orderGuid) {
         LOGGER.info("Getting OrderEvent from db by Order");
+
+        Order order = orderRepository.findByGuid(orderGuid);
 
         final List<OrderEvent> orderEventList;
 
