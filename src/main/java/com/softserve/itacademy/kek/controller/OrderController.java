@@ -28,6 +28,7 @@ import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
 import com.softserve.itacademy.kek.dto.OrderListDto;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.IOrderEventType;
 import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.IOrderService;
 
@@ -54,17 +55,15 @@ public class OrderController extends DefaultController {
     }
 
     private OrderEventDto transformOrderEvent(IOrderEvent orderEvent) {
-        OrderEventTypesDto orderEventTypesDto = new OrderEventTypesDto();
         return new OrderEventDto(orderEvent.getGuid(),
                 transformOrder(orderEvent.getOrder()),
                 orderEvent.getPayload(),
-                orderEventTypesDto);
+                transformOrderEventType(orderEvent.getOrderEventType()));
     }
 
-    //TODO: fix it
-//    private OrderEventTypesDto transformOrderEventType(IOrderEventType orderEventType) {
-//        return OrderEventTypesDto.valueOf(orderEventType.getName());
-//    }
+    private OrderEventTypesDto transformOrderEventType(IOrderEventType orderEventType) {
+        return OrderEventTypesDto.valueOf(orderEventType.getName());
+    }
 
     /**
      * Get information about orders
