@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.dto.AddressDto;
@@ -73,6 +73,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
     @GetMapping(produces = "application/vnd.softserve.tenant+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<List<TenantDto>> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
@@ -90,6 +91,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PostMapping(consumes = "application/vnd.softserve.tenant+json", produces = "application/vnd.softserve.tenant+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto body) {
         logger.info("Accepted requested to create a new tenant:\n{}", body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
@@ -102,6 +104,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @GetMapping(value = "/{guid}", produces = "application/vnd.softserve.tenant+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantDto> getTenant(@PathVariable String guid) {
         logger.info("Client requested the tenant {}", guid);
 
@@ -121,7 +124,7 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}", consumes = "application/vnd.softserve.tenant+json",
             produces = "application/vnd.softserve.tenant+json")
-    @ResponseStatus()
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto body) {
         logger.info("Accepted modified tenant from the client:\n{}", body);
         logger.info("Sending the modified tenant to the client:\n{}", body);
@@ -134,6 +137,7 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from the URL
      */
     @DeleteMapping("/{guid}")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity deleteTenant(@PathVariable String guid) {
         logger.info("Accepted request to delete the tenant {}", guid);
         logger.info("Tenant({}}) was successfully deleted", guid);
@@ -147,6 +151,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with a List of (@link TenantPropertiesDTO) objects as a JSON
      */
     @GetMapping(value = "/{guid}/properties", produces = "application/vnd.softserve.tenantproperty+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<List<TenantPropertiesDto>> getTenantProperties(@PathVariable String guid) {
         logger.info("Client requested all the properties of the tenant {}", guid);
 
@@ -167,6 +172,7 @@ public class TenantController extends DefaultController {
      */
     @PostMapping(value = "/{guid}/properties", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantPropertiesDto> addTenantProperties(@PathVariable String guid,
                                                                    @RequestBody @Valid TenantPropertiesDto body) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, body);
@@ -182,6 +188,7 @@ public class TenantController extends DefaultController {
      * @return Response entity with a specific tenant property {@link TenantPropertiesDto}
      */
     @GetMapping(value = "/{guid}/properties/{propguid}", produces = "application/vnd.softserve.tenantproperty+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantPropertiesDto> getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Sending the tenant's({}) specific property({}) to the client", guid, propGuid);
 
@@ -201,7 +208,7 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}/properties/{propguid}", consumes = "application/vnd.softserve.tenantproperty+json",
             produces = "application/vnd.softserve.tenantproperty+json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid,
                                                                     @PathVariable("propguid") String propGuid,
                                                                     @RequestBody @Valid TenantPropertiesDto body) {
@@ -217,6 +224,7 @@ public class TenantController extends DefaultController {
      * @param propGuid address ID from the URN
      */
     @DeleteMapping("/{guid}/properties/{propguid}")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity deleteTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Accepted request to delete the property {} ot the tenant {}", propGuid, guid);
         logger.info("the property {} ot the tenant {} successfully deleted", propGuid, guid);
@@ -231,6 +239,7 @@ public class TenantController extends DefaultController {
      * @return Response entity with a list of tenant addresses{@link AddressDto}
      */
     @GetMapping(value = "/{guid}/addresses", produces = "application/vnd.softserve.address+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<List<AddressDto>> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
 
@@ -250,7 +259,7 @@ public class TenantController extends DefaultController {
      */
     @PostMapping(value = "/{guid}/addresses", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
-    @ResponseStatus()
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<AddressDto> addTenantAddresses(@PathVariable String guid, @RequestBody @Valid AddressDto body) {
         logger.info("Accepted requested to create a new address for tenant: {} :\n{}", guid, body);
         return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
@@ -264,6 +273,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with a specific tenant tenant property{@link TenantPropertiesDto}
      */
     @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = "application/vnd.softserve.address+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<AddressDto> getTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address {} of the tenant {}", addrGuid, guid);
 
@@ -283,6 +293,7 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = "application/vnd.softserve.address+json",
             produces = "application/vnd.softserve.address+json")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<AddressDto> modifyTenantAddress(@PathVariable("guid") String guid,
                                                           @PathVariable("addrguid") String addrGuid,
                                                           @RequestBody @Valid AddressDto body) {
@@ -298,6 +309,7 @@ public class TenantController extends DefaultController {
      * @param addrGuid specific address ID from the URN
      */
     @DeleteMapping("/{guid}/addresses/{addrguid}")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity deleteTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Accepted request to delete the address {} ot the tenant {}", addrGuid, guid);
         logger.info("the address {} ot the tenant {} successfully deleted", addrGuid, guid);

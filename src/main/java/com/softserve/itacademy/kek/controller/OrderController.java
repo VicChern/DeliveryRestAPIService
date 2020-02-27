@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.dto.OrderDetailsDto;
@@ -59,6 +59,7 @@ public class OrderController extends DefaultController {
      * @return Response Entity with list of {@link OrderDto} objects
      */
     @GetMapping(produces = "application/vnd.softserve.order+json")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public ResponseEntity<List<OrderDto>> getOrderList() {
         logger.info("Client requested the list of all orders");
 
@@ -76,6 +77,7 @@ public class OrderController extends DefaultController {
      * @return created {@link OrderDto} object
      */
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<OrderDto> addOrder(@RequestBody @Valid OrderDto order) {
         logger.info("Order has been sent:\n{}", order);
         return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
@@ -88,6 +90,7 @@ public class OrderController extends DefaultController {
      * @return Response Entity with {@link OrderDto} object
      */
     @GetMapping(value = "/{id}", produces = "application/vnd.softserve.order+json")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public ResponseEntity<OrderDto> getOrder(@PathVariable String id) {
         OrderDto order = getOrderDtoStub();
 
@@ -104,6 +107,7 @@ public class OrderController extends DefaultController {
      */
     @PutMapping(value = "/{id}", consumes = "application/vnd.softserve.order+json",
             produces = "application/vnd.softserve.order+json")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<OrderDto> modifyOrder(@PathVariable String id, @RequestBody @Valid OrderDto order) {
         logger.info("Sending the modified order({}) to the client", id);
         logger.info("Order was modified:\n{}", order);
@@ -116,6 +120,7 @@ public class OrderController extends DefaultController {
      * @param id order ID from the URN
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity deleteOrder(@PathVariable String id) {
         logger.info("Order ({}) successfully deleted", id);
         return new ResponseEntity(HttpStatus.OK);
@@ -128,6 +133,7 @@ public class OrderController extends DefaultController {
      * @return list of the {@link OrderEventDto} objects
      */
     @GetMapping(value = "/{id}/events", produces = "application/vnd.softserve.event+json")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public ResponseEntity<List<OrderEventDto>> getEvents(@PathVariable String id) {
         logger.info("Sending the list of order ({}) events to the client", id);
 
@@ -147,7 +153,7 @@ public class OrderController extends DefaultController {
      */
     @PostMapping(value = "/{id}/events", consumes = "application/vnd.softserve.event+json",
             produces = "application/vnd.softserve.event+json")
-    @ResponseStatus()
+    @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
     public ResponseEntity<OrderEventDto> addEvent(@PathVariable String id, @RequestBody @Valid OrderEventDto body) {
         logger.info("Sending the created order({}) events to the client", id);
         logger.info("Event have been added: {}", body);
