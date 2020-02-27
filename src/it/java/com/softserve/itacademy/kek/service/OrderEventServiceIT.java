@@ -160,7 +160,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         orderEventRepository.save(orderEvent2);
         orderEventRepository.save(orderEvent3);
 
-        List<OrderEvent> orderEventList = orderEventService.getAllEventsForOrder(order.getGuid());
+        List<IOrderEvent> orderEventList = orderEventService.getAllEventsForOrder(order.getGuid());
 
         //then
         assertEquals(orderEventList.size(), 4);

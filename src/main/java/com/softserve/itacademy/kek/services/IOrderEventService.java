@@ -35,5 +35,5 @@ public interface IOrderEventService {
      * @param orderGuid {@link Order} guid
      * @return all OrderEvents for order
      */
-    List<OrderEvent> getAllEventsForOrder(UUID orderGuid);
+    List<IOrderEvent> getAllEventsForOrder(UUID orderGuid);
 }

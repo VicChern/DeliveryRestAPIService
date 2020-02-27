@@ -178,7 +178,7 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public List<IOrder> getAll() throws OrderServiceException {
         LOGGER.info("Getting all Orders from db");
-        final Iterable<? extends IOrder> orderList;
+        final List<? extends IOrder> orderList;
 
         try {
             orderList = orderRepository.findAll();
