@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.IUserDetails;
+
 @Entity
 @Table(name = "obj_user")
 public class User extends AbstractEntity implements IUser, Serializable {
@@ -37,25 +40,31 @@ public class User extends AbstractEntity implements IUser, Serializable {
     @NotNull
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;
+
     @Email
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "email", nullable = false, unique = true, length = 256)
     private String email;
+
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "phone_number", nullable = false, unique = true, length = 256)
     private String phoneNumber;
+
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false, length = 256)
     private String name;
+
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "nickname", nullable = false, unique = true, length = 256)
     private String nickname;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private UserDetails userDetails;
+
     @OneToOne(mappedBy = "tenantOwner", cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, orphanRemoval = true)
     private Tenant tenant;
 
