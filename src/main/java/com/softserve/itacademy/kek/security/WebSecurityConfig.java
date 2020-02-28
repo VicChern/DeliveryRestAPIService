@@ -3,15 +3,19 @@ package com.softserve.itacademy.kek.security;
 import com.auth0.AuthenticationController;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.JwkProviderBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.softserve.itacademy.kek.controller.AuthController;
+import com.softserve.itacademy.kek.services.impl.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +42,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value(value = "${base.url.path}")
     private String baseURL;
 
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    @Bean
+    UserDetailsService getuserDetailsService() {
+        return new UserDetailsServiceImpl();
+    }
+
     @Bean
     public AuthenticationController authenticationController() {
         JwkProvider jwkProvider = new JwkProviderBuilder(domain).build();
@@ -52,8 +64,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers(baseURL + "/profile/**")
-                .authenticated()
+//                .antMatchers(baseURL + "/profile/**")
+//                .authenticated()
+                .antMatchers(HttpMethod.GET, "/api/v1/profile").hasAnyRole("USER")
                 .and()
                 .formLogin()
                 .loginPage(baseURL + "/login")
@@ -64,6 +77,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(new AuthController())
                 .permitAll();
     }
+
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth)
+//            throws Exception {
+//
+//        auth
+//                .userDetailsService(userDetailsService);
+//
+//    }
 
     public String getDomain() {
         return domain;

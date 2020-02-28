@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +54,7 @@ public class UserController extends DefaultController {
      * @return Response entity with list of {@link UserDto} objects as a JSON
      */
     @GetMapping(produces = "application/vnd.softserve.user+json")
-    public ResponseEntity<List<UserDto>> getUserList() {
+    public ResponseEntity<List<UserDto>> getUserList(Authentication authentication) {
         logger.info("Client requested the list of all users");
 
         List<UserDto> userList = new ArrayList<>();
