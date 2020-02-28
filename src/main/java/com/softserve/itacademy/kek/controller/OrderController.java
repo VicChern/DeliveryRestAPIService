@@ -213,15 +213,14 @@ public class OrderController extends DefaultController {
                                                   @RequestBody @Valid OrderEventDto orderEventDto) {
         logger.info("Accepted requested to create a new event for the order {} created by actor {}", orderGuid, actorGuid);
 
-        IOrderEvent createdOrderEvent = orderService.createOrderEvent(UUID.fromString(orderGuid),
-                UUID.fromString(actorGuid),
-                orderEventDto.getType().getName(),
-                orderEventDto.getPayload());
-        OrderEventDto createdOrderEventDto = transformOrderEvent(createdOrderEvent);
-
+//        IOrderEvent createdOrderEvent = orderService.createOrderEvent(UUID.fromString(orderGuid),
+//                UUID.fromString(actorGuid),
+//                orderEventDto);
+//        OrderEventDto createdOrderEventDto = transformOrderEvent(createdOrderEvent);
+// TODO: 28.02.2020  
         logger.info("Sending the created order event to the client:\n{}", orderEventDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(createdOrderEventDto);
+                .body(orderEventDto);
     }
 }

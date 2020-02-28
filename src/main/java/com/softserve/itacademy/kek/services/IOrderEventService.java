@@ -12,14 +12,14 @@ import com.softserve.itacademy.kek.models.impl.OrderEvent;
  */
 public interface IOrderEventService {
 
-    /**
-     * Saves order event
-     *
-     * @param orderEvent {@link OrderEvent}
-     * @param orderGuid  {@link Order} guid
-     * @return saved {@link OrderEvent} orderEvent
-     */
-    IOrderEvent create(IOrderEvent orderEvent, UUID orderGuid);
+//    /**
+//     * Saves order event
+//     *
+//     * @param orderEvent {@link OrderEvent}
+//     * @param orderGuid  {@link Order} guid
+//     * @return saved {@link OrderEvent} orderEvent
+//     */
+//    IOrderEvent create(IOrderEvent orderEvent, UUID orderGuid);
 
     /**
      * Gets order event by {@link IOrderEvent} guid

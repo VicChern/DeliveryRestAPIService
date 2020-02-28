@@ -70,7 +70,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public IAddress updateForTenant(IAddress addressData, UUID tenantGuid) {
+    public IAddress updateForTenant(IAddress addressData, UUID tenantGuid, UUID addressGuid) {
         logger.info("Update Tenant address in DB: tenant.guid = {}, address = {}", tenantGuid, addressData);
 
         Address address = findAddressByGuid(addressData.getGuid());
