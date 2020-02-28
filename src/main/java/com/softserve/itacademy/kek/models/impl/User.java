@@ -15,21 +15,16 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
 
 @Entity
 @Table(name = "obj_user")
-public class User implements IUser, Serializable, org.springframework.security.core.userdetails.UserDetails {
+public class User extends AbstractEntity implements IUser, Serializable {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     List<Identity> identityList = new ArrayList<>();
@@ -47,10 +42,12 @@ public class User implements IUser, Serializable, org.springframework.security.c
     @Size(min = 1, max = 256)
     @Column(name = "email", nullable = false, unique = true, length = 256)
     private String email;
+
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "phone_number", nullable = false, unique = true, length = 256)
     private String phoneNumber;
+
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false, length = 256)
@@ -155,41 +152,6 @@ public class User implements IUser, Serializable, org.springframework.security.c
     public void removeIdentity(Identity identity) {
         identityList.remove(identity);
         identity.setUser(null);
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
     }
 
     @Override

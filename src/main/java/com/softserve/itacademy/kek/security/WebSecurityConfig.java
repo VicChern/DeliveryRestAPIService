@@ -50,6 +50,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value(value = "${logout.url}")
     private String logoutURL;
 
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    @Bean
+    UserDetailsService getuserDetailsService() {
+        return new UserDetailsServiceImpl();
+    }
+
     @Bean
     public AuthenticationController authenticationController() {
         JwkProvider jwkProvider = new JwkProviderBuilder(domain).build();
@@ -64,6 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
+//                .antMatchers(baseURL + "/profile/**")
+//                .authenticated()
                 .antMatchers(HttpMethod.GET, "/api/v1/profile").hasAnyRole("USER")
                 .and()
                 .formLogin()
