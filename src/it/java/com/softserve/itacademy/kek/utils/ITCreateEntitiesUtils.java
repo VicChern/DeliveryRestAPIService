@@ -251,7 +251,7 @@ public class ITCreateEntitiesUtils {
         orderDetails.setPayload(createRandomLetterString(128));
         order.setOrderDetails(orderDetails);
         orderDetails.setOrder(order);
-        tenant.addOrder(order);
+//        tenant.addOrder(order);
         return order;
     }
 
@@ -263,10 +263,11 @@ public class ITCreateEntitiesUtils {
         return orderEventType;
     }
 
-    public static OrderEvent getOrderEvent(Order order, OrderEventType orderEventType) {
+    public static OrderEvent getOrderEvent(Order order, OrderEventType orderEventType, Actor actor) {
         OrderEvent orderEvent = new OrderEvent();
 
         orderEvent.setOrder(order);
+        orderEvent.setActor(actor);
         orderEvent.setOrderEventType(orderEventType);
         orderEvent.setGuid(UUID.randomUUID());
         orderEvent.setPayload(createRandomLetterString(MAX_LENGTH_512));

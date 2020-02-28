@@ -12,34 +12,32 @@ import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderDetails;
+import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Order;
-import com.softserve.itacademy.kek.models.impl.OrderDetails;
+import com.softserve.itacademy.kek.models.impl.OrderEvent;
 import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
-import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
+import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.IOrderService;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderEvent;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
-public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
-
-    public static final String newSummary = "new summary";
+public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private UserRepository userRepository;
@@ -50,8 +48,6 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private ActorRepository actorRepository;
     @Autowired
-    private OrderDetailsRepository orderDetailsRepository;
-    @Autowired
     private OrderEventTypeRepository orderEventTypeRepository;
     @Autowired
     private OrderEventRepository orderEventRepository;
@@ -60,6 +56,8 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private IOrderService orderService;
+    @Autowired
+    private IOrderEventService orderEventService;
 
     private ActorRole actorRole1;
     private ActorRole actorRole2;
@@ -135,88 +133,39 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
         //when
         IOrder createdOrder = orderService.create(order, customer.getGuid());
 
-        //then
-        IOrder foundOrder = orderRepository.findByGuid(createdOrder.getGuid());
+        OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(createdOrder.getGuid()), orderEventType2, actorRepository.findById(1L).get());
 
-        IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
+        IOrderEvent createdOrderEvent = orderEventService.create(orderEvent, createdOrder.getGuid());
 
-        assertEquals(createdOrder.getGuid(), foundOrder.getGuid());
-        assertEquals(createdOrder.getOrderDetails(), foundDetails);
-        assertEquals(createdOrder.getSummary(), foundOrder.getSummary());
-        assertEquals(createdOrder.getTenant(), foundOrder.getTenant());
+        //than
+        IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid());
+
+        assertEquals(createdOrderEvent.getPayload(), foundOrderEvent.getPayload());
     }
 
     @Rollback
     @Test
-    public void updateSuccess() {
-        //when
-        Order createdOrder = orderRepository.save(order);
-
-        createdOrder.setSummary(newSummary);
-
-        IOrder updatedOrder = orderService.update(order, order.getGuid());
-
-        //then
-        IOrder foundOrder = orderRepository.findByGuid(order.getGuid());
-
-        IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
-
-
-        assertNotNull(createdOrder);
-        assertNotNull(updatedOrder);
-        assertEquals(updatedOrder.getSummary(), newSummary);
-
-        assertEquals(updatedOrder.getGuid(), foundOrder.getGuid());
-        assertEquals(updatedOrder.getOrderDetails(), foundDetails);
-        assertEquals(updatedOrder.getSummary(), foundOrder.getSummary());
-        assertEquals(updatedOrder.getTenant(), foundOrder.getTenant());
-    }
-
-    @Rollback
-    @Test
-    public void getByGuidSuccess() {
-        //when
-        Order createdOrder = orderRepository.save(order);
-
-        //then
-        IOrder foundOrder = orderService.getByGuid(order.getGuid());
-
-        IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
-
-        assertEquals(createdOrder.getGuid(), foundOrder.getGuid());
-        assertEquals(createdOrder.getOrderDetails(), foundDetails);
-        assertEquals(createdOrder.getSummary(), foundOrder.getSummary());
-        assertEquals(createdOrder.getTenant(), foundOrder.getTenant());
-    }
-
-    @Rollback
-    @Test
-    public void getAllSuccess() {
-        //when
-        Order createdOrder = orderRepository.save(order);
-
-        //then
-        List<IOrder> orderList = orderService.getAll();
-
-        assertNotNull(createdOrder);
-        assertNotNull(orderList);
-        assertEquals(orderList.size(), 1);
-    }
-
-    @Rollback
-    @Test
-    public void deleteByGuidSuccess() {
+    public void getAllEventsForOrderSuccess() {
         //when
         IOrder createdOrder = orderService.create(order, customer.getGuid());
 
+        order = (Order) createdOrder;
+        order.setIdOrder(2L);
+
+        OrderEvent orderEvent1 = getOrderEvent(order, orderEventType2, actorRepository.findById(2L).get());
+        OrderEvent orderEvent2 = getOrderEvent(order, orderEventType3, actorRepository.findById(2L).get());
+        OrderEvent orderEvent3 = getOrderEvent(order, orderEventType4, actorRepository.findById(2L).get());
+
+        orderEventRepository.save(orderEvent1);
+        orderEventRepository.save(orderEvent2);
+        orderEventRepository.save(orderEvent3);
+
+        List<IOrderEvent> orderEventList = orderEventService.getAllEventsForOrder(order.getGuid());
+
         //then
-        orderService.deleteByGuid(createdOrder.getGuid());
-
-        Order foundOrder = orderRepository.findByGuid(createdOrder.getGuid());
-        OrderDetails foundOrderDetails = orderDetailsRepository.findByOrder(createdOrder);
-
-        assertNotNull(createdOrder);
-        assertNull(foundOrder);
-        assertNull(foundOrderDetails);
+        assertEquals(orderEventList.size(), 4);
+        assertEquals(orderEventList.get(1).getGuid(), orderEvent1.getGuid());
+        assertEquals(orderEventList.get(2).getGuid(), orderEvent2.getGuid());
+        assertEquals(orderEventList.get(3).getGuid(), orderEvent3.getGuid());
     }
 }
