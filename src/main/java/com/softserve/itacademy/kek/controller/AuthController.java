@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 
 import com.auth0.AuthenticationController;
 import com.auth0.Tokens;
@@ -14,16 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.security.TokenAuthentication;
-import com.softserve.itacademy.kek.security.TokenUtils;
 import com.softserve.itacademy.kek.security.WebSecurityConfig;
+import com.softserve.itacademy.kek.services.impl.UserDetailsServiceImpl;
 
 @RestController
 @PropertySource("classpath:server.properties")
@@ -90,7 +95,16 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
 
             Tokens tokens = controller.handle(request, response);
             TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
-            SecurityContextHolder.getContext().setAuthentication(tokenAuth);
+//            SecurityContextHolder.getContext().setAuthentication(tokenAuth);
+
+            ////////////////////
+            UserDetailsService userDetailsService = new UserDetailsServiceImpl();
+            UserDetails userDetails = userDetailsService.loadUserByUsername("lyaschenko2016@gmail.com");
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            //////////////////////////
 
             logger.info("User was authenticated");
 
@@ -104,12 +118,12 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
     }
 
     @GetMapping(path = "/profile")
-    protected ResponseEntity<String> profile(Authentication authentication) {
+    protected ResponseEntity<String> profile(Authentication authentication, Principal principal) {
 
-        TokenAuthentication tokenAuthentication = (TokenAuthentication) authentication;
-
+        String s = principal.getName();
+        authentication.getAuthorities();
+        String ss = (String) authentication.getPrincipal();
         JSONObject json = new JSONObject();
-        json.put("profileJson", TokenUtils.claimsAsJson(tokenAuthentication.getClaims()));
         return ResponseEntity.ok(json.toString());
     }
 
