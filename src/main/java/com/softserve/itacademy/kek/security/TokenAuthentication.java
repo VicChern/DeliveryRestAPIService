@@ -50,7 +50,7 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return jwt.getSubject();
+        return jwt.getClaims();
     }
 
     @Override
