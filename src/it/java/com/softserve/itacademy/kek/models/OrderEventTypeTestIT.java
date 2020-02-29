@@ -31,13 +31,13 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
     private OrderEventType orderEventType1;
     private OrderEventType orderEventType2;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         orderEventType1 = getOrderEventType();
         orderEventType2 = getOrderEventType();
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         orderEventTypeRepository.deleteAll();
     }

@@ -46,7 +46,7 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_4096 + 1)}, {""}};
     }
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         PropertyType propertyType1 = getPropertyType();
         properties1 = getGlobalProperty(propertyType1);
@@ -55,7 +55,7 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         properties2 = getGlobalProperty(propertyType2);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         propertiesRepository.deleteAll();
     }

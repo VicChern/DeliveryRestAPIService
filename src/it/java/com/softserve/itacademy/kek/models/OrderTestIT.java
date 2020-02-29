@@ -42,13 +42,13 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     private Order order1;
     private Order order2;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         order1 = getOrder(getTenantForOrder(1));
         order2 = getOrder(getTenantForOrder(2));
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         orderRepository.deleteAll();
         tenantRepository.deleteAll();

@@ -46,19 +46,19 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     private Order order;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     private void setUp() {
         orderDetails = getOrderDetails(getOrderForOrderDetails());
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     private void tearDown() {
         orderRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void testOrderIsSavedWithValidFields() {
         order.setOrderDetails(orderDetails);
 

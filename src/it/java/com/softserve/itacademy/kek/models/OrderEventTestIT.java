@@ -57,13 +57,13 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     private OrderEvent orderEvent1;
     private OrderEvent orderEvent2;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         orderEvent1 = getOrderEvent(getOrderForOrderEvent(1), getOrderEventTypeForOrderEvent(), null);
         orderEvent2 = getOrderEvent(getOrderForOrderEvent(2), getOrderEventTypeForOrderEvent(), null);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         orderEventRepository.deleteAll();
         actorRepository.deleteAll();

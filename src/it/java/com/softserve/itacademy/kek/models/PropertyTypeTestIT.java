@@ -35,13 +35,13 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_256 + 1)}, {""}};
     }
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         propertyType1 = getPropertyType();
         propertyType2 = getPropertyType();
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         repository.deleteAll();
     }

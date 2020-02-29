@@ -29,13 +29,13 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
     private ActorRole actorRole1;
     private ActorRole actorRole2;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         actorRole1 = getActorRole("actorRole1");
         actorRole2 = getActorRole("actorRole2");
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         actorRoleRepository.deleteAll();
     }

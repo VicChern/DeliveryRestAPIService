@@ -49,7 +49,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     private Actor actor2;
 
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         actorRole = getActorRole("actorRole");
         actorRoleRepository.save(actorRole);
@@ -58,7 +58,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
         actor1 = getActor((User) tenant1.getTenantOwner(), tenant1, actorRole);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         actorRepository.deleteAll();
         actorRoleRepository.deleteAll();

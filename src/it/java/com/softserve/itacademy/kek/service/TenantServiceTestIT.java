@@ -42,7 +42,7 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
     private IUser user;
     private Tenant tenant;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
 
         user = createOrdinaryUser(1);
@@ -54,13 +54,13 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
         tenant.setTenantOwner(savedUser);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void createSuccess() {
         //when
         ITenant savedTenant = tenantService.create(tenant);
@@ -72,7 +72,7 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
         assertEquals(foundTenant, savedTenant);
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getAllSuccess() {
         //given
         ITenant savedTenant = tenantService.create(tenant);
@@ -85,7 +85,7 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
         assertEquals(tenants.get(0), savedTenant);
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getAllPageableSuccess() {
         //given
         ITenant savedTenant = tenantService.create(tenant);
