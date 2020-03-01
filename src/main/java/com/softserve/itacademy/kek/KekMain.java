@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 public class KekMain {
-    final static Logger logger = Logger.getLogger(KekMain.class);
+    private final static Logger logger = Logger.getLogger(KekMain.class);
 
     public static void main(String[] args) {
         try {

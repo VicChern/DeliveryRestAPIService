@@ -46,19 +46,19 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     private Order order;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     private void setUp() {
         orderDetails = getOrderDetails(getOrderForOrderDetails());
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     private void tearDown() {
         orderRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void testOrderIsSavedWithValidFields() {
         order.setOrderDetails(orderDetails);
 
@@ -69,7 +69,7 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = TransactionSystemException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = TransactionSystemException.class)
     public void testOrderIsNotSavedWithPayloadMoreThanMaxLength() {
         orderDetails.setPayload(createRandomLetterString(MAX_LENGTH_4096 + 1));
         order.setOrderDetails(orderDetails);
@@ -81,7 +81,7 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = TransactionSystemException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = TransactionSystemException.class)
     public void testOrderIsNotSavedWithImageUrlMoreThanMaxLength() {
         orderDetails.setImageUrl(createRandomLetterString(MAX_LENGTH_512 + 1));
         order.setOrderDetails(orderDetails);

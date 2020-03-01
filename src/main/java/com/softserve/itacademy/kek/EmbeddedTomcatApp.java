@@ -18,7 +18,7 @@ import com.softserve.itacademy.kek.configuration.WebAppInitializer;
 import com.softserve.itacademy.kek.security.SecurityWebAppInitializer;
 
 public class EmbeddedTomcatApp {
-    final Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
+    private final static Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
     private final Tomcat tomcat;
 
     /**
