@@ -74,7 +74,6 @@ public class OrderController extends DefaultController {
     public ResponseEntity<OrderListDto> getOrderList() {
         logger.debug("Client requested the list of all orders");
 
-        //TODO: this will work when fixed OrderService
         List<IOrder> orderList = orderService.getAll();
 
         OrderListDto orderListDto = new OrderListDto(orderList
@@ -176,11 +175,9 @@ public class OrderController extends DefaultController {
      * @param guid order guid from the URN
      * @return Response entity with list of the {@link OrderEventListDto} objects as a JSON
      */
-    @GetMapping(value = "/{id}/events", produces = KekMediaType.EVENT)
+    @GetMapping(value = "/{id}/events", produces = KekMediaType.EVENT_LIST)
     public ResponseEntity<OrderEventListDto> getEvents(@PathVariable String guid) {
         logger.info("Client requested all the events of the order {}", guid);
-
-        //TODO: this will work when fixed OrderEventService
 
         List<IOrderEvent> events = orderEventService.getAllEventsForOrder(UUID.fromString(guid));
 
@@ -212,12 +209,11 @@ public class OrderController extends DefaultController {
                                                   @PathVariable String orderGuid,
                                                   @RequestBody @Valid OrderEventDto orderEventDto) {
         logger.info("Accepted requested to create a new event for the order {} created by actor {}", orderGuid, actorGuid);
-
-//        IOrderEvent createdOrderEvent = orderService.createOrderEvent(UUID.fromString(orderGuid),
+        // TODO: 01.03.2020 this will work when fixed OrderEventService
+//        IOrderEvent createdOrderEvent = orderEventService.createOrderEvent(UUID.fromString(orderGuid),
 //                UUID.fromString(actorGuid),
 //                orderEventDto);
 //        OrderEventDto createdOrderEventDto = transformOrderEvent(createdOrderEvent);
-// TODO: 28.02.2020  
         logger.info("Sending the created order event to the client:\n{}", orderEventDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
