@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.controller.utils;
 public class KekMediaType {
 
     public static final String TENANT = "application/vnd.softserve.tenant+json";
+    public static final String TENANT_LIST = "application/vnd.softserve.tenantList+json";
     public static final String TENANT_PROPERTY = "application/vnd.softserve.tenantproperty+json";
     public static final String ADDRESS = "application/vnd.softserve.address+json";
     public static final String ADDRESS_LIST = "application/vnd.softserve.addressList+json";
