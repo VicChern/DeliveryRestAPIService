@@ -98,7 +98,7 @@ public class TenantController extends DefaultController {
      *
      * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
-    @GetMapping(produces = KekMediaType.TENANT)
+    @GetMapping(produces = KekMediaType.TENANT_LIST)
     public ResponseEntity<TenantListDto> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
@@ -307,7 +307,7 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from URN tenant property
      * @return Response entity with a list of tenant addresses{@link AddressDto}
      */
-    @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS)
+    @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS_LIST)
     public ResponseEntity<AddressListDto> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
 
@@ -402,8 +402,10 @@ public class TenantController extends DefaultController {
     @DeleteMapping("/{guid}/addresses/{addrguid}")
     public ResponseEntity deleteTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Accepted request to delete the address {} ot the tenant {}", addrGuid, guid);
-        logger.info("the address {} ot the tenant {} successfully deleted", addrGuid, guid);
 
+        addressService.deleteForTenant(UUID.fromString(addrGuid), UUID.fromString(guid));
+
+        logger.info("the address {} ot the tenant {} successfully deleted", addrGuid, guid);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
