@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderDetails;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 import com.softserve.itacademy.kek.models.enums.EventType;
 import com.softserve.itacademy.kek.models.impl.Actor;
@@ -57,7 +58,7 @@ public class OrderServiceImpl implements IOrderService {
                             IUserService userService,
                             ITenantService tenantService,
                             IActorService actorService,
-                            IOrderEventService orderEventService),
+                            IOrderEventService orderEventService,
                             OrderDetailsRepository orderDetailsRepository) {
         this.orderRepository = orderRepository;
         this.tenantRepository = tenantRepository;

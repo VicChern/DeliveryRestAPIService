@@ -10,6 +10,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -96,8 +97,10 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
     private OrderEvent orderEventStarted2;
     private OrderEvent orderEventDelivered;
 
-    @BeforeMethod
-    public void setUp() {
+    @BeforeClass(groups = {"integration-tests"})
+    public void setUpClass() {
+        actorRoleRepository.deleteAll();
+        orderEventTypeRepository.deleteAll();
 
         actorRole1 = new ActorRole();
         actorRole1.setName(ActorRoleEnum.CUSTOMER.toString());
@@ -123,6 +126,11 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         orderEventTypeRepository.save(orderEventTypeAssigned);
         orderEventTypeRepository.save(orderEventTypeStarted);
         orderEventTypeRepository.save(orderEventTypeDelivered);
+
+    }
+
+    @BeforeMethod(groups = {"integration-tests"})
+    public void setUp() {
 
         tenantOwner = userRepository.save(createOrdinaryUser(1));
         assertNotNull(tenantOwner);
@@ -152,7 +160,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         orderEventDelivered = getOrderEvent(orderRepository.findByGuid(savedOrder1.getGuid()), orderEventTypeDelivered, actor1);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         orderEventRepository.deleteAll();
         actorRepository.deleteAll();
@@ -161,13 +169,13 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         userRepository.deleteAll();
     }
 
-    @AfterClass
+    @AfterClass(groups = {"integration-tests"})
     public void afterClass() {
         actorRoleRepository.deleteAll();
         orderEventTypeRepository.deleteAll();
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     @Transactional
     public void createOrderEventSuccess() {
        //when
@@ -194,7 +202,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
     }
 
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getLastAddedEventSuccess() {
         //given
         orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventAssigned);
@@ -211,7 +219,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         assertEquals(lastAddedEvent, lastAddedEvent);
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getAllEventsForOrder() {
         //given
         orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventAssigned);
@@ -236,7 +244,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
                         .equals(savedOrder1.getGuid())));
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void ifOrderEventCanBeTrackedSuccess() {
         //given
         orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventAssigned);
@@ -252,7 +260,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         assertFalse(canBeTracked);
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void ifOrderEventCanBeTrackedNotSuccess() {
         //given
         orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventAssigned);
@@ -268,7 +276,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         assertTrue(canBeTracked);
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     @Transactional
     public void findAllThatDeliveringNow() {
         //given
