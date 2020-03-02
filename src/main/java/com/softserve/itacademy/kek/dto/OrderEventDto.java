@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.dto;
 
+import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.IOrderEventType;
@@ -77,10 +78,10 @@ public class OrderEventDto implements IOrderEvent {
         return orderDto;
     }
 
-//    @Override
-//    public IActor getActor() {
-//        return null;
-//    }
+    @Override
+    public IActor getActor() {
+        return null;
+    }
 
     @Override
     public IOrderEventType getOrderEventType() {

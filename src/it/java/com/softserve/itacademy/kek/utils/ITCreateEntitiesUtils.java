@@ -251,7 +251,6 @@ public class ITCreateEntitiesUtils {
         orderDetails.setPayload(createRandomLetterString(128));
         order.setOrderDetails(orderDetails);
         orderDetails.setOrder(order);
-//        tenant.addOrder(order);
         return order;
     }
 

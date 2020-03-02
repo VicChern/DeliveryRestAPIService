@@ -45,7 +45,7 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_4096 + 1)}, {""}};
     }
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         PropertyType propertyType1 = getPropertyType();
         properties1 = getGlobalProperty(propertyType1);
@@ -54,12 +54,12 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         properties2 = getGlobalProperty(propertyType2);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         propertiesRepository.deleteAll();
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void testGlobalPropertiesIsSavedWithValidFields() {
         propertiesRepository.save(properties1);
         Long id = properties1.getIdProperty();
@@ -71,7 +71,7 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(savedProperty.get().getKey());
     }
 
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testGlobalPropertiesIsNotSavedWithNullKey() {
         String key = null;
         properties1.setKey(key);
@@ -79,21 +79,21 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         propertiesRepository.save(properties1);
     }
 
-    @Test(dataProvider = "illegal_keys", expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, dataProvider = "illegal_keys", expectedExceptions = ConstraintViolationException.class)
     public void testGlobalPropertiesIsNotSavedWithKeyMoreThanMaxLengthOrEmpty(String key) {
         properties1.setKey(key);
         //when
         propertiesRepository.save(properties1);
     }
 
-    @Test(dataProvider = "illegal_values", expectedExceptions = {ConstraintViolationException.class})
+    @Test(groups = {"integration-tests"}, dataProvider = "illegal_values", expectedExceptions = {ConstraintViolationException.class})
     public void testGlobalPropertiesIsNotSavedWithValueMoreThanMaxLengthOrEmpty(String value) {
         properties1.setValue(value);
         //when
         propertiesRepository.save(properties1);
     }
 
-    @Test(expectedExceptions = {ConstraintViolationException.class})
+    @Test(groups = {"integration-tests"}, expectedExceptions = {ConstraintViolationException.class})
     public void testGlobalPropertiesIsNotSavedWithNullValue() {
         String value = null;
         properties1.setValue(value);
@@ -101,7 +101,7 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         propertiesRepository.save(properties1);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = DataIntegrityViolationException.class)
     public void testGlobalPropertiesIsSavedWithUniqueKey() {
         //given
         propertiesRepository.save(properties1);

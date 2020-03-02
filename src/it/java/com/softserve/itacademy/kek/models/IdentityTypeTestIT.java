@@ -32,18 +32,19 @@ public class IdentityTypeTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private IdentityTypeRepository identityTypeRepository;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     void setUp() {
         identityType = createIdentityType();
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     void tearDown() {
         identityTypeRepository.deleteAll();
     }
 
 
-    @Test(description = "Test IdentityType_01. Should saves identityType with valid fields.")
+    @Test(groups = {"integration-tests"},
+            description = "Test IdentityType_01. Should saves identityType with valid fields.")
     public void testIdentityTypeIsSavedWithValidFields() {
         //when
         identityTypeRepository.save(identityType);
@@ -56,7 +57,8 @@ public class IdentityTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     //====================================================== name ======================================================
-    @Test(description = "Test IdentityType_02. Should throw ConstraintViolationException when saves identityType with null name field",
+    @Test(groups = {"integration-tests"},
+            description = "Test IdentityType_02. Should throw ConstraintViolationException when saves identityType with null name field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNullIdentityTypeName() {
@@ -67,7 +69,8 @@ public class IdentityTypeTestIT extends AbstractTestNGSpringContextTests {
         identityTypeRepository.save(identityType);
     }
 
-    @Test(description = "Test IdentityType_03. Should throw ConstraintViolationException when saves identityType with empty name field",
+    @Test(groups = {"integration-tests"},
+            description = "Test IdentityType_03. Should throw ConstraintViolationException when saves identityType with empty name field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testIdentityTypeIsNotSavedWithEmptyName() {
@@ -78,7 +81,8 @@ public class IdentityTypeTestIT extends AbstractTestNGSpringContextTests {
         identityTypeRepository.save(identityType);
     }
 
-    @Test(description = "Test IdentityType_04. Should throw ConstraintViolationException when save identityType with name field length more than " + MAX_LENGTH_256,
+    @Test(groups = {"integration-tests"},
+            description = "Test IdentityType_04. Should throw ConstraintViolationException when save identityType with name field length more than " + MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testIdentityTypeIsNotSavedWithNameMoreThanMaxLength() {
@@ -90,7 +94,8 @@ public class IdentityTypeTestIT extends AbstractTestNGSpringContextTests {
         identityTypeRepository.save(identityType);
     }
 
-    @Test(description = "Test IdentityType_05. Should throw DataIntegrityViolationException when saves identityType with not unique name field",
+    @Test(groups = {"integration-tests"},
+            description = "Test IdentityType_05. Should throw DataIntegrityViolationException when saves identityType with not unique name field",
             expectedExceptions = DataIntegrityViolationException.class,
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
     public void testIdentityTypeIsSavedWithUniqueName() {

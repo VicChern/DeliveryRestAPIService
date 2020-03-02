@@ -36,7 +36,7 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private UserRepository userRepository;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     void setUp() {
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
@@ -47,20 +47,22 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
         tenant.setTenantOwner(user);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     void tearDown() {
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }
 
-    @Test(description = "Test Tenant_01. Should save tenant with valid fields for existing in db user.")
+    @Test(groups = {"integration-tests"},
+            description = "Test Tenant_01. Should save tenant with valid fields for existing in db user.")
     public void testTenantIsSavedWithValidFields() {
         //when
         tenantRepository.save(tenant);
     }
 
     //====================================================== guid ======================================================
-    @Test(description = "Test Tenant_02. Should throw ConstraintViolationException when saves tenant with null guid field for existing in db user",
+    @Test(groups = {"integration-tests"},
+            description = "Test Tenant_02. Should throw ConstraintViolationException when saves tenant with null guid field for existing in db user",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testTenantIsNotSavedWithNullGuid() {
@@ -71,7 +73,8 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
         tenantRepository.save(tenant);
     }
 
-    @Test(description = "Test Tenant_03. Should throw DataIntegrityViolationException when saves tenant with not unique guid field for existing in db user",
+    @Test(groups = {"integration-tests"},
+            description = "Test Tenant_03. Should throw DataIntegrityViolationException when saves tenant with not unique guid field for existing in db user",
             expectedExceptions = DataIntegrityViolationException.class,
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
     public void testTenantIsSavedWithUniqueGuid() {
@@ -101,7 +104,8 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
 
     //====================================================== name ======================================================
 
-    @Test(description = "Test Tenant_04. Should throw ConstraintViolationException when saves tenant with null name field for existing in db user",
+    @Test(groups = {"integration-tests"},
+            description = "Test Tenant_04. Should throw ConstraintViolationException when saves tenant with null name field for existing in db user",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testTenantIsNotSavedWithNullName() {
@@ -112,7 +116,8 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
         tenantRepository.save(tenant);
     }
 
-    @Test(description = "Test Tenant_05. Should throw ConstraintViolationException when saves tenant with empty name field for existing in db user",
+    @Test(groups = {"integration-tests"},
+            description = "Test Tenant_05. Should throw ConstraintViolationException when saves tenant with empty name field for existing in db user",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testTenantIsNotSavedWithEmptyName() {
@@ -123,7 +128,8 @@ public class TenantTestIT extends AbstractTestNGSpringContextTests {
         tenantRepository.save(tenant);
     }
 
-    @Test(description = "Test Tenant_06. Should throw ConstraintViolationException when saves tenant (for existing in db user) with name field length more than " + MAX_LENGTH_256,
+    @Test(groups = {"integration-tests"},
+            description = "Test Tenant_06. Should throw ConstraintViolationException when saves tenant (for existing in db user) with name field length more than " + MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testTenantIsNotSavedWithNameMoreThanMaxLength() {

@@ -156,7 +156,7 @@ public class TenantControllerTest {
 
         mockMvc.perform(get("/tenants"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(KekMediaType.TENANT))
+                .andExpect(content().contentType(KekMediaType.TENANT_LIST))
                 .andExpect(jsonPath("$.tenantList[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(jsonPath("$.tenantList[0].owner").value("10241624-9ea7-4777-99b5-54ab6d591c44"))
                 .andExpect(jsonPath("$.tenantList[0].name").value("Kek"))
@@ -295,7 +295,7 @@ public class TenantControllerTest {
 
         mockMvc.perform(get("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/addresses"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(KekMediaType.ADDRESS))
+                .andExpect(content().contentType(KekMediaType.ADDRESS_LIST))
                 .andExpect(jsonPath("$.addressList[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(jsonPath("$.addressList[0].alias").value("alias"))
                 .andExpect(jsonPath("$.addressList[0].address").value("address"))

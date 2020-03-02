@@ -5,7 +5,6 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +27,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource({"classpath:integration.properties"})
 public class PersistenceTestConfig {
 
-    @Autowired
-    private Environment env;
-
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(Environment env) {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -39,7 +35,7 @@ public class PersistenceTestConfig {
 
         final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
-        vendorAdapter.setShowSql(true);
+        vendorAdapter.setShowSql(false);
         em.setJpaProperties(additionalProperties(env));
 
         return em;

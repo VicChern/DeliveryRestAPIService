@@ -30,19 +30,19 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
     private OrderEventType orderEventType1;
     private OrderEventType orderEventType2;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         orderEventType1 = getOrderEventType();
         orderEventType2 = getOrderEventType();
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         orderEventTypeRepository.deleteAll();
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderEventTypeIsNotSavedWithNameMoreThanMaxLength() {
         orderEventType1 = orderEventType2;
         orderEventType1.setName(createRandomLetterString(MAX_NAME_LENGTH + 1));
@@ -51,7 +51,7 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderEventTypeIsNotSavedWithEmptyName() {
         orderEventType1 = orderEventType2;
         orderEventType1.setName("");
@@ -60,7 +60,7 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderEventTypeIsNotSavedWithNullName() {
         orderEventType1.setName(null);
 
@@ -68,7 +68,7 @@ public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = DataIntegrityViolationException.class)
     public void testUserIsSavedWithUniqueName() {
         orderEventTypeRepository.save(orderEventType1);
 

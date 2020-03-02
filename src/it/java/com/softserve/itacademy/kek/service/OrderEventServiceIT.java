@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
@@ -31,6 +32,7 @@ import com.softserve.itacademy.kek.services.IOrderService;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getActor;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderEvent;
 import static org.testng.Assert.assertEquals;
@@ -72,7 +74,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     private Tenant tenant;
     private Order order;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         actorRole1 = new ActorRole();
         actorRole1.setName("CUSTOMER");
@@ -116,7 +118,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         order = getOrder(tenant);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         orderEventRepository.deleteAll();
         actorRepository.deleteAll();
@@ -127,34 +129,39 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         orderEventTypeRepository.deleteAll();
     }
 
-//    @Rollback
-//    @Test
-//    public void createSuccess() {
-//        //when
-//        IOrder createdOrder = orderService.create(order, customer.getGuid());
-//
-//        OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(createdOrder.getGuid()), orderEventType2, actorRepository.findById(1L).get());
-//
-////        IOrderEvent createdOrderEvent = orderEventService.create(orderEvent, createdOrder.getGuid());
-//
-//        //than
-//        IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid());
-//
-//        assertEquals(createdOrderEvent.getPayload(), foundOrderEvent.getPayload());
-//    }
+    @Rollback
+    @Test(groups = {"integration-tests"})
+    public void createSuccess() {
+        //when
+        IOrder createdOrder = orderService.create(order, customer.getGuid());
+
+        final Actor actor = getActor(user, tenant, actorRole2);
+
+        OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(createdOrder.getGuid()), orderEventType2, actor);
+
+        IOrderEvent createdOrderEvent = orderEventService.create(orderEvent, createdOrder.getGuid());
+
+        //than
+        IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid());
+
+        assertEquals(createdOrderEvent.getPayload(), foundOrderEvent.getPayload());
+    }
 
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getAllEventsForOrderSuccess() {
         //when
         IOrder createdOrder = orderService.create(order, customer.getGuid());
 
         order = (Order) createdOrder;
-        order.setIdOrder(2L);
+        //order.setIdOrder(2L);
 
-        OrderEvent orderEvent1 = getOrderEvent(order, orderEventType2, actorRepository.findById(2L).get());
-        OrderEvent orderEvent2 = getOrderEvent(order, orderEventType3, actorRepository.findById(2L).get());
-        OrderEvent orderEvent3 = getOrderEvent(order, orderEventType4, actorRepository.findById(2L).get());
+        final Actor actor = getActor(user, tenant, actorRole2);
+        final Actor createdActor = actorRepository.save(actor);
+
+        OrderEvent orderEvent1 = getOrderEvent(order, orderEventType2, createdActor);
+        OrderEvent orderEvent2 = getOrderEvent(order, orderEventType3, createdActor);
+        OrderEvent orderEvent3 = getOrderEvent(order, orderEventType4, createdActor);
 
         orderEventRepository.save(orderEvent1);
         orderEventRepository.save(orderEvent2);

@@ -44,13 +44,13 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private IdentityTypeRepository identityTypeRepository;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     void setUp() {
         user = createOrdinaryUser(1);
         identity = createIdentity();
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     void tearDown() {
         userRepository.deleteAll();
         identityRepository.deleteAll();
@@ -58,7 +58,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
     }
 
 
-    @Test(description = "Test Identity_01. Should saves user with valid identity fields.")
+    @Test(groups = {"integration-tests"},
+            description = "Test Identity_01. Should saves user with valid identity fields.")
     public void testUserIsSavedWithValidIdentityFields() {
         //given
         user.addIdentity(identity);
@@ -81,7 +82,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
         assertEquals(identity.getUser(), user);
     }
 
-    @Test(description = "Test Identity_01. Should saves identity with valid fields for existing in db user.")
+    @Test(groups = {"integration-tests"},
+            description = "Test Identity_01. Should saves identity with valid fields for existing in db user.")
     public void testIdentityIsSavedWithExistingInDbUserAndValidIdentityFields() {
 
         //given
@@ -107,7 +109,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
 
 
     //================================================ identityType name ===============================================
-    @Test(description = "Test Identity_02. Should throw ConstraintViolationException when saves user with null identityType name field",
+    @Test(groups = {"integration-tests"},
+            description = "Test Identity_02. Should throw ConstraintViolationException when saves user with null identityType name field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNullIdentityTypeName() {
@@ -119,7 +122,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test Identity_03. Should throw ConstraintViolationException when saves user with empty identityType name field",
+    @Test(groups = {"integration-tests"},
+            description = "Test Identity_03. Should throw ConstraintViolationException when saves user with empty identityType name field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithEmptyIdentityTypeName() {
@@ -131,7 +135,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test Identity_04. Should throw ConstraintViolationException when saves user with a name field length of identityType more than " + MAX_LENGTH_256,
+    @Test(groups = {"integration-tests"},
+            description = "Test Identity_04. Should throw ConstraintViolationException when saves user with a name field length of identityType more than " + MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWitIdentityTypeNameMoreThanMaxLength() {
@@ -146,7 +151,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test Identity_05. Should throw DataIntegrityViolationException when saves user with not unique identityType name field",
+    @Test(groups = {"integration-tests"},
+            description = "Test Identity_05. Should throw DataIntegrityViolationException when saves user with not unique identityType name field",
             expectedExceptions = DataIntegrityViolationException.class,
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
     public void testUserIsSavedWithUniqueIdentityTypeName() {
@@ -171,7 +177,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
 
 
     //================================================ payload ===============================================
-    @Test(description = "Test Identity_06. Should throw ConstraintViolationException when saves user with null identity payload field",
+    @Test(groups = {"integration-tests"},
+            description = "Test Identity_06. Should throw ConstraintViolationException when saves user with null identity payload field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNullIdentityPayload() {
@@ -183,7 +190,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test Identity_07. Should throw ConstraintViolationException when saves user with empty identity payload field",
+    @Test(groups = {"integration-tests"},
+            description = "Test Identity_07. Should throw ConstraintViolationException when saves user with empty identity payload field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithEmptyIdentityPayload() {
@@ -195,7 +203,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
         userRepository.save(user);
     }
 
-    @Test(description = "Test Identity_08. Should throw ConstraintViolationException when saves user with payload field length of identity more than " + MAX_LENGTH_4096,
+    @Test(groups = {"integration-tests"},
+            description = "Test Identity_08. Should throw ConstraintViolationException when saves user with payload field length of identity more than " + MAX_LENGTH_4096,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWitIdentityPayloadMoreThanMaxLength() {

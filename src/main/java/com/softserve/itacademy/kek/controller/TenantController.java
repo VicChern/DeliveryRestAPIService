@@ -1,5 +1,24 @@
 package com.softserve.itacademy.kek.controller;
 
+import javax.validation.Valid;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.AddressListDto;
@@ -15,25 +34,6 @@ import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/tenants")
@@ -215,26 +215,29 @@ public class TenantController extends DefaultController {
     /**
      * Add new properties of the specific tenant
      *
-     * @param guid                tenant ID from URL
-     * @param tenantPropertiesDto property object as a JSON
+     * @param guid                    tenant ID from URL
+     * @param tenantPropertiesListDto property object as a JSON
      * @return list of the {@link TenantPropertiesDto} objects as a JSON
      */
     @PostMapping(value = "/{guid}/properties", consumes = KekMediaType.TENANT_PROPERTY,
             produces = KekMediaType.TENANT_PROPERTY)
-    public ResponseEntity<List<ITenantProperties>> addTenantProperties(@PathVariable String guid,
-                                                                       @RequestBody TenantPropertiesDto tenantPropertiesDto) {
-        logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesDto);
+    public ResponseEntity<TenantPropertiesListDto> addTenantProperties(@PathVariable String guid,
+                                                                       @RequestBody TenantPropertiesListDto tenantPropertiesListDto) {
+        logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesListDto);
 
-        ArrayList<ITenantProperties> tenantPropertiesDtoList = new ArrayList<>();
-        tenantPropertiesDtoList.add(tenantPropertiesDto);
+        List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesListDto.getTenantPropertiesList(),
+                UUID.fromString(guid));
+        List<TenantPropertiesDto> tenantPropertiesDto = tenantProperties.stream().map(this::transformProperty).collect(Collectors.toList());
+        TenantPropertiesListDto addedProperties = new TenantPropertiesListDto();
 
-        List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDtoList, UUID.fromString(guid));
+        for (TenantPropertiesDto tenantProperty : tenantPropertiesDto) {
+            addedProperties.addTenantProperty(tenantProperty);
+        }
 
         logger.info("Sending the created tenant's({}) properties to the client", tenantProperties);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(tenantPropertiesDtoList);
+                .body(addedProperties);
     }
 
     /**

@@ -56,13 +56,13 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     private OrderEvent orderEvent1;
     private OrderEvent orderEvent2;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         orderEvent1 = getOrderEvent(getOrderForOrderEvent(1), getOrderEventTypeForOrderEvent(), null);
         orderEvent2 = getOrderEvent(getOrderForOrderEvent(2), getOrderEventTypeForOrderEvent(), null);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         orderEventRepository.deleteAll();
         actorRepository.deleteAll();
@@ -72,7 +72,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = DataIntegrityViolationException.class)
     public void testOrderEventIsSavedWithUniqueGuid() {
         orderEventRepository.save(orderEvent1);
 
@@ -83,7 +83,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderEventIsNotSavedWithNullGuid() {
         orderEvent1 = orderEvent2;
         orderEvent1.setGuid(null);
@@ -93,7 +93,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
 
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderEventIsNotSavedWithPayloadMoreThanMaxLength() {
         orderEvent1.setPayload(createRandomLetterString(MAX_PAYLOAD_LENGTH + 1));
 
@@ -101,7 +101,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderEventIsNotSavedWithEmptyPayload() {
         orderEvent1.setPayload("");
 
@@ -109,7 +109,7 @@ public class OrderEventTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testUserIsNotSavedWithNullPayload() {
         orderEvent1.setPayload(null);
 

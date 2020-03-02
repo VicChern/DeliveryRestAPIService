@@ -3,8 +3,10 @@ package com.softserve.itacademy.kek.services.impl;
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
+import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,33 +44,33 @@ public class OrderEventServiceImpl implements IOrderEventService {
         this.actorRepository = actorRepository;
     }
 
-//    @Transactional
-//    @Override
-//    public IOrderEvent create(IOrderEvent iOrderEvent, UUID orderGuid) throws OrderEventServiceException {
-//        LOGGER.info("Saving OrderEvent to db: {}", iOrderEvent);
-//        final OrderEvent orderEvent = new OrderEvent();
-//
-//        final Order order = orderRepository.findByGuid(orderGuid);
-//        //final Actor actor = actorRepository.findByGuid(iOrderEvent.getActor().getGuid());
-//        final OrderEventType orderEventType = orderEventTypeRepository.findByName(iOrderEvent.getOrderEventType().getName());
-//
-//
-//        orderEvent.setOrder(order);
-//        orderEvent.setGuid(iOrderEvent.getGuid());
-//        orderEvent.setActor(actor);
-//        orderEvent.setOrderEventType(orderEventType);
-//        orderEvent.setPayload(iOrderEvent.getPayload());
-//
-//        try {
-//            orderEventRepository.save(orderEvent);
-//        } catch (PersistenceException e) {
-//            LOGGER.error("Order event wasn`t saved: {}", orderEvent);
-//            throw new OrderServiceException("Order event wasn`t saved");
-//        }
-//
-//        LOGGER.info("Order event was saved: {}", orderEvent);
-//        return orderEvent;
-//    }
+    @Transactional
+    @Override
+    public IOrderEvent create(IOrderEvent iOrderEvent, UUID orderGuid) throws OrderEventServiceException {
+        LOGGER.info("Saving OrderEvent to db: {}", iOrderEvent);
+        final OrderEvent orderEvent = new OrderEvent();
+
+        final Order order = orderRepository.findByGuid(orderGuid);
+        final Actor actor = actorRepository.findByGuid(iOrderEvent.getActor().getGuid());
+        final OrderEventType orderEventType = orderEventTypeRepository.findByName(iOrderEvent.getOrderEventType().getName());
+
+
+        orderEvent.setOrder(order);
+        orderEvent.setGuid(iOrderEvent.getGuid());
+        orderEvent.setActor(actor);
+        orderEvent.setOrderEventType(orderEventType);
+        orderEvent.setPayload(iOrderEvent.getPayload());
+
+        try {
+            orderEventRepository.save(orderEvent);
+        } catch (PersistenceException e) {
+            LOGGER.error("Order event wasn`t saved: {}", orderEvent);
+            throw new OrderServiceException("Order event wasn`t saved");
+        }
+
+        LOGGER.info("Order event was saved: {}", orderEvent);
+        return orderEvent;
+    }
 
     @Transactional(readOnly = true)
     @Override

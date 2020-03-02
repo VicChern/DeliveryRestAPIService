@@ -17,7 +17,7 @@ import java.util.Properties;
 import java.util.Set;
 
 public class EmbeddedTomcatApp {
-    final Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
+    private final static Logger logger = LoggerFactory.getLogger(EmbeddedTomcatApp.class);
     private final Tomcat tomcat;
 
     /**

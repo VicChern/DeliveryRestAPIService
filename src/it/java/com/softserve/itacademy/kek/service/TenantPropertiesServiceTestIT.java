@@ -50,7 +50,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
     private TenantProperties tenantProperty;
     private List<ITenantProperties> tenantProperties;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
@@ -67,7 +67,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
         tenantProperties.add(getTenantProperties(tenant, getPropertyType()));
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         tenantPropertiesRepository.deleteAll();
         tenantRepository.deleteAll();
@@ -76,7 +76,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
 
     // ======================= create(List<ITenantProperties> iTenantProperties, UUID tenantGuid) ======================
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void createSuccess() {
         //when
         List<ITenantProperties> savedTenantProperties = tenantPropertiesService.create(tenantProperties, tenant.getGuid());
@@ -98,7 +98,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
 
     // =======================================  getAllForTenant(UUID tenantGuid) =======================================
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getAllForTenantSuccess() {
         //given
         tenantProperties.forEach(tenantProperty -> tenant.addTenantProperty((TenantProperties) tenantProperty));
@@ -126,7 +126,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
 
     // ================================== get(UUID tenantGuid, UUID tenantPropertyGuid) ================================
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getSuccess() {
         //given
         tenantProperties.forEach(tenantProperty -> tenant.addTenantProperty((TenantProperties) tenantProperty));
@@ -148,7 +148,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
 
     // =============== update(UUID tenantGuid, UUID tenantPropertyGuid, ITenantProperties tenantProperty)===============
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void updateSuccess() {
         //given
         tenantProperties.forEach(tenantProperty -> tenant.addTenantProperty((TenantProperties) tenantProperty));
@@ -183,7 +183,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
 
     // ================================ delete(UUID tenantGuid, UUID tenantPropertyGuid) ===============================
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void deleteSuccess() {
         //given
         tenantProperties.forEach(tenantProperty -> tenant.addTenantProperty((TenantProperties) tenantProperty));

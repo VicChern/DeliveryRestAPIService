@@ -6,17 +6,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.softserve.itacademy.kek.models.ITenantProperties;
+
 public class TenantPropertiesListDto {
 
     @Valid
-    private List<TenantPropertiesDto> tenantPropertiesList;
+    private List<ITenantProperties> tenantPropertiesList;
 
     public TenantPropertiesListDto() {
         this(new LinkedList<>());
     }
 
 
-    public TenantPropertiesListDto(@Valid List<TenantPropertiesDto> tenantDtoList) {
+    public TenantPropertiesListDto(@Valid List<ITenantProperties> tenantDtoList) {
         this.tenantPropertiesList = tenantDtoList;
     }
 
@@ -26,7 +28,7 @@ public class TenantPropertiesListDto {
         return this;
     }
 
-    public List<TenantPropertiesDto> getTenantPropertiesList() {
+    public List<ITenantProperties> getTenantPropertiesList() {
         return tenantPropertiesList;
     }
 
@@ -49,7 +51,7 @@ public class TenantPropertiesListDto {
                 + "tenantPropertiesList="
                 + tenantPropertiesList
                 .stream()
-                .map(TenantPropertiesDto::toString)
+                .map(ITenantProperties::toString)
                 .collect(Collectors.joining(","))
                 + '}';
     }

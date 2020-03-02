@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services;
 
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.OrderEvent;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,14 +12,14 @@ import java.util.UUID;
  */
 public interface IOrderEventService {
 
-//    /**
-//     * Saves order event
-//     *
-//     * @param orderEvent {@link OrderEvent}
-//     * @param orderGuid  {@link Order} guid
-//     * @return saved {@link OrderEvent} orderEvent
-//     */
-//    IOrderEvent create(IOrderEvent orderEvent, UUID orderGuid);
+    /**
+     * Saves order event
+     *
+     * @param orderEvent {@link OrderEvent}
+     * @param orderGuid  {@link Order} guid
+     * @return saved {@link OrderEvent} orderEvent
+     */
+    IOrderEvent create(IOrderEvent orderEvent, UUID orderGuid);
 
     /**
      * Gets order event by {@link IOrderEvent} guid

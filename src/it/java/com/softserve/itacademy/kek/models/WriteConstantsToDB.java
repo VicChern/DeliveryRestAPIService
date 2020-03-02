@@ -32,7 +32,7 @@ public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
     private OrderEventType orderEventType4;
 
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
 
         actorRole1 = new ActorRole();
@@ -53,13 +53,13 @@ public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
         orderEventType4.setName("DELIVERED");
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         actorRoleRepository.deleteAll();
         orderEventTypeRepository.deleteAll();
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void saveActorRolesAndOrderEventTypesToDb() {
 
         actorRoleRepository.save(actorRole1);

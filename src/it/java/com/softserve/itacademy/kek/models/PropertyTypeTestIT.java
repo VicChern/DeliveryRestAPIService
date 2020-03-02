@@ -34,18 +34,18 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
         return new Object[][]{{createRandomLetterString(MAX_LENGTH_256 + 1)}, {""}};
     }
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         propertyType1 = getPropertyType();
         propertyType2 = getPropertyType();
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         repository.deleteAll();
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void testPropertyTypeIsSavedWithValidFields() {
         repository.save(propertyType1);
         Long id = propertyType1.getIdPropertyType();
@@ -56,21 +56,21 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(savedPropertyType.get().getIdPropertyType(), id);
     }
 
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testPropertyTypeIsNotSavedWithNullName() {
         propertyType1.setName(null);
         //when
         repository.save(propertyType1);
     }
 
-    @Test(dataProvider = "illegal_names", expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, dataProvider = "illegal_names", expectedExceptions = ConstraintViolationException.class)
     public void testPropertyTypeIsNotSavedWithNameMoreThanMaxLengthOrEmpty(String name) {
         propertyType1.setName(name);
         //when
         repository.save(propertyType1);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = DataIntegrityViolationException.class)
     public void testPropertyTypeIsSavedWithUniqueName() {
         //given
         repository.save(propertyType1);
@@ -80,7 +80,7 @@ public class PropertyTypeTestIT extends AbstractTestNGSpringContextTests {
         repository.save(propertyType2);
     }
 
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testPropertyTypeIsNotSavedWithNullSchema() {
         propertyType1.setSchema(null);
         //when
