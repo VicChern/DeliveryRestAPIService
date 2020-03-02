@@ -17,7 +17,7 @@ import com.softserve.itacademy.kek.exception.TrackingException;
 
 @RestController
 public class DefaultController {
-    final Logger logger = LoggerFactory.getLogger(DefaultController.class);
+    private final static Logger logger = LoggerFactory.getLogger(DefaultController.class);
 
     /**
      * ServiceException handler.

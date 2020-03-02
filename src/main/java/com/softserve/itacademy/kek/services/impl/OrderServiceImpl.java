@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderDetails;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
@@ -26,6 +27,7 @@ import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
+import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
@@ -54,6 +56,7 @@ public class OrderServiceImpl implements IOrderService {
     private final ActorRepository actorRepository;
     private final OrderEventTypeRepository orderEventTypeRepository;
     private final ActorRoleRepository actorRoleRepository;
+    private final OrderDetailsRepository orderDetailsRepository;
 
     private final IUserService userService;
     private final ITenantService tenantService;
@@ -67,13 +70,15 @@ public class OrderServiceImpl implements IOrderService {
                             OrderEventTypeRepository orderEventTypeRepository,
                             ActorRoleRepository actorRoleRepository,
                             IUserService userService,
-                            ITenantService tenantService) {
+                            ITenantService tenantService,
+                            OrderDetailsRepository orderDetailsRepository) {
         this.orderRepository = orderRepository;
         this.tenantRepository = tenantRepository;
         this.orderEventRepository = orderEventRepository;
         this.actorRepository = actorRepository;
         this.orderEventTypeRepository = orderEventTypeRepository;
         this.actorRoleRepository = actorRoleRepository;
+        this.orderDetailsRepository = orderDetailsRepository;
 
         this.userService = userService;
         this.tenantService = tenantService;
@@ -214,7 +219,14 @@ public class OrderServiceImpl implements IOrderService {
 
         final Order actualOrder = orderRepository.findByGuid(guid);
         final Tenant actualTenant = tenantRepository.findByGuid(order.getTenant().getGuid()).get();
+        final IOrderDetails orderDetails = order.getOrderDetails();
+        final OrderDetails actualDetails = orderDetailsRepository.findByOrder(order);
 
+        actualDetails.setPayload(orderDetails.getPayload());
+        actualDetails.setImageUrl(orderDetails.getImageUrl());
+        actualDetails.setOrder(actualOrder);
+
+        actualOrder.setOrderDetails(actualDetails);
         actualOrder.setGuid(order.getGuid());
         actualOrder.setSummary(order.getSummary());
         actualOrder.setTenant(actualTenant);

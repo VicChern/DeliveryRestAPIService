@@ -4,20 +4,19 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-@Test(groups = {"integration-tests"})
 public class KekMainTestIT {
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         System.out.println("KekMainTestIT - setUp - ok");
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         System.out.println("KekMainTestIT - tearDown - ok");
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void testMain() {
         System.out.println("KekMainTestIT - testMain - ok");
     }

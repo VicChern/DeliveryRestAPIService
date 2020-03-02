@@ -40,6 +40,8 @@ import static org.testng.Assert.assertNull;
 public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
 
     public static final String newSummary = "new summary";
+    public static final String newImageUrl = "new image url";
+
 
     @Autowired
     private UserRepository userRepository;
@@ -74,7 +76,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     private Tenant tenant;
     private Order order;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         actorRole1 = new ActorRole();
         actorRole1.setName("CUSTOMER");
@@ -118,7 +120,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
         order = getOrder(tenant);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         orderEventRepository.deleteAll();
         actorRepository.deleteAll();
@@ -130,7 +132,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void createSuccess() {
         //when
         IOrder createdOrder = orderService.create(order, customer.getGuid());
@@ -147,12 +149,16 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void updateSuccess() {
         //when
         Order createdOrder = orderRepository.save(order);
 
+        OrderDetails orderDetails = orderDetailsRepository.findByOrder(order);
+        orderDetails.setImageUrl(newImageUrl);
+
         createdOrder.setSummary(newSummary);
+        createdOrder.setOrderDetails(orderDetails);
 
         IOrder updatedOrder = orderService.update(order, order.getGuid());
 
@@ -173,7 +179,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getByGuidSuccess() {
         //when
         Order createdOrder = orderRepository.save(order);
@@ -190,7 +196,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getAllSuccess() {
         //when
         Order createdOrder = orderRepository.save(order);
@@ -204,7 +210,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test
+    @Test(groups = {"integration-tests"})
     public void deleteByGuidSuccess() {
         //when
         IOrder createdOrder = orderService.create(order, customer.getGuid());
