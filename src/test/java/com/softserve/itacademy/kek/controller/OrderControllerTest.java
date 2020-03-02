@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
@@ -38,24 +39,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Test(groups = {"unit-tests"})
 public class OrderControllerTest {
     private final String orderJson = "{\n" +
-            "   \"tenantGuid\":\"820671c6-7e2c-4de3-aeb8-42e6f84e6371\",\n" +
+            "   \"tenant\":\"820671c6-7e2c-4de3-aeb8-42e6f84e6371\",\n" +
             "   \"summary\":\"some summary\",\n" +
             "   \"details\":{\n" +
             "      \"payload\":\"some payload\",\n" +
             "      \"imageUrl\":\"https://mypicture\"\n" +
             "   }\n" +
             "}";
+    private final String orderListJson = "{\n" +
+            "  \"orderList\": [\n" +
+            "    {\n" +
+            "   \"tenant\":\"820671c6-7e2c-4de3-aeb8-42e6f84e6371\",\n" +
+            "   \"summary\":\"some summary\",\n" +
+            "   \"details\":{\n" +
+            "      \"payload\":\"some payload\",\n" +
+            "      \"imageUrl\":\"https://mypicture\"\n" +
+            "   }\n" +
+            " }\n" +
+            "  ]\n" +
+            "}";
 
     private final String eventJson = "{\n" +
             "    \"order\":{\n" +
-            "       \"tenantGuid\":\"820671c6-7e2c-4de3-aeb8-42e6f84e6371\",\n" +
+            "       \"tenant\":\"820671c6-7e2c-4de3-aeb8-42e6f84e6371\",\n" +
             "       \"guid\":\"820671c6-7e2c-4de3-aeb8-42e6f84e6371\",\n" +
             "       \"summary\":\"some summary\",\n" +
             "       \"details\":{\n" +
             "          \"payload\":\"some payload\",\n" +
             "          \"imageUrl\":\"https://mypicture\"\n" +
             "    \"payload\":\"some payload\",\n" +
-            "    \"orderEventType\":{\n" +
+            "    \"orderType\":{\n" +
             "       \"type\":\"CREATED\",\n" +
             "}";
 
@@ -128,9 +141,9 @@ public class OrderControllerTest {
 
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.orderList+json"))
+                .andExpect(content().contentType(KekMediaType.ORDER_LIST))
                 .andExpect(jsonPath("$.orderList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(jsonPath("$.orderList[0].tenantGuid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.orderList[0].tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.orderList[0].summary").value("some summary"))
                 .andExpect(jsonPath("$.orderList[0].details.payload").value("some payload"))
                 .andExpect(jsonPath("$.orderList[0].details.imageUrl").value("https://mypicture"));
@@ -141,13 +154,13 @@ public class OrderControllerTest {
         when(orderService.create(any(OrderDto.class), any(UUID.class))).thenReturn(order);
 
         mockMvc.perform(post("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
-                .contentType("application/vnd.softserve.orderList+json")
-                .accept("application/vnd.softserve.orderList+json")
-                .content(orderJson))
+                .contentType(KekMediaType.ORDER_LIST)
+                .accept(KekMediaType.ORDER_LIST)
+                .content(orderListJson))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType("application/vnd.softserve.orderList+json"))
+                .andExpect(content().contentType(KekMediaType.ORDER_LIST))
                 .andExpect(jsonPath("$.orderList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(jsonPath("$.orderList[0].tenantGuid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.orderList[0].tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.orderList[0].summary").value("some summary"))
                 .andExpect(jsonPath("$.orderList[0].details.payload").value("some payload"))
                 .andExpect(jsonPath("$.orderList[0].details.imageUrl").value("https://mypicture"));
@@ -159,9 +172,9 @@ public class OrderControllerTest {
 
         mockMvc.perform(get("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.order+json"))
+                .andExpect(content().contentType(KekMediaType.ORDER))
                 .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(jsonPath("$.tenantGuid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.summary").value("some summary"))
                 .andExpect(jsonPath("$.details.payload").value("some payload"))
                 .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"));
@@ -172,12 +185,12 @@ public class OrderControllerTest {
         when(orderService.update(any(OrderDto.class), any(UUID.class))).thenReturn(order);
 
         mockMvc.perform(put("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
-                .contentType("application/vnd.softserve.order+json")
-                .accept("application/vnd.softserve.order+json")
+                .contentType(KekMediaType.ORDER)
+                .accept(KekMediaType.ORDER)
                 .content(orderJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(jsonPath("$.tenantGuid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.summary").value("some summary"))
                 .andExpect(jsonPath("$.details.payload").value("some payload"))
                 .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"));
@@ -195,15 +208,15 @@ public class OrderControllerTest {
 //
 //        mockMvc.perform(get("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371/events"))
 //                .andExpect(status().isOk())
-//                .andExpect(content().contentType("application/vnd.softserve.eventList+json"))
+//                .andExpect(content().contentType(KekMediaType.EVENT_LIST))
 //                .andExpect(jsonPath("$.eventList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
 //                .andExpect(jsonPath("$.eventList[0].order.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-//                .andExpect(jsonPath("$.eventList[0].order.tenantGuid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+//                .andExpect(jsonPath("$.eventList[0].order.tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
 //                .andExpect(jsonPath("$.eventList[0].order.summary").value("some summary"))
 //                .andExpect(jsonPath("$.eventList[0].order.details.payload").value("some payload"))
 //                .andExpect(jsonPath("$.eventList[0].order.details.imageUrl").value("https://mypicture"))
 //                .andExpect(jsonPath("$.eventList[0].payload").value("some payload"))
-//                .andExpect(jsonPath("$.eventList[0].orderEventType.type").value("CREATED"));
+//                .andExpect(jsonPath("$.eventList[0].eventType.type").value("CREATED"));
 //    }
 //     TODO: 01.03.2020 this will work when fixed OrderEventService
 //    @Test
@@ -211,18 +224,18 @@ public class OrderControllerTest {
 //        when(orderEventService.create(any(IOrderEvent.class), any(UUID.class))).thenReturn(orderEvent);
 //
 //        mockMvc.perform(post("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371/events")
-//                .contentType("application/vnd.softserve.event+json")
-//                .accept("application/vnd.softserve.event+json")
+//                .contentType(KekMediaType.EVENT)
+//                .accept(KekMediaType.EVENT)
 //                .content(eventJson))
 //                .andExpect(status().isCreated())
-//                .andExpect(content().contentType("application/vnd.softserve.event+json"))
+//                .andExpect(content().contentType(KekMediaType.EVENT))
 //                .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
 //                .andExpect(jsonPath("$.order.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-//                .andExpect(jsonPath("$.order.tenantGuid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+//                .andExpect(jsonPath("$.order.tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
 //                .andExpect(jsonPath("$.order.summary").value("some summary"))
 //                .andExpect(jsonPath("$.order.details.payload").value("some payload"))
 //                .andExpect(jsonPath("$.order.details.imageUrl").value("https://mypicture"))
 //                .andExpect(jsonPath("$.payload").value("some payload"))
-//                .andExpect(jsonPath("$.orderEventType.type").value("CREATED"));
+//                .andExpect(jsonPath("$.eventType.type").value("CREATED"));
 //    }
 }
