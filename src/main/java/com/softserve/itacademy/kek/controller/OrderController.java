@@ -91,23 +91,29 @@ public class OrderController extends DefaultController {
     /**
      * Creates a new order
      *
-     * @param newOrderDto  {@link OrderDto} order object as a JSON
-     * @param customerGuid order guid from the URN
+     * @param newOrderListDto {@link OrderDto} order object as a JSON
+     * @param customerGuid    order guid from the URN
      * @return Response entity with {@link OrderListDto} object as a JSON
      */
     @PostMapping(value = "/{customerGuid}",
             consumes = KekMediaType.ORDER_LIST,
             produces = KekMediaType.ORDER_LIST)
-    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderDto newOrderDto, @PathVariable String customerGuid) {
-        logger.debug("Accepted requested to create a new order:\n{}", newOrderDto);
+    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto newOrderListDto, @PathVariable String customerGuid) {
+        logger.debug("Accepted requested to create a new order:\n{}", newOrderListDto);
 
-        IOrder createdOrder = orderService.create(newOrderDto, UUID.fromString(customerGuid));
-        OrderDto createdOrderDto = transformOrder(createdOrder);
+        OrderListDto createdOrdersListDto = new OrderListDto();
 
-        logger.debug("Sending the created order to the client:\n{}", createdOrderDto);
+        for (OrderDto orderDto : newOrderListDto.getOrderList()) {
+            IOrder createdOrder = orderService.create(orderDto, UUID.fromString(customerGuid));
+            OrderDto createdOrderDto = transformOrder(createdOrder);
+
+            createdOrdersListDto.addOrder(createdOrderDto);
+        }
+
+        logger.debug("Sending the created order to the client:\n{}", createdOrdersListDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new OrderListDto().addOrder(createdOrderDto));
+                .body(createdOrdersListDto);
     }
 
 

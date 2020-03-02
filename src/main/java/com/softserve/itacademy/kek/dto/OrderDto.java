@@ -13,6 +13,7 @@ import java.util.UUID;
 public class OrderDto implements IOrder {
 
     @NotNull
+    @JsonProperty("tenant")
     private UUID tenantGuid;
 
     private UUID guid;
