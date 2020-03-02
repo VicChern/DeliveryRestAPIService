@@ -152,7 +152,11 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
         //when
         Order createdOrder = orderRepository.save(order);
 
+        OrderDetails orderDetails = orderDetailsRepository.findByOrder(order);
+        orderDetails.setImageUrl("asdasdasd");
+
         createdOrder.setSummary(newSummary);
+        createdOrder.setOrderDetails(orderDetails);
 
         IOrder updatedOrder = orderService.update(order, order.getGuid());
 
