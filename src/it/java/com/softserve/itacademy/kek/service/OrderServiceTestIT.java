@@ -40,6 +40,8 @@ import static org.testng.Assert.assertNull;
 public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
 
     public static final String newSummary = "new summary";
+    public static final String newImageUrl = "new image url";
+
 
     @Autowired
     private UserRepository userRepository;
@@ -152,7 +154,11 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
         //when
         Order createdOrder = orderRepository.save(order);
 
+        OrderDetails orderDetails = orderDetailsRepository.findByOrder(order);
+        orderDetails.setImageUrl(newImageUrl);
+
         createdOrder.setSummary(newSummary);
+        createdOrder.setOrderDetails(orderDetails);
 
         IOrder updatedOrder = orderService.update(order, order.getGuid());
 
