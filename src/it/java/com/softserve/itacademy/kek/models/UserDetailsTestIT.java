@@ -39,7 +39,7 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private UserDetailsRepository userDetailsRepository;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     void setUp() {
         user = createOrdinaryUser(1);
         userDetails = createSimpleUserDetailsWithValidFields();
@@ -48,14 +48,15 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
         userDetails.setUser(user);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     void tearDown() {
         userRepository.deleteAll();
         userDetailsRepository.deleteAll();
     }
 
 
-    @Test(description = "Test UserDetails_01. Should saves user with valid userDetails fields.")
+    @Test(groups = {"integration-tests"},
+            description = "Test UserDetails_01. Should saves user with valid userDetails fields.")
     public void testUserDetailsIsSavedWithValidFields() {
         //when
         userRepository.save(user);
@@ -76,7 +77,8 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     //==================================================== payload =====================================================
 
-    @Test(description = "Test UserDetails_02. Should throw TransactionSystemException when saves user with a payload field length of userDetails more than " + MAX_LENGTH_4096,
+    @Test(groups = {"integration-tests"},
+            description = "Test UserDetails_02. Should throw TransactionSystemException when saves user with a payload field length of userDetails more than " + MAX_LENGTH_4096,
             expectedExceptions = TransactionSystemException.class,
             expectedExceptionsMessageRegExp = "Could not commit JPA transaction; .*")
     public void testUserDetailsIsNotSavedWithPayloadMoreThanMaxLength() {
@@ -90,7 +92,8 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
 
 
     //==================================================== imageUrl ====================================================
-    @Test(description = "Test UserDetails_03. Should throw TransactionSystemException when saves user with a imageUrl field length of userDetails more than " + MAX_LENGTH_512,
+    @Test(groups = {"integration-tests"},
+            description = "Test UserDetails_03. Should throw TransactionSystemException when saves user with a imageUrl field length of userDetails more than " + MAX_LENGTH_512,
             expectedExceptions = TransactionSystemException.class,
             expectedExceptionsMessageRegExp = "Could not commit JPA transaction; .*")
     public void testUserDetailsIsNotSavedWithImageUrlMoreThanMaxLength() {

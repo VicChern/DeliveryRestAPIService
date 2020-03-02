@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.softserve.itacademy.kek.exception.TrackingException;
 import com.softserve.itacademy.kek.services.OrderTrackingWrapper;
 
 
@@ -32,8 +33,7 @@ public class SseController {
     private static final Map<UUID, List<SseEmitter>> ORDER_EMITTERS = new Hashtable<>();
 
     @GetMapping(value = "/orders/{guid}/events/messaging", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> getLastEventPayload(@PathVariable final UUID guid) {
-        //TODO:: Add interceptor to log requests https://www.baeldung.com/spring-http-logging
+    public ResponseEntity<SseEmitter> trackOrder(@PathVariable final UUID guid) {
         logger.info("Getting request to provide last event payload for order guid={}", guid);
 
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -42,6 +42,9 @@ public class SseController {
         //TODO:: check in DB IF this orderId has STARTED and not DELIVERED yet
         // if not started or was already delivered -> return response
         // (Order status: delivered at 25.01.2019 14:00)
+        if (!isDelivering(guid)) {
+            throw new TrackingException(String.format("Order %s is not delivering now", guid));
+        }
 
         //keep connection open for 180 seconds, than browser will reconnect
         SseEmitter emitter = new SseEmitter(180_000L);
@@ -54,6 +57,9 @@ public class SseController {
             ORDER_EMITTERS.put(guid, emitterWrapedInList);
         }
 
+        //TODO:: we don't complete emitters, just delete them. Investigate coud it cause problems
+        //"Finally emitter.complete() is called to mark that request processing is complete so that the thread
+        // responsible for sending the response can complete the request and be freed up for the next response to handle."
         emitter.onCompletion(() -> ORDER_EMITTERS.get(guid).remove(emitter));
         emitter.onTimeout(() -> ORDER_EMITTERS.get(guid).remove(emitter));
 
@@ -62,9 +68,12 @@ public class SseController {
                 .body(emitter);
     }
 
+    private boolean isDelivering(UUID guid) {
+        return true;
+    }
+
 
     //TODO:: Remove MapWrapper and use Spring Events properly that listener will accept generics List<UUID, OrderEvent>
-    //TODO:: Extract into separate class and make Controller subscribe for updating emitters bu guid
     @EventListener
     public void enrichEmitters(OrderTrackingWrapper eventWrapper) {
         final Map<UUID, List<SseEmitter>> deadEmitters = new HashMap<>();
@@ -85,7 +94,7 @@ public class SseController {
                 String payload = deliveringOrdersToPayloads.get(guid);
                 try {
                     sseEmitter.send(payload);
-                    logger.info("Send payload {} for order guid={}", payload, guid);
+                    logger.debug("Send payload {} for order guid={}", payload, guid);
                 } catch (IOException e) {
                     List<SseEmitter> emitterWrapedInList = new ArrayList<>();
                     emitterWrapedInList.add(sseEmitter);
@@ -93,7 +102,7 @@ public class SseController {
                         deadEmitters.get(guid).add(sseEmitter);
                     } else {
                         deadEmitters.put(guid, emitterWrapedInList);
-                        logger.info("All emitters for order guid={} was completed or closed by timeout. Server can't send geolocation", guid);
+                        logger.debug("All emitters for order guid={} was completed or closed by timeout. Server can't send geolocation", guid);
                     }
                 }
             });

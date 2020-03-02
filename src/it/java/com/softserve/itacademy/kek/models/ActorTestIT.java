@@ -49,7 +49,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     private Actor actor2;
 
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         actorRole = getActorRole("actorRole");
         actorRoleRepository.save(actorRole);
@@ -58,7 +58,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
         actor1 = getActor((User) tenant1.getTenantOwner(), tenant1, actorRole);
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         actorRepository.deleteAll();
         actorRoleRepository.deleteAll();
@@ -67,7 +67,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = DataIntegrityViolationException.class)
     public void testActorIsSavedWithUniqueGuid() {
         actorRepository.save(actor1);
 
@@ -81,7 +81,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testActorIsNotSavedWithNullGuid() {
         actor1.setGuid(null);
 
@@ -89,7 +89,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testActorIsNotSavedWithAliasMoreThanMaxLength() {
         actor1.setAlias(createRandomLetterString(MAX_LENGTH_256 + 1));
 
@@ -97,7 +97,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testActorIsNotSavedWithEmptyAlias() {
         actor1.setAlias("");
 
@@ -105,7 +105,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testActorIsNotSavedWithNullAlias() {
         actor1.setAlias(null);
 

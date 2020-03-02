@@ -42,13 +42,13 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     private Order order1;
     private Order order2;
 
-    @BeforeMethod
+    @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         order1 = getOrder(getTenantForOrder(1));
         order2 = getOrder(getTenantForOrder(2));
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         orderRepository.deleteAll();
         tenantRepository.deleteAll();
@@ -56,7 +56,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = DataIntegrityViolationException.class)
     public void testOrderIsSavedWithUniqueGuid() {
         orderRepository.save(order1);
 
@@ -67,7 +67,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderIsNotSavedWithNullGuid() {
         order1.setGuid(null);
 
@@ -75,7 +75,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderIsNotSavedWithSummaryMoreThanMaxLength() {
         order1 = order2;
         order1.setSummary(createRandomLetterString(MAX_SUMMARY_LENGTH + 1));
@@ -84,7 +84,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderIsNotSavedWithEmptySummary() {
         order1 = order2;
         order1.setSummary("");
@@ -93,7 +93,7 @@ public class OrderTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Rollback
-    @Test(expectedExceptions = ConstraintViolationException.class)
+    @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testOrderIsNotSavedWithNullSummary() {
         order1.setSummary(null);
 
