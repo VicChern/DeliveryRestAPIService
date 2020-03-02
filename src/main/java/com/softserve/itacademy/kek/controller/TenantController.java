@@ -232,10 +232,10 @@ public class TenantController extends DefaultController {
         List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDtoList, UUID.fromString(guid));
 
         logger.info("Sending the created tenant's({}) properties to the client", tenantProperties);
-//        TODO: transform the tenantProperties to dto and return it
+
         return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body(tenantProperties);
+                .status(HttpStatus.CREATED)
+                .body(tenantPropertiesDtoList);
     }
 
     /**
@@ -268,7 +268,6 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}/properties/{propguid}", consumes = KekMediaType.TENANT_PROPERTY,
             produces = KekMediaType.TENANT_PROPERTY)
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid,
                                                                     @PathVariable("propguid") String propGuid,
                                                                     @RequestBody @Valid TenantPropertiesDto tenantPropertiesDto) {
