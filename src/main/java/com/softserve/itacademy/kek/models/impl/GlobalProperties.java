@@ -14,9 +14,11 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.softserve.itacademy.kek.models.IGlobalProperties;
+
 @Entity
 @Table(name = "obj_global_properties")
-public class GlobalProperties extends AbstractEntity implements Serializable {
+public class GlobalProperties extends AbstractEntity implements IGlobalProperties, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
