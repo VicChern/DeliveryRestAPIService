@@ -1,11 +1,13 @@
 package com.softserve.itacademy.kek.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.security.Principal;
+
 import com.auth0.AuthenticationController;
 import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
-import com.softserve.itacademy.kek.security.TokenAuthentication;
-import com.softserve.itacademy.kek.security.TokenUtils;
-import com.softserve.itacademy.kek.security.WebSecurityConfig;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.softserve.itacademy.kek.security.TokenAuthentication;
+import com.softserve.itacademy.kek.security.WebSecurityConfig;
+import com.softserve.itacademy.kek.services.impl.UserDetailsServiceImpl;
 
 @RestController
 @PropertySource("classpath:server.properties")
@@ -87,9 +93,17 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
         try {
             logger.info("Authentication");
 
-            Tokens tokens = controller.handle(request, response);
-            TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
-            SecurityContextHolder.getContext().setAuthentication(tokenAuth);
+            final Tokens tokens = controller.handle(request, response);
+            final TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
+
+            final UserDetailsService userDetailsService = new UserDetailsServiceImpl();
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(tokenAuth.getClaims().get("email").asString());
+
+            final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+
+            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
             logger.info("User was authenticated");
 
