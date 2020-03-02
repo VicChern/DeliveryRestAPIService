@@ -1,13 +1,13 @@
 package com.softserve.itacademy.kek.dto;
 
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.IOrderEventType;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.UUID;
-
-import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderEvent;
-import com.softserve.itacademy.kek.models.IOrderEventType;
 
 public class OrderEventDto implements IOrderEvent {
     @NotNull

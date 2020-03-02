@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.IOrderEventType;

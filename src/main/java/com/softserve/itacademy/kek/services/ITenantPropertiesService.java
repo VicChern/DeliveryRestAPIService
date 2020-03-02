@@ -1,10 +1,10 @@
 package com.softserve.itacademy.kek.services;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.softserve.itacademy.kek.exception.TenantPropertiesServiceException;
 import com.softserve.itacademy.kek.models.ITenantProperties;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Service interface for {@link ITenantProperties}
