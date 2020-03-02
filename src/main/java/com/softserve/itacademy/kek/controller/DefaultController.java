@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.exception.ServiceException;
+import com.softserve.itacademy.kek.exception.TrackingException;
 
 @RestController
 public class DefaultController {
@@ -57,6 +58,11 @@ public class DefaultController {
         logger.error("An error occurred:", ex);
         logger.warn("Sending the error message to the client");
         return ResponseEntity.badRequest().body("Not valid request");
+    }
+
+    @ExceptionHandler({TrackingException.class})
+    public ResponseEntity<String> trackingExceptionHandler(Exception ex) {
+        return ResponseEntity.ok().body(ex.getMessage());
     }
 
 }
