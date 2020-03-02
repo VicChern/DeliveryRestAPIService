@@ -93,18 +93,17 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
         try {
             logger.info("Authentication");
 
-            Tokens tokens = controller.handle(request, response);
-            TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
-//            SecurityContextHolder.getContext().setAuthentication(tokenAuth);
+            final Tokens tokens = controller.handle(request, response);
+            final TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
 
-            ////////////////////
-            UserDetailsService userDetailsService = new UserDetailsServiceImpl();
-            UserDetails userDetails = userDetailsService.loadUserByUsername("lyaschenko2016@gmail.com");
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+            final UserDetailsService userDetailsService = new UserDetailsServiceImpl();
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(tokenAuth.getClaims().get("email").asString());
+
+            final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
+
             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            //////////////////////////
 
             logger.info("User was authenticated");
 
@@ -120,9 +119,6 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
     @GetMapping(path = "/profile")
     protected ResponseEntity<String> profile(Authentication authentication, Principal principal) {
 
-        String s = principal.getName();
-        authentication.getAuthorities();
-        String ss = (String) authentication.getPrincipal();
         JSONObject json = new JSONObject();
         return ResponseEntity.ok(json.toString());
     }
