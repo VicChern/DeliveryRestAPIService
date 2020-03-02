@@ -1,28 +1,24 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
-import java.util.List;
-import java.util.UUID;
-
+import com.softserve.itacademy.kek.exception.OrderEventServiceException;
+import com.softserve.itacademy.kek.exception.OrderServiceException;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.OrderEvent;
+import com.softserve.itacademy.kek.repositories.ActorRepository;
+import com.softserve.itacademy.kek.repositories.OrderEventRepository;
+import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
+import com.softserve.itacademy.kek.repositories.OrderRepository;
+import com.softserve.itacademy.kek.services.IOrderEventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.softserve.itacademy.kek.exception.OrderEventServiceException;
-import com.softserve.itacademy.kek.exception.OrderServiceException;
-import com.softserve.itacademy.kek.models.IOrderEvent;
-import com.softserve.itacademy.kek.models.impl.Actor;
-import com.softserve.itacademy.kek.models.impl.Order;
-import com.softserve.itacademy.kek.models.impl.OrderEvent;
-import com.softserve.itacademy.kek.models.impl.OrderEventType;
-import com.softserve.itacademy.kek.repositories.ActorRepository;
-import com.softserve.itacademy.kek.repositories.OrderEventRepository;
-import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
-import com.softserve.itacademy.kek.repositories.OrderRepository;
-import com.softserve.itacademy.kek.services.IOrderEventService;
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Service implementation for {@link IOrderEventService}

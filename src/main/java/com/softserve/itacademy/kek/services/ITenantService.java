@@ -1,13 +1,12 @@
 package com.softserve.itacademy.kek.services;
 
-import java.util.List;
-import java.util.UUID;
-
+import com.softserve.itacademy.kek.exception.TenantServiceException;
+import com.softserve.itacademy.kek.models.ITenant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.softserve.itacademy.kek.exception.TenantServiceException;
-import com.softserve.itacademy.kek.models.ITenant;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Service interface for {@link ITenant}
@@ -42,6 +41,7 @@ public interface ITenantService {
     /**
      * Gets a {@link Page} of {@link ITenant}
      * meeting the paging restriction provided in the {@code Pageable} object.
+     *
      * @param pageable {@code Pageable} object that defines page options, must not be {@literal null}.
      * @return a page of {@link ITenant}
      */
@@ -51,7 +51,7 @@ public interface ITenantService {
      * Updates {@link ITenant}
      *
      * @param iTenant iTenant
-     * @param guid   {@link ITenant} guid
+     * @param guid    {@link ITenant} guid
      * @return updated tenant
      * @throws TenantServiceException if if tenant wasn't updated
      */

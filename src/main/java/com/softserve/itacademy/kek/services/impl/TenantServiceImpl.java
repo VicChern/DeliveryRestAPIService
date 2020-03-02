@@ -1,18 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.persistence.PersistenceException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.softserve.itacademy.kek.exception.TenantServiceException;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.impl.Tenant;
@@ -21,6 +8,18 @@ import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.ITenantService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.PersistenceException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 /**
  * Service implementation for {@link ITenantService}

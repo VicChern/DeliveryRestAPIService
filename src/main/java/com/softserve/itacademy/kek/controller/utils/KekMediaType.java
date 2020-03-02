@@ -1,5 +1,11 @@
 package com.softserve.itacademy.kek.controller.utils;
 
+/**
+ * Constraints of Json Media Types for:
+ * {@link com.softserve.itacademy.kek.controller.TenantController}
+ * {@link com.softserve.itacademy.kek.controller.OrderController}
+ * {@link com.softserve.itacademy.kek.controller.UserController}
+ */
 public class KekMediaType {
 
     public static final String TENANT = "application/vnd.softserve.tenant+json";

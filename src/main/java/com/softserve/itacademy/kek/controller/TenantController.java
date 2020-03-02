@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -232,10 +231,10 @@ public class TenantController extends DefaultController {
         List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesDtoList, UUID.fromString(guid));
 
         logger.info("Sending the created tenant's({}) properties to the client", tenantProperties);
-//        TODO: transform the tenantProperties to dto and return it
+
         return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body(tenantProperties);
+                .status(HttpStatus.CREATED)
+                .body(tenantPropertiesDtoList);
     }
 
     /**
@@ -268,7 +267,6 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = "/{guid}/properties/{propguid}", consumes = KekMediaType.TENANT_PROPERTY,
             produces = KekMediaType.TENANT_PROPERTY)
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid,
                                                                     @PathVariable("propguid") String propGuid,
                                                                     @RequestBody @Valid TenantPropertiesDto tenantPropertiesDto) {
