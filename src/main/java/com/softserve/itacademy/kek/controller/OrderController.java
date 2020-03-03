@@ -1,17 +1,10 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.softserve.itacademy.kek.controller.utils.KekMediaType;
-import com.softserve.itacademy.kek.dto.OrderDetailsDto;
-import com.softserve.itacademy.kek.dto.OrderDto;
-import com.softserve.itacademy.kek.dto.OrderEventDto;
-import com.softserve.itacademy.kek.dto.OrderEventListDto;
-import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
-import com.softserve.itacademy.kek.dto.OrderListDto;
-import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderEvent;
-import com.softserve.itacademy.kek.models.IOrderEventType;
-import com.softserve.itacademy.kek.services.IOrderEventService;
-import com.softserve.itacademy.kek.services.IOrderService;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +19,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.dto.OrderDetailsDto;
+import com.softserve.itacademy.kek.dto.OrderDto;
+import com.softserve.itacademy.kek.dto.OrderEventDto;
+import com.softserve.itacademy.kek.dto.OrderEventListDto;
+import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
+import com.softserve.itacademy.kek.dto.OrderListDto;
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.IOrderEventType;
+import com.softserve.itacademy.kek.services.IOrderEventService;
+import com.softserve.itacademy.kek.services.IOrderService;
 
 
 @RestController
@@ -97,7 +98,8 @@ public class OrderController extends DefaultController {
     @PostMapping(value = "/{customerGuid}",
             consumes = KekMediaType.ORDER_LIST,
             produces = KekMediaType.ORDER_LIST)
-    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto newOrderListDto, @PathVariable String customerGuid) {
+    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto newOrderListDto,
+                                                 @PathVariable String customerGuid) {
         logger.debug("Accepted requested to create a new order:\n{}", newOrderListDto);
 
         OrderListDto createdOrdersListDto = new OrderListDto();
@@ -138,17 +140,17 @@ public class OrderController extends DefaultController {
     /**
      * Modifies information of the specified order
      *
-     * @param guid  order guid from the URN
-     * @param order order object as a JSON
+     * @param guid     order guid from the URN
+     * @param orderDto order object as a JSON
      * @return Response entity with modified {@link OrderDto} object as a JSON
      */
     @PutMapping(value = "/{guid}",
             consumes = KekMediaType.ORDER,
             produces = KekMediaType.ORDER)
-    public ResponseEntity<OrderDto> modifyOrder(@PathVariable String guid, @RequestBody @Valid OrderDto order) {
-        logger.debug("Accepted modified order {} from the client", order);
+    public ResponseEntity<OrderDto> modifyOrder(@PathVariable String guid, @RequestBody @Valid OrderDto orderDto) {
+        logger.debug("Accepted modified order {} from the client", orderDto);
 
-        IOrder modifiedOrder = orderService.update(order, UUID.fromString(guid));
+        IOrder modifiedOrder = orderService.update(orderDto, UUID.fromString(guid));
         OrderDto modifiedOrderDto = transformOrder(modifiedOrder);
 
         logger.debug("Sending the modified order {} to the client", modifiedOrderDto);
@@ -166,7 +168,7 @@ public class OrderController extends DefaultController {
     public ResponseEntity deleteOrder(@PathVariable String guid) {
         logger.debug("Accepted request to delete the order {}", guid);
 
-        orderService.getByGuid(UUID.fromString(guid));
+        orderService.deleteByGuid(UUID.fromString(guid));
 
         logger.debug("Order {} successfully deleted", guid);
         return ResponseEntity
@@ -185,7 +187,6 @@ public class OrderController extends DefaultController {
         logger.info("Client requested all the events of the order {}", guid);
 
         List<IOrderEvent> events = orderEventService.getAllEventsForOrder(UUID.fromString(guid));
-
         OrderEventListDto orderEventListDto = new OrderEventListDto(UUID.fromString(guid),
                 events
                         .stream()
@@ -193,7 +194,6 @@ public class OrderController extends DefaultController {
                         .collect(Collectors.toList()));
 
         logger.info("Sending the list of events of the order {} to the client", orderEventListDto);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(orderEventListDto);
@@ -201,24 +201,27 @@ public class OrderController extends DefaultController {
 
     /**
      * Adds a new event for the specific order
+     * <p>
+     * //     * @param actorGuid     actor guid from the URN
      *
-     * @param actorGuid     actor guid from the URN
      * @param orderGuid     order guid from the URN
      * @param orderEventDto {@link OrderEventDto} object
      * @return Response Entity with created {@link OrderEventDto} objects as a JSON
      */
-    @PostMapping(value = "/{actorGuid}/events",
+    //@PostMapping(value = "/{actorGuid}/events",
+    @PostMapping(value = "/{orderGuid}/events",
             consumes = KekMediaType.EVENT,
             produces = KekMediaType.EVENT)
-    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String actorGuid,
+    public ResponseEntity<OrderEventDto> addEvent(//@PathVariable String actorGuid,
                                                   @PathVariable String orderGuid,
                                                   @RequestBody @Valid OrderEventDto orderEventDto) {
-        logger.info("Accepted requested to create a new event for the order {} created by actor {}", orderGuid, actorGuid);
+        //logger.info("Accepted requested to create a new event for the order {} created by actor {}", orderGuid, actorGuid);
+        logger.info("Accepted request to create a new event for the order {} created by actor\n{}", orderGuid, orderEventDto);
+
         // TODO: 01.03.2020 this will work when fixed OrderEventService
-//        IOrderEvent createdOrderEvent = orderEventService.createOrderEvent(UUID.fromString(orderGuid),
-//                UUID.fromString(actorGuid),
-//                orderEventDto);
+//        IOrderEvent createdOrderEvent = orderEventService.create(orderEventDto, UUID.fromString(orderGuid));
 //        OrderEventDto createdOrderEventDto = transformOrderEvent(createdOrderEvent);
+
         logger.info("Sending the created order event to the client:\n{}", orderEventDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

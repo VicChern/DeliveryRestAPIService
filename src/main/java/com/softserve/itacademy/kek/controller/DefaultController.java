@@ -1,17 +1,18 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.softserve.itacademy.kek.exception.ServiceException;
-import org.json.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import com.softserve.itacademy.kek.dto.ErrorListDto;
+import com.softserve.itacademy.kek.exception.ServiceException;
 
 @RestController
 public class DefaultController {
@@ -25,15 +26,16 @@ public class DefaultController {
      * @return ResponseEntity with HttpStatus and exception message in header.
      */
     @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<HttpHeaders> serviceExceptionHandler(ServiceException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorListDto> serviceExceptionHandler(ServiceException ex, HttpServletRequest request) {
         logger.trace("IP: {}:{}:{} : EXCEPTION: {}", request.getRemoteHost(), request.getRemotePort(), request.getRemoteUser(), ex);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Error", "Something went wrong: " + ex.getError()
-                + "; path: " + request.getServletPath());
+        ErrorListDto errorListDto = new ErrorListDto();
+        errorListDto.addError(ex.getMessage());
 
         logger.warn("Sending the error message to the client");
-        return ResponseEntity.status(ex.getErrorCode()).headers(httpHeaders).build();
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorListDto);
     }
 
     /**
@@ -43,19 +45,28 @@ public class DefaultController {
      * @return the error message as a JSON
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> defaultExceptionHandler(Exception ex) {
+    public ResponseEntity<ErrorListDto> defaultExceptionHandler(Exception ex) {
         logger.error("An error occurred:", ex);
-        JSONObject response = new JSONObject()
-                .put("Error", "Something went wrong...");
+
+        ErrorListDto errorListDto = new ErrorListDto();
+        errorListDto.addError(ex.getMessage());
+
         logger.warn("Sending the error message to the client");
-        return ResponseEntity.ok(response.toString());
+        return ResponseEntity
+                .status(HttpStatus.I_AM_A_TEAPOT)
+                .body(errorListDto);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity<String> validationExceptionHandler(Exception ex) {
+    public ResponseEntity<ErrorListDto> validationExceptionHandler(Exception ex) {
         logger.error("An error occurred:", ex);
-        logger.warn("Sending the error message to the client");
-        return ResponseEntity.badRequest().body("Not valid request");
-    }
 
+        ErrorListDto errorListDto = new ErrorListDto();
+        errorListDto.addError(ex.getMessage());
+
+        logger.warn("Sending the error message to the client");
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorListDto);
+    }
 }

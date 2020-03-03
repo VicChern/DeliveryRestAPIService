@@ -1,24 +1,29 @@
 package com.softserve.itacademy.kek.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.beans.Transient;
+import java.util.Objects;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.IOrderEventType;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Objects;
-import java.util.UUID;
-
 public class OrderEventDto implements IOrderEvent {
     @NotNull
     private UUID guid;
+    // TODO: 3/3/2020 change type to UUID according to documentation (modify the IOrderEvent interface)
     private OrderDto orderDto;
-
 
     @NotNull
     @Size(max = 1024)
     private String payload;
+
+    @JsonProperty("type")
     private OrderEventTypesDto type;
 
     public OrderEventDto() {
@@ -73,17 +78,21 @@ public class OrderEventDto implements IOrderEvent {
                 '}';
     }
 
+    // TODO: 3/3/2020 remove all the Transient methods and correspondent objects from DTO
     @Override
+    @Transient
     public IOrder getOrder() {
         return orderDto;
     }
 
     @Override
+    @Transient
     public IActor getActor() {
         return null;
     }
 
     @Override
+    @Transient
     public IOrderEventType getOrderEventType() {
         return type;
     }
