@@ -20,7 +20,7 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
     @Query(value =
             "SELECT * " +
             "FROM obj_order_event oe " +
-            "GROUP BY  oe.id_order_event " +
+            "GROUP BY oe.id_order, oe.id_order_event " +
             "ORDER BY oe.last_modified_date " +
             "DESC " +
             "LIMIT 1"
