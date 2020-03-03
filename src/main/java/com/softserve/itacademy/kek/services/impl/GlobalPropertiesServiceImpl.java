@@ -19,7 +19,7 @@ import com.softserve.itacademy.kek.services.IOrderService;
 @Service
 public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(IOrderService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(IGlobalPropertiesService.class);
 
     private final PropertyTypeRepository propertyTypeRepository;
     private final GlobalPropertiesRepository globalPropertiesRepository;
