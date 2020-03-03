@@ -6,9 +6,9 @@ import com.softserve.itacademy.kek.models.IGlobalProperties;
 
 public interface IGlobalPropertiesService {
 
-    IGlobalProperties create(IGlobalProperties globalProperties) throws Exception;
+    IGlobalProperties create(IGlobalProperties globalProperties);
 
-    IGlobalProperties update(IGlobalProperties globalProperties);
+    IGlobalProperties update(IGlobalProperties globalProperties, String key, String propertyTypeName);
 
     IGlobalProperties getByKey(String keu);
 
