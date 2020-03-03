@@ -1,10 +1,12 @@
 package com.softserve.itacademy.kek.dto;
 
+import com.softserve.itacademy.kek.models.IGlobalProperties;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-public class GlobalPropertiesDto {
+public class GlobalPropertiesDto implements IGlobalProperties {
 
     @NotNull
     private PropertyTypeDto propertyType;
@@ -27,14 +29,17 @@ public class GlobalPropertiesDto {
         this.value = value;
     }
 
+    @Override
     public PropertyTypeDto getPropertyType() {
         return propertyType;
     }
 
+    @Override
     public String getKey() {
         return key;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
