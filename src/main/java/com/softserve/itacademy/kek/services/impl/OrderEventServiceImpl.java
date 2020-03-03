@@ -179,13 +179,13 @@ public class OrderEventServiceImpl implements IOrderEventService {
     @Override
     public Boolean ifOrderEventCanBeTracked(UUID orderGuid) {
 
-       Boolean started = orderEventRepository
+        Boolean started = orderEventRepository
                 .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventType.STARTED.toString());
-       Boolean delivered = orderEventRepository
+        Boolean delivered = orderEventRepository
                 .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventType.DELIVERED.toString());
 
 
-       Boolean canBeTracked = started && !delivered;
+        Boolean canBeTracked = started && !delivered;
 
         return canBeTracked;
     }
@@ -213,7 +213,10 @@ public class OrderEventServiceImpl implements IOrderEventService {
     @Override
     public List<IOrderEvent> findAllThatDeliveringNow() {
         LOGGER.debug("Getting all order events that delivering now");
+//        OrderEventType orderEventType = orderEventTypeRepository.findByName(EventType.STARTED.toString());
         List<? extends IOrderEvent> orderEvents = orderEventRepository.findAllThatDeliveringNow();
+
+        orderEvents.removeIf(orderEvent -> !orderEvent.getOrderEventType().getName().equals(EventType.STARTED.toString()));
 
         return (List<IOrderEvent>) orderEvents;
     }
@@ -239,7 +242,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
         }
 
         //if actor for eventType ASSIGNED doesn`t have role CURRIER than save it with CURRIER role
-        if(
+        if (
                 eventTypeName
                         .equals(EventType.ASSIGNED.toString())
                 &&

@@ -178,7 +178,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     @Transactional
     public void createOrderEventSuccess() {
-       //when
+        //when
         // orderEvent1 with OrderEventType CREATED is created when order is saved, so we don`t need to save it
         orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventAssigned);
         orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventStarted1);
@@ -191,7 +191,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         assertEquals(orderEventRepository.findAll().size(), 7);
         List<OrderEvent> orderEventList = orderEventRepository.findAll();
 
-        List<EventType> orderEventTypeList= orderEventList
+        List<EventType> orderEventTypeList = orderEventList
                 .stream()
                 .map(orderEvent -> EventType.valueOf(orderEvent.getOrderEventType().getName()))
                 .distinct()
@@ -239,9 +239,9 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
                 .stream()
                 .allMatch(orderEvent ->
                         orderEvent
-                        .getOrder()
-                        .getGuid()
-                        .equals(savedOrder1.getGuid())));
+                                .getOrder()
+                                .getGuid()
+                                .equals(savedOrder1.getGuid())));
     }
 
     @Test(groups = {"integration-tests"})
@@ -285,13 +285,13 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventStarted1);
         orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventStarted1);
         orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventStarted2);
-
+//        orderEventService.createOrderEvent(savedOrder1.getGuid(), actor1.getGuid(), orderEventDelivered);
 
 //        orderEventAssigned = getOrderEvent(orderRepository.findByGuid(savedOrder2.getGuid()), orderEventTypeAssigned, actor2);
 //        orderEventStarted1 = getOrderEvent(orderRepository.findByGuid(savedOrder2.getGuid()), orderEventTypeStarted, actor2);
 //        orderEventStarted2 = getOrderEvent(orderRepository.findByGuid(savedOrder2.getGuid()), orderEventTypeStarted, actor2);
 //        orderEventDelivered = getOrderEvent(orderRepository.findByGuid(savedOrder2.getGuid()), orderEventTypeDelivered, actor2);
-//
+
 //        orderEventService.createOrderEvent(savedOrder2.getGuid(), actor2.getGuid(), orderEventAssigned);
 //        orderEventService.createOrderEvent(savedOrder2.getGuid(), actor2.getGuid(), orderEventStarted1);
 //        orderEventService.createOrderEvent(savedOrder2.getGuid(), actor2.getGuid(), orderEventStarted1);

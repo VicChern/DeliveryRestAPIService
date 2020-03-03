@@ -17,7 +17,14 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
     Optional<OrderEvent> findDistinctTopByOrderGuidOrderByLastModifiedDateDesc(UUID orderGuid);
 
     // TODO: 02.03.2020 refactor method to find all that delivering now
-    @Query("SELECT oe FROM OrderEvent as oe GROUP BY oe.order.idOrder, oe.idOrderEvent ORDER BY oe.lastModifiedDate DESC")
+    @Query(value =
+            "SELECT * " +
+            "FROM obj_order_event oe " +
+            "GROUP BY  oe.id_order_event " +
+            "ORDER BY oe.last_modified_date " +
+            "DESC " +
+            "LIMIT 1"
+            , nativeQuery = true)
     List<OrderEvent> findAllThatDeliveringNow();
 
     Boolean existsOrderEventsByOrderGuidAndOrderEventTypeName(UUID orderGuid, String eventTypeName);
