@@ -1,8 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.IUserDetails;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +34,7 @@ public class User extends AbstractEntity implements IUser, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
     private Long idUser;
+
     @NotNull
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;

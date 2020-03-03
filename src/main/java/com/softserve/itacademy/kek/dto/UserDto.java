@@ -1,15 +1,21 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.softserve.itacademy.kek.models.IUser;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 
-public class UserDto implements IUser {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.softserve.itacademy.kek.models.IUser;
+
+public class UserDto implements IUser, UserDetails {
     private UUID guid;
 
     @NotEmpty
@@ -71,6 +77,41 @@ public class UserDto implements IUser {
     @Override
     public DetailsDto getUserDetails() {
         return userDetails;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 
     @Override
