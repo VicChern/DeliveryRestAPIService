@@ -1,16 +1,19 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.services.impl.UserServiceImpl;
+import java.util.UUID;
+
 import org.mockito.ArgumentCaptor;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.UUID;
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.ActorRepository;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.repositories.UserRepository;
+import com.softserve.itacademy.kek.services.impl.UserServiceImpl;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,10 +33,16 @@ public class UserServiceTest {
 
     private UserRepository userRepository;
 
+    private TenantRepository tenantRepository;
+
+    private ActorRepository actorRepository;
+
     @BeforeClass
     public void setUp() {
         userRepository = mock(UserRepository.class);
-        userService = new UserServiceImpl(userRepository);
+        tenantRepository = mock(TenantRepository.class);
+        actorRepository = mock(ActorRepository.class);
+        userService = new UserServiceImpl(userRepository, tenantRepository, actorRepository);
     }
 
     @AfterMethod

@@ -12,8 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import com.softserve.itacademy.kek.controller.AuthController;
-
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:server.properties")
@@ -61,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/v1/profile").hasAnyRole("USER")
+                .antMatchers(HttpMethod.GET, profileURL).hasAnyRole("USER")
                 .and()
                 .formLogin()
                 .loginPage(loginURL)
