@@ -1,7 +1,10 @@
 package com.softserve.itacademy.kek.services;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import com.softserve.itacademy.kek.models.IUser;
 
@@ -46,4 +49,12 @@ public interface IUserService {
      * @return all users
      */
     List<IUser> getAll();
+
+
+    /**
+     * Returns user roles
+     *
+     * @return list of user roles
+     */
+    Collection<? extends GrantedAuthority> getUserAuthorities(String email);
 }

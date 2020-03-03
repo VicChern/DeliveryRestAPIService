@@ -34,6 +34,7 @@ public class User extends AbstractEntity implements IUser, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
     private Long idUser;
+
     @NotNull
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;

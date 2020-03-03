@@ -2,20 +2,28 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.UserServiceException;
+import com.softserve.itacademy.kek.models.IActor;
+import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.models.impl.UserDetails;
+import com.softserve.itacademy.kek.repositories.ActorRepository;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IUserService;
 
@@ -25,10 +33,14 @@ public class UserServiceImpl implements IUserService {
     final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
+    private final TenantRepository tenantRepository;
+    private final ActorRepository actorRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, TenantRepository tenantRepository, ActorRepository actorRepository) {
         this.userRepository = userRepository;
+        this.tenantRepository = tenantRepository;
+        this.actorRepository = actorRepository;
     }
 
     @Transactional
@@ -142,4 +154,35 @@ public class UserServiceImpl implements IUserService {
         }
         return user;
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Collection<? extends GrantedAuthority> getUserAuthorities(String email) {
+        logger.info("Find User in DB: email = {}", email);
+
+        List<GrantedAuthority> authorityList = new ArrayList<>();
+
+        IUser user = userRepository.findByEmail(email);
+        if (user == null) {
+            logger.warn("User wasn't found in DB: guid = {}", email);
+            throw new UserServiceException("User wasn't found");
+        } else {
+            authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+
+
+        final ITenant tenant = tenantRepository.findByTenantOwner(user);
+        if (tenant != null) {
+            authorityList.add(new SimpleGrantedAuthority("ROLE_TENANT"));
+        }
+
+        final IActor actor = actorRepository.findByUser(user);
+        if (actor != null) {
+            authorityList.add(new SimpleGrantedAuthority("ROLE_ACTOR"));
+        }
+        return authorityList;
+
+
+    }
+
 }
