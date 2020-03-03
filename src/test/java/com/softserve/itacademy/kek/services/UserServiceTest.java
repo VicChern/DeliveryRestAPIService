@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.ActorRepository;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.impl.UserServiceImpl;
 
@@ -31,10 +33,16 @@ public class UserServiceTest {
 
     private UserRepository userRepository;
 
+    private TenantRepository tenantRepository;
+
+    private ActorRepository actorRepository;
+
     @BeforeClass
     public void setUp() {
         userRepository = mock(UserRepository.class);
-        userService = new UserServiceImpl(userRepository);
+        tenantRepository = mock(TenantRepository.class);
+        actorRepository = mock(ActorRepository.class);
+        userService = new UserServiceImpl(userRepository, tenantRepository, actorRepository);
     }
 
     @AfterMethod

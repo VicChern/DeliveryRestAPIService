@@ -20,19 +20,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.security.TokenAuthentication;
 import com.softserve.itacademy.kek.security.TokenUtils;
-import com.softserve.itacademy.kek.security.WebSecurityConfig;
 import com.softserve.itacademy.kek.services.impl.UserDetailsServiceImpl;
 
 @RestController
 @PropertySource("classpath:server.properties")
-public class AuthController extends DefaultController implements LogoutSuccessHandler {
+public class AuthController extends DefaultController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -49,9 +47,6 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
 
     @Value(value = "${redirect.after.success.logout}")
     private String redirectAfterSuccessLogout;
-
-    @Autowired
-    private WebSecurityConfig webSecurityConfig;
 
     @GetMapping(path = "/login")
     protected void login(HttpServletRequest request, HttpServletResponse response) {
@@ -108,36 +103,6 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
         return ResponseEntity.ok(json.toString());
     }
 
-    @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        logger.debug("Performing logout, request = {}", request);
-
-        invalidateSession(request);
-
-        final String returnTo = createRedirectUrl(request.getScheme(), request.getServerName(),
-                request.getServerPort(), redirectAfterSuccessLogout);
-
-        final String logoutUrl = String.format(
-                "https://%s/v2/logout?client_id=%s&returnTo=%s",
-                webSecurityConfig.getDomain(),
-                webSecurityConfig.getClientId(),
-                returnTo);
-
-        try {
-            logger.info("trying to redirect to logoutUrl");
-            response.sendRedirect(logoutUrl);
-
-        } catch (Exception e) {
-            logger.error("Failed to redirect to logoutUrl {}, {}", logoutUrl, e);
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    private void invalidateSession(HttpServletRequest request) {
-        if (request.getSession() != null) {
-            request.getSession().invalidate();
-        }
-    }
 
     private String createRedirectUrl(String scheme, String serverName, int serverPort, String afterSuccessfulRedirect) {
         String returnTo = scheme + "://" + serverName;
