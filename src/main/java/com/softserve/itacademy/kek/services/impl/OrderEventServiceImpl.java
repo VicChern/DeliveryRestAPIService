@@ -99,7 +99,6 @@ public class OrderEventServiceImpl implements IOrderEventService {
         return orderEvent;
     }
 
-
     @Transactional
     @Override
     public IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, IOrderEvent iOrderEvent) {
@@ -213,10 +212,8 @@ public class OrderEventServiceImpl implements IOrderEventService {
     @Override
     public List<IOrderEvent> findAllThatDeliveringNow() {
         LOGGER.debug("Getting all order events that delivering now");
-//        OrderEventType orderEventType = orderEventTypeRepository.findByName(EventType.STARTED.toString());
-        List<? extends IOrderEvent> orderEvents = orderEventRepository.findAllThatDeliveringNow();
 
-        orderEvents.removeIf(orderEvent -> !orderEvent.getOrderEventType().getName().equals(EventType.STARTED.toString()));
+        List<? extends IOrderEvent> orderEvents = orderEventRepository.findAllLastAddedOrderEventsForEventType(EventType.STARTED.toString());
 
         return (List<IOrderEvent>) orderEvents;
     }
@@ -243,11 +240,9 @@ public class OrderEventServiceImpl implements IOrderEventService {
 
         //if actor for eventType ASSIGNED doesn`t have role CURRIER than save it with CURRIER role
         if (
-                eventTypeName
-                        .equals(EventType.ASSIGNED.toString())
+                eventTypeName.equals(EventType.ASSIGNED.toString())
                 &&
-                actor
-                        .getActorRoles()
+                actor.getActorRoles()
                         .stream()
                         .noneMatch(actorRole -> actorRole.getName().equals(ActorRoleEnum.CURRIER.toString()))
         ) {
@@ -259,8 +254,8 @@ public class OrderEventServiceImpl implements IOrderEventService {
     }
 
     private Actor saveActor(Tenant tenant, UUID userGuid) {
-        ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CURRIER.toString());
-        User user = (User) userService.getByGuid(userGuid);
+        final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CURRIER.toString());
+        final User user = (User) userService.getByGuid(userGuid);
 
         return actorService.saveActor(tenant, user, actorRole);
     }

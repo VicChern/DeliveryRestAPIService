@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
@@ -16,16 +17,23 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
 
     Optional<OrderEvent> findDistinctTopByOrderGuidOrderByLastModifiedDateDesc(UUID orderGuid);
 
-    // TODO: 02.03.2020 refactor method to find all that delivering now
     @Query(value =
-            "SELECT * " +
-            "FROM obj_order_event oe " +
-            "GROUP BY oe.id_order, oe.id_order_event " +
-            "ORDER BY oe.last_modified_date " +
-            "DESC " +
-            "LIMIT 1"
+            "SELECT OOE.* " +
+                "FROM " +
+                    "obj_order_event OOE, " +
+                    "def_order_event_type ET, " +
+                    "(SELECT " +
+                            "OE.id_order, " +
+                            "MAX(OE.last_modified_date) lastDate " +
+                        "FROM obj_order_event OE " +
+                        "GROUP BY  OE.id_order" +
+                    ") temporaryTable " +
+                "WHERE " +
+                    "    OOE.last_modified_date = temporaryTable.lastDate " +
+                    "AND ET.id_order_event_type = OOE.id_order_event_type " +
+                    "AND ET.name = :eventTypeName"
             , nativeQuery = true)
-    List<OrderEvent> findAllThatDeliveringNow();
+    List<OrderEvent> findAllLastAddedOrderEventsForEventType(@Param("eventTypeName" ) String eventTypeName);
 
     Boolean existsOrderEventsByOrderGuidAndOrderEventTypeName(UUID orderGuid, String eventTypeName);
 

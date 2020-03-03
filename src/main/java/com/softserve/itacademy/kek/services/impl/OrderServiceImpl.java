@@ -198,7 +198,7 @@ public class OrderServiceImpl implements IOrderService {
         orderEventType.setName(EventType.CREATED.toString());
 
         orderEvent.setOrderEventType(orderEventType);
-        orderEvent.setPayload(" ");
+        orderEvent.setPayload("{lat: 0, lng: 0}");
 
         return orderEvent;
     }

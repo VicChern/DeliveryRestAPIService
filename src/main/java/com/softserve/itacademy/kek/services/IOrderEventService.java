@@ -3,8 +3,6 @@ package com.softserve.itacademy.kek.services;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
@@ -23,13 +21,12 @@ public interface IOrderEventService {
      */
     IOrderEvent create(IOrderEvent orderEvent, UUID orderGuid);
 
-
     /**
      * Saves new {@link IOrderEvent} for orderGuid and customer guid
      *
-     * @param orderGuid orderGuid
+     * @param orderGuid    orderGuid
      * @param customerGuid customerGuid
-     * @param iOrderEvent order event
+     * @param iOrderEvent  order event
      * @return saved order event
      */
     IOrderEvent createOrderEvent(UUID orderGuid, UUID customerGuid, IOrderEvent iOrderEvent);
@@ -50,7 +47,12 @@ public interface IOrderEventService {
      */
     IOrderEvent getLastAddedEvent(UUID orderGuid);
 
-    @Transactional
+    /**
+     * Checks if {@link IOrderEvent} can be tracked
+     *
+     * @param orderGuid  order guid
+     * @return if {@link IOrderEvent} can be tracked
+     */
     Boolean ifOrderEventCanBeTracked(UUID orderGuid);
 
     /**
@@ -61,6 +63,10 @@ public interface IOrderEventService {
      */
     List<IOrderEvent> getAllEventsForOrder(UUID orderGuid);
 
-    @Transactional
+    /**
+     * Gets all {@link IOrderEvent} that is delivering now
+     *
+     * @return all {@link IOrderEvent} that is delivering now
+     */
     List<IOrderEvent> findAllThatDeliveringNow();
 }

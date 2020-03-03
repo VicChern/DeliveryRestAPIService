@@ -269,7 +269,7 @@ public class ITCreateEntitiesUtils {
         orderEvent.setActor(actor);
         orderEvent.setOrderEventType(orderEventType);
         orderEvent.setGuid(UUID.randomUUID());
-        orderEvent.setPayload(createRandomLetterString(MAX_LENGTH_512));
+        orderEvent.setPayload("{lat: 0, lng: 0}");
 
         return orderEvent;
     }
