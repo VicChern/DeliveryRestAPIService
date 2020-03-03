@@ -1,9 +1,9 @@
 package com.softserve.itacademy.kek.services;
 
+import com.softserve.itacademy.kek.models.IAddress;
+
 import java.util.List;
 import java.util.UUID;
-
-import com.softserve.itacademy.kek.models.IAddress;
 
 /**
  * Service interface for {@link IAddress}
@@ -26,7 +26,7 @@ public interface IAddressService {
      * @param tenantGuid  tenant guid
      * @return updated tenant address
      */
-    IAddress updateForTenant(IAddress addressData, UUID tenantGuid);
+    IAddress updateForTenant(IAddress addressData, UUID tenantGuid, UUID addressGuid);
 
     /**
      * Deletes tenant address

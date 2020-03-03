@@ -1,19 +1,21 @@
 package com.softserve.itacademy.kek.dto;
 
+import com.softserve.itacademy.kek.models.IAddress;
+
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
+import java.util.UUID;
 
-public class AddressDto {
-
-    @NotNull
-    private String guid;
+public class AddressDto implements IAddress {
+    private UUID guid;
 
     @NotNull
     @Size(max = 256)
     private String alias;
 
-    @NotNull
+    @NotEmpty
     @Size(max = 512)
     private String address;
 
@@ -23,14 +25,14 @@ public class AddressDto {
     public AddressDto() {
     }
 
-    public AddressDto(String guid, String alias, String address, String notes) {
+    public AddressDto(UUID guid, String alias, String address, String notes) {
         this.guid = guid;
         this.alias = alias;
         this.address = address;
         this.notes = notes;
     }
 
-    public String getGuid() {
+    public UUID getGuid() {
         return guid;
     }
 

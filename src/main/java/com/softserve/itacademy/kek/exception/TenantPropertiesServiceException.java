@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek.exception;
 
-import javax.validation.constraints.NotNull;
-
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Exception for {@link ITenantPropertiesService}

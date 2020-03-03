@@ -1,13 +1,12 @@
 package com.softserve.itacademy.kek.services;
 
-import java.util.List;
-import java.util.UUID;
-
+import com.softserve.itacademy.kek.exception.TenantServiceException;
+import com.softserve.itacademy.kek.models.ITenant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.softserve.itacademy.kek.exception.TenantServiceException;
-import com.softserve.itacademy.kek.models.ITenant;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Service interface for {@link ITenant}

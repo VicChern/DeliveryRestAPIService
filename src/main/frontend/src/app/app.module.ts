@@ -31,7 +31,7 @@ import { SseControllerComponent } from './sse-controller/sse-controller.componen
     FormsModule,
     HttpClientModule,
     AgmCoreModule.forRoot({
-      apiKey: 'YourApiKeyFromGoogle'
+      apiKey: 'AIzaSyCp1l20e2pXx3bcI-kshZvzjzlrkOhem0Y'
     })
   ],
 

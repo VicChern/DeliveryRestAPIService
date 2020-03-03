@@ -1,56 +1,64 @@
 package com.softserve.itacademy.kek.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.ITenant;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.beans.Transient;
 import java.util.Objects;
+import java.util.UUID;
 
-public class OrderDto {
-
-    @NotNull
-    private String tenant;
+public class OrderDto implements IOrder {
 
     @NotNull
-    private String user;
+    @JsonProperty("tenant")
+    private UUID tenantGuid;
 
-    @NotNull
-    private String guid;
+    private UUID guid;
 
     @NotNull
     @Size(max = 256)
     private String summary;
 
     @NotNull
-    private OrderDetailsDto details;
+    @JsonProperty("details")
+    private OrderDetailsDto orderDetails;
 
     public OrderDto() {
     }
 
-    public OrderDto(String tenant, String user, String guid, String summary, OrderDetailsDto details) {
-        this.tenant = tenant;
-        this.user = user;
+    public OrderDto(UUID guid, UUID tenant, String summary, OrderDetailsDto orderDetails) {
+        this.tenantGuid = tenant;
         this.guid = guid;
         this.summary = summary;
-        this.details = details;
+        this.orderDetails = orderDetails;
     }
 
+    public UUID getTenantGuid() {
+        return tenantGuid;
+    }
+
+    @Override
     public String getSummary() {
         return summary;
     }
 
-    public String getUser() {
-        return user;
+    @Override
+    public OrderDetailsDto getOrderDetails() {
+        return orderDetails;
     }
 
-    public String getTenant() {
-        return tenant;
+    @Transient
+    @Override
+    public ITenant getTenant() {
+        return new TenantDto(tenantGuid, null, null, null);
     }
 
-    public String getGuid() {
+    @Override
+    public UUID getGuid() {
         return guid;
-    }
-
-    public OrderDetailsDto getDetails() {
-        return details;
     }
 
     @Override
@@ -58,22 +66,22 @@ public class OrderDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderDto orderDto = (OrderDto) o;
-        return Objects.equals(tenant, orderDto.tenant) &&
+        return Objects.equals(tenantGuid, orderDto.tenantGuid) &&
                 Objects.equals(guid, orderDto.guid) &&
-                Objects.equals(details, orderDto.details);
+                Objects.equals(orderDetails, orderDto.orderDetails);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tenant, guid, details);
+        return Objects.hash(tenantGuid, guid, orderDetails);
     }
 
     @Override
     public String toString() {
         return "OrderDto{" +
-                "tenant='" + tenant + '\'' +
+                "tenant='" + tenantGuid + '\'' +
                 ", guid='" + guid + '\'' +
-                ", details=" + details +
+                ", details=" + orderDetails +
                 '}';
     }
 }

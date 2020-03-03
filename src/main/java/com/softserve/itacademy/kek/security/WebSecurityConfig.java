@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import com.softserve.itacademy.kek.controller.AuthController;
-
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:server.properties")
@@ -33,10 +31,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final String clientSecret = System.getenv("KekWord");
 
     /**
-     * This is base url path to our project
+     * This is url path to user info page
      */
-    @Value(value = "${base.url.path}")
-    private String baseURL;
+
+    @Value(value = "${secured.profile.url}")
+    private String profileURL;
+
+
+    @Value(value = "${login.url}")
+    private String loginURL;
+
+    @Value(value = "${logout.url}")
+    private String logoutURL;
 
     @Bean
     public AuthenticationController authenticationController() {
@@ -52,16 +58,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers(baseURL + "/profile/**")
+                .antMatchers(profileURL)
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage(baseURL + "/login")
-                .successForwardUrl(baseURL + "/profile")
+                .loginPage(loginURL)
+                .successForwardUrl(profileURL)
                 .and()
                 .logout()
-                .logoutUrl(baseURL + "/logout")
-                .logoutSuccessHandler(new AuthController())
+                .logoutUrl(logoutURL)
                 .permitAll();
     }
 
