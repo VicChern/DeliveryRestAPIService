@@ -1,6 +1,24 @@
 package com.softserve.itacademy.kek.services.impl;
 
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
+import com.softserve.itacademy.kek.services.AbstractService;
+import com.softserve.itacademy.kek.services.ICloudStorageService;
+import com.softserve.itacademy.kek.services.model.ICloudStorageObject;
+import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -9,25 +27,6 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.services.AbstractService;
-import com.softserve.itacademy.kek.services.ICloudStorageService;
-import com.softserve.itacademy.kek.services.model.ICloudStorageObject;
-import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
 
 @Component
 public class CloudStorageService extends AbstractService implements ICloudStorageService {
