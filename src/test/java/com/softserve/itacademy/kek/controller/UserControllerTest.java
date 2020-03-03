@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
@@ -107,7 +108,7 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.userList+json"))
+                .andExpect(content().contentType(KekMediaType.USER_LIST))
                 .andExpect(jsonPath("$.userList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.userList[0].name").value("name"))
                 .andExpect(jsonPath("$.userList[0].nickname").value("nickname"))
@@ -122,8 +123,8 @@ public class UserControllerTest {
         when(userService.create(any(UserDto.class))).thenReturn(user);
 
         mockMvc.perform(post("/users")
-                .contentType("application/vnd.softserve.user+json")
-                .accept("application/vnd.softserve.user+json")
+                .contentType(KekMediaType.USER)
+                .accept(KekMediaType.USER)
                 .content(userJson))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
@@ -141,7 +142,7 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.user+json"))
+                .andExpect(content().contentType(KekMediaType.USER))
                 .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.name").value("name"))
                 .andExpect(jsonPath("$.nickname").value("nickname"))
@@ -156,8 +157,8 @@ public class UserControllerTest {
         when(userService.update(any(UserDto.class))).thenReturn(user);
 
         mockMvc.perform(put("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
-                .contentType("application/vnd.softserve.user+json")
-                .accept("application/vnd.softserve.user+json")
+                .contentType(KekMediaType.USER)
+                .accept(KekMediaType.USER)
                 .content(userJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
@@ -181,7 +182,7 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.addressList+json"))
+                .andExpect(content().contentType(KekMediaType.ADDRESS_LIST))
                 .andExpect(jsonPath("$.addressList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.addressList[0].alias").value("alias"))
                 .andExpect(jsonPath("$.addressList[0].address").value("address"))
@@ -193,11 +194,11 @@ public class UserControllerTest {
         when(addressService.createForUser(any(IAddress.class), any(UUID.class))).thenReturn(address);
 
         mockMvc.perform(post("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses")
-                .contentType("application/vnd.softserve.addressList+json")
-                .accept("application/vnd.softserve.addressList+json")
+                .contentType(KekMediaType.ADDRESS_LIST)
+                .accept(KekMediaType.ADDRESS_LIST)
                 .content(addressListJson))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType("application/vnd.softserve.addressList+json"))
+                .andExpect(content().contentType(KekMediaType.ADDRESS_LIST))
                 .andExpect(jsonPath("$.addressList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.addressList[0].alias").value("alias"))
                 .andExpect(jsonPath("$.addressList[0].address").value("address"))
@@ -210,7 +211,7 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.address+json"))
+                .andExpect(content().contentType(KekMediaType.ADDRESS))
                 .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andExpect(jsonPath("$.address").value("address"))
@@ -222,11 +223,11 @@ public class UserControllerTest {
         when(addressService.updateForUser(any(IAddress.class), any(UUID.class))).thenReturn(address);
 
         mockMvc.perform(put("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
-                .contentType("application/vnd.softserve.address+json")
-                .accept("application/vnd.softserve.address+json")
+                .contentType(KekMediaType.ADDRESS)
+                .accept(KekMediaType.ADDRESS)
                 .content(addressJson))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.address+json"))
+                .andExpect(content().contentType(KekMediaType.ADDRESS))
                 .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andExpect(jsonPath("$.address").value("address"))

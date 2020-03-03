@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
@@ -128,7 +129,7 @@ public class OrderControllerTest {
 
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.orderList+json"))
+                .andExpect(content().contentType(KekMediaType.ORDER_LIST))
                 .andExpect(jsonPath("$.orderList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.orderList[0].tenantGuid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.orderList[0].summary").value("some summary"))
@@ -141,11 +142,11 @@ public class OrderControllerTest {
         when(orderService.create(any(OrderDto.class), any(UUID.class))).thenReturn(order);
 
         mockMvc.perform(post("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
-                .contentType("application/vnd.softserve.orderList+json")
-                .accept("application/vnd.softserve.orderList+json")
+                .contentType(KekMediaType.ORDER_LIST)
+                .accept(KekMediaType.ORDER_LIST)
                 .content(orderJson))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType("application/vnd.softserve.orderList+json"))
+                .andExpect(content().contentType(KekMediaType.ORDER_LIST))
                 .andExpect(jsonPath("$.orderList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.orderList[0].tenantGuid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.orderList[0].summary").value("some summary"))
@@ -159,7 +160,7 @@ public class OrderControllerTest {
 
         mockMvc.perform(get("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.order+json"))
+                .andExpect(content().contentType(KekMediaType.ORDER))
                 .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.tenantGuid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.summary").value("some summary"))
@@ -172,8 +173,8 @@ public class OrderControllerTest {
         when(orderService.update(any(OrderDto.class), any(UUID.class))).thenReturn(order);
 
         mockMvc.perform(put("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
-                .contentType("application/vnd.softserve.order+json")
-                .accept("application/vnd.softserve.order+json")
+                .contentType(KekMediaType.ORDER)
+                .accept(KekMediaType.ORDER)
                 .content(orderJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))

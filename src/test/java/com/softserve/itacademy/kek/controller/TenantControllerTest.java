@@ -150,7 +150,7 @@ public class TenantControllerTest {
         addressList.add(address);
     }
 
-    @Test //!
+    @Test
     public void getTenantListTest() throws Exception {
         when(tenantService.getAll()).thenReturn(tenantList);
 
@@ -164,7 +164,7 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.tenantList[0].details.imageUrl").value("http://awesomepicture.com"));
     }
 
-    @Test //!
+    @Test
     public void addTenantTest() throws Exception {
         when(tenantService.create(any(TenantDto.class))).thenReturn(tenant);
 
@@ -180,7 +180,7 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.details.imageUrl").value("http://awesomepicture.com"));
     }
 
-    @Test //!
+    @Test
     public void getTenantTest() throws Exception {
         when(tenantService.getByGuid(any(UUID.class))).thenReturn(tenant);
 
@@ -194,7 +194,7 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.details.imageUrl").value("http://awesomepicture.com"));
     }
 
-    @Test //!
+    @Test
     public void modifyTenantTest() throws Exception {
         when(tenantService.update(any(TenantDto.class), any(UUID.class))).thenReturn(tenant);
 
@@ -211,13 +211,13 @@ public class TenantControllerTest {
     }
 
 
-    @Test  //!
+    @Test
     public void deleteTenantTest() throws Exception {
         mockMvc.perform(delete("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(status().isNoContent());
     }
 
-    @Test //!
+    @Test
     public void getTenantPropertiesTest() throws Exception {
         when(tenantPropertiesService.getAllForTenant(any(UUID.class))).thenReturn(tenantPropertiesList);
 
@@ -231,7 +231,6 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.tenantPropertiesList.[0].value").value("string"));
     }
 
-    // TODO: 01.03.2020 not working - java.lang.AssertionError: No value at JSON path
     @Test
     public void addTenantPropertiesTest() throws Exception {
         when(tenantPropertiesService.create(anyList(), any(UUID.class))).thenReturn(tenantPropertiesList);
@@ -250,7 +249,7 @@ public class TenantControllerTest {
 
     }
 
-    @Test //!
+    @Test
     public void getTenantPropertyTest() throws Exception {
         when(tenantPropertiesService.get(any(UUID.class), any(UUID.class))).thenReturn(tenantProperties);
 
@@ -267,7 +266,7 @@ public class TenantControllerTest {
 
     @Test
     public void modifyTenantPropertyTest() throws Exception {
-        when(tenantPropertiesService.update(any(UUID.class), any(UUID.class), any(TenantProperties.class))).thenReturn(tenantProperties);
+        when(tenantPropertiesService.update(any(UUID.class), any(UUID.class), any(ITenantProperties.class))).thenReturn(tenantProperties);
 
         mockMvc.perform(put("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/properties/48c5db5c-af58-4350-874e-b99b33c6af86")
                 .contentType(KekMediaType.TENANT_PROPERTY)
@@ -276,20 +275,20 @@ public class TenantControllerTest {
                 .andExpect(status().isAccepted())
                 .andExpect(content().contentType(KekMediaType.TENANT_PROPERTY))
                 .andExpect(jsonPath("$.guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(jsonPath("$.tenant").value("glovo"))
-                .andExpect(jsonPath("$.type").value("additional info"))
-                .andExpect(jsonPath("$.key").value("workingDay"))
-                .andExpect(jsonPath("$.value").value("Wednesday"));
+                .andExpect(jsonPath("$.key").value("string"))
+                .andExpect(jsonPath("$.propertyType.name").value("string"))
+                .andExpect(jsonPath("$.propertyType.schema").value("string"))
+                .andExpect(jsonPath("$.value").value("string"));
 
     }
 
-    @Test //!
+    @Test
     public void deleteTenantPropertyTest() throws Exception {
         mockMvc.perform(delete("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/properties/48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(status().isOk());
     }
 
-    @Test //!
+    @Test
     public void getTenantAddressesTest() throws Exception {
         when(addressService.getAllForTenant(any(UUID.class))).thenReturn(addressList);
 
@@ -302,7 +301,7 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.addressList[0].notes").value("notes"));
     }
 
-    @Test //!
+    @Test
     public void addTenantAddressesTest() throws Exception {
         when(addressService.createForTenant(any(IAddress.class), any(UUID.class))).thenReturn(address);
 
@@ -318,7 +317,7 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.addressList[0].notes").value("notes"));
     }
 
-    @Test //!
+    @Test
     public void getTenantAddressTest() throws Exception {
         when(addressService.getForTenant(any(UUID.class), any(UUID.class))).thenReturn(address);
 
@@ -331,7 +330,7 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.notes").value("notes"));
     }
 
-    @Test //!
+    @Test
     public void modifyTenantAddressTest() throws Exception {
         when(addressService.updateForTenant(any(IAddress.class), any(UUID.class), any(UUID.class))).thenReturn(address);
 
@@ -347,7 +346,7 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.notes").value("notes"));
     }
 
-    @Test //!
+    @Test
     public void deleteTenantAddressTest() throws Exception {
         mockMvc.perform(delete("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/addresses/48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(status().isOk());
