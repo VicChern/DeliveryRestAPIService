@@ -235,7 +235,7 @@ public class UserControllerTest {
 
     @Test
     public void deleteUserAddressTest() throws Exception {
-        mockMvc.perform(delete("/users/3/addresses/1"))
+        mockMvc.perform(delete("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(status().isOk());
     }
 }
