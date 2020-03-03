@@ -32,9 +32,9 @@ public class UserServiceImpl implements IUserService {
 
     final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private final UserRepository userRepository;
-    private final TenantRepository tenantRepository;
-    private final ActorRepository actorRepository;
+    private UserRepository userRepository;
+    private TenantRepository tenantRepository;
+    private ActorRepository actorRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, TenantRepository tenantRepository, ActorRepository actorRepository) {
