@@ -94,7 +94,7 @@ public class TenantController extends DefaultController {
     /**
      * Get information about tenants
      *
-     * @return Response Entity with a list of {@link TenantDto} objects as a JSON
+     * @return Response Entity with a list of {@link TenantListDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.TENANT_LIST)
     public ResponseEntity<TenantListDto> getTenantList() {
