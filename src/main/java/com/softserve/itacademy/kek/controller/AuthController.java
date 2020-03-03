@@ -55,25 +55,17 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
 
     @GetMapping(path = "/login")
     protected void login(HttpServletRequest request, HttpServletResponse response) {
-        logger.info("Performing login");
+        logger.info("Performing login, request = {}", request);
 
-        String redirectUri = request.getScheme() + "://" + request.getServerName();
+        final String returnTo = createRedirectUrl(request.getScheme(), request.getServerName(),
+                request.getServerPort(), redirectAfterSuccessLogout);
 
-        if ((request.getScheme().equals("http") && request.getServerPort() != 80) ||
-                (request.getScheme().equals("https") && request.getServerPort() != 443)) {
-
-            redirectUri += ":" + request.getServerPort();
-
-        }
-
-        redirectUri += redirectAuth0URL;
-
-        String authorizeUrl = controller.buildAuthorizeUrl(request, response, redirectUri)
+        final String authorizeUrl = controller.buildAuthorizeUrl(request, response, returnTo)
                 .withScope("openid profile email")
                 .build();
 
         try {
-            logger.info("trying to redirect to authorizeUrl");
+            logger.debug("trying to redirect to authorizeUrl = {}", authorizeUrl);
             response.sendRedirect(authorizeUrl);
 
         } catch (IOException e) {
@@ -82,17 +74,10 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
     }
 
     @RequestMapping(path = "/callback")
-    protected void getCallback(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        logger.info("Entered to getCallBack method");
-        handle(req, res);
-    }
+    protected void getCallback(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        logger.info("Entered to getCallBack method req = {}", request);
 
-
-    private void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.info("entered to handle method");
         try {
-            logger.info("Authentication");
-
             final Tokens tokens = controller.handle(request, response);
             final TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
 
@@ -105,7 +90,7 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-            logger.info("User was authenticated");
+            logger.info("User was authenticated successfully");
 
             response.sendRedirect(redirectOnSuccess);
         } catch (Exception e) {
@@ -124,21 +109,15 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
     }
 
     @Override
-    public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse res, Authentication authentication) {
-        logger.debug("Performing logout");
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        logger.debug("Performing logout, request = {}", request);
 
-        invalidateSession(req);
+        invalidateSession(request);
 
-        String returnTo = req.getScheme() + "://" + req.getServerName();
+        final String returnTo = createRedirectUrl(request.getScheme(), request.getServerName(),
+                request.getServerPort(), redirectAfterSuccessLogout);
 
-        if ((req.getScheme().equals("http") && req.getServerPort() != 80) ||
-                (req.getScheme().equals("https") && req.getServerPort() != 443)) {
-            returnTo += ":" + req.getServerPort();
-        }
-
-        returnTo += redirectAfterSuccessLogout;
-
-        String logoutUrl = String.format(
+        final String logoutUrl = String.format(
                 "https://%s/v2/logout?client_id=%s&returnTo=%s",
                 webSecurityConfig.getDomain(),
                 webSecurityConfig.getClientId(),
@@ -146,7 +125,7 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
 
         try {
             logger.info("trying to redirect to logoutUrl");
-            res.sendRedirect(logoutUrl);
+            response.sendRedirect(logoutUrl);
 
         } catch (Exception e) {
             logger.error("Failed to redirect to logoutUrl {}, {}", logoutUrl, e);
@@ -158,6 +137,19 @@ public class AuthController extends DefaultController implements LogoutSuccessHa
         if (request.getSession() != null) {
             request.getSession().invalidate();
         }
+    }
+
+    private String createRedirectUrl(String scheme, String serverName, int serverPort, String afterSuccessfulRedirect) {
+        String returnTo = scheme + "://" + serverName;
+
+        if ((scheme.equals("http") && serverPort != 80) ||
+                (scheme.equals("https") && serverPort != 443)) {
+            returnTo += ":" + serverPort;
+        }
+
+        returnTo += afterSuccessfulRedirect;
+
+        return returnTo;
     }
 
 

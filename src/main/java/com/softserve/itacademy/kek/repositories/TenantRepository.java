@@ -5,10 +5,13 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 
 public interface TenantRepository extends JpaRepository<Tenant, Long> {
 
     Optional<Tenant> findByGuid(UUID guid);
+
+    Tenant findByTenantOwner(IUser user);
 
 }
