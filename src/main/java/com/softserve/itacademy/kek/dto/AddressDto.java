@@ -1,12 +1,12 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.softserve.itacademy.kek.models.IAddress;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IAddress;
 
 public class AddressDto implements IAddress {
     private UUID guid;

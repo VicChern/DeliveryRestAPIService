@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek.configuration;
 
-import org.springframework.data.domain.AuditorAware;
-
 import java.util.Optional;
+
+import org.springframework.data.domain.AuditorAware;
 
 /**
  * Implementation of AuditorAware for components that are aware of the application's current auditor
