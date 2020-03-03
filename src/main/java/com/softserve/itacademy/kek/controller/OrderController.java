@@ -1,17 +1,10 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.softserve.itacademy.kek.controller.utils.KekMediaType;
-import com.softserve.itacademy.kek.dto.OrderDetailsDto;
-import com.softserve.itacademy.kek.dto.OrderDto;
-import com.softserve.itacademy.kek.dto.OrderEventDto;
-import com.softserve.itacademy.kek.dto.OrderEventListDto;
-import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
-import com.softserve.itacademy.kek.dto.OrderListDto;
-import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderEvent;
-import com.softserve.itacademy.kek.models.IOrderEventType;
-import com.softserve.itacademy.kek.services.IOrderEventService;
-import com.softserve.itacademy.kek.services.IOrderService;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +20,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.dto.OrderDetailsDto;
+import com.softserve.itacademy.kek.dto.OrderDto;
+import com.softserve.itacademy.kek.dto.OrderEventDto;
+import com.softserve.itacademy.kek.dto.OrderEventListDto;
+import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
+import com.softserve.itacademy.kek.dto.OrderListDto;
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.IOrderEventType;
+import com.softserve.itacademy.kek.services.IOrderEventService;
+import com.softserve.itacademy.kek.services.IOrderService;
 
 
 @RestController

@@ -1,13 +1,14 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.ITenantDetails;
-
 import javax.validation.constraints.Size;
 import java.beans.Transient;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.ITenantDetails;
 
 public class TenantDto implements ITenant {
 
