@@ -41,7 +41,12 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
         final GlobalProperties actualProperties = new GlobalProperties();
 
         if (foundPropertyType == null) {
-            actualPropertyType = propertyTypeRepository.save((PropertyType) globalProperties.getPropertyType());
+            final PropertyType savedPropertyType = new PropertyType();
+
+            savedPropertyType.setName(globalProperties.getPropertyType().getName());
+            savedPropertyType.setSchema(globalProperties.getPropertyType().getSchema());
+
+            actualPropertyType = propertyTypeRepository.save(savedPropertyType);
         } else {
             actualPropertyType = foundPropertyType;
         }
