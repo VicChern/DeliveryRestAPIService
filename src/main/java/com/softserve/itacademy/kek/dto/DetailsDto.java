@@ -1,9 +1,12 @@
 package com.softserve.itacademy.kek.dto;
 
+import com.softserve.itacademy.kek.models.IUserDetails;
+
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-public class DetailsDto {
+// TODO: 2/18/2020 add other two interfaces(ITenantDetails, IOrderDetails) and remove duplicate classes(TenantDetailsDto, OrderDetailsDto)
+public class DetailsDto implements IUserDetails {
 
     @Size(max = 4096)
     private String payload;

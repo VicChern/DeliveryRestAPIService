@@ -1,5 +1,9 @@
 package com.softserve.itacademy.kek.models.impl;
 
+import com.softserve.itacademy.kek.models.IPropertyType;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.ITenantProperties;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,10 +19,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
-
-import com.softserve.itacademy.kek.models.IPropertyType;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.ITenantProperties;
 
 @Entity
 @Table(name = "obj_tenant_properties")

@@ -1,16 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolationException;
-import java.util.List;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
@@ -18,6 +7,16 @@ import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.models.impl.UserDetails;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements IUserService {

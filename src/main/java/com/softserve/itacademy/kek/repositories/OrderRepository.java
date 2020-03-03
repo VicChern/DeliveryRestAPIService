@@ -1,10 +1,9 @@
 package com.softserve.itacademy.kek.repositories;
 
-import java.util.UUID;
-
+import com.softserve.itacademy.kek.models.impl.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.softserve.itacademy.kek.models.impl.Order;
+import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 

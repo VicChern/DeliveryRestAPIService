@@ -1,11 +1,20 @@
 package com.softserve.itacademy.kek.controller;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.dto.OrderDetailsDto;
+import com.softserve.itacademy.kek.dto.OrderDto;
+import com.softserve.itacademy.kek.dto.OrderEventDto;
+import com.softserve.itacademy.kek.dto.OrderEventListDto;
+import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
+import com.softserve.itacademy.kek.dto.OrderListDto;
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.IOrderEventType;
+import com.softserve.itacademy.kek.services.IOrderEventService;
+import com.softserve.itacademy.kek.services.IOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,142 +24,206 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.softserve.itacademy.kek.dto.OrderDetailsDto;
-import com.softserve.itacademy.kek.dto.OrderDto;
-import com.softserve.itacademy.kek.dto.OrderEventDto;
-import com.softserve.itacademy.kek.dto.OrderEventTypesDto;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping(path = "/orders")
 public class OrderController extends DefaultController {
+    private final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-    final Logger logger = LoggerFactory.getLogger(OrderController.class);
+    private final IOrderService orderService;
+    private final IOrderEventService orderEventService;
 
-    /**
-     * Temporary method for OrderDto stub
-     *
-     * @return {@link OrderDto} stub
-     */
-    private OrderDto getOrderDtoStub() {
-        OrderDetailsDto orderDetails = new OrderDetailsDto("some info", "https://mypicture");
-        OrderDto order = new OrderDto("MyTenant", "user123", "123",
-                "summary", orderDetails);
-        return order;
+    @Autowired
+    public OrderController(IOrderService orderService, IOrderEventService orderEventService) {
+        this.orderService = orderService;
+        this.orderEventService = orderEventService;
     }
 
-    /**
-     * Temporary method for OrderEventDto stub
-     *
-     * @return {@link OrderEventDto} stub
-     */
-    private OrderEventDto getOrderEventStub() {
-        OrderEventDto event = new OrderEventDto("wqewqe1r1", "123",
-                "some info", OrderEventTypesDto.DELIVERED);
-        return event;
+    private OrderDto transformOrder(IOrder order) {
+        OrderDetailsDto orderDetailsDto = new OrderDetailsDto(order.getOrderDetails().getPayload(), order.getOrderDetails().getImageUrl());
+        OrderDto orderDto = new OrderDto(order.getGuid(), order.getTenant().getGuid(), order.getSummary(), orderDetailsDto);
+
+        return orderDto;
+    }
+
+    private OrderEventDto transformOrderEvent(IOrderEvent orderEvent) {
+        return new OrderEventDto(orderEvent.getGuid(),
+                transformOrder(orderEvent.getOrder()),
+                orderEvent.getPayload(),
+                transformOrderEventType(orderEvent.getOrderEventType()));
+    }
+
+    private OrderEventTypesDto transformOrderEventType(IOrderEventType orderEventType) {
+        return OrderEventTypesDto.valueOf(orderEventType.getName());
     }
 
     /**
      * Get information about orders
      *
-     * @return Response Entity with list of {@link OrderDto} objects
+     * @return Response entity with list of {@link OrderListDto} objects as a JSON
      */
-    @GetMapping(produces = "application/vnd.softserve.order+json")
-    public ResponseEntity<List<OrderDto>> getOrderList() {
-        logger.info("Client requested the list of all orders");
+    @GetMapping(produces = KekMediaType.ORDER_LIST)
+    public ResponseEntity<OrderListDto> getOrderList() {
+        logger.debug("Client requested the list of all orders");
 
-        List<OrderDto> orderList = new ArrayList<>();
-        orderList.add(getOrderDtoStub());
+        List<IOrder> orderList = orderService.getAll();
 
-        logger.info("Sending list of all orders to the client:\n{}", orderList);
-        return new ResponseEntity<>(orderList, HttpStatus.OK);
+        OrderListDto orderListDto = new OrderListDto(orderList
+                .stream()
+                .map(this::transformOrder)
+                .collect(Collectors.toList()));
+
+        logger.info("Sending list of all orders to the client:\n{}", orderListDto);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(orderListDto);
     }
 
     /**
      * Creates a new order
      *
-     * @param order DTO object as a JSON
-     * @return created {@link OrderDto} object
+     * @param newOrderListDto {@link OrderDto} order object as a JSON
+     * @param customerGuid    order guid from the URN
+     * @return Response entity with {@link OrderListDto} object as a JSON
      */
-    @PostMapping
-    public ResponseEntity<OrderDto> addOrder(@RequestBody @Valid OrderDto order) {
-        logger.info("Order has been sent:\n{}", order);
-        return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
+    @PostMapping(value = "/{customerGuid}",
+            consumes = KekMediaType.ORDER_LIST,
+            produces = KekMediaType.ORDER_LIST)
+    public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto newOrderListDto,
+                                                 @PathVariable String customerGuid) {
+        logger.debug("Accepted requested to create a new order:\n{}", newOrderListDto);
+
+        OrderListDto createdOrdersListDto = new OrderListDto();
+
+        for (OrderDto orderDto : newOrderListDto.getOrderList()) {
+            IOrder createdOrder = orderService.create(orderDto, UUID.fromString(customerGuid));
+            OrderDto createdOrderDto = transformOrder(createdOrder);
+
+            createdOrdersListDto.addOrder(createdOrderDto);
+        }
+
+        logger.debug("Sending the created order to the client:\n{}", createdOrdersListDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(createdOrdersListDto);
     }
+
 
     /**
      * Returns information about the requested order
      *
-     * @param id order ID from the URN
-     * @return Response Entity with {@link OrderDto} object
+     * @param guid order guid from the URN
+     * @return Response Entity with {@link OrderDto} object as a JSON
      */
-    @GetMapping(value = "/{id}", produces = "application/vnd.softserve.order+json")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable String id) {
-        OrderDto order = getOrderDtoStub();
+    @GetMapping(value = "/{guid}", produces = KekMediaType.ORDER)
+    public ResponseEntity<OrderDto> getOrder(@PathVariable String guid) {
+        logger.debug("Client requested the order {}", guid);
 
-        logger.info("Sending the specific order ({}) to the client:\n{}", id, order);
-        return new ResponseEntity<>(order, HttpStatus.OK);
+        IOrder order = orderService.getByGuid(UUID.fromString(guid));
+        OrderDto orderDto = transformOrder(order);
+
+        logger.debug("Sending the order {} to the client", orderDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(orderDto);
     }
 
     /**
      * Modifies information of the specified order
      *
-     * @param id    order ID from the URN
-     * @param order order object as a JSON
-     * @return Response entity with modified {@link OrderDto} object
+     * @param guid     order guid from the URN
+     * @param orderDto order object as a JSON
+     * @return Response entity with modified {@link OrderDto} object as a JSON
      */
-    @PutMapping(value = "/{id}", consumes = "application/vnd.softserve.order+json",
-            produces = "application/vnd.softserve.order+json")
-    public ResponseEntity<OrderDto> modifyOrder(@PathVariable String id, @RequestBody @Valid OrderDto order) {
-        logger.info("Sending the modified order({}) to the client", id);
-        logger.info("Order was modified:\n{}", order);
-        return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
+    @PutMapping(value = "/{guid}",
+            consumes = KekMediaType.ORDER,
+            produces = KekMediaType.ORDER)
+    public ResponseEntity<OrderDto> modifyOrder(@PathVariable String guid, @RequestBody @Valid OrderDto orderDto) {
+        logger.debug("Accepted modified order {} from the client", orderDto);
+
+        IOrder modifiedOrder = orderService.update(orderDto, UUID.fromString(guid));
+        OrderDto modifiedOrderDto = transformOrder(modifiedOrder);
+
+        logger.debug("Sending the modified order {} to the client", modifiedOrderDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(modifiedOrderDto);
     }
 
     /**
      * Removes the specified order
      *
-     * @param id order ID from the URN
+     * @param guid order guid from the URN
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteOrder(@PathVariable String id) {
-        logger.info("Order ({}) successfully deleted", id);
-        return new ResponseEntity(HttpStatus.OK);
+    @DeleteMapping("/{guid}")
+    public ResponseEntity deleteOrder(@PathVariable String guid) {
+        logger.debug("Accepted request to delete the order {}", guid);
+
+        orderService.deleteByGuid(UUID.fromString(guid));
+
+        logger.debug("Order {} successfully deleted", guid);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     /**
      * Finds events of the specific order
      *
-     * @param id order ID from the URN
-     * @return list of the {@link OrderEventDto} objects
+     * @param guid order guid from the URN
+     * @return Response entity with list of the {@link OrderEventListDto} objects as a JSON
      */
-    @GetMapping(value = "/{id}/events", produces = "application/vnd.softserve.event+json")
-    public ResponseEntity<List<OrderEventDto>> getEvents(@PathVariable String id) {
-        logger.info("Sending the list of order ({}) events to the client", id);
+    @GetMapping(value = "/{id}/events", produces = KekMediaType.EVENT_LIST)
+    public ResponseEntity<OrderEventListDto> getEvents(@PathVariable String guid) {
+        logger.info("Client requested all the events of the order {}", guid);
 
-        List<OrderEventDto> orders = new ArrayList<>();
-        orders.add(getOrderEventStub());
+        List<IOrderEvent> events = orderEventService.getAllEventsForOrder(UUID.fromString(guid));
+        OrderEventListDto orderEventListDto = new OrderEventListDto(UUID.fromString(guid),
+                events
+                        .stream()
+                        .map(this::transformOrderEvent)
+                        .collect(Collectors.toList()));
 
-        logger.info("Sending the list: {}", orders);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        logger.info("Sending the list of events of the order {} to the client", orderEventListDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(orderEventListDto);
     }
 
     /**
      * Adds a new event for the specific order
+     * <p>
+     * //     * @param actorGuid     actor guid from the URN
      *
-     * @param id   order ID from the URN
-     * @param body {@link OrderEventDto} object
-     * @return Response Entity with created {@link OrderEventDto} objects
+     * @param orderGuid     order guid from the URN
+     * @param orderEventDto {@link OrderEventDto} object
+     * @return Response Entity with created {@link OrderEventDto} objects as a JSON
      */
-    @PostMapping(value = "/{id}/events", consumes = "application/vnd.softserve.event+json",
-            produces = "application/vnd.softserve.event+json")
-    @ResponseStatus()
-    public ResponseEntity<OrderEventDto> addEvent(@PathVariable String id, @RequestBody @Valid OrderEventDto body) {
-        logger.info("Sending the created order({}) events to the client", id);
-        logger.info("Event have been added: {}", body);
-        return new ResponseEntity<>(body, HttpStatus.ACCEPTED);
+    //@PostMapping(value = "/{actorGuid}/events",
+    @PostMapping(value = "/{orderGuid}/events",
+            consumes = KekMediaType.EVENT,
+            produces = KekMediaType.EVENT)
+    public ResponseEntity<OrderEventDto> addEvent(//@PathVariable String actorGuid,
+                                                  @PathVariable String orderGuid,
+                                                  @RequestBody @Valid OrderEventDto orderEventDto) {
+        //logger.info("Accepted requested to create a new event for the order {} created by actor {}", orderGuid, actorGuid);
+        logger.info("Accepted request to create a new event for the order {} created by actor\n{}", orderGuid, orderEventDto);
+
+        // TODO: 01.03.2020 this will work when fixed OrderEventService
+//        IOrderEvent createdOrderEvent = orderEventService.create(orderEventDto, UUID.fromString(orderGuid));
+//        OrderEventDto createdOrderEventDto = transformOrderEvent(createdOrderEvent);
+
+        logger.info("Sending the created order event to the client:\n{}", orderEventDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(orderEventDto);
     }
 }

@@ -1,17 +1,16 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.models.impl.ActorRole;
+import com.softserve.itacademy.kek.models.impl.OrderEventType;
+import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
+import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.impl.ActorRole;
-import com.softserve.itacademy.kek.models.impl.OrderEventType;
-import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
-import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 
 
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
