@@ -7,4 +7,6 @@ import com.softserve.itacademy.kek.models.impl.GlobalProperties;
 public interface GlobalPropertiesRepository extends JpaRepository<GlobalProperties, Long> {
 
     GlobalProperties findByKey(String key);
+
+    void deleteByKey(String key);
 }

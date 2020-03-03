@@ -84,18 +84,44 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
     @Transactional(readOnly = true)
     @Override
-    public IGlobalProperties getByKey(String keu) {
-        return null;
+    public IGlobalProperties getByKey(String key) throws GlobalPropertiesServiceException {
+        LOGGER.info("Getting globalProperties by key: {}", key);
+
+        try {
+            return globalPropertiesRepository.findByKey(key);
+        } catch (Exception e) {
+            LOGGER.error("An error: {}, occurred while getting GlobalProperties by key: {}", e.getMessage(), key);
+            throw new GlobalPropertiesServiceException("An error occurred while getting GlobalProperties by key: " + key, e);
+        }
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<IGlobalProperties> getAll() {
-        return null;
+    public List<IGlobalProperties> getAll() throws GlobalPropertiesServiceException {
+        LOGGER.info("Getting all globalProperties");
+
+        List<? extends IGlobalProperties> globalPropertiesList;
+
+        try {
+            globalPropertiesList = globalPropertiesRepository.findAll();
+        } catch (Exception e) {
+            LOGGER.error("An error: {}, occurred while getting all GlobalProperties", e.getMessage());
+            throw new GlobalPropertiesServiceException("An error occurred while getting all GlobalProperties: ", e);
+        }
+
+        return (List<IGlobalProperties>) globalPropertiesList;
     }
 
+    @Transactional
     @Override
     public void deleteByKey(String key) {
+        LOGGER.info("Deleting globalProperties by key: {}", key);
 
+        try {
+            globalPropertiesRepository.deleteByKey(key);
+        } catch (Exception e) {
+            LOGGER.error("An error: {}, occurred while deleting GlobalProperties by key: {}", e.getMessage(), key);
+            throw new GlobalPropertiesServiceException("An error occurred while deleting GlobalProperties by key: " + key, e);
+        }
     }
 }
