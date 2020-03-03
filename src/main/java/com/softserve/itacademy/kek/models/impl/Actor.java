@@ -99,6 +99,14 @@ public class Actor extends AbstractEntity implements IActor, Serializable {
         this.alias = alias;
     }
 
+    public void addActorRole(ActorRole actorRole) {
+        actorRoles.add(actorRole);
+    }
+
+    public void removeTenantProperty(ActorRole actorRole) {
+        actorRoles.remove(actorRole);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
