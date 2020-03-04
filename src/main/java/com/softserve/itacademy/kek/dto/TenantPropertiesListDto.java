@@ -1,12 +1,12 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.softserve.itacademy.kek.models.ITenantProperties;
-
 import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.softserve.itacademy.kek.models.ITenantProperties;
 
 public class TenantPropertiesListDto {
 
