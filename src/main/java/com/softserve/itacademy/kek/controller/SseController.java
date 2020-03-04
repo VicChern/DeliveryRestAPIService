@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,43 +21,54 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.softserve.itacademy.kek.exception.TrackingException;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.enums.EventType;
+import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.OrderTrackingWrapper;
 
-
-//TODO:: Make this controller extends OrderController
 @RestController
 public class SseController {
+
+    @Autowired
+    IOrderEventService orderEventService;
+
     private static final Logger logger = LoggerFactory.getLogger(SseController.class);
 
     //map represents all connections from different clients for particular orderId
     private static final Map<UUID, List<SseEmitter>> ORDER_EMITTERS = new Hashtable<>();
 
-    @GetMapping(value = "/orders/{guid}/events/messaging", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/orders/{guid}/events/messaging")
     public ResponseEntity<SseEmitter> trackOrder(@PathVariable final UUID guid) {
         logger.info("Getting request to provide last event payload for order guid={}", guid);
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Cache-Control", "no-store");
 
-        //TODO:: check in DB IF this orderId has STARTED and not DELIVERED yet
-        // if not started or was already delivered -> return response
-        // (Order status: delivered at 25.01.2019 14:00)
-        if (!isDelivering(guid)) {
+        IOrderEvent lastAddedEvent = orderEventService.getLastAddedEvent(guid);
+
+        if (!isDelivering(lastAddedEvent)) {
             throw new TrackingException(String.format("Order %s is not delivering now", guid));
         }
 
-        //keep connection open for 180 seconds, than browser will reconnect
         SseEmitter emitter = new SseEmitter(180_000L);
-
-        List<SseEmitter> emitterWrapedInList = new ArrayList<>();
-        emitterWrapedInList.add(emitter);
-        if (ORDER_EMITTERS.containsKey(guid)) {
-            ORDER_EMITTERS.get(guid).add(emitter);
-        } else {
-            ORDER_EMITTERS.put(guid, emitterWrapedInList);
+        String payload = lastAddedEvent.getPayload();
+        try {
+            emitter.send(payload);
+            logger.debug("Send payload {} for order guid={}", payload, guid);
+            List<SseEmitter> emitterWrappedInList = new ArrayList<>();
+            emitterWrappedInList.add(emitter);
+            if (ORDER_EMITTERS.containsKey(guid)) {
+                ORDER_EMITTERS.get(guid).add(emitter);
+            } else {
+                ORDER_EMITTERS.put(guid, emitterWrappedInList);
+            }
+        } catch (IOException e) {
+            logger.debug("Emitter was closed by timeout. Server can't send geolocation");
+        } catch (NullPointerException e) {
+            logger.debug("Tracking for order guid={} was not started", guid);
         }
 
-        //TODO:: we don't complete emitters, just delete them. Investigate coud it cause problems
+        //TODO:: we don't complete emitters, just delete them. Investigate could it cause problems
         //"Finally emitter.complete() is called to mark that request processing is complete so that the thread
         // responsible for sending the response can complete the request and be freed up for the next response to handle."
         emitter.onCompletion(() -> ORDER_EMITTERS.get(guid).remove(emitter));
@@ -68,8 +79,9 @@ public class SseController {
                 .body(emitter);
     }
 
-    private boolean isDelivering(UUID guid) {
-        return true;
+    private boolean isDelivering(IOrderEvent lastAddedEvent) {
+        String type = lastAddedEvent.getOrderEventType().getName();
+        return type.equals(EventType.STARTED.toString());
     }
 
 

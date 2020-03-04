@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,10 +14,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
-import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
-import com.softserve.itacademy.kek.repositories.OrderEventRepository;
-import com.softserve.itacademy.kek.repositories.OrderRepository;
 
 @Service
 public class EventObserverJob {
@@ -27,62 +24,25 @@ public class EventObserverJob {
     public final ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    private final OrderEventRepository orderEventRepository;
-
-    @Autowired
-    private final OrderRepository orderRepository;
+    IOrderEventService orderEventService;
 
 
-    public EventObserverJob(OrderEventRepository orderEventRepository,
-                            OrderRepository orderRepository,
+    public EventObserverJob(IOrderEventService orderEventService,
                             ApplicationEventPublisher eventPublisher) {
-        this.orderEventRepository = orderEventRepository;
-        this.orderRepository = orderRepository;
+        this.orderEventService = orderEventService;
         this.eventPublisher = eventPublisher;
     }
 
 
     @Scheduled(fixedRate = 3000)
     public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
-        //TODO:: get last added events (from Db) for every orderId that has type STARTED but does't have type DELIVERED
-
-        //temporary added stub
-        String json1 = "{\n" +
-                "  \"location\": {\n" +
-                "    \"lat\": 50.499247,\n" +
-                "    \"lng\": 30.607360\n" +
-                "  }\n" +
-                "}";
-
-        String json2 = "{\n" +
-                "  \"location\": {\n" +
-                "    \"lat\": new.Geo,\n" +
-                "    \"lng\": new.Geo\n" +
-                "  }\n" +
-                "}";
-        OrderEvent orderEvent1 = new OrderEvent();
-        orderEvent1.setPayload(json1);
-        orderEvent1.setGuid(UUID.randomUUID());
-        Order order1 = new Order();
-        order1.setGuid(UUID.fromString("2589d161-2912-4419-ab5d-2b4c09f9b73c"));
-        order1.setIdOrder(1L);
-        orderEvent1.setOrder(order1);
-
-        OrderEvent orderEvent2 = new OrderEvent();
-        orderEvent2.setPayload(json2);
-        orderEvent2.setGuid(UUID.randomUUID());
-        Order order2 = new Order();
-        order2.setGuid(UUID.fromString("740d8f1c-8fbb-4328-933e-79640e15880b"));
-        order2.setIdOrder(2L);
-        orderEvent2.setOrder(order2);
-
-        List<OrderEvent> orderEvents = new ArrayList<>();
-        orderEvents.add(orderEvent1);
-        orderEvents.add(orderEvent2);
+        List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
+        LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());
 
         Function<OrderEvent, UUID> getOrderGuid = oe -> oe.getOrder().getGuid();
-        Map<UUID, String> ordersToPayloads = orderEvents
+        Map<UUID, String> ordersToPayloads = lastEvents
                 .stream()
+                .map(oe -> (OrderEvent) oe)
                 .collect(Collectors.toMap(getOrderGuid, OrderEvent::getPayload));
 
         OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
