@@ -9,11 +9,13 @@ import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
@@ -35,11 +37,11 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     @Value(value = "${redirect.on.success}")
     private String redirectOnSuccess;
 
-    private final AuthenticationController controller;
+    private AuthenticationController controller;
+    private UserDetailsService userDetailsService;
 
-    private final UserDetailsServiceImpl userDetailsService;
-
-    public AuthenticationServiceImpl(AuthenticationController controller, UserDetailsServiceImpl userDetailsService) {
+    @Autowired
+    public AuthenticationServiceImpl(AuthenticationController controller, UserDetailsService userDetailsService) {
         this.controller = controller;
         this.userDetailsService = userDetailsService;
     }

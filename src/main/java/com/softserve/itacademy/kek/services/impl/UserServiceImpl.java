@@ -160,11 +160,11 @@ public class UserServiceImpl implements IUserService {
     public Collection<? extends GrantedAuthority> getUserAuthorities(String email) {
         logger.info("Find User in DB: email = {}", email);
 
-        List<GrantedAuthority> authorityList = new ArrayList<>();
+        final List<GrantedAuthority> authorityList = new ArrayList<>();
 
-        IUser user = userRepository.findByEmail(email);
+        final IUser user = userRepository.findByEmail(email);
         if (user == null) {
-            logger.warn("User wasn't found in DB: guid = {}", email);
+            logger.warn("User wasn't found in DB: email = {}", email);
             return authorityList;
         } else {
             authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
