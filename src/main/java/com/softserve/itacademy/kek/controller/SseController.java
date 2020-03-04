@@ -29,13 +29,11 @@ import com.softserve.itacademy.kek.services.OrderTrackingWrapper;
 @RestController
 public class SseController {
 
-    @Autowired
-    IOrderEventService orderEventService;
-
     private static final Logger logger = LoggerFactory.getLogger(SseController.class);
-
     //map represents all connections from different clients for particular orderId
     private static final Map<UUID, List<SseEmitter>> ORDER_EMITTERS = new Hashtable<>();
+    @Autowired
+    IOrderEventService orderEventService;
 
     @GetMapping(value = "/orders/{guid}/events/messaging")
     public ResponseEntity<SseEmitter> trackOrder(@PathVariable final UUID guid) {
