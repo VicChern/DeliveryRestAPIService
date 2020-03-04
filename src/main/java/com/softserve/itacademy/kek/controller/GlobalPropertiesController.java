@@ -61,7 +61,7 @@ public class GlobalPropertiesController extends DefaultController {
      *
      * @return Response Entity with a list of {@link GlobalPropertiesListDto} objects as a JSON
      */
-    @GetMapping(produces = KekMediaType.GLOBAL_PROPERTY_LIST)
+    @GetMapping(produces = KekMediaType.GLOBAL_PROPERTY)
     public ResponseEntity<GlobalPropertiesListDto> getGlobalPropertiesList() {
         logger.info("Client requested the list of all tenants");
 
@@ -97,15 +97,14 @@ public class GlobalPropertiesController extends DefaultController {
      * Modifies information of the specified globalProperty
      *
      * @param key              globalProperty key from the URL
-     * @param propertyTypeName globalProperty propertyTypeName
      * @return Response Entity with {@link GlobalPropertiesDto} object as a JSON
      */
-    @PutMapping(value = "/{key}/properties/{propertyTypeName}", consumes = KekMediaType.GLOBAL_PROPERTY,
+    @PutMapping(value = "/{key}", consumes = KekMediaType.GLOBAL_PROPERTY,
             produces = KekMediaType.GLOBAL_PROPERTY)
-    public ResponseEntity<GlobalPropertiesDto> modifyGlobalProperty(@PathVariable String key, @PathVariable String propertyTypeName, @RequestBody @Valid GlobalPropertiesDto globalPropertiesDto) {
+    public ResponseEntity<GlobalPropertiesDto> modifyGlobalProperty(@PathVariable String key, @RequestBody @Valid GlobalPropertiesDto globalPropertiesDto) {
         logger.info("Accepted current globalProperty from the client:\n{}", globalPropertiesDto);
 
-        IGlobalProperties modifiedGlobalProperties = globalPropertiesService.update(globalPropertiesDto, key, propertyTypeName);
+        IGlobalProperties modifiedGlobalProperties = globalPropertiesService.update(globalPropertiesDto, key);
 
         GlobalPropertiesDto modifiedGlobalPropertiesDto = transformGlobalProperty(modifiedGlobalProperties);
 

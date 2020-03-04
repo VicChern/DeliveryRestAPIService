@@ -20,6 +20,5 @@ public class KekMediaType {
     public static final String EVENT = "application/vnd.softserve.event+json";
     public static final String EVENT_LIST = "application/vnd.softserve.eventList+json";
     public static final String GLOBAL_PROPERTY = "application/vnd.softserve.globalProperty+json";
-    public static final String GLOBAL_PROPERTY_LIST = "application/vnd.softserve.globalPropertyList+json";
 }
 

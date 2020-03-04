@@ -10,7 +10,7 @@ public interface IGlobalPropertiesService {
 
     IGlobalProperties update(IGlobalProperties globalProperties, String key);
 
-    IGlobalProperties getByKey(String keu);
+    IGlobalProperties getByKey(String key);
 
     List<IGlobalProperties> getAll();
 
