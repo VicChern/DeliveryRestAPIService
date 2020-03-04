@@ -1,7 +1,5 @@
 package com.softserve.itacademy.kek.security;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.configuration.WebMvcConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,9 +11,11 @@ import org.springframework.web.context.WebApplicationContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.configuration.WebMvcConfig;
+
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ContextConfiguration(classes = {WebMvcConfig.class, WebSecurityConfig.class, PersistenceTestConfig.class})
@@ -44,8 +44,7 @@ public class WebSecurityConfigTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void routeRedirectWhenNotAuthenticated() throws Exception {
         mvc.perform(get(requestedPageURL))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrlWhenNotAuthenticated));
+                .andExpect(status().isNotFound());
     }
 
 
