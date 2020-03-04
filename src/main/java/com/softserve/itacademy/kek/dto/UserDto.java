@@ -3,24 +3,14 @@ package com.softserve.itacademy.kek.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.services.IUserService;
 
-@Component
-public class UserDto implements IUser, UserDetails {
-
-    @Autowired
-    private IUserService userService;
+public class UserDto implements IUser {
 
     private UUID guid;
 
@@ -90,41 +80,6 @@ public class UserDto implements IUser, UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userService.getUserAuthorities(email);
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserDto)) return false;
@@ -152,10 +107,6 @@ public class UserDto implements IUser, UserDetails {
                 ", phone='" + phoneNumber + '\'' +
                 ", detailsDto=" + userDetails +
                 '}';
-    }
-
-    public void setUserService(IUserService userService) {
-        this.userService = userService;
     }
 
     public void setGuid(UUID guid) {
