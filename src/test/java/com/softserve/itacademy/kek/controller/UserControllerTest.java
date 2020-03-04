@@ -1,19 +1,29 @@
 package com.softserve.itacademy.kek.controller;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-import com.google.gson.Gson;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.softserve.itacademy.kek.dto.AddressDto;
-import com.softserve.itacademy.kek.dto.DetailsDto;
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.UserDto;
+import com.softserve.itacademy.kek.models.IAddress;
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.impl.Address;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.models.impl.UserDetails;
+import com.softserve.itacademy.kek.services.IAddressService;
+import com.softserve.itacademy.kek.services.IUserService;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,148 +34,209 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Test(groups = {"unit-tests"})
 public class UserControllerTest {
-    private final Gson gson = new Gson();
-    private UserDto userDto;
-    private AddressDto addressDto;
-
+    private final String userJson = "{\n" +
+            "   \"name\":\"name\",\n" +
+            "   \"nickname\":\"nickname\",\n" +
+            "   \"email\":\"name@email.com\",\n" +
+            "   \"phone\":\"380981234567\",\n" +
+            "   \"details\":{\n" +
+            "      \"payload\":\"Some payload\",\n" +
+            "      \"imageUrl\":\"pic url\"\n" +
+            "   }\n" +
+            "}";
+    private final String addressListJson = "{\n" +
+            "  \"addressList\": [\n" +
+            "    {\n" +
+            "      \"alias\": \"random building\",\n" +
+            "      \"address\": \"21, Hreschatyk\",\n" +
+            "      \"notes\": \"smth close to Ukrposhta\"\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+    private final String addressJson = "{\n" +
+            "\t\"guid\": \"820671c6-7e2c-4de3-aeb8-42e6f84e6371\",\n" +
+            "    \"alias\": \"alias\",\n" +
+            "    \"address\": \"address\",\n" +
+            "    \"notes\": \"notes\"\n" +
+            "}";
     @InjectMocks
     private UserController controller;
-
+    @Spy
+    private IUserService userService;
+    @Spy
+    private IAddressService addressService;
     private MockMvc mockMvc;
 
-    @BeforeTest
-    public void setup() {
-        DetailsDto detailsDto = new DetailsDto("some payload", "http://awesomepicture.com");
-        userDto = new UserDto("guid12345qwert", "Petro", "pict", "pict@email.com", "(098)123-45-67", detailsDto);
-        addressDto = new AddressDto("guid12345qwert", "alias", "Leipzigzskaya 15v", "Some notes...");
+    private User user;
+    private List<IUser> userList;
+    private Address address;
+    private List<IAddress> addressList;
 
+    @BeforeClass
+    public void setup() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        UserDetails userDetails = new UserDetails();
+        userDetails.setImageUrl("pic url");
+        userDetails.setPayload("some payload");
+
+        user = new User();
+        user.setGuid(UUID.fromString("820671c6-7e2c-4de3-aeb8-42e6f84e6371"));
+        user.setName("name");
+        user.setNickname("nickname");
+        user.setEmail("name@email.com");
+        user.setPhoneNumber("380981234567");
+        user.setUserDetails(userDetails);
+
+        userList = new ArrayList<>();
+        userList.add(user);
+
+        address = new Address();
+        address.setGuid(UUID.fromString("820671c6-7e2c-4de3-aeb8-42e6f84e6371"));
+        address.setAlias("alias");
+        address.setAddress("address");
+        address.setNotes("notes");
+
+        addressList = new ArrayList<>();
+        addressList.add(address);
     }
 
     @Test
     public void getUserListTest() throws Exception {
+        when(userService.getAll()).thenReturn(userList);
+
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.user+json"))
-                .andExpect(jsonPath("$[0].guid").value("guid12345qwert"))
-                .andExpect(jsonPath("$[0].name").value("Petro"))
-                .andExpect(jsonPath("$[0].nickname").value("pict"))
-                .andExpect(jsonPath("$[0].email").value("pict@email.com"))
-                .andExpect(jsonPath("$[0].phone").value("(098)123-45-67"))
-                .andExpect(jsonPath("$[0].details.payload").value("some payload"))
-                .andExpect(jsonPath("$[0].details.imageUrl").value("http://awesomepicture.com"));
+                .andExpect(content().contentType(KekMediaType.USER_LIST))
+                .andExpect(jsonPath("$.userList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.userList[0].name").value("name"))
+                .andExpect(jsonPath("$.userList[0].nickname").value("nickname"))
+                .andExpect(jsonPath("$.userList[0].email").value("name@email.com"))
+                .andExpect(jsonPath("$.userList[0].phone").value("380981234567"))
+                .andExpect(jsonPath("$.userList[0].details.payload").value("some payload"))
+                .andExpect(jsonPath("$.userList[0].details.imageUrl").value("pic url"));
     }
 
     @Test
     public void addUserTest() throws Exception {
-        System.out.println("kyky" + gson.toJson(userDto));
+        when(userService.create(any(UserDto.class))).thenReturn(user);
+
         mockMvc.perform(post("/users")
-                .contentType("application/vnd.softserve.user+json")
-                .accept("application/vnd.softserve.user+json")
-                .content(gson.toJson(userDto)))
-                .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.guid").value("guid12345qwert"))
-                .andExpect(jsonPath("$.name").value("Petro"))
-                .andExpect(jsonPath("$.nickname").value("pict"))
-                .andExpect(jsonPath("$.email").value("pict@email.com"))
-                .andExpect(jsonPath("$.phone").value("(098)123-45-67"))
+                .contentType(KekMediaType.USER)
+                .accept(KekMediaType.USER)
+                .content(userJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.name").value("name"))
+                .andExpect(jsonPath("$.nickname").value("nickname"))
+                .andExpect(jsonPath("$.email").value("name@email.com"))
+                .andExpect(jsonPath("$.phone").value("380981234567"))
                 .andExpect(jsonPath("$.details.payload").value("some payload"))
-                .andExpect(jsonPath("$.details.imageUrl").value("http://awesomepicture.com"));
+                .andExpect(jsonPath("$.details.imageUrl").value("pic url"));
     }
 
     @Test
     public void getUserTest() throws Exception {
-        mockMvc.perform(get("/users/1"))
+        when(userService.getByGuid(any(UUID.class))).thenReturn(user);
+
+        mockMvc.perform(get("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.user+json"))
-                .andExpect(jsonPath("$.guid").value("guid12345qwert"))
-                .andExpect(jsonPath("$.name").value("Petro"))
-                .andExpect(jsonPath("$.nickname").value("pict"))
-                .andExpect(jsonPath("$.email").value("pict@email.com"))
-                .andExpect(jsonPath("$.phone").value("(098)123-45-67"))
+                .andExpect(content().contentType(KekMediaType.USER))
+                .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.name").value("name"))
+                .andExpect(jsonPath("$.nickname").value("nickname"))
+                .andExpect(jsonPath("$.email").value("name@email.com"))
+                .andExpect(jsonPath("$.phone").value("380981234567"))
                 .andExpect(jsonPath("$.details.payload").value("some payload"))
-                .andExpect(jsonPath("$.details.imageUrl").value("http://awesomepicture.com"));
+                .andExpect(jsonPath("$.details.imageUrl").value("pic url"));
     }
 
     @Test
     public void modifyUserTest() throws Exception {
-        mockMvc.perform(put("/users/2")
-                .contentType("application/vnd.softserve.user+json")
-                .accept("application/vnd.softserve.user+json")
-                .content(gson.toJson(userDto)))
-                .andExpect(status().isAccepted())
-                .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.guid").value("guid12345qwert"))
-                .andExpect(jsonPath("$.name").value("Petro"))
-                .andExpect(jsonPath("$.nickname").value("pict"))
-                .andExpect(jsonPath("$.email").value("pict@email.com"))
-                .andExpect(jsonPath("$.phone").value("(098)123-45-67"))
+        when(userService.update(any(UserDto.class))).thenReturn(user);
+
+        mockMvc.perform(put("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
+                .contentType(KekMediaType.USER)
+                .accept(KekMediaType.USER)
+                .content(userJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.name").value("name"))
+                .andExpect(jsonPath("$.nickname").value("nickname"))
+                .andExpect(jsonPath("$.email").value("name@email.com"))
+                .andExpect(jsonPath("$.phone").value("380981234567"))
                 .andExpect(jsonPath("$.details.payload").value("some payload"))
-                .andExpect(jsonPath("$.details.imageUrl").value("http://awesomepicture.com"));
+                .andExpect(jsonPath("$.details.imageUrl").value("pic url"));
     }
 
     @Test
     public void deleteUserTest() throws Exception {
-        mockMvc.perform(delete("/users/3"))
-                .andExpect(status().isOk());
+        mockMvc.perform(delete("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(status().isNoContent());
     }
 
     @Test
     public void getUserAddressesTest() throws Exception {
-        mockMvc.perform(get("/users/1/addresses"))
+        when(addressService.getAllForUser(any(UUID.class))).thenReturn(addressList);
+
+        mockMvc.perform(get("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.address+json"))
-                .andExpect(jsonPath("$[0].guid").value("guid12345qwert"))
-                .andExpect(jsonPath("$[0].alias").value("alias"))
-                .andExpect(jsonPath("$[0].address").value("Leipzigzskaya 15v"))
-                .andExpect(jsonPath("$[0].notes").value("Some notes..."));
+                .andExpect(content().contentType(KekMediaType.ADDRESS_LIST))
+                .andExpect(jsonPath("$.addressList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.addressList[0].alias").value("alias"))
+                .andExpect(jsonPath("$.addressList[0].address").value("address"))
+                .andExpect(jsonPath("$.addressList[0].notes").value("notes"));
     }
 
     @Test
     public void addUserAddressesTest() throws Exception {
-        System.out.println(gson.toJson(addressDto));
-        mockMvc.perform(post("/users/1/addresses")
-                .contentType("application/vnd.softserve.address+json")
-                .accept("application/vnd.softserve.address+json")
-                .content(gson.toJson(Arrays.asList(addressDto))))
-                .andExpect(status().isAccepted())
-                .andExpect(content().contentType("application/vnd.softserve.address+json"))
-                .andExpect(jsonPath("$[0].guid").value("guid12345qwert"))
-                .andExpect(jsonPath("$[0].alias").value("alias"))
-                .andExpect(jsonPath("$[0].address").value("Leipzigzskaya 15v"))
-                .andExpect(jsonPath("$[0].notes").value("Some notes..."));
+        when(addressService.createForUser(any(IAddress.class), any(UUID.class))).thenReturn(address);
+
+        mockMvc.perform(post("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses")
+                .contentType(KekMediaType.ADDRESS_LIST)
+                .accept(KekMediaType.ADDRESS_LIST)
+                .content(addressListJson))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(KekMediaType.ADDRESS_LIST))
+                .andExpect(jsonPath("$.addressList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.addressList[0].alias").value("alias"))
+                .andExpect(jsonPath("$.addressList[0].address").value("address"))
+                .andExpect(jsonPath("$.addressList[0].notes").value("notes"));
     }
 
     @Test
     public void getUserAddressTest() throws Exception {
-        mockMvc.perform(get("/users/1/addresses/1"))
+        when(addressService.getForUser(any(UUID.class), any(UUID.class))).thenReturn(address);
+
+        mockMvc.perform(get("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/vnd.softserve.address+json"))
-                .andExpect(jsonPath("$.guid").value("guid12345qwert"))
+                .andExpect(content().contentType(KekMediaType.ADDRESS))
+                .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.alias").value("alias"))
-                .andExpect(jsonPath("$.address").value("Leipzigzskaya 15v"))
-                .andExpect(jsonPath("$.notes").value("Some notes..."));
+                .andExpect(jsonPath("$.address").value("address"))
+                .andExpect(jsonPath("$.notes").value("notes"));
     }
 
     @Test
     public void modifyUserAddressTest() throws Exception {
-        mockMvc.perform(put("/users/2/addresses/1")
-                .contentType("application/vnd.softserve.address+json")
-                .accept("application/vnd.softserve.address+json")
-                .content(gson.toJson(addressDto)))
-                .andExpect(status().isAccepted())
-                .andExpect(status().isAccepted())
-                .andExpect(content().contentType("application/vnd.softserve.address+json"))
-                .andExpect(jsonPath("$.guid").value("guid12345qwert"))
+        when(addressService.updateForUser(any(IAddress.class), any(UUID.class))).thenReturn(address);
+
+        mockMvc.perform(put("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
+                .contentType(KekMediaType.ADDRESS)
+                .accept(KekMediaType.ADDRESS)
+                .content(addressJson))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(KekMediaType.ADDRESS))
+                .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.alias").value("alias"))
-                .andExpect(jsonPath("$.address").value("Leipzigzskaya 15v"))
-                .andExpect(jsonPath("$.notes").value("Some notes..."));
+                .andExpect(jsonPath("$.address").value("address"))
+                .andExpect(jsonPath("$.notes").value("notes"));
     }
 
     @Test
     public void deleteUserAddressTest() throws Exception {
-        mockMvc.perform(delete("/users/3/addresses/1"))
+        mockMvc.perform(delete("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(status().isOk());
     }
 }

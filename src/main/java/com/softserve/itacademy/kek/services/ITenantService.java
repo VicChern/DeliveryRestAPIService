@@ -42,6 +42,7 @@ public interface ITenantService {
     /**
      * Gets a {@link Page} of {@link ITenant}
      * meeting the paging restriction provided in the {@code Pageable} object.
+     *
      * @param pageable {@code Pageable} object that defines page options, must not be {@literal null}.
      * @return a page of {@link ITenant}
      */
@@ -51,7 +52,7 @@ public interface ITenantService {
      * Updates {@link ITenant}
      *
      * @param iTenant iTenant
-     * @param guid   {@link ITenant} guid
+     * @param guid    {@link ITenant} guid
      * @return updated tenant
      * @throws TenantServiceException if if tenant wasn't updated
      */

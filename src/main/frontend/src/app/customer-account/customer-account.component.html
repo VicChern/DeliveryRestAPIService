@@ -8,8 +8,9 @@
     <div class="col-lg-6 col-xl-5 d-flex justify-content-center">
       <div class="card">
         <div class="card-body">
-          <img class="center-block img-responsive img-circle img-thumbnail thumb96"
-               src="assets/images/soft_serve_label.png" alt="Customer label or user icon">
+          <img alt="Customer label or user icon"
+               class="center-block img-responsive img-circle img-thumbnail thumb96"
+               src="assets/images/soft_serve_label.png">
           <br>
           <br>
           <br>
@@ -44,8 +45,8 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text"> <i class="fa fa-user"></i> </span>
                 </div>
-                <input [(ngModel)]="customerAccount.name" id="name" name="name" type="text"
-                       class="form-control rounded-0" required autofocus placeholder="name">
+                <input [(ngModel)]="customerAccount.name" autofocus class="form-control rounded-0" id="name"
+                       name="name" placeholder="name" required type="text">
               </div>
             </div>
 
@@ -55,9 +56,9 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
                 </div>
-                <input [(ngModel)]="customerAccount.email" id="email" name="email" type="email"
-                       class="form-control rounded-0" required placeholder="email"
-                       pattern="[a-zA-Z_0-9.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}" />
+                <input [(ngModel)]="customerAccount.email" class="form-control rounded-0" id="email" name="email"
+                       pattern="[a-zA-Z_0-9.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}" placeholder="email" required
+                       type="email"/>
               </div>
             </div>
 
@@ -67,8 +68,8 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
                 </div>
-                <input [(ngModel)]="customerAccount.phone" id="phone" name="phone" type="text"
-                       class="form-control rounded-0" required placeholder="phone"/>
+                <input [(ngModel)]="customerAccount.phone" class="form-control rounded-0" id="phone" name="phone"
+                       placeholder="phone" required type="text"/>
               </div>
             </div>
 
@@ -78,14 +79,15 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text"> <i class="fa fa-addr"></i> </span>
                 </div>
-                <input [(ngModel)]="customerAccount.address" id="address" name="address" type="text"
-                       class="form-control rounded-0" required placeholder="address"/>
+                <input [(ngModel)]="customerAccount.address" class="form-control rounded-0" id="address" name="address"
+                       placeholder="address" required type="text"/>
               </div>
             </div>
 
             <!--BUTTON REGISTER-->
-            <button (click)="update()" type="submit"
-                    class="btn btn-primary btn-block float-right register">Изменить</button>
+            <button (click)="update()" class="btn btn-primary btn-block float-right register"
+                    type="submit">Изменить
+            </button>
           </form>
         </div> <!-- end card-body -->
         <!--UPDATE USER DATA MENU-->

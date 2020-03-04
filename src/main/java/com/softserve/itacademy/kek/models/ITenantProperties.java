@@ -15,13 +15,6 @@ public interface ITenantProperties {
     UUID getGuid();
 
     /**
-     * Returns ITenant for TenantProperty
-     *
-     * @return ITenant for TenantProperty
-     */
-    ITenant getTenant();
-
-    /**
      * Returns IEventType for TenantProperty
      *
      * @return IEventType for TenantProperty
@@ -41,4 +34,5 @@ public interface ITenantProperties {
      * @return TenantProperty value
      */
     String getValue();
+
 }

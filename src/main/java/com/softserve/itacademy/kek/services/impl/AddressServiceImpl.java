@@ -17,7 +17,6 @@ import com.softserve.itacademy.kek.models.impl.Address;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.AddressRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantService;
@@ -70,7 +69,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public IAddress updateForTenant(IAddress addressData, UUID tenantGuid) {
+    public IAddress updateForTenant(IAddress addressData, UUID tenantGuid, UUID addressGuid) {
         logger.info("Update Tenant address in DB: tenant.guid = {}, address = {}", tenantGuid, addressData);
 
         Address address = findAddressByGuid(addressData.getGuid());

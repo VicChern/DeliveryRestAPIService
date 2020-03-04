@@ -3,7 +3,9 @@ package com.softserve.itacademy.kek.dto;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-public class TenantDetailsDto {
+import com.softserve.itacademy.kek.models.ITenantDetails;
+
+public class TenantDetailsDto implements ITenantDetails {
 
     @Size(max = 4096)
     private String payload;
@@ -19,10 +21,12 @@ public class TenantDetailsDto {
         this.imageUrl = imageUrl;
     }
 
+    @Override
     public String getPayload() {
         return payload;
     }
 
+    @Override
     public String getImageUrl() {
         return imageUrl;
     }
