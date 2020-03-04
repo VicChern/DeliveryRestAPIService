@@ -1,15 +1,10 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.softserve.itacademy.kek.controller.utils.KekMediaType;
-import com.softserve.itacademy.kek.dto.AddressDto;
-import com.softserve.itacademy.kek.dto.AddressListDto;
-import com.softserve.itacademy.kek.dto.DetailsDto;
-import com.softserve.itacademy.kek.dto.UserDto;
-import com.softserve.itacademy.kek.dto.UserListDto;
-import com.softserve.itacademy.kek.models.IAddress;
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.services.IAddressService;
-import com.softserve.itacademy.kek.services.IUserService;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +19,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.dto.AddressDto;
+import com.softserve.itacademy.kek.dto.AddressListDto;
+import com.softserve.itacademy.kek.dto.DetailsDto;
+import com.softserve.itacademy.kek.dto.UserDto;
+import com.softserve.itacademy.kek.dto.UserListDto;
+import com.softserve.itacademy.kek.models.IAddress;
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.services.IAddressService;
+import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
 @RequestMapping(path = "/users")

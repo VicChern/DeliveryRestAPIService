@@ -1,8 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.IUserDetails;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.IUserDetails;
 
 @Entity
 @Table(name = "obj_user")
