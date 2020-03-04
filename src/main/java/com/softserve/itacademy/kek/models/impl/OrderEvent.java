@@ -1,10 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderEvent;
-import com.softserve.itacademy.kek.models.IOrderEventType;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,6 +14,11 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IActor;
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.IOrderEventType;
 
 @Entity
 @Table(name = "obj_order_event")

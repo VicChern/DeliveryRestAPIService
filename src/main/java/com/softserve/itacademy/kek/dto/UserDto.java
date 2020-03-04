@@ -3,19 +3,25 @@ package com.softserve.itacademy.kek.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.services.IUserService;
 
+@Component
 public class UserDto implements IUser, UserDetails {
+
+    @Autowired
+    private IUserService userService;
+
     private UUID guid;
 
     @NotEmpty
@@ -47,6 +53,10 @@ public class UserDto implements IUser, UserDetails {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.userDetails = detailsDto;
+    }
+
+    public UserDto(String email) {
+        this.email = email;
     }
 
     @Override
@@ -81,7 +91,7 @@ public class UserDto implements IUser, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        return userService.getUserAuthorities(email);
     }
 
     @Override
@@ -142,5 +152,33 @@ public class UserDto implements IUser, UserDetails {
                 ", phone='" + phoneNumber + '\'' +
                 ", detailsDto=" + userDetails +
                 '}';
+    }
+
+    public void setUserService(IUserService userService) {
+        this.userService = userService;
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setUserDetails(DetailsDto userDetails) {
+        this.userDetails = userDetails;
     }
 }

@@ -1,9 +1,9 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.softserve.itacademy.kek.models.IOrderDetails;
-
 import javax.validation.constraints.Size;
 import java.util.Objects;
+
+import com.softserve.itacademy.kek.models.IOrderDetails;
 
 public class OrderDetailsDto implements IOrderDetails {
 

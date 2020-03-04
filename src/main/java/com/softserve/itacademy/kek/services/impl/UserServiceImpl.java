@@ -165,7 +165,7 @@ public class UserServiceImpl implements IUserService {
         IUser user = userRepository.findByEmail(email);
         if (user == null) {
             logger.warn("User wasn't found in DB: guid = {}", email);
-            throw new UserServiceException("User wasn't found");
+            return authorityList;
         } else {
             authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
         }

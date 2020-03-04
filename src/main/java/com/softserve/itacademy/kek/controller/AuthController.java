@@ -7,7 +7,6 @@ import java.io.IOException;
 import com.auth0.AuthenticationController;
 import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +17,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.security.TokenAuthentication;
-import com.softserve.itacademy.kek.security.TokenUtils;
 import com.softserve.itacademy.kek.services.impl.UserDetailsServiceImpl;
 
 @RestController
 @PropertySource("classpath:server.properties")
 public class AuthController extends DefaultController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private AuthenticationController controller;
@@ -45,15 +46,12 @@ public class AuthController extends DefaultController {
     @Value(value = "${redirect.on.success}")
     private String redirectOnSuccess;
 
-    @Value(value = "${redirect.after.success.logout}")
-    private String redirectAfterSuccessLogout;
-
     @GetMapping(path = "/login")
     protected void login(HttpServletRequest request, HttpServletResponse response) {
         logger.info("Performing login, request = {}", request);
 
         final String returnTo = createRedirectUrl(request.getScheme(), request.getServerName(),
-                request.getServerPort(), redirectAfterSuccessLogout);
+                request.getServerPort());
 
         final String authorizeUrl = controller.buildAuthorizeUrl(request, response, returnTo)
                 .withScope("openid profile email")
@@ -76,7 +74,6 @@ public class AuthController extends DefaultController {
             final Tokens tokens = controller.handle(request, response);
             final TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
 
-            final UserDetailsService userDetailsService = new UserDetailsServiceImpl();
             final UserDetails userDetails = userDetailsService.loadUserByUsername(tokenAuth.getClaims().get("email").asString());
 
             final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
@@ -99,15 +96,12 @@ public class AuthController extends DefaultController {
     @GetMapping(path = "/profile")
     protected ResponseEntity<String> profile(Authentication authentication) {
 
-        TokenAuthentication tokenAuthentication = (TokenAuthentication) authentication;
+        UserDto userDto = (UserDto) authentication.getPrincipal();
 
-        JSONObject json = new JSONObject();
-        json.put("profileJson", TokenUtils.claimsAsJson(tokenAuthentication.getClaims()));
-        return ResponseEntity.ok(json.toString());
+        return ResponseEntity.ok(userDto.toString());
     }
 
-
-    private String createRedirectUrl(String scheme, String serverName, int serverPort, String afterSuccessfulRedirect) {
+    private String createRedirectUrl(String scheme, String serverName, int serverPort) {
         String returnTo = scheme + "://" + serverName;
 
         if ((scheme.equals("http") && serverPort != 80) ||
@@ -115,7 +109,7 @@ public class AuthController extends DefaultController {
             returnTo += ":" + serverPort;
         }
 
-        returnTo += afterSuccessfulRedirect;
+        returnTo += redirectAuth0URL;
 
         return returnTo;
     }
