@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableJpaRepositories(basePackages = {"com.softserve.itacademy.kek.repositories"})
-@ComponentScan(value = {"com.softserve.itacademy.kek.services", "com.softserve.itacademy.kek.dto", "com.softserve.itacademy.kek.security0"})
+@ComponentScan(value = {"com.softserve.itacademy.kek.services", "com.softserve.itacademy.kek.dto", "com.softserve.itacademy.kek.security"})
 @PropertySource({"classpath:integration.properties"})
 public class PersistenceTestConfig {
 
