@@ -1,10 +1,10 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.softserve.itacademy.kek.models.IPropertyType;
-import com.softserve.itacademy.kek.models.ITenantProperties;
-
 import java.util.Objects;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IPropertyType;
+import com.softserve.itacademy.kek.models.ITenantProperties;
 
 public class TenantPropertiesDto implements ITenantProperties {
     private UUID guid;

@@ -1,5 +1,24 @@
 package com.softserve.itacademy.kek.controller;
 
+import javax.validation.Valid;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.AddressListDto;
@@ -15,24 +34,6 @@ import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/tenants")
@@ -158,7 +159,7 @@ public class TenantController extends DefaultController {
     @PutMapping(value = "/{guid}", consumes = KekMediaType.TENANT,
             produces = KekMediaType.TENANT)
     public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
-        logger.info("Accepted modified tenant from the client:\n{}", tenant);
+        logger.info("Accepted current tenant from the client:\n{}", tenant);
 
         ITenant modifiedTenant = tenantService.update(tenant, UUID.fromString(guid));
         TenantDto modifiedTenantDto = transform(modifiedTenant);
@@ -180,7 +181,7 @@ public class TenantController extends DefaultController {
 
         tenantService.deleteByGuid(UUID.fromString(guid));
 
-        logger.info("Tenant({}}) was successfully deleted", guid);
+        logger.info("Tenant({}) was successfully deleted", guid);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();

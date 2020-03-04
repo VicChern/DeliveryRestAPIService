@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.models.impl;
 
+import com.softserve.itacademy.kek.models.IGlobalProperties;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +15,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
-
-import com.softserve.itacademy.kek.models.IGlobalProperties;
 
 @Entity
 @Table(name = "obj_global_properties")

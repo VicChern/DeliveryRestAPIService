@@ -1,9 +1,9 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.softserve.itacademy.kek.models.ITenantDetails;
-
 import javax.validation.constraints.Size;
 import java.util.Objects;
+
+import com.softserve.itacademy.kek.models.ITenantDetails;
 
 public class TenantDetailsDto implements ITenantDetails {
 

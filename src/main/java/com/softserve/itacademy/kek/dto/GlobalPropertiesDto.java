@@ -1,10 +1,10 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.softserve.itacademy.kek.models.IGlobalProperties;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
+
+import com.softserve.itacademy.kek.models.IGlobalProperties;
 
 public class GlobalPropertiesDto implements IGlobalProperties {
 
