@@ -36,6 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         authenticatedUserDto.setNickname(user.getNickname());
         authenticatedUserDto.setEmail(user.getEmail());
         authenticatedUserDto.setPhoneNumber(user.getPhoneNumber());
+        authenticatedUserDto.setUserDetails(user.getUserDetails());
         return authenticatedUserDto;
     }
 }

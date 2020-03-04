@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ import com.softserve.itacademy.kek.dto.OrderListDto;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.IOrderEventType;
+import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.IOrderService;
 
@@ -96,21 +98,21 @@ public class OrderController extends DefaultController {
      * Creates a new order
      *
      * @param newOrderListDto {@link OrderDto} order object as a JSON
-     * @param customerGuid    order guid from the URN
      * @return Response entity with {@link OrderListDto} object as a JSON
      */
-    @PostMapping(value = "/{customerGuid}",
+    @PostMapping(value = "/customerGuid",
             consumes = KekMediaType.ORDER_LIST,
             produces = KekMediaType.ORDER_LIST)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto newOrderListDto,
-                                                 @PathVariable String customerGuid) {
+                                                 Authentication authentication) {
         logger.debug("Accepted requested to create a new order:\n{}", newOrderListDto);
 
-        OrderListDto createdOrdersListDto = new OrderListDto();
+        final OrderListDto createdOrdersListDto = new OrderListDto();
+        final IUser user = (IUser) authentication;
 
         for (OrderDto orderDto : newOrderListDto.getOrderList()) {
-            IOrder createdOrder = orderService.create(orderDto, UUID.fromString(customerGuid));
+            IOrder createdOrder = orderService.create(orderDto, UUID.fromString(user.getGuid().toString()));
             OrderDto createdOrderDto = transformOrder(createdOrder);
 
             createdOrdersListDto.addOrder(createdOrderDto);
@@ -213,20 +215,19 @@ public class OrderController extends DefaultController {
      * <p>
      * //     * @param actorGuid     actor guid from the URN
      *
-     * @param orderGuid     order guid from the URN
      * @param orderEventDto {@link OrderEventDto} object
      * @return Response Entity with created {@link OrderEventDto} objects as a JSON
      */
-    //@PostMapping(value = "/{actorGuid}/events",
-    @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
-    @PostMapping(value = "/{orderGuid}/events",
+    @PostMapping(value = "/orderGuid/events",
             consumes = KekMediaType.EVENT,
             produces = KekMediaType.EVENT)
-    public ResponseEntity<OrderEventDto> addEvent(//@PathVariable String actorGuid,
-                                                  @PathVariable String orderGuid,
-                                                  @RequestBody @Valid OrderEventDto orderEventDto) {
-        //logger.info("Accepted requested to create a new event for the order {} created by actor {}", orderGuid, actorGuid);
-        logger.info("Accepted request to create a new event for the order {} created by actor\n{}", orderGuid, orderEventDto);
+    @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
+    public ResponseEntity<OrderEventDto> addEvent(@RequestBody @Valid OrderEventDto orderEventDto,
+                                                  Authentication authentication) {
+        final IUser user = (IUser) authentication;
+
+        logger.info("Accepted request to create a new event for the order {} created by actor\n{}", user.getGuid(),
+                orderEventDto);
 
         // TODO: 01.03.2020 this will work when fixed OrderEventService
 //        IOrderEvent createdOrderEvent = orderEventService.create(orderEventDto, UUID.fromString(orderGuid));
