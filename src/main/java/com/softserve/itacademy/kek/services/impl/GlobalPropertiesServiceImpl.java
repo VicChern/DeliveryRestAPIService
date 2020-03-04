@@ -65,12 +65,12 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
     @Transactional
     @Override
-    public IGlobalProperties update(IGlobalProperties globalProperties, String key, String propertyTypeName) throws GlobalPropertiesServiceException {
+    public IGlobalProperties update(IGlobalProperties globalProperties, String key) throws GlobalPropertiesServiceException {
         LOGGER.info("Updating globalProperties: {}", globalProperties);
 
         final IPropertyType newPropertyType = globalProperties.getPropertyType();
-        final PropertyType actualPropertyType = propertyTypeRepository.getByName(propertyTypeName);
         final GlobalProperties actualProperties = globalPropertiesRepository.findByKey(key);
+        final PropertyType actualPropertyType = propertyTypeRepository.getByName(actualProperties.getPropertyType().getName());
 
         actualPropertyType.setName(newPropertyType.getName());
         actualPropertyType.setSchema(newPropertyType.getSchema());

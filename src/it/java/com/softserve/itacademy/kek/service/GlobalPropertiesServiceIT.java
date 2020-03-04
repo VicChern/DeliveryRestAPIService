@@ -89,7 +89,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
         globalProperties.setPropertyType(propertyType);
 
-        globalPropertiesService.update(globalProperties, KEY, NAME);
+        globalPropertiesService.update(globalProperties, KEY);
         //then
         GlobalProperties foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey());
 

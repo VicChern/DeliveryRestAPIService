@@ -8,7 +8,7 @@ public interface IGlobalPropertiesService {
 
     IGlobalProperties create(IGlobalProperties globalProperties);
 
-    IGlobalProperties update(IGlobalProperties globalProperties, String key, String propertyTypeName);
+    IGlobalProperties update(IGlobalProperties globalProperties, String key);
 
     IGlobalProperties getByKey(String keu);
 
