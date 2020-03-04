@@ -49,10 +49,13 @@ public class SseController {
         }
 
         SseEmitter emitter = new SseEmitter(180_000L);
-        String payload = lastAddedEvent.getPayload();
+
         try {
+            String payload = lastAddedEvent.getPayload();
             emitter.send(payload);
             logger.debug("Send payload {} for order guid={}", payload, guid);
+
+            //add emitter for current order into Map
             List<SseEmitter> emitterWrappedInList = new ArrayList<>();
             emitterWrappedInList.add(emitter);
             if (ORDER_EMITTERS.containsKey(guid)) {
@@ -83,7 +86,6 @@ public class SseController {
     }
 
 
-    //TODO:: Remove MapWrapper and use Spring Events properly that listener will accept generics List<UUID, OrderEvent>
     @EventListener
     public void enrichEmitters(OrderTrackingWrapper eventWrapper) {
         final Map<UUID, List<SseEmitter>> deadEmitters = new HashMap<>();
@@ -106,6 +108,8 @@ public class SseController {
                     sseEmitter.send(payload);
                     logger.debug("Send payload {} for order guid={}", payload, guid);
                 } catch (IOException e) {
+
+                    //add broken emitters into separate Map
                     List<SseEmitter> emitterWrapedInList = new ArrayList<>();
                     emitterWrapedInList.add(sseEmitter);
                     if (deadEmitters.containsKey(guid)) {
