@@ -12,10 +12,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.IUserDetails;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @Component
-public class AuthenticatedUserDto implements UserDetails {
+public class AuthenticatedUserDto implements UserDetails, IUser {
 
     private final IUserService userService;
 
@@ -36,6 +38,10 @@ public class AuthenticatedUserDto implements UserDetails {
     @JsonProperty("phone")
     private String phoneNumber;
 
+    @NotNull
+    @JsonProperty("details")
+    private IUserDetails userDetails;
+
     public AuthenticatedUserDto(IUserService userService) {
         this.userService = userService;
     }
@@ -44,24 +50,34 @@ public class AuthenticatedUserDto implements UserDetails {
         return userService;
     }
 
+    @Override
     public UUID getGuid() {
         return guid;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getNickname() {
         return nickname;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    @Override
+    public IUserDetails getUserDetails() {
+        return null;
     }
 
 
@@ -84,6 +100,11 @@ public class AuthenticatedUserDto implements UserDetails {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    public void setUserDetails(IUserDetails userDetails) {
+        this.userDetails = userDetails;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
