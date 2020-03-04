@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,11 +23,8 @@ import com.softserve.itacademy.kek.services.IAuthenticationService;
 public class AuthController extends DefaultController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final IAuthenticationService authenticationService;
-
-    public AuthController(IAuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
+    @Autowired
+    private IAuthenticationService authenticationService;
 
     @GetMapping(path = "/login")
     protected void login(HttpServletRequest request, HttpServletResponse response) {

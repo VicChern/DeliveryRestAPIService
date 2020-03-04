@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.services.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final AuthenticatedUserDto authenticatedUserDto;
 
+    @Autowired
     public UserDetailsServiceImpl(UserRepository userRepository, AuthenticatedUserDto authenticatedUserDto) {
         this.userRepository = userRepository;
         this.authenticatedUserDto = authenticatedUserDto;
