@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.softserve.itacademy.kek.dto.AuthenticatedUserDto;
+import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
 
 @RestController
@@ -44,9 +44,9 @@ public class AuthController extends DefaultController {
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     protected ResponseEntity<String> profile(Authentication authentication) {
 
-        final AuthenticatedUserDto authenticatedUserDto = (AuthenticatedUserDto) authentication.getPrincipal();
+        final IUser user = (IUser) authentication.getPrincipal();
 
-        return ResponseEntity.ok(authenticatedUserDto.toString());
+        return ResponseEntity.ok(user.toString());
     }
 
 

@@ -109,7 +109,7 @@ public class OrderController extends DefaultController {
         logger.debug("Accepted requested to create a new order:\n{}", newOrderListDto);
 
         final OrderListDto createdOrdersListDto = new OrderListDto();
-        final IUser user = (IUser) authentication;
+        final IUser user = (IUser) authentication.getPrincipal();
 
         for (OrderDto orderDto : newOrderListDto.getOrderList()) {
             IOrder createdOrder = orderService.create(orderDto, UUID.fromString(user.getGuid().toString()));
@@ -224,7 +224,7 @@ public class OrderController extends DefaultController {
     @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
     public ResponseEntity<OrderEventDto> addEvent(@RequestBody @Valid OrderEventDto orderEventDto,
                                                   Authentication authentication) {
-        final IUser user = (IUser) authentication;
+        final IUser user = (IUser) authentication.getPrincipal();
 
         logger.info("Accepted request to create a new event for the order {} created by actor\n{}", user.getGuid(),
                 orderEventDto);
