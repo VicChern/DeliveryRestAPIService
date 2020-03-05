@@ -155,6 +155,7 @@ public class TenantController extends DefaultController {
                 .body(tenantDto);
     }
 
+
     /**
      * Modifies information of the specified tenant
      *
@@ -260,6 +261,7 @@ public class TenantController extends DefaultController {
      * @param propGuid ID of the tenant specific property
      * @return Response entity with a specific tenant property {@link TenantPropertiesDto}
      */
+    @PreAuthorize("hasRole('TENANT')")
     @GetMapping(value = "/{guid}/properties/{propguid}", produces = KekMediaType.TENANT_PROPERTY)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantPropertiesDto> getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {

@@ -24,7 +24,7 @@ import com.softserve.itacademy.kek.models.IUserDetails;
 
 @Entity
 @Table(name = "obj_user")
-public class User extends AbstractEntity implements IUser, Serializable {
+public class User implements IUser, Serializable {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     List<Identity> identityList = new ArrayList<>();
