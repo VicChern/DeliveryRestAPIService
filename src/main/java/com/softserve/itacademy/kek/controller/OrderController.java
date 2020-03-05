@@ -100,9 +100,7 @@ public class OrderController extends DefaultController {
      * @param newOrderListDto {@link OrderDto} order object as a JSON
      * @return Response entity with {@link OrderListDto} object as a JSON
      */
-    @PostMapping(value = "/customerGuid",
-            consumes = KekMediaType.ORDER_LIST,
-            produces = KekMediaType.ORDER_LIST)
+    @PostMapping(consumes = KekMediaType.ORDER_LIST, produces = KekMediaType.ORDER_LIST)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto newOrderListDto,
                                                  Authentication authentication) {
@@ -218,7 +216,7 @@ public class OrderController extends DefaultController {
      * @param orderEventDto {@link OrderEventDto} object
      * @return Response Entity with created {@link OrderEventDto} objects as a JSON
      */
-    @PostMapping(value = "/orderGuid/events",
+    @PostMapping(value = "/events",
             consumes = KekMediaType.EVENT,
             produces = KekMediaType.EVENT)
     @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
