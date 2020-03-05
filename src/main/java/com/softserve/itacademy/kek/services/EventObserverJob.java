@@ -23,10 +23,9 @@ public class EventObserverJob {
 
     public final ApplicationEventPublisher eventPublisher;
 
+    private IOrderEventService orderEventService;
+
     @Autowired
-    IOrderEventService orderEventService;
-
-
     public EventObserverJob(IOrderEventService orderEventService,
                             ApplicationEventPublisher eventPublisher) {
         this.orderEventService = orderEventService;
@@ -36,18 +35,18 @@ public class EventObserverJob {
 
     @Scheduled(fixedRate = 3000)
     public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
-        List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
-        LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());
+       final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
+       LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());
 
-        Function<OrderEvent, UUID> getOrderGuid = oe -> oe.getOrder().getGuid();
-        Map<UUID, String> ordersToPayloads = lastEvents
+       final Function<OrderEvent, UUID> getOrderGuid = oe -> oe.getOrder().getGuid();
+       final Map<UUID, String> ordersToPayloads = lastEvents
                 .stream()
                 .map(oe -> (OrderEvent) oe)
                 .collect(Collectors.toMap(getOrderGuid, OrderEvent::getPayload));
 
-        OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
-        wrapper.setMap(ordersToPayloads);
+       OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
+       wrapper.setMap(ordersToPayloads);
 
-        this.eventPublisher.publishEvent(wrapper);
+       this.eventPublisher.publishEvent(wrapper);
     }
 }

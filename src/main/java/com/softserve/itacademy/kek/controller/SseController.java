@@ -28,24 +28,25 @@ import com.softserve.itacademy.kek.services.OrderTrackingWrapper;
 
 @RestController
 public class SseController {
-
     private static final Logger logger = LoggerFactory.getLogger(SseController.class);
+
     //map represents all connections from different clients for particular orderId
     private static final Map<UUID, List<SseEmitter>> ORDER_EMITTERS = new Hashtable<>();
-    @Autowired
-    IOrderEventService orderEventService;
 
-    @GetMapping(value = "/orders/{guid}/events/messaging")
-    public ResponseEntity<SseEmitter> trackOrder(@PathVariable final UUID guid) {
-        logger.info("Getting request to provide last event payload for order guid={}", guid);
+    @Autowired
+    private IOrderEventService orderEventService;
+
+    @GetMapping(value = "/orders/{orderGuid}/tracking/")
+    public ResponseEntity<SseEmitter> trackOrder(@PathVariable final UUID orderGuid) {
+        logger.info("Getting request to provide last event payload for order guid={}", orderGuid);
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Cache-Control", "no-store");
 
-        IOrderEvent lastAddedEvent = orderEventService.getLastAddedEvent(guid);
+        IOrderEvent lastAddedEvent = orderEventService.getLastAddedEvent(orderGuid);
 
         if (!isDelivering(lastAddedEvent)) {
-            throw new TrackingException(String.format("Order %s is not delivering now", guid));
+            throw new TrackingException(String.format("Order %s is not delivering now", orderGuid));
         }
 
         SseEmitter emitter = new SseEmitter(180_000L);
@@ -53,27 +54,27 @@ public class SseController {
         try {
             String payload = lastAddedEvent.getPayload();
             emitter.send(payload);
-            logger.debug("Send payload {} for order guid={}", payload, guid);
+            logger.debug("Send payload {} for order guid={}", payload, orderGuid);
 
             //add emitter for current order into Map
             List<SseEmitter> emitterWrappedInList = new ArrayList<>();
             emitterWrappedInList.add(emitter);
-            if (ORDER_EMITTERS.containsKey(guid)) {
-                ORDER_EMITTERS.get(guid).add(emitter);
+            if (ORDER_EMITTERS.containsKey(orderGuid)) {
+                ORDER_EMITTERS.get(orderGuid).add(emitter);
             } else {
-                ORDER_EMITTERS.put(guid, emitterWrappedInList);
+                ORDER_EMITTERS.put(orderGuid, emitterWrappedInList);
             }
         } catch (IOException e) {
             logger.debug("Emitter was closed by timeout. Server can't send geolocation");
         } catch (NullPointerException e) {
-            logger.debug("Tracking for order guid={} was not started", guid);
+            logger.debug("Tracking for order guid={} was not started", orderGuid);
         }
 
         //TODO:: we don't complete emitters, just delete them. Investigate could it cause problems
         //"Finally emitter.complete() is called to mark that request processing is complete so that the thread
         // responsible for sending the response can complete the request and be freed up for the next response to handle."
-        emitter.onCompletion(() -> ORDER_EMITTERS.get(guid).remove(emitter));
-        emitter.onTimeout(() -> ORDER_EMITTERS.get(guid).remove(emitter));
+        emitter.onCompletion(() -> ORDER_EMITTERS.get(orderGuid).remove(emitter));
+        emitter.onTimeout(() -> ORDER_EMITTERS.get(orderGuid).remove(emitter));
 
         return ResponseEntity.ok()
                 .headers(responseHeaders)
