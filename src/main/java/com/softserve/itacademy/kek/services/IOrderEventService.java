@@ -22,6 +22,16 @@ public interface IOrderEventService {
     IOrderEvent create(IOrderEvent orderEvent, UUID orderGuid);
 
     /**
+     * Saves new {@link IOrderEvent} for orderGuid and customer guid
+     *
+     * @param orderGuid    orderGuid
+     * @param customerGuid customerGuid
+     * @param iOrderEvent  order event
+     * @return saved order event
+     */
+    IOrderEvent createOrderEvent(UUID orderGuid, UUID customerGuid, IOrderEvent iOrderEvent);
+
+    /**
      * Gets order event by {@link IOrderEvent} guid
      *
      * @param guid {@link IOrderEvent} guid
@@ -30,10 +40,33 @@ public interface IOrderEventService {
     IOrderEvent getByGuid(UUID guid);
 
     /**
+     * Gets last added order event by order guid
+     *
+     * @param orderGuid order guid
+     * @return last added order event by order guid
+     */
+    IOrderEvent getLastAddedEvent(UUID orderGuid);
+
+    /**
+     * Checks if {@link IOrderEvent} can be tracked
+     *
+     * @param orderGuid  order guid
+     * @return if {@link IOrderEvent} can be tracked
+     */
+    Boolean ifOrderEventCanBeTracked(UUID orderGuid);
+
+    /**
      * Gets all OrderEvents for current {@link Order} order
      *
      * @param orderGuid {@link Order} guid
      * @return all OrderEvents for order
      */
     List<IOrderEvent> getAllEventsForOrder(UUID orderGuid);
+
+    /**
+     * Gets all {@link IOrderEvent} that is delivering now
+     *
+     * @return all {@link IOrderEvent} that is delivering now
+     */
+    List<IOrderEvent> findAllThatDeliveringNow();
 }

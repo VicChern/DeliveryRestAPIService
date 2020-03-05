@@ -13,6 +13,8 @@ import org.testng.annotations.Test;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
+import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
+import com.softserve.itacademy.kek.models.enums.EventType;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Order;
@@ -77,21 +79,21 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         actorRole1 = new ActorRole();
-        actorRole1.setName("CUSTOMER");
+        actorRole1.setName(ActorRoleEnum.CUSTOMER.toString());
         actorRole2 = new ActorRole();
-        actorRole2.setName("CURRIER");
+        actorRole2.setName(ActorRoleEnum.CURRIER.toString());
 
         orderEventType1 = new OrderEventType();
-        orderEventType1.setName("CREATED");
+        orderEventType1.setName(EventType.CREATED.toString());
 
         orderEventType2 = new OrderEventType();
-        orderEventType2.setName("ASSIGNED");
+        orderEventType2.setName(EventType.ASSIGNED.toString());
 
         orderEventType3 = new OrderEventType();
-        orderEventType3.setName("STARTED");
+        orderEventType3.setName(EventType.STARTED.toString());
 
         orderEventType4 = new OrderEventType();
-        orderEventType4.setName("DELIVERED");
+        orderEventType4.setName(EventType.DELIVERED.toString());
 
         actorRoleRepository.save(actorRole1);
         actorRoleRepository.save(actorRole2);
