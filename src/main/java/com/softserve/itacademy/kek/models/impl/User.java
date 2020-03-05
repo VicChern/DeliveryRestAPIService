@@ -24,7 +24,7 @@ import com.softserve.itacademy.kek.models.IUserDetails;
 
 @Entity
 @Table(name = "obj_user")
-public class User extends AbstractEntity implements IUser, Serializable {
+public class User implements IUser, Serializable {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     List<Identity> identityList = new ArrayList<>();
@@ -38,6 +38,7 @@ public class User extends AbstractEntity implements IUser, Serializable {
     @NotNull
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;
+
     @Email
     @NotNull
     @Size(min = 1, max = 256)
@@ -53,12 +54,15 @@ public class User extends AbstractEntity implements IUser, Serializable {
     @Size(min = 1, max = 256)
     @Column(name = "name", nullable = false, length = 256)
     private String name;
+
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "nickname", nullable = false, unique = true, length = 256)
     private String nickname;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private UserDetails userDetails;
+
     @OneToOne(mappedBy = "tenantOwner", cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, orphanRemoval = true)
     private Tenant tenant;
 
