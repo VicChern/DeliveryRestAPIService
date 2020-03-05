@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -35,11 +34,9 @@ public class AuthenticatedUserDto implements UserDetails, IUser {
     private String email;
 
     @NotEmpty
-    @JsonProperty("phone")
     private String phoneNumber;
 
     @NotNull
-    @JsonProperty("details")
     private IUserDetails userDetails;
 
     public AuthenticatedUserDto(IUserService userService) {
