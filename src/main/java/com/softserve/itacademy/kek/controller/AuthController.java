@@ -30,7 +30,15 @@ public class AuthController extends DefaultController {
     protected void login(HttpServletRequest request, HttpServletResponse response) {
         logger.info("Performing login, request = {}", request);
 
-        authenticationService.redirectToAuth0Login(request, response);
+        final String authorizeUrl = authenticationService.createRedirectUrl(request, response);
+
+        try {
+            logger.debug("trying to redirect to authorizeUrl = {}", authorizeUrl);
+            response.sendRedirect(authorizeUrl);
+
+        } catch (IOException e) {
+            logger.error("Failed to redirect to authorizeUrl {}, {}", authorizeUrl, e);
+        }
     }
 
     @RequestMapping(path = "/callback")

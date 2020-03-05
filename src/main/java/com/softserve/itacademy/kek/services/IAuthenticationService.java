@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public interface IAuthenticationService {
 
-    void redirectToAuth0Login(HttpServletRequest request, HttpServletResponse response);
+    String createRedirectUrl(HttpServletRequest request, HttpServletResponse response);
 
     void authenticateUser(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

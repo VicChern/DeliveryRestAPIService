@@ -47,7 +47,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     }
 
     @Override
-    public void redirectToAuth0Login(HttpServletRequest request, HttpServletResponse response) {
+    public String createRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
         final String returnTo = createRedirectUrl(request.getScheme(), request.getServerName(),
                 request.getServerPort());
 
@@ -55,13 +55,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
                 .withScope("openid profile email")
                 .build();
 
-        try {
-            logger.debug("trying to redirect to authorizeUrl = {}", authorizeUrl);
-            response.sendRedirect(authorizeUrl);
-
-        } catch (IOException e) {
-            logger.error("Failed to redirect to authorizeUrl {}, {}", authorizeUrl, e);
-        }
+        return authorizeUrl;
     }
 
     @Override

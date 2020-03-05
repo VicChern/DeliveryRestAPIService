@@ -19,21 +19,21 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
 
     @Query(value =
             "SELECT OOE.* " +
-                "FROM " +
+                    "FROM " +
                     "obj_order_event OOE, " +
                     "def_order_event_type ET, " +
                     "(SELECT " +
-                            "OE.id_order, " +
-                            "MAX(OE.last_modified_date) lastDate " +
-                        "FROM obj_order_event OE " +
-                        "GROUP BY  OE.id_order" +
+                    "OE.id_order, " +
+                    "MAX(OE.last_modified_date) lastDate " +
+                    "FROM obj_order_event OE " +
+                    "GROUP BY  OE.id_order" +
                     ") temporaryTable " +
-                "WHERE " +
+                    "WHERE " +
                     "    OOE.last_modified_date = temporaryTable.lastDate " +
                     "AND ET.id_order_event_type = OOE.id_order_event_type " +
                     "AND ET.name = :eventTypeName"
             , nativeQuery = true)
-    List<OrderEvent> findAllLastAddedOrderEventsForEventType(@Param("eventTypeName" ) String eventTypeName);
+    List<OrderEvent> findAllLastAddedOrderEventsForEventType(@Param("eventTypeName") String eventTypeName);
 
     Boolean existsOrderEventsByOrderGuidAndOrderEventTypeName(UUID orderGuid, String eventTypeName);
 
