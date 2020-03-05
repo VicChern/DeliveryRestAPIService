@@ -3,9 +3,11 @@ package com.softserve.itacademy.kek.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.services.ICloudStorageService;
 import com.softserve.itacademy.kek.services.impl.CloudStorageService;
 import com.softserve.itacademy.kek.services.model.ICloudStorageObject;
@@ -15,9 +17,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 /**
- * Unit tests for {@link CloudStorageService}
+ * Integration tests for {@link CloudStorageService}
  */
-@Test(groups = {"unit-tests"})
+@ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class CloudStorageServiceTest {
     private ICloudStorageService cloudStorageService;
 
