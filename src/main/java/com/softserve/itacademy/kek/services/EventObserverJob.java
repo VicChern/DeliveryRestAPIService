@@ -19,7 +19,7 @@ import com.softserve.itacademy.kek.models.impl.OrderEvent;
 
 @Service
 public class EventObserverJob {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IOrderEventService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventObserverJob.class);
 
     public final ApplicationEventPublisher eventPublisher;
 
@@ -33,7 +33,7 @@ public class EventObserverJob {
     }
 
 
-    @Scheduled(fixedRate = 3000)
+    @Scheduled(fixedRate = 15000)
     public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
        final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
        LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());
