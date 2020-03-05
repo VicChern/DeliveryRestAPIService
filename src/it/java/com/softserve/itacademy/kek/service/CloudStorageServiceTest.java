@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.services;
+package com.softserve.itacademy.kek.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.softserve.itacademy.kek.services.ICloudStorageService;
 import com.softserve.itacademy.kek.services.impl.CloudStorageService;
 import com.softserve.itacademy.kek.services.model.ICloudStorageObject;
 import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
@@ -18,7 +19,6 @@ import static org.testng.Assert.assertNotNull;
  */
 @Test(groups = {"unit-tests"})
 public class CloudStorageServiceTest {
-
     private ICloudStorageService cloudStorageService;
 
     private String bucket;
@@ -62,7 +62,7 @@ public class CloudStorageServiceTest {
         ICloudStorageObject newCloudStorageObject = cloudStorageService.getCloudStorageObject(guid);
 
         assertNotNull(newCloudStorageObject);
-//
+
         assertEquals(cloudStorageObject.getUrlString(), newCloudStorageObject.getUrlString());
         assertEquals(cloudStorageObject.getGuid(), newCloudStorageObject.getGuid());
         assertEquals(cloudStorageObject.getDataBytes(), newCloudStorageObject.getDataBytes());
