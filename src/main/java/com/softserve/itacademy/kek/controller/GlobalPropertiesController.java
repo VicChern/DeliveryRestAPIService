@@ -41,7 +41,7 @@ public class GlobalPropertiesController extends DefaultController {
      * Transform {@link IGlobalProperties} to {@link GlobalPropertiesDto}
      *
      * @param globalProperties globalProperties
-     * @return tenantDto
+     * @return globalPropertiesDto
      */
     private GlobalPropertiesDto transformGlobalProperty(IGlobalProperties globalProperties) {
         PropertyTypeDto propertyType = new PropertyTypeDto(
@@ -57,7 +57,7 @@ public class GlobalPropertiesController extends DefaultController {
     }
 
     /**
-     * Get information about tenants
+     * Get information about globalProperties
      *
      * @return Response Entity with a list of {@link GlobalPropertiesListDto} objects as a JSON
      */
@@ -96,7 +96,7 @@ public class GlobalPropertiesController extends DefaultController {
     /**
      * Modifies information of the specified globalProperty
      *
-     * @param key              globalProperty key from the URL
+     * @param key globalProperty key from the URL
      * @return Response Entity with {@link GlobalPropertiesDto} object as a JSON
      */
     @PutMapping(value = "/{key}", consumes = KekMediaType.GLOBAL_PROPERTY,
@@ -108,7 +108,7 @@ public class GlobalPropertiesController extends DefaultController {
 
         GlobalPropertiesDto modifiedGlobalPropertiesDto = transformGlobalProperty(modifiedGlobalProperties);
 
-        logger.info("Sending the modified property of the tenant {} to the client:\n{}", key, globalPropertiesDto);
+        logger.info("Sending the modified global property  {} to the client:\n{}", key, globalPropertiesDto);
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .body(modifiedGlobalPropertiesDto);

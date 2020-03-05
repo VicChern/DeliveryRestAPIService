@@ -38,7 +38,7 @@ import com.softserve.itacademy.kek.services.ITenantService;
 @RestController
 @RequestMapping(path = "/tenants")
 public class TenantController extends DefaultController {
-    final static Logger logger = LoggerFactory.getLogger(TenantController.class);
+    private final static Logger logger = LoggerFactory.getLogger(TenantController.class);
 
     private final ITenantService tenantService;
     private final ITenantPropertiesService tenantPropertiesService;
@@ -338,7 +338,7 @@ public class TenantController extends DefaultController {
     @PostMapping(value = "/{guid}/addresses", consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
     public ResponseEntity<AddressListDto> addTenantAddresses(@PathVariable String guid, @RequestBody @Valid AddressListDto newAddressesDto) {
-        logger.info("Accepted requested to create a new addresses for user:{}:\n", newAddressesDto);
+        logger.info("Accepted requested to create a new addresses for tenant:{}:\n", newAddressesDto);
         AddressListDto createdAddresses = new AddressListDto();
 
         for (AddressDto newAddress : newAddressesDto.getAddressList()) {
@@ -348,7 +348,7 @@ public class TenantController extends DefaultController {
             createdAddresses.addAddress(addressDto);
         }
 
-        logger.info("Sending the created users's addresses to the client:\n{}", createdAddresses);
+        logger.info("Sending the created tenant's addresses to the client:\n{}", createdAddresses);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdAddresses);
@@ -368,7 +368,7 @@ public class TenantController extends DefaultController {
         IAddress address = addressService.getForTenant(UUID.fromString(addrGuid), UUID.fromString(guid));
         AddressDto addressDto = transformAddress(address);
 
-        logger.info("Sending the address of the user {} to the client:\n{}", guid, addressDto);
+        logger.info("Sending the address of the tenant {} to the client:\n{}", guid, addressDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(addressDto);

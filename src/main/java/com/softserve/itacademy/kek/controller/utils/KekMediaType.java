@@ -5,6 +5,7 @@ package com.softserve.itacademy.kek.controller.utils;
  * {@link com.softserve.itacademy.kek.controller.TenantController}
  * {@link com.softserve.itacademy.kek.controller.OrderController}
  * {@link com.softserve.itacademy.kek.controller.UserController}
+ * {@link com.softserve.itacademy.kek.controller.GlobalPropertiesController}
  */
 public class KekMediaType {
 

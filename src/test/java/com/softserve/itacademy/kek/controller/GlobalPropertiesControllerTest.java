@@ -22,8 +22,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -68,16 +68,16 @@ public class GlobalPropertiesControllerTest {
     }
 
     @Test
-    public void getGlobalPropertiesTest() throws Exception{
+    public void getGlobalPropertiesTest() throws Exception {
         when(globalPropertiesService.getAll()).thenReturn(globalPropertiesList);
 
         mockMvc.perform(get("/globalProperties"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(KekMediaType.GLOBAL_PROPERTY))
-                .andExpect(jsonPath("$.globalPropertiesList.[0].key").value("string"))
-                .andExpect(jsonPath("$.globalPropertiesList.[0].propertyType.name").value("string"))
-                .andExpect(jsonPath("$.globalPropertiesList.[0].propertyType.schema").value("string"))
-                .andExpect(jsonPath("$.globalPropertiesList.[0].value").value("string"));
+                .andExpect(jsonPath("$.globalPropertiesDtoList.[0].key").value("string"))
+                .andExpect(jsonPath("$.globalPropertiesDtoList.[0].propertyType.name").value("string"))
+                .andExpect(jsonPath("$.globalPropertiesDtoList.[0].propertyType.schema").value("string"))
+                .andExpect(jsonPath("$.globalPropertiesDtoList.[0].value").value("string"));
     }
 
     @Test
@@ -96,8 +96,8 @@ public class GlobalPropertiesControllerTest {
     }
 
     @Test
-    public void modifyGlobalPropertyTest() throws Exception{
-        when(globalPropertiesService.update(any(GlobalPropertiesDto.class),anyString())).thenReturn(globalProperties);
+    public void modifyGlobalPropertyTest() throws Exception {
+        when(globalPropertiesService.update(any(GlobalPropertiesDto.class), anyString())).thenReturn(globalProperties);
 
         mockMvc.perform(put("/globalProperties/key")
                 .contentType(KekMediaType.GLOBAL_PROPERTY)
