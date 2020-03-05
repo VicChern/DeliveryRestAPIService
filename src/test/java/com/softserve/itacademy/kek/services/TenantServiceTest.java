@@ -71,7 +71,7 @@ public class TenantServiceTest {
     @Test
     void createSuccess() {
         //given
-        when(userRepository.findByGuid(any(UUID.class))).thenReturn(user);
+        when(userRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(user));
         when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 
         // when
@@ -92,7 +92,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void createThrowsServiceExceptionWhenRepositoryReturnsEmptyTenantOwner() {
         //given
-        when(userRepository.findByGuid(any(UUID.class))).thenReturn(null);
+        when(userRepository.findByGuid(any(UUID.class))).thenReturn(Optional.empty());
 
         // when
         ITenant save = tenantService.create(tenant);
@@ -101,7 +101,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void createThrowsServiceExceptionWhenRepositoryThrowsPersistenceException() {
         //given
-        when(userRepository.findByGuid(any(UUID.class))).thenReturn(user);
+        when(userRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(user));
         when(tenantRepository.save(any(Tenant.class))).thenThrow(PersistenceException.class);
 
         // when
