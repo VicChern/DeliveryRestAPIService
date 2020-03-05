@@ -20,7 +20,7 @@ import static org.testng.Assert.assertNotNull;
  * Integration tests for {@link CloudStorageService}
  */
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
-public class CloudStorageServiceTest {
+public class CloudStorageServiceIT {
     private ICloudStorageService cloudStorageService;
 
     private String bucket;
