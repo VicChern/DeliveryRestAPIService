@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -21,6 +22,7 @@ import static org.testng.Assert.assertNotNull;
  */
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class CloudStorageServiceIT {
+    @Autowired
     private ICloudStorageService cloudStorageService;
 
     private String bucket;
@@ -32,7 +34,7 @@ public class CloudStorageServiceIT {
     private CloudStorageObject cloudStorageObject;
     private List<ICloudStorageObject> objectList;
 
-    @BeforeClass
+    @BeforeClass(groups = {"integration-tests"})
     public void setUp() {
         cloudStorageService = new CloudStorageService("storage.properties");
 
@@ -48,7 +50,7 @@ public class CloudStorageServiceIT {
 
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void uploadBinaryData() throws Exception {
         ICloudStorageObject createdObject = cloudStorageService.uploadBinaryData(data);
 
@@ -59,7 +61,7 @@ public class CloudStorageServiceIT {
         assertEquals(data, createdObject.getDataBytes());
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getCloudStorageObject() throws Exception {
         ICloudStorageObject newCloudStorageObject = cloudStorageService.getCloudStorageObject(guid);
 
@@ -70,7 +72,7 @@ public class CloudStorageServiceIT {
         assertEquals(cloudStorageObject.getDataBytes(), newCloudStorageObject.getDataBytes());
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getCloudStorageObjects() throws Exception {
         List<ICloudStorageObject> newCloudStorageObjectList = cloudStorageService.getCloudStorageObjects(bucket);
 
