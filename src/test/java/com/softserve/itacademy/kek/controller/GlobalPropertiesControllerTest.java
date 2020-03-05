@@ -68,7 +68,7 @@ public class GlobalPropertiesControllerTest {
     }
 
     @Test
-    public void getGlobalPropertiesListTest() throws Exception{
+    public void getGlobalPropertiesTest() throws Exception{
         when(globalPropertiesService.getAll()).thenReturn(globalPropertiesList);
 
         mockMvc.perform(get("/globalProperties"))

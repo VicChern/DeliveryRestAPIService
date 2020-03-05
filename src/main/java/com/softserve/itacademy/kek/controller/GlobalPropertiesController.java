@@ -62,8 +62,8 @@ public class GlobalPropertiesController extends DefaultController {
      * @return Response Entity with a list of {@link GlobalPropertiesListDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.GLOBAL_PROPERTY)
-    public ResponseEntity<GlobalPropertiesListDto> getGlobalPropertiesList() {
-        logger.info("Client requested the list of all tenants");
+    public ResponseEntity<GlobalPropertiesListDto> getGlobalProperties() {
+        logger.info("Client requested the list of all global properties");
 
         List<IGlobalProperties> globalPropertiesList = globalPropertiesService.getAll();
         GlobalPropertiesListDto globalPropertiesListDto = new GlobalPropertiesListDto(globalPropertiesList
