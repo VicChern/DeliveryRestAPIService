@@ -1,40 +1,54 @@
 package com.softserve.itacademy.kek.services.impl;
 
+import javax.persistence.PersistenceException;
+import java.util.Collections;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.softserve.itacademy.kek.exception.OrderServiceException;
+import com.softserve.itacademy.kek.models.impl.Actor;
+import com.softserve.itacademy.kek.models.impl.ActorRole;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
-import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IActorService;
-import com.softserve.itacademy.kek.services.IOrderEventService;
-import com.softserve.itacademy.kek.services.IOrderService;
-
 
 /**
  * Service implementation for {@link IActorService}
  */
+@Service
 public class ActorServiceImpl implements IActorService {
 
-    private final ActorRepository actorRepository;
-    private final ActorRoleRepository actorRoleRepository;
-    private final UserRepository userRepository;
-    private final TenantRepository tenantRepository;
-    private final IOrderService orderService;
-    private final IOrderEventService orderEventService;
+    private final static Logger LOGGER = LoggerFactory.getLogger(ActorServiceImpl.class);
 
+    private final ActorRepository actorRepository;
 
     @Autowired
-    public ActorServiceImpl(ActorRepository actorRepository,
-                            ActorRoleRepository actorRoleRepository,
-                            UserRepository userRepository,
-                            TenantRepository tenantRepository, IOrderService orderService, IOrderEventService orderEventService) {
+    public ActorServiceImpl(ActorRepository actorRepository) {
         this.actorRepository = actorRepository;
-        this.actorRoleRepository = actorRoleRepository;
-        this.userRepository = userRepository;
-        this.tenantRepository = tenantRepository;
-        this.orderService = orderService;
-        this.orderEventService = orderEventService;
     }
 
+    @Transactional
+    @Override
+    public Actor saveActor(Tenant tenant, User user, ActorRole actorRole) {
+        final Actor actor = new Actor();
+
+        actor.setTenant(tenant);
+        actor.setUser(user);
+        actor.setActorRoles(Collections.singletonList(actorRole));
+        actor.setGuid(UUID.randomUUID());
+        actor.setAlias("Actor alias");
+
+        try {
+            return actorRepository.save(actor);
+        } catch (PersistenceException e) {
+            LOGGER.error("Actor wasn`t saved for tenant: {}, user: {}, actorRole: {}", tenant, user, actorRole);
+            throw new OrderServiceException("Actor wasn`t saved for tenant: " + tenant + ", user: " + user + ", actorRole: " + actorRole);
+        }
+    }
 }
