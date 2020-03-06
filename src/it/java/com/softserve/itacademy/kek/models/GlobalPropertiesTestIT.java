@@ -14,7 +14,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.impl.GlobalProperties;
+import com.softserve.itacademy.kek.models.impl.GlobalProperty;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.repositories.GlobalPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
@@ -33,8 +33,8 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private PropertyTypeRepository typeRepository;
 
-    private GlobalProperties properties1;
-    private GlobalProperties properties2;
+    private GlobalProperty properties1;
+    private GlobalProperty properties2;
 
     @DataProvider(name = "illegal_keys")
     public static Object[][] keys() {
@@ -65,7 +65,7 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
         propertiesRepository.save(properties1);
         Long id = properties1.getIdProperty();
         //when
-        Optional<GlobalProperties> savedProperty = propertiesRepository.findById(id);
+        Optional<GlobalProperty> savedProperty = propertiesRepository.findById(id);
         //then
         Assert.assertNotNull(savedProperty.orElse(null));
         Assert.assertEquals(savedProperty.get().getIdProperty(), id);

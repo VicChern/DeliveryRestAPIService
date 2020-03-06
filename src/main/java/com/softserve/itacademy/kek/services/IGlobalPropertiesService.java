@@ -2,48 +2,48 @@ package com.softserve.itacademy.kek.services;
 
 import java.util.List;
 
-import com.softserve.itacademy.kek.models.IGlobalProperties;
-import com.softserve.itacademy.kek.models.impl.GlobalProperties;
+import com.softserve.itacademy.kek.models.IGlobalProperty;
+import com.softserve.itacademy.kek.models.impl.GlobalProperty;
 
 /**
- * Service interface for {@link IGlobalProperties}
+ * Service interface for {@link IGlobalProperty}
  */
 public interface IGlobalPropertiesService {
 
     /**
-     * Saved new {@link GlobalProperties} for customer with customerGuid to db
+     * Saved new {@link GlobalProperty} for customer with customerGuid to db
      *
      * @param globalProperties globalProperties
      * @return saved globalProperties
      */
-    IGlobalProperties create(IGlobalProperties globalProperties);
+    IGlobalProperty create(IGlobalProperty globalProperties);
 
     /**
-     * Updates {@link GlobalProperties} by key
+     * Updates {@link GlobalProperty} by key
      *
      * @param globalProperties globalProperties
      * @param key              key
      * @return updated globalProperties
      */
-    IGlobalProperties update(IGlobalProperties globalProperties, String key);
+    IGlobalProperty update(IGlobalProperty globalProperties, String key);
 
     /**
-     * Gets globalProperties by {@link GlobalProperties} key
+     * Gets globalProperties by {@link GlobalProperty} key
      *
      * @param key key
      * @return globalProperties by key
      */
-    IGlobalProperties getByKey(String key);
+    IGlobalProperty getByKey(String key);
 
     /**
      * Gets all globalProperties
      *
      * @return a list of all globalProperties
      */
-    List<IGlobalProperties> getAll();
+    List<IGlobalProperty> getAll();
 
     /**
-     * Deletes globalProperties by {@link GlobalProperties} key
+     * Deletes globalProperties by {@link GlobalProperty} key
      *
      * @param key key
      */

@@ -35,4 +35,18 @@ public interface ITenantProperties {
      */
     String getValue();
 
+    /**
+     * Returns Integer or something else
+     * according to current property
+     *
+     * @param clazz
+     * @param <T>
+     * @return value
+     */
+    default <T> T getValue(Class<T> clazz) {
+        if (clazz == Integer.class) {
+            return (T) Integer.valueOf(getValue());
+        }
+        return (T) getValue();
+    }
 }

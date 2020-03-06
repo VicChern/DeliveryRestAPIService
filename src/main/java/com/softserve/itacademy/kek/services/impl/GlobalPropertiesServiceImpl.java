@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.GlobalPropertiesServiceException;
-import com.softserve.itacademy.kek.models.IGlobalProperties;
+import com.softserve.itacademy.kek.models.IGlobalProperty;
 import com.softserve.itacademy.kek.models.IPropertyType;
-import com.softserve.itacademy.kek.models.impl.GlobalProperties;
+import com.softserve.itacademy.kek.models.impl.GlobalProperty;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.repositories.GlobalPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
@@ -33,12 +33,12 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
     @Transactional
     @Override
-    public IGlobalProperties create(IGlobalProperties globalProperties) throws GlobalPropertiesServiceException {
+    public IGlobalProperty create(IGlobalProperty globalProperties) throws GlobalPropertiesServiceException {
         LOGGER.info("Saving globalProperties: {}", globalProperties);
 
         final PropertyType actualPropertyType;
         final PropertyType foundPropertyType = propertyTypeRepository.getByName(globalProperties.getPropertyType().getName());
-        final GlobalProperties actualProperties = new GlobalProperties();
+        final GlobalProperty actualProperties = new GlobalProperty();
 
         if (foundPropertyType == null) {
             final PropertyType savedPropertyType = new PropertyType();
@@ -65,11 +65,11 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
     @Transactional
     @Override
-    public IGlobalProperties update(IGlobalProperties globalProperties, String key) throws GlobalPropertiesServiceException {
+    public IGlobalProperty update(IGlobalProperty globalProperties, String key) throws GlobalPropertiesServiceException {
         LOGGER.info("Updating globalProperties: {}", globalProperties);
 
         final IPropertyType newPropertyType = globalProperties.getPropertyType();
-        final GlobalProperties actualProperties = globalPropertiesRepository.findByKey(key);
+        final GlobalProperty actualProperties = globalPropertiesRepository.findByKey(key);
         final PropertyType actualPropertyType = propertyTypeRepository.getByName(actualProperties.getPropertyType().getName());
 
         actualPropertyType.setName(newPropertyType.getName());
@@ -89,7 +89,7 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
     @Transactional(readOnly = true)
     @Override
-    public IGlobalProperties getByKey(String key) throws GlobalPropertiesServiceException {
+    public IGlobalProperty getByKey(String key) throws GlobalPropertiesServiceException {
         LOGGER.info("Getting globalProperties by key: {}", key);
 
         try {
@@ -102,10 +102,10 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<IGlobalProperties> getAll() throws GlobalPropertiesServiceException {
+    public List<IGlobalProperty> getAll() throws GlobalPropertiesServiceException {
         LOGGER.info("Getting all globalProperties");
 
-        List<? extends IGlobalProperties> globalPropertiesList;
+        List<? extends IGlobalProperty> globalPropertiesList;
 
         try {
             globalPropertiesList = globalPropertiesRepository.findAll();
@@ -114,7 +114,7 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
             throw new GlobalPropertiesServiceException("An error occurred while getting all GlobalProperties: ", e);
         }
 
-        return (List<IGlobalProperties>) globalPropertiesList;
+        return (List<IGlobalProperty>) globalPropertiesList;
     }
 
     @Transactional

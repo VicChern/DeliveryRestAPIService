@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.models;
 /**
  * Interface for GlobalProperties data exchange with Service Layer
  */
-public interface IGlobalProperties {
+public interface IGlobalProperty {
 
     /**
      * Returns globalProperties propertyType
@@ -25,4 +25,19 @@ public interface IGlobalProperties {
      * @return globalProperties value
      */
     String getValue();
+
+    /**
+     * Returns Integer or something else
+     * according to current property
+     *
+     * @param clazz
+     * @param <T>
+     * @return value
+     */
+    default <T> T getValue(Class<T> clazz) {
+        if (clazz == Integer.class) {
+            return (T) Integer.valueOf(getValue());
+        }
+        return (T) getValue();
+    }
 }

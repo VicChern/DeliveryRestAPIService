@@ -35,18 +35,18 @@ public class EventObserverJob {
 
     @Scheduled(fixedRate = 15000)
     public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
-       final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
-       LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());
+        final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
+        LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());
 
-       final Function<OrderEvent, UUID> getOrderGuid = oe -> oe.getOrder().getGuid();
-       final Map<UUID, String> ordersToPayloads = lastEvents
+        final Function<OrderEvent, UUID> getOrderGuid = oe -> oe.getOrder().getGuid();
+        final Map<UUID, String> ordersToPayloads = lastEvents
                 .stream()
                 .map(oe -> (OrderEvent) oe)
                 .collect(Collectors.toMap(getOrderGuid, OrderEvent::getPayload));
 
-       OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
-       wrapper.setMap(ordersToPayloads);
+        OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
+        wrapper.setMap(ordersToPayloads);
 
-       this.eventPublisher.publishEvent(wrapper);
+        this.eventPublisher.publishEvent(wrapper);
     }
 }

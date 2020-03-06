@@ -1,7 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import com.softserve.itacademy.kek.models.IGlobalProperties;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,9 +14,11 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.softserve.itacademy.kek.models.IGlobalProperty;
+
 @Entity
 @Table(name = "obj_global_properties")
-public class GlobalProperties extends AbstractEntity implements IGlobalProperties, Serializable {
+public class GlobalProperty extends AbstractEntity implements IGlobalProperty, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,7 +75,7 @@ public class GlobalProperties extends AbstractEntity implements IGlobalPropertie
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GlobalProperties that = (GlobalProperties) o;
+        GlobalProperty that = (GlobalProperty) o;
         return Objects.equals(idProperty, that.idProperty) &&
                 Objects.equals(propertyType, that.propertyType) &&
                 Objects.equals(key, that.key) &&
