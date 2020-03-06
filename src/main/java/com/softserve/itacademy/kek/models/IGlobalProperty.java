@@ -1,26 +1,35 @@
 package com.softserve.itacademy.kek.models;
 
+import com.softserve.itacademy.kek.models.impl.GlobalProperty;
+
 /**
  * Interface for GlobalProperties data exchange with Service Layer
  */
 public interface IGlobalProperty {
 
     /**
-     * Returns globalProperties propertyType
+     * Returns {@link GlobalProperty} id
+     *
+     * @return globalProperties id
+     */
+    Long getIdProperty();
+
+    /**
+     * Returns {@link GlobalProperty} propertyType
      *
      * @return globalProperties propertyType
      */
     IPropertyType getPropertyType();
 
     /**
-     * Returns globalProperties key
+     * Returns {@link GlobalProperty} key
      *
      * @return globalProperties key
      */
     String getKey();
 
     /**
-     * Returns globalProperties value
+     * Returns {@link GlobalProperty} value
      *
      * @return globalProperties value
      */

@@ -76,27 +76,27 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
         propertyType.setName(NAME);
         propertyType.setSchema(SCHEMA);
 
-        GlobalProperty globalProperties = new GlobalProperty();
+        final GlobalProperty globalProperties = new GlobalProperty();
 
         globalProperties.setValue(VALUE);
         globalProperties.setKey(KEY);
         globalProperties.setPropertyType(propertyType);
 
-        globalPropertiesRepository.save(globalProperties);
+        final GlobalProperty savedGlobalProperty = globalPropertiesRepository.save(globalProperties);
 
-        globalProperties.setValue(NEW_VALUE);
+        savedGlobalProperty.setValue(NEW_VALUE);
         propertyType.setName(NEW_NAME);
 
-        globalProperties.setPropertyType(propertyType);
+        savedGlobalProperty.setPropertyType(propertyType);
 
-        globalPropertiesService.update(globalProperties, KEY);
+        globalPropertiesService.update(savedGlobalProperty);
         //then
-        GlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey());
+        GlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(savedGlobalProperty.getKey());
 
-        assertEquals(globalProperties, foundGlobalProperties);
-        assertEquals(globalProperties.getKey(), foundGlobalProperties.getKey());
-        assertEquals(globalProperties.getValue(), foundGlobalProperties.getValue());
-        assertEquals(globalProperties.getPropertyType(), foundGlobalProperties.getPropertyType());
+        assertEquals(savedGlobalProperty, foundGlobalProperties);
+        assertEquals(savedGlobalProperty.getKey(), foundGlobalProperties.getKey());
+        assertEquals(savedGlobalProperty.getValue(), foundGlobalProperties.getValue());
+        assertEquals(savedGlobalProperty.getPropertyType(), foundGlobalProperties.getPropertyType());
 
     }
 

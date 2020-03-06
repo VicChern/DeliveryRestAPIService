@@ -22,10 +22,9 @@ public interface IGlobalPropertiesService {
      * Updates {@link GlobalProperty} by key
      *
      * @param globalProperties globalProperties
-     * @param key              key
      * @return updated globalProperties
      */
-    IGlobalProperty update(IGlobalProperty globalProperties, String key);
+    IGlobalProperty update(IGlobalProperty globalProperties);
 
     /**
      * Gets globalProperties by {@link GlobalProperty} key
