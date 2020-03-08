@@ -16,9 +16,19 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.softserve.itacademy.kek.models.IUser;
+
 @Entity
 @Table(name = "obj_identity")
 public class Identity extends AbstractEntity implements Serializable {
+
+    public Identity() {
+    }
+
+    public Identity(User user, @NotNull @Size(min = 1, max = 4096) String payload) {
+        this.user = user;
+        this.payload = payload;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
