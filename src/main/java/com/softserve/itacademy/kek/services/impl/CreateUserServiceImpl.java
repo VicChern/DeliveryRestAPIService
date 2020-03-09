@@ -38,7 +38,7 @@ public class CreateUserServiceImpl implements ICreateUserService {
     @Transactional
     @Override
     public IUser createNewUser(RegistrationDto userData) {
-        final boolean isAlreadyRegistered = userRepository.findByEmail(userData.getEmail()) == null;
+        final boolean isAlreadyRegistered = userRepository.findByEmail(userData.getEmail()) != null;
         if (isAlreadyRegistered) {
             logger.info("User already exists in DB {}", userData);
             throw new UserAlreadyExistException(userData.toString());
@@ -51,11 +51,11 @@ public class CreateUserServiceImpl implements ICreateUserService {
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
 
-        userService.create(user);
+        final IUser dbUser = userService.create(user);
 
-        identityService.savePassword(user, passwordEncoder.encode(userData.getPassword()));
+        identityService.savePassword((User) dbUser, passwordEncoder.encode(userData.getPassword()));
 
         logger.info("User has been added to DB {}", userData);
-        return user;
+        return dbUser;
     }
 }
