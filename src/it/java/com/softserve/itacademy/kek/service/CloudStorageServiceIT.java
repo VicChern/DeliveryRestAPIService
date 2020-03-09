@@ -85,8 +85,8 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
         String guidFromCloud = blob.getName();
 
         assertNotNull(urlFromCloud);
-        assertNotNull(guidFromCloud);
-        assertNotNull(dataFromCloud);
+        assertEquals(String.valueOf(guid), guidFromCloud);
+        assertEquals(data, dataFromCloud);
     }
 
     @Test(groups = {"integration-tests"})
