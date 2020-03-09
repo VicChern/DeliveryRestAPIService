@@ -1,15 +1,17 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ import com.softserve.itacademy.kek.services.IUserService;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private UserRepository userRepository;
     private TenantRepository tenantRepository;
@@ -45,10 +47,10 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional
     @Override
-    public IUser create(IUser userData) {
+    public IUser create(IUser userData) throws UserServiceException {
         logger.info("Insert User into DB: {}", userData);
 
-        User user = new User();
+        final User user = new User();
 
         user.setGuid(UUID.randomUUID());
         user.setName(userData.getName());
@@ -56,41 +58,42 @@ public class UserServiceImpl implements IUserService {
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
 
-        UserDetails details = new UserDetails();
+        final UserDetails details = new UserDetails();
         user.setUserDetails(details);
 
-        IUserDetails detailsData = userData.getUserDetails();
+        final IUserDetails detailsData = userData.getUserDetails();
         if (detailsData != null) {
             details.setImageUrl(detailsData.getImageUrl());
             details.setPayload(detailsData.getPayload());
         }
 
         try {
-            user = userRepository.save(user);
-        } catch (PersistenceException | ConstraintViolationException ex) {
-            logger.error("User wasn't inserted into DB: " + user, ex);
-            throw new UserServiceException("User wasn't inserted");
+            final User userFromDB = userRepository.saveAndFlush(user);
+
+            logger.debug("User was inserted into DB: {}", userFromDB);
+
+            return userFromDB;
+        } catch (DataAccessException ex) {
+            logger.error("User was not inserted into DB: " + user, ex);
+            throw new UserServiceException("An error occurred while inserting the user into the Database", ex);
         }
-
-        logger.info("User was inserted into DB: {}", user);
-
-        return user;
     }
 
     @Transactional
     @Override
-    public IUser update(IUser userData) {
+    public IUser update(IUser userData) throws UserServiceException {
         logger.info("Update User in DB: {}", userData);
 
-        User user = findUserByGuid(userData.getGuid());
+        final User user = internalGetByGuid(userData.getGuid());
+
         user.setName(userData.getName());
         user.setNickname(userData.getNickname());
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
 
-        IUserDetails detailsData = userData.getUserDetails();
+        final IUserDetails detailsData = userData.getUserDetails();
         if (detailsData != null) {
-            UserDetails details = new UserDetails();
+            final UserDetails details = new UserDetails();
             user.setUserDetails(details);
 
             details.setIdUser(user.getIdUser());
@@ -99,60 +102,79 @@ public class UserServiceImpl implements IUserService {
         }
 
         try {
-            user = userRepository.save(user);
-        } catch (PersistenceException | ConstraintViolationException ex) {
-            logger.error("User wasn't updated in DB: " + user, ex);
-            throw new UserServiceException("User wasn't updated");
+            final User userFromDB = userRepository.saveAndFlush(user);
+
+            logger.debug("User was updated in DB: {}", userFromDB);
+
+            return userFromDB;
+        } catch (DataAccessException ex) {
+            logger.error("User was not updated in DB: " + user, ex);
+            throw new UserServiceException("An error occurred while updating the user in the Database", ex);
         }
-
-        logger.info("User was updated in DB: {}", user);
-
-        return user;
     }
 
     @Transactional
     @Override
-    public void deleteByGuid(UUID guid) {
+    public void deleteByGuid(UUID guid) throws UserServiceException {
         logger.info("Delete User from DB: guid = {}", guid);
 
-        User user = findUserByGuid(guid);
+        final User user = internalGetByGuid(guid);
 
         try {
             userRepository.deleteById(user.getIdUser());
-        } catch (PersistenceException ex) {
-            logger.error("User wasn't deleted from DB: " + user, ex);
-            throw new UserServiceException("User wasn't deleted");
+            userRepository.flush();
+
+            logger.debug("User was deleted from DB: {}", user);
+        } catch (DataAccessException ex) {
+            logger.error("User was not deleted from DB: " + user, ex);
+            throw new UserServiceException("An error occurred while deleting the user from the Database", ex);
         }
-
-        logger.info("User was deleted from DB: {}", user);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public IUser getByGuid(UUID guid) {
-        logger.info("Get User from DB: guid = {}", guid);
-        return findUserByGuid(guid);
+    public IUser getByGuid(UUID guid) throws UserServiceException {
+        logger.info("Get User from DB by guid: guid = {}", guid);
+        return internalGetByGuid(guid);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<IUser> getAll() {
+    public List<IUser> getAll() throws UserServiceException {
         logger.info("Get all Users");
 
-        List<? extends IUser> users = userRepository.findAll();
-
-        return (List<IUser>) users;
+        try {
+            final List<? extends IUser> users = userRepository.findAll();
+            return (List<IUser>) users;
+        } catch (DataAccessException ex) {
+            logger.error("An error while getting all users from DB", ex);
+            throw new UserServiceException("An error occurred while getting users from the Database", ex);
+        }
     }
 
-    private User findUserByGuid(UUID guid) {
-        logger.info("Find User in DB: guid = {}", guid);
+    @Transactional(readOnly = true)
+    @Override
+    public Page<IUser> getAll(Pageable pageable) throws UserServiceException {
+        logger.info("Getting a page of Users from DB: {}", pageable);
 
-        User user = userRepository.findByGuid(guid);
-        if (user == null) {
-            logger.warn("User wasn't found in DB: guid = {}", guid);
-            throw new UserServiceException("User wasn't found");
+        try {
+            final Page<? extends IUser> users = userRepository.findAll(pageable);
+            return (Page<IUser>) users;
+        } catch (DataAccessException ex) {
+            logger.error("An error while getting a page of users from DB", ex);
+            throw new UserServiceException("An error occurred while getting users from the Database", ex);
         }
-        return user;
+    }
+
+    private User internalGetByGuid(UUID guid) throws UserServiceException {
+        logger.debug("Find User in DB: guid = {}", guid);
+
+        try {
+            return userRepository.findByGuid(guid).orElseThrow();
+        } catch (NoSuchElementException | DataAccessException ex) {
+            logger.error("User was not found in DB: guid = {}", guid);
+            throw new UserServiceException("The user was not found in the Database", ex);
+        }
     }
 
     @Transactional(readOnly = true)

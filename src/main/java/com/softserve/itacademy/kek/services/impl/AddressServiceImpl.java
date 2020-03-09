@@ -245,7 +245,7 @@ public class AddressServiceImpl implements IAddressService {
     private User findUserByGuid(UUID guid) {
         logger.info("Address Service, find User in DB: guid = {}", guid);
 
-        User user = userRepository.findByGuid(guid);
+        User user = userRepository.findByGuid(guid).orElse(null);
         if (user == null) {
             logger.error("Address Service, User wasn't found in DB: guid = {}", guid);
             throw new AddressServiceException("User wasn't found");
