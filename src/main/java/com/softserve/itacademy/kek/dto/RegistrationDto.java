@@ -8,6 +8,9 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.softserve.itacademy.kek.controller.utils.ValidEmail;
+import com.softserve.itacademy.kek.controller.utils.ValidPassword;
+import com.softserve.itacademy.kek.controller.utils.ValidPhone;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
 
@@ -23,18 +26,18 @@ public class RegistrationDto implements IUser {
     @NotNull
     @NotEmpty
     @Size(max = 256)
-//    @ValidEmail
+    @ValidEmail
     private String email;
 
     @NotEmpty
     @JsonProperty("phone")
-//    @ValidPhone
+    @ValidPhone
     private String phoneNumber;
 
     @NotNull
     @NotEmpty
     @Size(min = 6, max = 32)
-//    @ValidPassword
+    @ValidPassword
     private String password;
 
     public RegistrationDto() {
