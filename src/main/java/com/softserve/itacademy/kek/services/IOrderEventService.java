@@ -50,7 +50,7 @@ public interface IOrderEventService {
     /**
      * Checks if {@link IOrderEvent} can be tracked
      *
-     * @param orderGuid  order guid
+     * @param orderGuid order guid
      * @return if {@link IOrderEvent} can be tracked
      */
     Boolean ifOrderEventCanBeTracked(UUID orderGuid);

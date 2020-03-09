@@ -35,6 +35,8 @@ import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdi
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderEvent;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,6 +73,9 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
     public void setup() throws Exception {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
+                .defaultRequest(get("/")
+                        .with(user("user").password("password").roles("USER")))
+                .apply(springSecurity())
                 .build();
 
         User user = createOrdinaryUser(5);

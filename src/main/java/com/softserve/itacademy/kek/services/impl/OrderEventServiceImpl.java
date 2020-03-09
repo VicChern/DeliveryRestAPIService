@@ -241,10 +241,10 @@ public class OrderEventServiceImpl implements IOrderEventService {
         //if actor for eventType ASSIGNED doesn`t have role CURRIER than save it with CURRIER role
         if (
                 eventTypeName.equals(EventType.ASSIGNED.toString())
-                &&
-                actor.getActorRoles()
-                        .stream()
-                        .noneMatch(actorRole -> actorRole.getName().equals(ActorRoleEnum.CURRIER.toString()))
+                        &&
+                        actor.getActorRoles()
+                                .stream()
+                                .noneMatch(actorRole -> actorRole.getName().equals(ActorRoleEnum.CURRIER.toString()))
         ) {
 
             return updateActorWithNewRole(actor, ActorRoleEnum.CURRIER);
