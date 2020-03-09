@@ -60,11 +60,11 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
         bucket = storage.create(BucketInfo.of(bucketName));
         Blob blob = bucket.create(String.valueOf(guid), data);
 
-        String url = blob.getMediaLink();
+        String urlFromCloud = blob.getMediaLink();
         byte[] dataFromCloud = blob.getContent();
         String guidFromCloud = blob.getName();
 
-        assertNotNull(url);
+        assertNotNull(urlFromCloud);
         assertEquals(String.valueOf(guid), guidFromCloud);
         assertEquals(data, dataFromCloud);
     }
@@ -76,12 +76,12 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
         bucket = storage.get(bucketName);
         Blob blob = bucket.get(String.valueOf(guid));
 
-        String url = blob.getMediaLink();
+        String urlFromCloud = blob.getMediaLink();
         byte[] dataFromCloud = blob.getContent();
-        String cloudGuid = blob.getName();
+        String guidFromCloud = blob.getName();
 
-        assertNotNull(url);
-        assertNotNull(cloudGuid);
+        assertNotNull(urlFromCloud);
+        assertNotNull(guidFromCloud);
         assertNotNull(dataFromCloud);
     }
 
