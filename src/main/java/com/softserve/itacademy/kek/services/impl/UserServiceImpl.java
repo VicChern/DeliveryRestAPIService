@@ -22,7 +22,7 @@ import com.softserve.itacademy.kek.services.IUserService;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
 

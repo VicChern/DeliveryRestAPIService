@@ -1,7 +1,7 @@
 package com.softserve.itacademy.kek.services;
 
 
-import com.softserve.itacademy.kek.models.impl.Identity;
+import com.softserve.itacademy.kek.models.IIdentity;
 import com.softserve.itacademy.kek.models.impl.User;
 
 public interface IIdentityService {
@@ -13,6 +13,6 @@ public interface IIdentityService {
      * @param password
      * @return inserted user data
      */
-    Identity savePassword(User userData, String password);
+    IIdentity savePassword(User userData, String password);
 
 }
