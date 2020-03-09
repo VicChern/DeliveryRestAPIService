@@ -6,10 +6,11 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.RegistrationDto;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
@@ -28,11 +29,12 @@ public class RegistrationController {
         this.createUser = createUser;
     }
 
-    @GetMapping("/registration")
+    @PostMapping(path = "/registration", consumes = KekMediaType.REGISTRATION_USER, produces = KekMediaType.REGISTRATION_USER)
     public void userRegistration(@RequestBody @Valid RegistrationDto userData, HttpServletResponse response) throws Exception {
         logger.info("Created request for user registration: {}", userData);
 
         final IUser user = createUser.createNewUser(userData);
+
 
         final String redirectUrl = authenticationService.authenticateKekUser(user);
 

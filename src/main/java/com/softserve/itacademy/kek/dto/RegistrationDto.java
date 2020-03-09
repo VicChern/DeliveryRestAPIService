@@ -8,15 +8,10 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.softserve.itacademy.kek.controller.utils.ValidEmail;
-import com.softserve.itacademy.kek.controller.utils.ValidPassword;
-import com.softserve.itacademy.kek.controller.utils.ValidPhone;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
 
 public class RegistrationDto implements IUser {
-    private UUID guid;
-
     @NotEmpty
     private String name;
 
@@ -28,25 +23,24 @@ public class RegistrationDto implements IUser {
     @NotNull
     @NotEmpty
     @Size(max = 256)
-    @ValidEmail
+//    @ValidEmail
     private String email;
 
     @NotEmpty
     @JsonProperty("phone")
-    @ValidPhone
+//    @ValidPhone
     private String phoneNumber;
 
     @NotNull
     @NotEmpty
     @Size(min = 6, max = 32)
-    @ValidPassword
+//    @ValidPassword
     private String password;
 
     public RegistrationDto() {
     }
 
-    public RegistrationDto(UUID guid, String name, String nickName, String email, String phoneNumber, String password) {
-        this.guid = guid;
+    public RegistrationDto(String name, String nickName, String email, String phoneNumber, String password) {
         this.name = name;
         this.nickname = nickName;
         this.email = email;
@@ -56,7 +50,7 @@ public class RegistrationDto implements IUser {
 
     @Override
     public UUID getGuid() {
-        return guid;
+        return null;
     }
 
     @Override
@@ -93,8 +87,7 @@ public class RegistrationDto implements IUser {
         if (this == o) return true;
         if (!(o instanceof RegistrationDto)) return false;
         RegistrationDto userDto = (RegistrationDto) o;
-        return Objects.equals(guid, userDto.guid) &&
-                Objects.equals(name, userDto.name) &&
+        return Objects.equals(name, userDto.name) &&
                 Objects.equals(nickname, userDto.nickname) &&
                 Objects.equals(email, userDto.email) &&
                 Objects.equals(phoneNumber, userDto.phoneNumber) &&
@@ -103,13 +96,12 @@ public class RegistrationDto implements IUser {
 
     @Override
     public int hashCode() {
-        return Objects.hash(guid, name, nickname, email, phoneNumber, password);
+        return Objects.hash(name, nickname, email, phoneNumber, password);
     }
 
     @Override
     public String toString() {
         return "RegistrationDto{" +
-                "guid='" + guid + '\'' +
                 ", name='" + name + '\'' +
                 ", nickName='" + nickname + '\'' +
                 ", email='" + email + '\'' +
