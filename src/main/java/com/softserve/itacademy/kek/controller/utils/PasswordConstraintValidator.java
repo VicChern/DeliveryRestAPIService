@@ -10,12 +10,14 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
     private Pattern pattern;
     private Matcher matcher;
 
-    //    Be between 8 and 40 characters long
+//    Be between 6 and 32 characters long
 //    Contain at least one digit.
 //    Contain at least one lower case character.
 //    Contain at least one upper case character.
-//    Contain at least on special character from [ @ # $ % ! . ].
-    private static final String PASSWORD_PATTERN = "((?=.*[a-z])(?=.*\\\\d)(?=.*[A-Z])(?=.*[@#$%!]).{8,40})";
+//    Contains one special symbols in the list "@#$%./?,%^&"
+//    ((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32})  - without special symbol
+
+    private static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%./?,%^&]).{6,32})";
 
     @Override
     public void initialize(ValidPassword arg0) {
@@ -23,8 +25,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
-
-        return false;
+        return validPassword(password);
     }
 
     private boolean validPassword(String password) {
