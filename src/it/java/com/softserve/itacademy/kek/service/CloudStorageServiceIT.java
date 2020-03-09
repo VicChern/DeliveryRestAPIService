@@ -14,6 +14,7 @@ import com.google.cloud.storage.testing.RemoteStorageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -51,8 +52,11 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
 
         data = new byte[]{1, 2, 4, 5};
         guid = "274d9fbb-4f47-42f7-8fcb-2485be10c8af";
+    }
 
-
+    @AfterMethod(groups = {"integration-tests"})
+    public void tearDown() {
+        RemoteStorageHelper.forceDelete(storage, bucketName);
     }
 
     @Test(groups = {"integration-tests"})
