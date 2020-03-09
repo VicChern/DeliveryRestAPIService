@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.dto.RegistrationDto;
 import com.softserve.itacademy.kek.exception.UserAlreadyExistException;
+import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.ICreateUserService;
@@ -36,7 +37,7 @@ public class CreateUserServiceImpl implements ICreateUserService {
 
     @Transactional
     @Override
-    public boolean createNewUser(RegistrationDto userData) {
+    public IUser createNewUser(RegistrationDto userData) {
         final boolean isAlreadyRegistered = userRepository.findByEmail(userData.getEmail()) == null;
         if (isAlreadyRegistered) {
             logger.info("User already exists in DB {}", userData);
@@ -55,6 +56,6 @@ public class CreateUserServiceImpl implements ICreateUserService {
         identityService.savePassword(user, passwordEncoder.encode(userData.getPassword()));
 
         logger.info("User has been added to DB {}", userData);
-        return false;
+        return user;
     }
 }
