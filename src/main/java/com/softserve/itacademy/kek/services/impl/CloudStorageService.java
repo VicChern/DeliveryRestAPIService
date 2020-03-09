@@ -36,10 +36,6 @@ public class CloudStorageService extends AbstractService implements ICloudStorag
     @Value("gcp.storage.filename")
     private String storagePropertiesFileName;
 
-    public CloudStorageService(String storagePropertiesFileName) {
-        this.storagePropertiesFileName = storagePropertiesFileName;
-    }
-
     @Override
     public ICloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {
         logger.info("Uploading binary data to Google Cloud Storage default bucket");
