@@ -18,22 +18,22 @@ import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
 
 @Service
-public class EventObserverJob {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventObserverJob.class);
+public class EventObserver {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventObserver.class);
 
     public final ApplicationEventPublisher eventPublisher;
 
     private IOrderEventService orderEventService;
 
     @Autowired
-    public EventObserverJob(IOrderEventService orderEventService,
-                            ApplicationEventPublisher eventPublisher) {
+    public EventObserver(IOrderEventService orderEventService,
+                         ApplicationEventPublisher eventPublisher) {
         this.orderEventService = orderEventService;
         this.eventPublisher = eventPublisher;
     }
 
 
-    @Scheduled(fixedRate = 15000)
+    @Scheduled(fixedRate = 6000)
     public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
         final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
         LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());
