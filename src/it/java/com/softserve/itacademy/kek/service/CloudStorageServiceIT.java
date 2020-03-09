@@ -1,14 +1,10 @@
 package com.softserve.itacademy.kek.service;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.testing.RemoteStorageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +17,6 @@ import org.testng.annotations.Test;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.services.impl.CloudStorageService;
 import com.softserve.itacademy.kek.services.model.ICloudStorageObject;
-import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -35,78 +30,62 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
     private CloudStorageService cloudStorageService;
 
     private RemoteStorageHelper helper;
+
     private Storage storage;
+    private ICloudStorageObject cloudStorageObject;
 
     private String bucketName;
     private Bucket bucket;
+    private Blob blob;
 
     private byte[] data;
-    private String guid;
 
     @BeforeMethod(groups = {"integration-tests"})
-    public void setUp() throws FileNotFoundException {
-        helper = RemoteStorageHelper.create("kinda-express-king-266805", new FileInputStream(System.getenv("GOOGLE_CLOUD_STORAGE_KEY")));
+    public void setUp() throws Exception {
+        cloudStorageService = new CloudStorageService();
 
+        helper = RemoteStorageHelper.create("kinda-express-king-266805", new FileInputStream(System.getenv("GOOGLE_CLOUD_STORAGE_KEY")));
         storage = helper.getOptions().getService();
-        bucketName = RemoteStorageHelper.generateBucketName();
+
+        bucketName = "kek_default_bucket";
+        bucket = storage.get(bucketName);
 
         data = new byte[]{1, 2, 4, 5};
-        guid = "274d9fbb-4f47-42f7-8fcb-2485be10c8af";
     }
 
     @AfterMethod(groups = {"integration-tests"})
-    public void tearDown() {
-        RemoteStorageHelper.forceDelete(storage, bucketName);
+    public void tearDown() throws Exception {
+        storage.delete(blob.getBlobId());
     }
 
     @Test(groups = {"integration-tests"})
     public void uploadBinaryData() throws Exception {
-        bucket = storage.create(BucketInfo.of(bucketName));
-        Blob blob = bucket.create(String.valueOf(guid), data);
+        cloudStorageObject = cloudStorageService.uploadBinaryData(data);
 
-        String urlFromCloud = blob.getMediaLink();
-        byte[] dataFromCloud = blob.getContent();
-        String guidFromCloud = blob.getName();
+        blob = bucket.get(cloudStorageObject.getGuid());
 
-        assertNotNull(urlFromCloud);
-        assertEquals(String.valueOf(guid), guidFromCloud);
-        assertEquals(data, dataFromCloud);
+        assertNotNull(cloudStorageObject.getUrlString());
+        assertNotNull(cloudStorageObject.getGuid());
+        assertEquals(data, cloudStorageObject.getDataBytes());
     }
 
     @Test(groups = {"integration-tests"})
     public void getCloudStorageObject() throws Exception {
-        uploadBinaryData();
+        ICloudStorageObject uploadedObject = cloudStorageService.uploadBinaryData(data);
+        ICloudStorageObject cloudStorageObject = cloudStorageService.getCloudStorageObject(uploadedObject.getGuid());
 
-        bucket = storage.get(bucketName);
-        Blob blob = bucket.get(String.valueOf(guid));
+        blob = bucket.get(uploadedObject.getGuid());
 
-        String urlFromCloud = blob.getMediaLink();
-        byte[] dataFromCloud = blob.getContent();
-        String guidFromCloud = blob.getName();
-
-        assertNotNull(urlFromCloud);
-        assertEquals(String.valueOf(guid), guidFromCloud);
-        assertEquals(data, dataFromCloud);
+        assertEquals(cloudStorageObject.getUrlString(), uploadedObject.getUrlString());
+        assertEquals(cloudStorageObject.getGuid(), uploadedObject.getGuid());
+        assertEquals(data, cloudStorageObject.getDataBytes());
     }
 
     @Test(groups = {"integration-tests"})
     public void getCloudStorageObjects() throws Exception {
-        uploadBinaryData();
+        List<ICloudStorageObject> cloudStorageObjectList = cloudStorageService.getCloudStorageObjects("kek_default_bucket");
 
-        bucket = storage.get(bucketName);
-
-        final List<ICloudStorageObject> result = StreamSupport.stream(bucket.list().getValues().spliterator(), false)
-                .map(blob -> {
-                    final String url = blob.getMediaLink();
-                    final String guid = blob.getName();
-                    final byte[] data = blob.getContent();
-
-                    return new CloudStorageObject(url, guid, data);
-                })
-                .collect(Collectors.toList());
-
-        for (ICloudStorageObject object : result) {
-            assertNotNull(object);
+        for (ICloudStorageObject object : cloudStorageObjectList) {
 
             assertNotNull(object.getUrlString());
             assertNotNull(object.getGuid());
