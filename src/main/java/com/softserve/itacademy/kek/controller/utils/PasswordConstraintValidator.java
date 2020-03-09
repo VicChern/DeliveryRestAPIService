@@ -10,7 +10,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
     private Pattern pattern;
     private Matcher matcher;
 
-//    Be between 8 and 40 characters long
+    //    Be between 8 and 40 characters long
 //    Contain at least one digit.
 //    Contain at least one lower case character.
 //    Contain at least one upper case character.
