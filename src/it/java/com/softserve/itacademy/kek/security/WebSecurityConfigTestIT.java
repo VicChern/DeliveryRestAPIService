@@ -16,7 +16,6 @@ import com.softserve.itacademy.kek.configuration.WebMvcConfig;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ContextConfiguration(classes = {WebMvcConfig.class, WebSecurityConfig.class, PersistenceTestConfig.class})
@@ -45,8 +44,7 @@ public class WebSecurityConfigTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void routeRedirectWhenNotAuthenticated() throws Exception {
         mvc.perform(get(requestedPageURL))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrlWhenNotAuthenticated));
+                .andExpect(status().isNotFound());
     }
 
 

@@ -53,7 +53,7 @@ public class TenantServiceImpl implements ITenantService {
         // check if exist user for tenant
         //TODO replace by checking whether the ownerGuid is guid of principal user (when will be added security)
 
-        final User tenantOwner = userRepository.findByGuid(ownerGuid);
+        final User tenantOwner = userRepository.findByGuid(ownerGuid).orElse(null);
 
         if (tenantOwner == null) {
             LOGGER.error("There is no User in db for Tenant with user guid: {}", ownerGuid);

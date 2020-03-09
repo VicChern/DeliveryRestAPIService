@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.dto.ErrorListDto;
 import com.softserve.itacademy.kek.exception.ServiceException;
+import com.softserve.itacademy.kek.exception.TrackingException;
 
 @RestController
 public class DefaultController {
@@ -69,4 +70,10 @@ public class DefaultController {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errorListDto);
     }
+
+    @ExceptionHandler({TrackingException.class})
+    public ResponseEntity<String> trackingExceptionHandler(Exception ex) {
+        return ResponseEntity.ok().body(ex.getMessage());
+    }
+
 }

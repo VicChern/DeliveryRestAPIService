@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,12 +32,14 @@ import com.softserve.itacademy.kek.dto.OrderListDto;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.IOrderEventType;
+import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.IOrderService;
 
 
 @RestController
 @RequestMapping(path = "/orders")
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class OrderController extends DefaultController {
     private final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
@@ -71,6 +76,7 @@ public class OrderController extends DefaultController {
      * @return Response entity with list of {@link OrderListDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.ORDER_LIST)
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public ResponseEntity<OrderListDto> getOrderList() {
         logger.debug("Client requested the list of all orders");
 
@@ -92,20 +98,19 @@ public class OrderController extends DefaultController {
      * Creates a new order
      *
      * @param newOrderListDto {@link OrderDto} order object as a JSON
-     * @param customerGuid    order guid from the URN
      * @return Response entity with {@link OrderListDto} object as a JSON
      */
-    @PostMapping(value = "/{customerGuid}",
-            consumes = KekMediaType.ORDER_LIST,
-            produces = KekMediaType.ORDER_LIST)
+    @PostMapping(consumes = KekMediaType.ORDER_LIST, produces = KekMediaType.ORDER_LIST)
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<OrderListDto> addOrder(@RequestBody @Valid OrderListDto newOrderListDto,
-                                                 @PathVariable String customerGuid) {
+                                                 Authentication authentication) {
         logger.debug("Accepted requested to create a new order:\n{}", newOrderListDto);
 
-        OrderListDto createdOrdersListDto = new OrderListDto();
+        final OrderListDto createdOrdersListDto = new OrderListDto();
+        final IUser user = (IUser) authentication.getPrincipal();
 
         for (OrderDto orderDto : newOrderListDto.getOrderList()) {
-            IOrder createdOrder = orderService.create(orderDto, UUID.fromString(customerGuid));
+            IOrder createdOrder = orderService.create(orderDto, UUID.fromString(user.getGuid().toString()));
             OrderDto createdOrderDto = transformOrder(createdOrder);
 
             createdOrdersListDto.addOrder(createdOrderDto);
@@ -125,6 +130,7 @@ public class OrderController extends DefaultController {
      * @return Response Entity with {@link OrderDto} object as a JSON
      */
     @GetMapping(value = "/{guid}", produces = KekMediaType.ORDER)
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public ResponseEntity<OrderDto> getOrder(@PathVariable String guid) {
         logger.debug("Client requested the order {}", guid);
 
@@ -147,6 +153,7 @@ public class OrderController extends DefaultController {
     @PutMapping(value = "/{guid}",
             consumes = KekMediaType.ORDER,
             produces = KekMediaType.ORDER)
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<OrderDto> modifyOrder(@PathVariable String guid, @RequestBody @Valid OrderDto orderDto) {
         logger.debug("Accepted modified order {} from the client", orderDto);
 
@@ -165,6 +172,7 @@ public class OrderController extends DefaultController {
      * @param guid order guid from the URN
      */
     @DeleteMapping("/{guid}")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity deleteOrder(@PathVariable String guid) {
         logger.debug("Accepted request to delete the order {}", guid);
 
@@ -183,6 +191,7 @@ public class OrderController extends DefaultController {
      * @return Response entity with list of the {@link OrderEventListDto} objects as a JSON
      */
     @GetMapping(value = "/{id}/events", produces = KekMediaType.EVENT_LIST)
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public ResponseEntity<OrderEventListDto> getEvents(@PathVariable String guid) {
         logger.info("Client requested all the events of the order {}", guid);
 
@@ -204,19 +213,19 @@ public class OrderController extends DefaultController {
      * <p>
      * //     * @param actorGuid     actor guid from the URN
      *
-     * @param orderGuid     order guid from the URN
      * @param orderEventDto {@link OrderEventDto} object
      * @return Response Entity with created {@link OrderEventDto} objects as a JSON
      */
-    //@PostMapping(value = "/{actorGuid}/events",
-    @PostMapping(value = "/{orderGuid}/events",
+    @PostMapping(value = "/events",
             consumes = KekMediaType.EVENT,
             produces = KekMediaType.EVENT)
-    public ResponseEntity<OrderEventDto> addEvent(//@PathVariable String actorGuid,
-                                                  @PathVariable String orderGuid,
-                                                  @RequestBody @Valid OrderEventDto orderEventDto) {
-        //logger.info("Accepted requested to create a new event for the order {} created by actor {}", orderGuid, actorGuid);
-        logger.info("Accepted request to create a new event for the order {} created by actor\n{}", orderGuid, orderEventDto);
+    @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
+    public ResponseEntity<OrderEventDto> addEvent(@RequestBody @Valid OrderEventDto orderEventDto,
+                                                  Authentication authentication) {
+        final IUser user = (IUser) authentication.getPrincipal();
+
+        logger.info("Accepted request to create a new event for the order {} created by actor\n{}", user.getGuid(),
+                orderEventDto);
 
         // TODO: 01.03.2020 this will work when fixed OrderEventService
 //        IOrderEvent createdOrderEvent = orderEventService.create(orderEventDto, UUID.fromString(orderGuid));
