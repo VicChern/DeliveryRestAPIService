@@ -16,9 +16,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
+import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.security.TokenAuthentication;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
 
@@ -59,28 +59,39 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     }
 
     @Override
-    public void authenticateUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             final Tokens tokens = controller.handle(request, response);
             final TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
 
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(tokenAuth.getClaims().get("email").asString());
+            final String email = tokenAuth.getClaims().get("email").asString();
 
-            final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
+            setUsernamePasswordAuthentication(email);
+            logger.info("User was authenticated successfully, redirectUrl - {}", redirectOnSuccess);
 
-            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
-            logger.info("User was authenticated successfully");
-
-            response.sendRedirect(redirectOnSuccess);
+            return redirectOnSuccess;
         } catch (Exception e) {
-            logger.error("Error while authentication", e);
+            logger.error("Error while authentication, redirectUrl - " + redirectOnFail + ", error - " + e);
 
             SecurityContextHolder.clearContext();
-            response.sendRedirect(redirectOnFail);
+            return redirectOnFail;
         }
+    }
+
+    @Override
+    public String authenticateKekUser(IUser user) {
+        setUsernamePasswordAuthentication(user.getEmail());
+
+        logger.info("User was authenticated successfully, redirectUrl - {}", redirectOnSuccess);
+        return redirectOnSuccess;
+    }
+
+    private void setUsernamePasswordAuthentication(String email) {
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+        final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 
     private String createRedirectUrl(String scheme, String serverName, int serverPort) {

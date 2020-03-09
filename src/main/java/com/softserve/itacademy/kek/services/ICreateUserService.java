@@ -1,8 +1,9 @@
 package com.softserve.itacademy.kek.services;
 
 import com.softserve.itacademy.kek.dto.RegistrationDto;
+import com.softserve.itacademy.kek.models.IUser;
 
 public interface ICreateUserService {
 
-    boolean createNewUser(RegistrationDto userData);
+    IUser createNewUser(RegistrationDto userData);
 }
