@@ -14,10 +14,11 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 //    Contain at least one digit.
 //    Contain at least one lower case character.
 //    Contain at least one upper case character.
-//    Contains one special symbols in the list "@#$%./?,%^&"
-//    ((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32})  - without special symbol
 
-    private static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%./?,%^&]).{6,32})";
+//    ((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32})  - without special symbol
+//    ((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%./?,%^&]).{6,32}) - Contains one special symbols in the list "@#$%./?,%^&"
+
+    private static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,32})";
 
     @Override
     public void initialize(ValidPassword arg0) {
