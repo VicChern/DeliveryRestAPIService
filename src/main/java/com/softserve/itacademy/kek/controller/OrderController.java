@@ -61,7 +61,7 @@ public class OrderController extends DefaultController {
 
     private OrderEventDto transformOrderEvent(IOrderEvent orderEvent) {
         return new OrderEventDto(orderEvent.getGuid(),
-                transformOrder(orderEvent.getOrder()),
+                orderEvent.getOrder().getGuid(),
                 orderEvent.getPayload(),
                 transformOrderEventType(orderEvent.getOrderEventType()));
     }
@@ -190,7 +190,7 @@ public class OrderController extends DefaultController {
      * @param guid order guid from the URN
      * @return Response entity with list of the {@link OrderEventListDto} objects as a JSON
      */
-    @GetMapping(value = "/{id}/events", produces = KekMediaType.EVENT_LIST)
+    @GetMapping(value = "/{guid}/events", produces = KekMediaType.EVENT_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public ResponseEntity<OrderEventListDto> getEvents(@PathVariable String guid) {
         logger.info("Client requested all the events of the order {}", guid);
@@ -210,30 +210,32 @@ public class OrderController extends DefaultController {
 
     /**
      * Adds a new event for the specific order
-     * <p>
-     * //     * @param actorGuid     actor guid from the URN
      *
      * @param orderEventDto {@link OrderEventDto} object
      * @return Response Entity with created {@link OrderEventDto} objects as a JSON
      */
-    @PostMapping(value = "/events",
+    @PostMapping(value = "/{guid}/events",
             consumes = KekMediaType.EVENT,
             produces = KekMediaType.EVENT)
     @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
     public ResponseEntity<OrderEventDto> addEvent(@RequestBody @Valid OrderEventDto orderEventDto,
+                                                  @PathVariable String guid,
                                                   Authentication authentication) {
         final IUser user = (IUser) authentication.getPrincipal();
 
-        logger.info("Accepted request to create a new event for the order {} created by actor\n{}", user.getGuid(),
+        logger.info("Accepted request to create a new event for the order {} created by actor\n{}",
+                user.getGuid(),
                 orderEventDto);
 
-        // TODO: 01.03.2020 this will work when fixed OrderEventService
-//        IOrderEvent createdOrderEvent = orderEventService.create(orderEventDto, UUID.fromString(orderGuid));
-//        OrderEventDto createdOrderEventDto = transformOrderEvent(createdOrderEvent);
+        IOrderEvent createdOrderEvent = orderEventService.createOrderEvent(UUID.fromString(guid),
+                user.getGuid(),
+                orderEventDto);
 
-        logger.info("Sending the created order event to the client:\n{}", orderEventDto);
+        OrderEventDto createdOrderEventDto = transformOrderEvent(createdOrderEvent);
+
+        logger.info("Sending the created order event to the client:\n{}", createdOrderEventDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(orderEventDto);
+                .body(createdOrderEventDto);
     }
 }
