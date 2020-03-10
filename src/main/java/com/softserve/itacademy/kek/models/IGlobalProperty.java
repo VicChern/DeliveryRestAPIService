@@ -1,37 +1,37 @@
 package com.softserve.itacademy.kek.models;
 
-import java.util.UUID;
+import com.softserve.itacademy.kek.models.impl.GlobalProperty;
 
 /**
- * Interface for TenantProperties data exchange with service layer
+ * Interface for GlobalProperties data exchange with Service Layer
  */
-public interface ITenantProperties {
+public interface IGlobalProperty {
 
     /**
-     * Returns TenantProperty guid
+     * Returns {@link GlobalProperty} id
      *
-     * @return TenantProperty guid
+     * @return globalProperties id
      */
-    UUID getGuid();
+    Long getIdProperty();
 
     /**
-     * Returns IEventType for TenantProperty
+     * Returns {@link GlobalProperty} propertyType
      *
-     * @return IEventType for TenantProperty
+     * @return globalProperties propertyType
      */
     IPropertyType getPropertyType();
 
     /**
-     * Returns TenantProperty key
+     * Returns {@link GlobalProperty} key
      *
-     * @return TenantProperty key
+     * @return globalProperties key
      */
     String getKey();
 
     /**
-     * Returns TenantProperty value
+     * Returns {@link GlobalProperty} value
      *
-     * @return TenantProperty value
+     * @return globalProperties value
      */
     String getValue();
 

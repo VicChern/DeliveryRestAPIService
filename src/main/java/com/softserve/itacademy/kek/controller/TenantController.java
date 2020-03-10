@@ -41,7 +41,7 @@ import com.softserve.itacademy.kek.services.ITenantService;
 @RequestMapping(path = "/tenants")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TenantController extends DefaultController {
-    final static Logger logger = LoggerFactory.getLogger(TenantController.class);
+    private final static Logger logger = LoggerFactory.getLogger(TenantController.class);
 
     private final ITenantService tenantService;
     private final ITenantPropertiesService tenantPropertiesService;
@@ -98,7 +98,7 @@ public class TenantController extends DefaultController {
     /**
      * Get information about tenants
      *
-     * @return Response Entity with a list of {@link TenantDto} objects as a JSON
+     * @return Response Entity with a list of {@link TenantListDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.TENANT_LIST)
     @PreAuthorize("hasRole('TENANT')")
@@ -167,7 +167,7 @@ public class TenantController extends DefaultController {
             produces = KekMediaType.TENANT)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
-        logger.info("Accepted modified tenant from the client:\n{}", tenant);
+        logger.info("Accepted current tenant from the client:\n{}", tenant);
 
         ITenant modifiedTenant = tenantService.update(tenant, UUID.fromString(guid));
         TenantDto modifiedTenantDto = transform(modifiedTenant);
@@ -190,7 +190,7 @@ public class TenantController extends DefaultController {
 
         tenantService.deleteByGuid(UUID.fromString(guid));
 
-        logger.info("Tenant({}}) was successfully deleted", guid);
+        logger.info("Tenant({}) was successfully deleted", guid);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
@@ -354,7 +354,7 @@ public class TenantController extends DefaultController {
             produces = KekMediaType.ADDRESS)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<AddressListDto> addTenantAddresses(@PathVariable String guid, @RequestBody @Valid AddressListDto newAddressesDto) {
-        logger.info("Accepted requested to create a new addresses for user:{}:\n", newAddressesDto);
+        logger.info("Accepted requested to create a new addresses for tenant:{}:\n", newAddressesDto);
         AddressListDto createdAddresses = new AddressListDto();
 
         for (AddressDto newAddress : newAddressesDto.getAddressList()) {
@@ -364,7 +364,7 @@ public class TenantController extends DefaultController {
             createdAddresses.addAddress(addressDto);
         }
 
-        logger.info("Sending the created users's addresses to the client:\n{}", createdAddresses);
+        logger.info("Sending the created tenant's addresses to the client:\n{}", createdAddresses);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdAddresses);
@@ -385,7 +385,7 @@ public class TenantController extends DefaultController {
         IAddress address = addressService.getForTenant(UUID.fromString(addrGuid), UUID.fromString(guid));
         AddressDto addressDto = transformAddress(address);
 
-        logger.info("Sending the address of the user {} to the client:\n{}", guid, addressDto);
+        logger.info("Sending the address of the tenant {} to the client:\n{}", guid, addressDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(addressDto);
