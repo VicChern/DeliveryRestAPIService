@@ -1,13 +1,10 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import com.softserve.itacademy.kek.exception.TenantServiceException;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.TenantDetails;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.services.ITenantService;
+import javax.persistence.PersistenceException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +13,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.PersistenceException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import com.softserve.itacademy.kek.exception.TenantServiceException;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.impl.Tenant;
+import com.softserve.itacademy.kek.models.impl.TenantDetails;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.repositories.UserRepository;
+import com.softserve.itacademy.kek.services.ITenantService;
 
 /**
  * Service implementation for {@link ITenantService}
@@ -52,7 +53,7 @@ public class TenantServiceImpl implements ITenantService {
         // check if exist user for tenant
         //TODO replace by checking whether the ownerGuid is guid of principal user (when will be added security)
 
-        final User tenantOwner = userRepository.findByGuid(ownerGuid);
+        final User tenantOwner = userRepository.findByGuid(ownerGuid).orElse(null);
 
         if (tenantOwner == null) {
             LOGGER.error("There is no User in db for Tenant with user guid: {}", ownerGuid);

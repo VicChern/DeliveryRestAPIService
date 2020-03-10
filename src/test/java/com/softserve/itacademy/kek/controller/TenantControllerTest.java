@@ -1,5 +1,17 @@
 package com.softserve.itacademy.kek.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.models.IAddress;
@@ -16,17 +28,6 @@ import com.softserve.itacademy.kek.models.impl.UserDetails;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;

@@ -1,5 +1,16 @@
 package com.softserve.itacademy.kek.services.impl;
 
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.softserve.itacademy.kek.exception.AddressServiceException;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.impl.Address;
@@ -9,16 +20,6 @@ import com.softserve.itacademy.kek.repositories.AddressRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolationException;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Service implementation for {@link IAddressService}
@@ -244,7 +245,7 @@ public class AddressServiceImpl implements IAddressService {
     private User findUserByGuid(UUID guid) {
         logger.info("Address Service, find User in DB: guid = {}", guid);
 
-        User user = userRepository.findByGuid(guid);
+        User user = userRepository.findByGuid(guid).orElse(null);
         if (user == null) {
             logger.error("Address Service, User wasn't found in DB: guid = {}", guid);
             throw new AddressServiceException("User wasn't found");

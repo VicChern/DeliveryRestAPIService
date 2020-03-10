@@ -1,5 +1,15 @@
 package com.softserve.itacademy.kek.services;
 
+import javax.persistence.PersistenceException;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 import com.softserve.itacademy.kek.exception.ServiceException;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.impl.Tenant;
@@ -8,15 +18,6 @@ import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.impl.TenantServiceImpl;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import javax.persistence.PersistenceException;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
@@ -70,7 +71,7 @@ public class TenantServiceTest {
     @Test
     void createSuccess() {
         //given
-        when(userRepository.findByGuid(any(UUID.class))).thenReturn(user);
+        when(userRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(user));
         when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 
         // when
@@ -91,7 +92,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void createThrowsServiceExceptionWhenRepositoryReturnsEmptyTenantOwner() {
         //given
-        when(userRepository.findByGuid(any(UUID.class))).thenReturn(null);
+        when(userRepository.findByGuid(any(UUID.class))).thenReturn(Optional.empty());
 
         // when
         ITenant save = tenantService.create(tenant);
@@ -100,7 +101,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void createThrowsServiceExceptionWhenRepositoryThrowsPersistenceException() {
         //given
-        when(userRepository.findByGuid(any(UUID.class))).thenReturn(user);
+        when(userRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(user));
         when(tenantRepository.save(any(Tenant.class))).thenThrow(PersistenceException.class);
 
         // when

@@ -1,17 +1,13 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.IUser;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -21,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IActor;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.IUser;
 
 @Entity
 @Table(name = "obj_actor")
@@ -43,7 +43,7 @@ public class Actor extends AbstractEntity implements IActor, Serializable {
     @Column(name = "guid", unique = true, nullable = false)
     private UUID guid;
 
-    @OneToMany
+    @ManyToMany
     private List<ActorRole> actorRoles = new ArrayList<>();
 
     @NotNull
@@ -97,6 +97,14 @@ public class Actor extends AbstractEntity implements IActor, Serializable {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public void addActorRole(ActorRole actorRole) {
+        actorRoles.add(actorRole);
+    }
+
+    public void removeTenantProperty(ActorRole actorRole) {
+        actorRoles.remove(actorRole);
     }
 
     @Override

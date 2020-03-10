@@ -1,8 +1,8 @@
 package com.softserve.itacademy.kek;
 
-import org.apache.log4j.Logger;
-
 import java.io.IOException;
+
+import org.apache.log4j.Logger;
 
 public class KekMain {
     private final static Logger logger = Logger.getLogger(KekMain.class);

@@ -1,7 +1,7 @@
 package com.softserve.itacademy.kek.controller;
 
-import com.softserve.itacademy.kek.dto.ErrorListDto;
-import com.softserve.itacademy.kek.exception.ServiceException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import com.softserve.itacademy.kek.dto.ErrorListDto;
+import com.softserve.itacademy.kek.exception.ServiceException;
+import com.softserve.itacademy.kek.exception.TrackingException;
 
 @RestController
 public class DefaultController {
@@ -68,4 +70,10 @@ public class DefaultController {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errorListDto);
     }
+
+    @ExceptionHandler({TrackingException.class})
+    public ResponseEntity<String> trackingExceptionHandler(Exception ex) {
+        return ResponseEntity.ok().body(ex.getMessage());
+    }
+
 }

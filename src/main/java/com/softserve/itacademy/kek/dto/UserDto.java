@@ -1,15 +1,17 @@
 package com.softserve.itacademy.kek.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.softserve.itacademy.kek.models.IUser;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.softserve.itacademy.kek.models.IUser;
+
 public class UserDto implements IUser {
+
     private UUID guid;
 
     @NotEmpty
@@ -41,6 +43,10 @@ public class UserDto implements IUser {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.userDetails = detailsDto;
+    }
+
+    public UserDto(String email) {
+        this.email = email;
     }
 
     @Override
@@ -101,5 +107,29 @@ public class UserDto implements IUser {
                 ", phone='" + phoneNumber + '\'' +
                 ", detailsDto=" + userDetails +
                 '}';
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setUserDetails(DetailsDto userDetails) {
+        this.userDetails = userDetails;
     }
 }

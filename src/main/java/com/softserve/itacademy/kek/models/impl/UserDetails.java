@@ -1,7 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import com.softserve.itacademy.kek.models.IUserDetails;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,6 +10,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.softserve.itacademy.kek.models.IUserDetails;
 
 @Entity
 @Table(name = "o2o_user_details")

@@ -1,11 +1,10 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderEvent;
-import com.softserve.itacademy.kek.models.impl.Order;
-
 import java.util.List;
 import java.util.UUID;
+
+import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.models.impl.Order;
 
 /**
  * Service interface for {@link IOrder}
@@ -20,17 +19,6 @@ public interface IOrderService {
      * @return saved order
      */
     IOrder create(IOrder order, UUID customerGuid);
-
-    /**
-     * Saved new {@link Order} for customer with customerGuid to db
-     *
-     * @param orderGuid          orderGuid
-     * @param userGuid           userGuid
-     * @param orderEventTypeName orderEventTypeName
-     * @param payload            payload
-     * @return saved order
-     */
-    IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, String orderEventTypeName, String payload);
 
     /**
      * Gets all orders

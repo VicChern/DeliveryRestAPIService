@@ -1,16 +1,20 @@
 package com.softserve.itacademy.kek.services;
 
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.services.impl.UserServiceImpl;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.mockito.ArgumentCaptor;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.UUID;
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.ActorRepository;
+import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.repositories.UserRepository;
+import com.softserve.itacademy.kek.services.impl.UserServiceImpl;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,10 +34,16 @@ public class UserServiceTest {
 
     private UserRepository userRepository;
 
+    private TenantRepository tenantRepository;
+
+    private ActorRepository actorRepository;
+
     @BeforeClass
     public void setUp() {
         userRepository = mock(UserRepository.class);
-        userService = new UserServiceImpl(userRepository);
+        tenantRepository = mock(TenantRepository.class);
+        actorRepository = mock(ActorRepository.class);
+        userService = new UserServiceImpl(userRepository, tenantRepository, actorRepository);
     }
 
     @AfterMethod
@@ -45,14 +55,14 @@ public class UserServiceTest {
     public void createUserSuccess() throws Exception {
         User testUser = createUserForTest(null, null);
 
-        when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(userRepository.saveAndFlush(any(User.class))).thenReturn(testUser);
 
         IUser createdUser = userService.create(testUser);
 
         ArgumentCaptor<User> acUser = ArgumentCaptor.forClass(User.class);
 
-        verify(userRepository, times(1)).save(any(User.class));
-        verify(userRepository).save(acUser.capture());
+        verify(userRepository, times(1)).saveAndFlush(any(User.class));
+        verify(userRepository).saveAndFlush(acUser.capture());
 
         User actualUser = acUser.getValue();
 
@@ -68,15 +78,15 @@ public class UserServiceTest {
         User testUser = createUserForTest(id, guid);
         User foundUser = createUserForTest(id, guid);
 
-        when(userRepository.findByGuid(guid)).thenReturn(foundUser);
-        when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(userRepository.findByGuid(guid)).thenReturn(Optional.ofNullable(foundUser));
+        when(userRepository.saveAndFlush(any(User.class))).thenReturn(testUser);
 
         IUser updatedUser = userService.update(testUser);
 
         ArgumentCaptor<User> acUser = ArgumentCaptor.forClass(User.class);
 
-        verify(userRepository, times(1)).save(any(User.class));
-        verify(userRepository).save(acUser.capture());
+        verify(userRepository, times(1)).saveAndFlush(any(User.class));
+        verify(userRepository).saveAndFlush(acUser.capture());
 
         User actualUser = acUser.getValue();
 
@@ -91,7 +101,7 @@ public class UserServiceTest {
         UUID guid = UUID.randomUUID();
         User foundUser = createUserForTest(id, guid);
 
-        when(userRepository.findByGuid(guid)).thenReturn(foundUser);
+        when(userRepository.findByGuid(guid)).thenReturn(Optional.ofNullable(foundUser));
 
         userService.deleteByGuid(guid);
 

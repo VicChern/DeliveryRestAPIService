@@ -1,8 +1,20 @@
 package com.softserve.itacademy.kek.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderDetails;
+import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
+import com.softserve.itacademy.kek.models.enums.EventType;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderDetails;
@@ -18,15 +30,6 @@ import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IOrderService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.util.List;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
@@ -78,21 +81,21 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
         actorRole1 = new ActorRole();
-        actorRole1.setName("CUSTOMER");
+        actorRole1.setName(ActorRoleEnum.CUSTOMER.toString());
         actorRole2 = new ActorRole();
-        actorRole2.setName("CURRIER");
+        actorRole2.setName(ActorRoleEnum.CURRIER.toString());
 
         orderEventType1 = new OrderEventType();
-        orderEventType1.setName("CREATED");
+        orderEventType1.setName(EventType.CREATED.toString());
 
         orderEventType2 = new OrderEventType();
-        orderEventType2.setName("ASSIGNED");
+        orderEventType2.setName(EventType.ASSIGNED.toString());
 
         orderEventType3 = new OrderEventType();
-        orderEventType3.setName("STARTED");
+        orderEventType3.setName(EventType.STARTED.toString());
 
         orderEventType4 = new OrderEventType();
-        orderEventType4.setName("DELIVERED");
+        orderEventType4.setName(EventType.DELIVERED.toString());
 
         actorRoleRepository.save(actorRole1);
         actorRoleRepository.save(actorRole2);
