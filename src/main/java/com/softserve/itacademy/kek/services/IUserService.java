@@ -1,10 +1,12 @@
 package com.softserve.itacademy.kek.services;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
 
 import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.models.IUser;
@@ -58,4 +60,12 @@ public interface IUserService {
      * @return a page of {@link IUser}
      */
     Page<IUser> getAll(Pageable pageable) throws UserServiceException;
+
+    /**
+     * Returns user roles
+     *
+     * @return list of user roles
+     */
+    Collection<? extends GrantedAuthority> getUserAuthorities(String email);
+
 }
