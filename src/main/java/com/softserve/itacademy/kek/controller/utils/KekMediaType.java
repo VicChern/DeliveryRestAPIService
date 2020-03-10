@@ -19,6 +19,5 @@ public class KekMediaType {
     public static final String ORDER_LIST = "application/vnd.softserve.orderList+json";
     public static final String EVENT = "application/vnd.softserve.event+json";
     public static final String EVENT_LIST = "application/vnd.softserve.eventList+json";
-
 }
 
