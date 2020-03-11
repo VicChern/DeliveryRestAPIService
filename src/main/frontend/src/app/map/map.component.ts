@@ -11,7 +11,7 @@ export class MapComponent implements OnInit {
   // Angular 7 Google Maps Tutorial
   // https://www.youtube.com/watch?v=-IwTQgKIjCQ
 
-  trackingLocation: TrackingLocation = new TrackingLocation();
+  trackingLocation: Location = new Location();
 
   constructor(private mapService: MapsService) {
   }
@@ -23,8 +23,8 @@ export class MapComponent implements OnInit {
     if (navigator) {
       navigator.geolocation.getCurrentPosition(pos => {
         console.log('Geolocation Position: ', pos);
-        this.trackingLocation.latitude = pos.coords.latitude;
-        this.trackingLocation.longitude = pos.coords.longitude;
+        this.trackingLocation.lat = pos.coords.latitude;
+        this.trackingLocation.lon = pos.coords.longitude;
       });
     }
 
@@ -39,6 +39,6 @@ export class MapComponent implements OnInit {
 }
 
 export class Location {
-  latitude: number;
-  longitude: number;
+  lat: number;
+  lon: number;
 }
