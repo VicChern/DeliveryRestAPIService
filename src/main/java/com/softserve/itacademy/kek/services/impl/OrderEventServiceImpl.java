@@ -104,8 +104,6 @@ public class OrderEventServiceImpl implements IOrderEventService {
     public IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, IOrderEvent iOrderEvent) {
         LOGGER.info("Saving orderEvent for order: {} and actor : {}, orderEvent: {}", orderGuid, userGuid, iOrderEvent);
 
-        LOGGER.info("Saving orderEvent for order: {} and actor : {}", orderGuid, userGuid);
-
         final Order order = getOrder(orderGuid);
         final Tenant tenant = (Tenant) tenantService.getByGuid(order.getTenant().getGuid());
         final Actor actor = getActor(tenant, userGuid, iOrderEvent.getOrderEventType().getName());

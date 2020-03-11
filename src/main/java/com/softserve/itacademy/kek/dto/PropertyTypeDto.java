@@ -4,12 +4,8 @@ import com.softserve.itacademy.kek.models.IPropertyType;
 
 public class PropertyTypeDto implements IPropertyType {
 
-    //    @NotNull
-//    @Size(min = 1, max = 256)
     private String name;
 
-    //    @NotNull
-//    @Size(min = 1)
     private String schema;
 
     public PropertyTypeDto() {

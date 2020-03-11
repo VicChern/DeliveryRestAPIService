@@ -27,25 +27,23 @@ public class AuthController extends DefaultController {
     private IAuthenticationService authenticationService;
 
     @GetMapping(path = "/login")
-    protected void login(HttpServletRequest request, HttpServletResponse response) {
+    protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("Performing login, request = {}", request);
 
         final String authorizeUrl = authenticationService.createRedirectUrl(request, response);
 
-        try {
-            logger.debug("trying to redirect to authorizeUrl = {}", authorizeUrl);
-            response.sendRedirect(authorizeUrl);
-
-        } catch (IOException e) {
-            logger.error("Failed to redirect to authorizeUrl {}, {}", authorizeUrl, e);
-        }
+        logger.debug("trying to redirect to authorizeUrl = {}", authorizeUrl);
+        response.sendRedirect(authorizeUrl);
     }
 
     @RequestMapping(path = "/callback")
     protected void getCallback(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("Entered to getCallBack method req = {}", request);
 
-        authenticationService.authenticateUser(request, response);
+        final String redirectUrl = authenticationService.authenticateAuth0User(request, response);
+
+        logger.debug("redirecting after authentication = {}", redirectUrl);
+        response.sendRedirect(redirectUrl);
     }
 
     @GetMapping(path = "/profile")

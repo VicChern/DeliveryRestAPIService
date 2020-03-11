@@ -4,6 +4,7 @@ import {AdminComponent} from './admin/admin.component';
 import {CustomerAccountComponent} from './customer-account/customer-account.component';
 import {RegistrationComponent} from './registration/registration.component';
 import {MapComponent} from './map/map.component';
+import {SseControllerComponent} from "./sse-controller/sse-controller.component";
 
 
 const routes: Routes = [
@@ -22,6 +23,10 @@ const routes: Routes = [
   {
     path: 'map',
     component: MapComponent,
+  },
+  {
+    path: 'app-sse-controller/:orderGuid',
+    component: SseControllerComponent,
   },
 ];
 

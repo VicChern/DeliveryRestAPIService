@@ -9,7 +9,7 @@ import net.bytebuddy.utility.RandomString;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Address;
-import com.softserve.itacademy.kek.models.impl.GlobalProperties;
+import com.softserve.itacademy.kek.models.impl.GlobalProperty;
 import com.softserve.itacademy.kek.models.impl.Identity;
 import com.softserve.itacademy.kek.models.impl.IdentityType;
 import com.softserve.itacademy.kek.models.impl.Order;
@@ -222,8 +222,8 @@ public class ITCreateEntitiesUtils {
 
 
     //============================================== GlobalProperty entity =============================================
-    public static GlobalProperties getGlobalProperty(PropertyType type) {
-        GlobalProperties properties = new GlobalProperties();
+    public static GlobalProperty getGlobalProperty(PropertyType type) {
+        GlobalProperty properties = new GlobalProperty();
         properties.setPropertyType(type);
         properties.setKey(randomString());
         properties.setValue(randomString());
