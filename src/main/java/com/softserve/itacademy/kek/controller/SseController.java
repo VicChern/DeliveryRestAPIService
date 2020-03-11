@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +28,6 @@ import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.OrderTrackingWrapper;
 
 @RestController
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SseController {
     private static final Logger logger = LoggerFactory.getLogger(SseController.class);
 
@@ -41,7 +38,6 @@ public class SseController {
     private IOrderEventService orderEventService;
 
     @GetMapping(value = "/orders/{orderGuid}/tracking/")
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public ResponseEntity<SseEmitter> trackOrder(@PathVariable final UUID orderGuid) {
         logger.info("Getting request to provide last event payload for order guid={}", orderGuid);
 
