@@ -32,20 +32,6 @@ public class RegistrationController {
         this.createUser = createUser;
     }
 
-//    @PostMapping(path = "/registration", consumes = KekMediaType.REGISTRATION_USER, produces = KekMediaType.REGISTRATION_USER)
-//    public void userRegistration(@RequestBody @Valid RegistrationDto userData, HttpServletResponse response) throws Exception {
-//        logger.info("Created request for user registration: {}", userData);
-//
-//        final IUser user = createUser.createNewUser(userData);
-//
-//
-//        final String redirectUrl = authenticationService.authenticateKekUser(user);
-//
-//        logger.debug("redirecting after authentication = {}", redirectUrl);
-//        response.sendRedirect(redirectUrl);
-//    }
-
-
     @PostMapping(path = "/registration", consumes = KekMediaType.REGISTRATION_USER, produces = KekMediaType.SESSION)
     public ResponseEntity<SessionDto> userRegistration(@RequestBody @Valid RegistrationDto userData,
                                                        HttpServletResponse response,
@@ -54,15 +40,11 @@ public class RegistrationController {
 
         final IUser user = createUser.createNewUser(userData);
 
+        authenticationService.authenticateKekUser(user);
 
-        final String redirectUrl = authenticationService.authenticateKekUser(user);
+        SessionDto sessionDto = new SessionDto(session.getId());
+        logger.info("Session id: {}", session);
 
-        logger.debug("redirecting after authentication = {}", redirectUrl);
-        response.sendRedirect(redirectUrl);
-
-        SessionDto sessionDto = new SessionDto();
-        sessionDto.setSessionId(session.getId());
-        System.out.println("!!!!!!!!!!!!!!!! session: " + session.getId());
         return ResponseEntity.ok(sessionDto);
     }
 }
