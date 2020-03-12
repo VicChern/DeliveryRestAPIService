@@ -217,7 +217,7 @@ public class OrderController extends DefaultController {
     @PostMapping(value = "/{guid}/events",
             consumes = KekMediaType.EVENT,
             produces = KekMediaType.EVENT)
-    @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
+    @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR') or hasRole('USER')")
     public ResponseEntity<OrderEventDto> addEvent(@RequestBody @Valid OrderEventDto orderEventDto,
                                                   @PathVariable String guid,
                                                   Authentication authentication) {
