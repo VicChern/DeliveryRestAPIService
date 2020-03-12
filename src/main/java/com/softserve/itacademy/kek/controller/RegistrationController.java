@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.RegistrationDto;
-import com.softserve.itacademy.kek.dto.SessionDto;
+import com.softserve.itacademy.kek.dto.TemporaryDto;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
 import com.softserve.itacademy.kek.services.ICreateUserService;
@@ -33,18 +33,18 @@ public class RegistrationController {
     }
 
     @PostMapping(path = "/registration", consumes = KekMediaType.REGISTRATION_USER, produces = KekMediaType.SESSION)
-    public ResponseEntity<SessionDto> userRegistration(@RequestBody @Valid RegistrationDto userData,
-                                                       HttpServletResponse response,
-                                                       HttpSession session) throws Exception {
+    public ResponseEntity<TemporaryDto> userRegistration(@RequestBody @Valid RegistrationDto userData,
+                                                         HttpServletResponse response,
+                                                         HttpSession session) throws Exception {
         logger.info("Created request for user registration: {}", userData);
 
         final IUser user = createUser.createNewUser(userData);
 
         authenticationService.authenticateKekUser(user);
 
-        SessionDto sessionDto = new SessionDto(session.getId());
-        logger.info("Session id: {}", session);
+        TemporaryDto temporaryDto = new TemporaryDto(session.getId(), user.getGuid().toString());
+        logger.info("Session id: {} for user guid: {}", session, user.getGuid().toString());
 
-        return ResponseEntity.ok(sessionDto);
+        return ResponseEntity.ok(temporaryDto);
     }
 }
