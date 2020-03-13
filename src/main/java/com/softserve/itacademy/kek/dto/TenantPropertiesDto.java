@@ -11,12 +11,8 @@ public class TenantPropertiesDto implements ITenantProperties {
 
     private PropertyTypeDto propertyType;
 
-    //    @NotNull
-//    @Size(max = 256)
     private String key;
 
-    //    @NotNull
-//    @Size(max = 1024)
     private String value;
 
     public TenantPropertiesDto() {

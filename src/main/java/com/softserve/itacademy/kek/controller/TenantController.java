@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.controller;
 
 import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,13 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
-import com.softserve.itacademy.kek.dto.AddressListDto;
+import com.softserve.itacademy.kek.dto.KekListDto;
 import com.softserve.itacademy.kek.dto.PropertyTypeDto;
 import com.softserve.itacademy.kek.dto.TenantDetailsDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
-import com.softserve.itacademy.kek.dto.TenantListDto;
 import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
-import com.softserve.itacademy.kek.dto.TenantPropertiesListDto;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantProperties;
@@ -98,15 +97,15 @@ public class TenantController extends DefaultController {
     /**
      * Get information about tenants
      *
-     * @return Response Entity with a list of {@link TenantListDto} objects as a JSON
+     * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.TENANT_LIST)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<TenantListDto> getTenantList() {
+    public ResponseEntity<KekListDto<TenantDto>> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
         List<ITenant> tenantList = tenantService.getAll();
-        TenantListDto tenantListDto = new TenantListDto(tenantList
+        KekListDto<TenantDto> tenantListDto = new KekListDto<>(tenantList
                 .stream()
                 .map(this::transform)
                 .collect(Collectors.toList()));
@@ -200,23 +199,20 @@ public class TenantController extends DefaultController {
      * Find properties of the specific tenant
      *
      * @param guid tenant ID from URL
-     * @return Response Entity with a List of (@link TenantPropertiesDTO) objects as a JSON
+     * @return Response Entity with a List of {@link TenantPropertiesDto} objects as a JSON
      */
     @GetMapping(value = "/{guid}/properties", produces = KekMediaType.TENANT_PROPERTY)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<TenantPropertiesListDto> getTenantProperties(@PathVariable String guid) {
+    public ResponseEntity<KekListDto<TenantPropertiesDto>> getTenantProperties(@PathVariable String guid) {
         logger.info("Client requested all the properties of the tenant {}", guid);
 
         List<ITenantProperties> tenantProperties = tenantPropertiesService.getAllForTenant(UUID.fromString(guid));
-
-        TenantPropertiesListDto tenantPropertiesListDto = new TenantPropertiesListDto(tenantProperties
+        KekListDto<TenantPropertiesDto> tenantPropertiesListDto = new KekListDto<>(tenantProperties
                 .stream()
                 .map(this::transformProperty)
                 .collect(Collectors.toList()));
 
-
         logger.info("Sending the list of tenant's({}) properties to the client:\n{}", tenantPropertiesListDto, guid);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(tenantPropertiesListDto);
@@ -226,32 +222,30 @@ public class TenantController extends DefaultController {
      * Add new properties of the specific tenant
      *
      * @param guid                    tenant ID from URL
-     * @param tenantPropertiesListDto property object as a JSON
-     * @return list of the {@link TenantPropertiesDto} objects as a JSON
+     * @param tenantPropertiesListDto list of {@link TenantPropertiesDto} objects as a JSON
+     * @return Response entity with a list of {@link TenantPropertiesDto} objects as a JSON
      */
     @PostMapping(value = "/{guid}/properties", consumes = KekMediaType.TENANT_PROPERTY,
             produces = KekMediaType.TENANT_PROPERTY)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<TenantPropertiesListDto> addTenantProperties(@PathVariable String guid,
-                                                                       @RequestBody TenantPropertiesListDto tenantPropertiesListDto) {
+    public ResponseEntity<KekListDto<TenantPropertiesDto>> addTenantProperties(@PathVariable String guid,
+                                                                               @RequestBody KekListDto<TenantPropertiesDto> tenantPropertiesListDto) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesListDto);
 
-        List<ITenantProperties> tenantProperties = tenantPropertiesService.create(tenantPropertiesListDto.getTenantPropertiesList(),
+        List<ITenantProperties> propertiesList = new LinkedList<>(tenantPropertiesListDto.getList());
+        List<ITenantProperties> tenantProperties = tenantPropertiesService.create(propertiesList,
                 UUID.fromString(guid));
+
         List<TenantPropertiesDto> tenantPropertiesDto = tenantProperties
                 .stream()
                 .map(this::transformProperty)
                 .collect(Collectors.toList());
-        TenantPropertiesListDto addedProperties = new TenantPropertiesListDto();
-
-        for (TenantPropertiesDto tenantProperty : tenantPropertiesDto) {
-            addedProperties.addTenantProperty(tenantProperty);
-        }
+        KekListDto<TenantPropertiesDto> tenantPropertiesList = new KekListDto<>(tenantPropertiesDto);
 
         logger.info("Sending the created tenant's({}) properties to the client", tenantProperties);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(addedProperties);
+                .body(tenantPropertiesList);
     }
 
     /**
@@ -324,15 +318,15 @@ public class TenantController extends DefaultController {
      * Find addressees of the specific tenant
      *
      * @param guid tenant ID from URN tenant property
-     * @return Response entity with a list of tenant addresses{@link AddressDto}
+     * @return Response entity with a list of {@link AddressDto} objects as a JSON
      */
     @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<AddressListDto> getTenantAddresses(@PathVariable String guid) {
+    public ResponseEntity<KekListDto<AddressDto>> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
 
         List<IAddress> addresses = addressService.getAllForTenant(UUID.fromString(guid));
-        AddressListDto addressListDto = new AddressListDto(addresses
+        KekListDto<AddressDto> addressListDto = new KekListDto<>(addresses
                 .stream()
                 .map(this::transformAddress)
                 .collect(Collectors.toList()));
@@ -347,21 +341,22 @@ public class TenantController extends DefaultController {
      * Adds a new address for the specific tenant
      *
      * @param guid            tenant ID from the URN
-     * @param newAddressesDto address object as a JSON
-     * @return Response entity with a {@link AddressDto} object as a JSON
+     * @param newAddressesDto object with a list of {@link AddressDto} as a JSON
+     * @return Response entity with a list of {@link AddressDto} objects as a JSON
      */
     @PostMapping(value = "/{guid}/addresses", consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<AddressListDto> addTenantAddresses(@PathVariable String guid, @RequestBody @Valid AddressListDto newAddressesDto) {
+    public ResponseEntity<KekListDto<AddressDto>> addTenantAddresses(@PathVariable String guid,
+                                                                     @RequestBody @Valid KekListDto<AddressDto> newAddressesDto) {
         logger.info("Accepted requested to create a new addresses for tenant:{}:\n", newAddressesDto);
-        AddressListDto createdAddresses = new AddressListDto();
+        KekListDto<AddressDto> createdAddresses = new KekListDto<>();
 
-        for (AddressDto newAddress : newAddressesDto.getAddressList()) {
+        for (AddressDto newAddress : newAddressesDto.getList()) {
             IAddress createdAddress = addressService.createForTenant(newAddress, UUID.fromString(guid));
             AddressDto addressDto = transformAddress(createdAddress);
 
-            createdAddresses.addAddress(addressDto);
+            createdAddresses.addKekItem(addressDto);
         }
 
         logger.info("Sending the created tenant's addresses to the client:\n{}", createdAddresses);
