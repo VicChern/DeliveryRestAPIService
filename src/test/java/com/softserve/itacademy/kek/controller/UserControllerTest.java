@@ -45,7 +45,7 @@ public class UserControllerTest {
             "   }\n" +
             "}";
     private final String addressListJson = "{\n" +
-            "  \"addressList\": [\n" +
+            "  \"list\": [\n" +
             "    {\n" +
             "      \"alias\": \"random building\",\n" +
             "      \"address\": \"21, Hreschatyk\",\n" +
@@ -109,13 +109,13 @@ public class UserControllerTest {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(KekMediaType.USER_LIST))
-                .andExpect(jsonPath("$.userList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(jsonPath("$.userList[0].name").value("name"))
-                .andExpect(jsonPath("$.userList[0].nickname").value("nickname"))
-                .andExpect(jsonPath("$.userList[0].email").value("name@email.com"))
-                .andExpect(jsonPath("$.userList[0].phone").value("380981234567"))
-                .andExpect(jsonPath("$.userList[0].details.payload").value("some payload"))
-                .andExpect(jsonPath("$.userList[0].details.imageUrl").value("pic url"));
+                .andExpect(jsonPath("$.list[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.list[0].name").value("name"))
+                .andExpect(jsonPath("$.list[0].nickname").value("nickname"))
+                .andExpect(jsonPath("$.list[0].email").value("name@email.com"))
+                .andExpect(jsonPath("$.list[0].phone").value("380981234567"))
+                .andExpect(jsonPath("$.list[0].details.payload").value("some payload"))
+                .andExpect(jsonPath("$.list[0].details.imageUrl").value("pic url"));
     }
 
     @Test
@@ -183,10 +183,10 @@ public class UserControllerTest {
         mockMvc.perform(get("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(KekMediaType.ADDRESS_LIST))
-                .andExpect(jsonPath("$.addressList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(jsonPath("$.addressList[0].alias").value("alias"))
-                .andExpect(jsonPath("$.addressList[0].address").value("address"))
-                .andExpect(jsonPath("$.addressList[0].notes").value("notes"));
+                .andExpect(jsonPath("$.list[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.list[0].alias").value("alias"))
+                .andExpect(jsonPath("$.list[0].address").value("address"))
+                .andExpect(jsonPath("$.list[0].notes").value("notes"));
     }
 
     @Test
@@ -199,10 +199,10 @@ public class UserControllerTest {
                 .content(addressListJson))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(KekMediaType.ADDRESS_LIST))
-                .andExpect(jsonPath("$.addressList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(jsonPath("$.addressList[0].alias").value("alias"))
-                .andExpect(jsonPath("$.addressList[0].address").value("address"))
-                .andExpect(jsonPath("$.addressList[0].notes").value("notes"));
+                .andExpect(jsonPath("$.list[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.list[0].alias").value("alias"))
+                .andExpect(jsonPath("$.list[0].address").value("address"))
+                .andExpect(jsonPath("$.list[0].notes").value("notes"));
     }
 
     @Test
