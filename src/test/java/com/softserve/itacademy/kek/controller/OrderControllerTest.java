@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testng.annotations.BeforeClass;
@@ -31,6 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,7 +50,7 @@ public class OrderControllerTest {
             "   }\n" +
             "}";
     private final String orderListJson = "{\n" +
-            "  \"orderList\": [\n" +
+            "  \"list\": [\n" +
             "    {\n" +
             "   \"tenant\":\"820671c6-7e2c-4de3-aeb8-42e6f84e6371\",\n" +
             "   \"summary\":\"some summary\",\n" +
@@ -140,32 +143,35 @@ public class OrderControllerTest {
     @Test
     public void getOrderListTest() throws Exception {
         when(orderService.getAll()).thenReturn(orderList);
+
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(KekMediaType.ORDER_LIST))
-                .andExpect(jsonPath("$.orderList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(jsonPath("$.orderList[0].tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(jsonPath("$.orderList[0].summary").value("some summary"))
-                .andExpect(jsonPath("$.orderList[0].details.payload").value("some payload"))
-                .andExpect(jsonPath("$.orderList[0].details.imageUrl").value("https://mypicture"));
+                .andExpect(jsonPath("$.list[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.list[0].tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.list[0].summary").value("some summary"))
+                .andExpect(jsonPath("$.list[0].details.payload").value("some payload"))
+                .andExpect(jsonPath("$.list[0].details.imageUrl").value("https://mypicture"));
     }
 
 //    TODO: 01.03.2020 I'm tired, I don’t know why this test falls
 //    @Test
+//    @WithMockUser(roles = "TENANT")
 //    public void addOrderTest() throws Exception {
 //        when(orderService.create(any(OrderDto.class), any(UUID.class))).thenReturn(order);
 //        when(authentication.getPrincipal()).thenReturn(tenant);
-//        mockMvc.perform(post("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
+//
+//        mockMvc.perform(post("/orders")
 //                .contentType(KekMediaType.ORDER_LIST)
 //                .accept(KekMediaType.ORDER_LIST)
 //                .content(orderListJson))
 //                .andExpect(status().isCreated())
 //                .andExpect(content().contentType(KekMediaType.ORDER_LIST))
-//                .andExpect(jsonPath("$.orderList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-//                .andExpect(jsonPath("$.orderList[0].tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-//                .andExpect(jsonPath("$.orderList[0].summary").value("some summary"))
-//                .andExpect(jsonPath("$.orderList[0].details.payload").value("some payload"))
-//                .andExpect(jsonPath("$.orderList[0].details.imageUrl").value("https://mypicture"));
+//                .andExpect(jsonPath("$.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+//                .andExpect(jsonPath("$.tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+//                .andExpect(jsonPath("$.summary").value("some summary"))
+//                .andExpect(jsonPath("$.details.payload").value("some payload"))
+//                .andExpect(jsonPath("$.details.imageUrl").value("https://mypicture"));
 //    }
 
     @Test
@@ -211,14 +217,14 @@ public class OrderControllerTest {
 //        mockMvc.perform(get("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371/events"))
 //                .andExpect(status().isOk())
 //                .andExpect(content().contentType(KekMediaType.EVENT_LIST))
-//                .andExpect(jsonPath("$.eventList[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-//                .andExpect(jsonPath("$.eventList[0].order.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-//                .andExpect(jsonPath("$.eventList[0].order.tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-//                .andExpect(jsonPath("$.eventList[0].order.summary").value("some summary"))
-//                .andExpect(jsonPath("$.eventList[0].order.details.payload").value("some payload"))
-//                .andExpect(jsonPath("$.eventList[0].order.details.imageUrl").value("https://mypicture"))
-//                .andExpect(jsonPath("$.eventList[0].payload").value("some payload"))
-//                .andExpect(jsonPath("$.eventList[0].eventType.type").value("CREATED"));
+//                .andExpect(jsonPath("$.list[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+//                .andExpect(jsonPath("$.list[0].order.guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+//                .andExpect(jsonPath("$.list[0].order.tenant").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+//                .andExpect(jsonPath("$.list[0].order.summary").value("some summary"))
+//                .andExpect(jsonPath("$.list[0].order.details.payload").value("some payload"))
+//                .andExpect(jsonPath("$.list[0].order.details.imageUrl").value("https://mypicture"))
+//                .andExpect(jsonPath("$.list[0].payload").value("some payload"))
+//                .andExpect(jsonPath("$.list[0].eventType.type").value("CREATED"));
 //    }
 //     TODO: 01.03.2020 this will work when fixed OrderEventService
 //    @Test

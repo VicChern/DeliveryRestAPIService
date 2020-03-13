@@ -61,7 +61,7 @@ public class TenantControllerTest {
             "  \"value\": \"string\"\n" +
             "}";
     private final String addressListJson = "{\n" +
-            "  \"addressList\": [\n" +
+            "  \"list\": [\n" +
             "    {\n" +
             "      \"alias\": \"random building\",\n" +
             "      \"address\": \"USA, White House\",\n" +
@@ -158,11 +158,11 @@ public class TenantControllerTest {
         mockMvc.perform(get("/tenants"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(KekMediaType.TENANT_LIST))
-                .andExpect(jsonPath("$.tenantList[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(jsonPath("$.tenantList[0].owner").value("10241624-9ea7-4777-99b5-54ab6d591c44"))
-                .andExpect(jsonPath("$.tenantList[0].name").value("Kek"))
-                .andExpect(jsonPath("$.tenantList[0].details.payload").value("some payload"))
-                .andExpect(jsonPath("$.tenantList[0].details.imageUrl").value("http://awesomepicture.com"));
+                .andExpect(jsonPath("$.list[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
+                .andExpect(jsonPath("$.list[0].owner").value("10241624-9ea7-4777-99b5-54ab6d591c44"))
+                .andExpect(jsonPath("$.list[0].name").value("Kek"))
+                .andExpect(jsonPath("$.list[0].details.payload").value("some payload"))
+                .andExpect(jsonPath("$.list[0].details.imageUrl").value("http://awesomepicture.com"));
     }
 
     @Test
@@ -225,11 +225,11 @@ public class TenantControllerTest {
         mockMvc.perform(get("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/properties"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(KekMediaType.TENANT_PROPERTY))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].key").value("string"))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].propertyType.name").value("string"))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].propertyType.schema").value("string"))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].value").value("string"));
+                .andExpect(jsonPath("$.list.[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
+                .andExpect(jsonPath("$.list.[0].key").value("string"))
+                .andExpect(jsonPath("$.list.[0].propertyType.name").value("string"))
+                .andExpect(jsonPath("$.list.[0].propertyType.schema").value("string"))
+                .andExpect(jsonPath("$.list.[0].value").value("string"));
     }
 
     @Test
@@ -242,11 +242,11 @@ public class TenantControllerTest {
                 .content(tenantPropertyJson))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(KekMediaType.TENANT_PROPERTY))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].key").value("string"))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].propertyType.name").value("string"))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].propertyType.schema").value("string"))
-                .andExpect(jsonPath("$.tenantPropertiesList.[0].value").value("string"));
+                .andExpect(jsonPath("$.list.[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
+                .andExpect(jsonPath("$.list.[0].key").value("string"))
+                .andExpect(jsonPath("$.list.[0].propertyType.name").value("string"))
+                .andExpect(jsonPath("$.list.[0].propertyType.schema").value("string"))
+                .andExpect(jsonPath("$.list.[0].value").value("string"));
 
     }
 
@@ -296,10 +296,10 @@ public class TenantControllerTest {
         mockMvc.perform(get("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/addresses"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(KekMediaType.ADDRESS_LIST))
-                .andExpect(jsonPath("$.addressList[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(jsonPath("$.addressList[0].alias").value("alias"))
-                .andExpect(jsonPath("$.addressList[0].address").value("address"))
-                .andExpect(jsonPath("$.addressList[0].notes").value("notes"));
+                .andExpect(jsonPath("$.list[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
+                .andExpect(jsonPath("$.list[0].alias").value("alias"))
+                .andExpect(jsonPath("$.list[0].address").value("address"))
+                .andExpect(jsonPath("$.list[0].notes").value("notes"));
     }
 
     @Test
@@ -312,10 +312,10 @@ public class TenantControllerTest {
                 .content(addressListJson))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(KekMediaType.ADDRESS))
-                .andExpect(jsonPath("$.addressList[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(jsonPath("$.addressList[0].alias").value("alias"))
-                .andExpect(jsonPath("$.addressList[0].address").value("address"))
-                .andExpect(jsonPath("$.addressList[0].notes").value("notes"));
+                .andExpect(jsonPath("$.list[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
+                .andExpect(jsonPath("$.list[0].alias").value("alias"))
+                .andExpect(jsonPath("$.list[0].address").value("address"))
+                .andExpect(jsonPath("$.list[0].notes").value("notes"));
     }
 
     @Test
