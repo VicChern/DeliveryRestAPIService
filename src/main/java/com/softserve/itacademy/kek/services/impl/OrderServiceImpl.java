@@ -93,7 +93,7 @@ public class OrderServiceImpl implements IOrderService {
 
         OrderEvent orderEvent = createOrderEvent();
 
-        OrderEvent savedOrderEvent = (OrderEvent) orderEventService.createOrderEvent(savedOrder.getGuid(), savedActor.getGuid(), orderEvent);
+        OrderEvent savedOrderEvent = (OrderEvent) orderEventService.createOrderEvent(savedOrder.getGuid(), savedActor.getUser().getGuid(), orderEvent);
 
         return savedOrder;
     }
