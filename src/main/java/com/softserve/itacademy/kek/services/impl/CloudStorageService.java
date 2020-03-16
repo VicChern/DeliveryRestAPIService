@@ -20,7 +20,6 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
@@ -33,8 +32,9 @@ import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
 public class CloudStorageService extends AbstractService implements ICloudStorageService {
     private static final Logger logger = LoggerFactory.getLogger(CloudStorageService.class);
 
-    @Value("gcp.storage.filename")
-    private String storagePropertiesFileName;
+    //    @Value("gcp.storage.filename")
+//    private String storagePropertiesFileName;
+    private final String storagePropertiesFileName = "storage.properties";
 
     @Override
     public ICloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {
