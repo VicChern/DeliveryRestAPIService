@@ -16,9 +16,19 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.softserve.itacademy.kek.models.IIdentity;
+
 @Entity
 @Table(name = "obj_identity")
-public class Identity extends AbstractEntity implements Serializable {
+public class Identity extends AbstractEntity implements Serializable, IIdentity {
+
+    public Identity() {
+    }
+
+    public Identity(User user, @NotNull @Size(min = 1, max = 4096) String payload) {
+        this.user = user;
+        this.payload = payload;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,36 +47,43 @@ public class Identity extends AbstractEntity implements Serializable {
     @Column(name = "payload", nullable = false, length = 4096)
     private String payload;
 
-    public Long getIdIdentity() {
-        return idIdentity;
-    }
-
     public void setIdIdentity(Long idIdentity) {
         this.idIdentity = idIdentity;
     }
 
-    public String getPayload() {
-        return payload;
-    }
 
     public void setPayload(String payload) {
         this.payload = payload;
     }
 
-    public User getUser() {
-        return user;
-    }
 
     public void setUser(User user) {
         this.user = user;
     }
 
-    public IdentityType getIdentityType() {
-        return identityType;
-    }
 
     public void setIdentityType(IdentityType identityType) {
         this.identityType = identityType;
+    }
+
+    @Override
+    public Long getIdIdentity() {
+        return idIdentity;
+    }
+
+    @Override
+    public String getPayload() {
+        return payload;
+    }
+
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public IdentityType getIdentityType() {
+        return identityType;
     }
 
     @Override

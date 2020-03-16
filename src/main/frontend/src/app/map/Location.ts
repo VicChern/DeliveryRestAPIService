@@ -1,4 +1,4 @@
 export class TrackingLocation {
-  latitude: number;
-  longitude: number;
+  lat: number;
+  lon: number;
 }

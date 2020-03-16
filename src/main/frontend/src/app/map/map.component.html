@@ -3,10 +3,9 @@
 
 <div class="row justify-content-center">
   <div class="col-10">
-    <agm-map [latitude]="trackingLocation.latitude" [longitude]="trackingLocation.longitude" [zoom]=18 class="agm-map">
-      <agm-marker [latitude]="trackingLocation.latitude" [longitude]="trackingLocation.longitude"></agm-marker>
+    <agm-map [latitude]="trackingLocation.lat" [longitude]="trackingLocation.lon" [zoom]=18 class="agm-map">
+      <agm-marker [latitude]="trackingLocation.lat" [longitude]="trackingLocation.lon"></agm-marker>
     </agm-map>
   </div>
 </div>
-
 
