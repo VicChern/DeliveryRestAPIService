@@ -23,10 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
-import com.softserve.itacademy.kek.dto.AddressListDto;
 import com.softserve.itacademy.kek.dto.DetailsDto;
+import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.UserDto;
-import com.softserve.itacademy.kek.dto.UserListDto;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAddressService;
@@ -61,15 +60,15 @@ public class UserController extends DefaultController {
     /**
      * Get information about users
      *
-     * @return Response entity with list of {@link UserListDto} objects as a JSON
+     * @return Response entity with list of {@link UserDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.USER_LIST)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<UserListDto> getUserList() {
+    public ResponseEntity<ListWrapperDto<UserDto>> getUserList() {
         logger.info("Client requested the list of all users");
 
         List<IUser> userList = userService.getAll();
-        UserListDto userListDto = new UserListDto(userList
+        ListWrapperDto<UserDto> userListDto = new ListWrapperDto<>(userList
                 .stream()
                 .map(this::transformUser)
                 .collect(Collectors.toList()));
@@ -83,7 +82,7 @@ public class UserController extends DefaultController {
     /**
      * Creates a new user
      *
-     * @param newUserDto {@link UserListDto} object as a JSON
+     * @param newUserDto {@link UserDto} object as a JSON
      * @return Response entity with {@link UserDto} object as a JSON
      */
     @PostMapping(consumes = KekMediaType.USER,
@@ -166,23 +165,23 @@ public class UserController extends DefaultController {
      * Finds addresses of the specific user
      *
      * @param guid user guid from the URN
-     * @return Response Entity with list of the {@link AddressListDto} objects as a JSON
+     * @return Response Entity with list of the {@link AddressDto} objects as a JSON
      */
     @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
-    public ResponseEntity<AddressListDto> getUserAddresses(@PathVariable String guid) {
+    public ResponseEntity<ListWrapperDto<AddressDto>> getUserAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses of the employee {}", guid);
 
         List<IAddress> addresses = addressService.getAllForUser(UUID.fromString(guid));
-        AddressListDto addressListDto = new AddressListDto(addresses
+        ListWrapperDto<AddressDto> addressList = new ListWrapperDto<>(addresses
                 .stream()
                 .map(this::transformAddress)
                 .collect(Collectors.toList()));
 
-        logger.info("Sending the list of addresses of the user {} to the client:\n", addressListDto);
+        logger.info("Sending the list of addresses of the user {} to the client:\n", addressList);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(addressListDto);
+                .body(addressList);
     }
 
     /**
@@ -190,22 +189,22 @@ public class UserController extends DefaultController {
      *
      * @param guid            user guid from the URN
      * @param newAddressesDto list of address objects as a JSON
-     * @return Response entity with list of the {@link AddressListDto} objects as a JSON
+     * @return Response entity with list of the {@link AddressDto} objects as a JSON
      */
     @PostMapping(value = "/{guid}/addresses",
             consumes = KekMediaType.ADDRESS_LIST,
             produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<AddressListDto> addUserAddresses(@PathVariable String guid,
-                                                           @RequestBody @Valid AddressListDto newAddressesDto) {
+    public ResponseEntity<ListWrapperDto<AddressDto>> addUserAddresses(@PathVariable String guid,
+                                                                       @RequestBody @Valid ListWrapperDto<AddressDto> newAddressesDto) {
         logger.info("Accepted requested to create a new addresses for user:{}:\n", newAddressesDto);
-        AddressListDto createdAddresses = new AddressListDto();
+        ListWrapperDto<AddressDto> createdAddresses = new ListWrapperDto<>();
 
-        for (AddressDto newAddress : newAddressesDto.getAddressList()) {
+        for (AddressDto newAddress : newAddressesDto.getList()) {
             IAddress createdAddress = addressService.createForUser(newAddress, UUID.fromString(guid));
             AddressDto addressDto = transformAddress(createdAddress);
 
-            createdAddresses.addAddress(addressDto);
+            createdAddresses.addKekItem(addressDto);
         }
 
         logger.info("Sending the created users's addresses to the client:\n{}", createdAddresses);
