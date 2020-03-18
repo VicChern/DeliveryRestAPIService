@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.dto.ErrorDto;
-import com.softserve.itacademy.kek.dto.KekListDto;
+import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.exception.ServiceException;
 import com.softserve.itacademy.kek.exception.TrackingException;
 
@@ -28,10 +28,10 @@ public class DefaultController {
      * @return ResponseEntity with HttpStatus and exception message in header.
      */
     @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<KekListDto<ErrorDto>> serviceExceptionHandler(ServiceException ex, HttpServletRequest request) {
+    public ResponseEntity<ListWrapperDto<ErrorDto>> serviceExceptionHandler(ServiceException ex, HttpServletRequest request) {
         logger.trace("IP: {}:{}:{} : EXCEPTION: {}", request.getRemoteHost(), request.getRemotePort(), request.getRemoteUser(), ex);
 
-        KekListDto<ErrorDto> errorListDto = new KekListDto<>();
+        ListWrapperDto<ErrorDto> errorListDto = new ListWrapperDto<>();
         errorListDto.addKekItem(new ErrorDto("Service error", ex.getMessage()));
 
         logger.warn("Sending the error message to the client");
@@ -47,10 +47,10 @@ public class DefaultController {
      * @return the error message as a JSON
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<KekListDto<ErrorDto>> defaultExceptionHandler(Exception ex) {
+    public ResponseEntity<ListWrapperDto<ErrorDto>> defaultExceptionHandler(Exception ex) {
         logger.error("An error occurred:", ex);
 
-        KekListDto<ErrorDto> errorListDto = new KekListDto<>();
+        ListWrapperDto<ErrorDto> errorListDto = new ListWrapperDto<>();
         errorListDto.addKekItem(new ErrorDto("Something went wrong", ex.getMessage()));
 
         logger.warn("Sending the error message to the client");
@@ -60,10 +60,10 @@ public class DefaultController {
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity<KekListDto<ErrorDto>> validationExceptionHandler(Exception ex) {
+    public ResponseEntity<ListWrapperDto<ErrorDto>> validationExceptionHandler(Exception ex) {
         logger.error("An error occurred:", ex);
 
-        KekListDto<ErrorDto> errorListDto = new KekListDto<>();
+        ListWrapperDto<ErrorDto> errorListDto = new ListWrapperDto<>();
         errorListDto.addKekItem(new ErrorDto("Something went wrong", ex.getMessage()));
 
         logger.warn("Sending the error message to the client");
@@ -73,10 +73,10 @@ public class DefaultController {
     }
 
     @ExceptionHandler({TrackingException.class})
-    public ResponseEntity<KekListDto<ErrorDto>> trackingExceptionHandler(Exception ex) {
+    public ResponseEntity<ListWrapperDto<ErrorDto>> trackingExceptionHandler(Exception ex) {
         logger.error("An error occurred:", ex);
 
-        KekListDto<ErrorDto> errorListDto = new KekListDto<>();
+        ListWrapperDto<ErrorDto> errorListDto = new ListWrapperDto<>();
         errorListDto.addKekItem(new ErrorDto("Something went wrong", ex.getMessage()));
 
         logger.warn("Sending the error message to the client");
