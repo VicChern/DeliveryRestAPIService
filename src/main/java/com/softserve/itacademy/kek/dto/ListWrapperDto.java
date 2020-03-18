@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class KekListDto<T> {
+public class ListWrapperDto<T> {
     @Valid
     private List<T> list;
 
-    public KekListDto() {
+    public ListWrapperDto() {
         this(new LinkedList<T>());
     }
 
-    public KekListDto(@Valid List<T> list) {
+    public ListWrapperDto(@Valid List<T> list) {
         this.list = list;
     }
 
@@ -23,7 +23,7 @@ public class KekListDto<T> {
         return list;
     }
 
-    public KekListDto<T> addKekItem(T item) {
+    public ListWrapperDto<T> addKekItem(T item) {
         list.add(item);
 
         return this;
@@ -32,8 +32,8 @@ public class KekListDto<T> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof KekListDto)) return false;
-        KekListDto<?> that = (KekListDto<?>) o;
+        if (!(o instanceof ListWrapperDto)) return false;
+        ListWrapperDto<?> that = (ListWrapperDto<?>) o;
         return Objects.equals(list, that.list);
     }
 

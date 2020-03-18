@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.DetailsDto;
-import com.softserve.itacademy.kek.dto.KekListDto;
+import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.IUser;
@@ -64,11 +64,11 @@ public class UserController extends DefaultController {
      */
     @GetMapping(produces = KekMediaType.USER_LIST)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<KekListDto<UserDto>> getUserList() {
+    public ResponseEntity<ListWrapperDto<UserDto>> getUserList() {
         logger.info("Client requested the list of all users");
 
         List<IUser> userList = userService.getAll();
-        KekListDto<UserDto> userListDto = new KekListDto<>(userList
+        ListWrapperDto<UserDto> userListDto = new ListWrapperDto<>(userList
                 .stream()
                 .map(this::transformUser)
                 .collect(Collectors.toList()));
@@ -169,11 +169,11 @@ public class UserController extends DefaultController {
      */
     @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
-    public ResponseEntity<KekListDto<AddressDto>> getUserAddresses(@PathVariable String guid) {
+    public ResponseEntity<ListWrapperDto<AddressDto>> getUserAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses of the employee {}", guid);
 
         List<IAddress> addresses = addressService.getAllForUser(UUID.fromString(guid));
-        KekListDto<AddressDto> addressList = new KekListDto<>(addresses
+        ListWrapperDto<AddressDto> addressList = new ListWrapperDto<>(addresses
                 .stream()
                 .map(this::transformAddress)
                 .collect(Collectors.toList()));
@@ -195,10 +195,10 @@ public class UserController extends DefaultController {
             consumes = KekMediaType.ADDRESS_LIST,
             produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<KekListDto<AddressDto>> addUserAddresses(@PathVariable String guid,
-                                                                   @RequestBody @Valid KekListDto<AddressDto> newAddressesDto) {
+    public ResponseEntity<ListWrapperDto<AddressDto>> addUserAddresses(@PathVariable String guid,
+                                                                       @RequestBody @Valid ListWrapperDto<AddressDto> newAddressesDto) {
         logger.info("Accepted requested to create a new addresses for user:{}:\n", newAddressesDto);
-        KekListDto<AddressDto> createdAddresses = new KekListDto<>();
+        ListWrapperDto<AddressDto> createdAddresses = new ListWrapperDto<>();
 
         for (AddressDto newAddress : newAddressesDto.getList()) {
             IAddress createdAddress = addressService.createForUser(newAddress, UUID.fromString(guid));

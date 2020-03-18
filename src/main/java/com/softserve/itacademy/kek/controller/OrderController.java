@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
-import com.softserve.itacademy.kek.dto.KekListDto;
+import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.OrderDetailsDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.OrderEventDto;
@@ -76,11 +76,11 @@ public class OrderController extends DefaultController {
      */
     @GetMapping(produces = KekMediaType.ORDER_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
-    public ResponseEntity<KekListDto<OrderDto>> getOrderList() {
+    public ResponseEntity<ListWrapperDto<OrderDto>> getOrderList() {
         logger.debug("Client requested the list of all orders");
 
         List<IOrder> orderList = orderService.getAll();
-        KekListDto<OrderDto> orderListDto = new KekListDto<>(orderList
+        ListWrapperDto<OrderDto> orderListDto = new ListWrapperDto<>(orderList
                 .stream()
                 .map(this::transformOrder)
                 .collect(Collectors.toList()));
@@ -99,10 +99,10 @@ public class OrderController extends DefaultController {
      */
     @PostMapping(consumes = KekMediaType.ORDER_LIST, produces = KekMediaType.ORDER_LIST)
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<KekListDto<OrderDto>> addOrder(@RequestBody @Valid KekListDto<OrderDto> newOrderListDto) {
+    public ResponseEntity<ListWrapperDto<OrderDto>> addOrder(@RequestBody @Valid ListWrapperDto<OrderDto> newOrderListDto) {
         logger.debug("Accepted requested to create a new order:\n{}", newOrderListDto);
 
-        final KekListDto<OrderDto> createdOrdersListDto = new KekListDto<>();
+        final ListWrapperDto<OrderDto> createdOrdersListDto = new ListWrapperDto<>();
         final IUser user = (IUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         for (OrderDto orderDto : newOrderListDto.getList()) {
@@ -188,11 +188,11 @@ public class OrderController extends DefaultController {
      */
     @GetMapping(value = "/{guid}/events", produces = KekMediaType.EVENT_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
-    public ResponseEntity<KekListDto<OrderEventDto>> getEvents(@PathVariable String guid) {
+    public ResponseEntity<ListWrapperDto<OrderEventDto>> getEvents(@PathVariable String guid) {
         logger.info("Client requested all the events of the order {}", guid);
 
         List<IOrderEvent> events = orderEventService.getAllEventsForOrder(UUID.fromString(guid));
-        KekListDto<OrderEventDto> orderEventListDto = new KekListDto<>(events.stream()
+        ListWrapperDto<OrderEventDto> orderEventListDto = new ListWrapperDto<>(events.stream()
                 .map(this::transformOrderEvent)
                 .collect(Collectors.toList()));
 

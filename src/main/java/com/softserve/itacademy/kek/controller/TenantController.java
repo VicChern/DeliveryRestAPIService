@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
-import com.softserve.itacademy.kek.dto.KekListDto;
+import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.PropertyTypeDto;
 import com.softserve.itacademy.kek.dto.TenantDetailsDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
@@ -101,11 +101,11 @@ public class TenantController extends DefaultController {
      */
     @GetMapping(produces = KekMediaType.TENANT_LIST)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<KekListDto<TenantDto>> getTenantList() {
+    public ResponseEntity<ListWrapperDto<TenantDto>> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
         List<ITenant> tenantList = tenantService.getAll();
-        KekListDto<TenantDto> tenantListDto = new KekListDto<>(tenantList
+        ListWrapperDto<TenantDto> tenantListDto = new ListWrapperDto<>(tenantList
                 .stream()
                 .map(this::transform)
                 .collect(Collectors.toList()));
@@ -203,11 +203,11 @@ public class TenantController extends DefaultController {
      */
     @GetMapping(value = "/{guid}/properties", produces = KekMediaType.TENANT_PROPERTY)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<KekListDto<TenantPropertiesDto>> getTenantProperties(@PathVariable String guid) {
+    public ResponseEntity<ListWrapperDto<TenantPropertiesDto>> getTenantProperties(@PathVariable String guid) {
         logger.info("Client requested all the properties of the tenant {}", guid);
 
         List<ITenantProperties> tenantProperties = tenantPropertiesService.getAllForTenant(UUID.fromString(guid));
-        KekListDto<TenantPropertiesDto> tenantPropertiesListDto = new KekListDto<>(tenantProperties
+        ListWrapperDto<TenantPropertiesDto> tenantPropertiesListDto = new ListWrapperDto<>(tenantProperties
                 .stream()
                 .map(this::transformProperty)
                 .collect(Collectors.toList()));
@@ -228,8 +228,8 @@ public class TenantController extends DefaultController {
     @PostMapping(value = "/{guid}/properties", consumes = KekMediaType.TENANT_PROPERTY,
             produces = KekMediaType.TENANT_PROPERTY)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<KekListDto<TenantPropertiesDto>> addTenantProperties(@PathVariable String guid,
-                                                                               @RequestBody KekListDto<TenantPropertiesDto> tenantPropertiesListDto) {
+    public ResponseEntity<ListWrapperDto<TenantPropertiesDto>> addTenantProperties(@PathVariable String guid,
+                                                                                   @RequestBody ListWrapperDto<TenantPropertiesDto> tenantPropertiesListDto) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesListDto);
 
         List<ITenantProperties> propertiesList = new LinkedList<>(tenantPropertiesListDto.getList());
@@ -240,7 +240,7 @@ public class TenantController extends DefaultController {
                 .stream()
                 .map(this::transformProperty)
                 .collect(Collectors.toList());
-        KekListDto<TenantPropertiesDto> tenantPropertiesList = new KekListDto<>(tenantPropertiesDto);
+        ListWrapperDto<TenantPropertiesDto> tenantPropertiesList = new ListWrapperDto<>(tenantPropertiesDto);
 
         logger.info("Sending the created tenant's({}) properties to the client", tenantProperties);
         return ResponseEntity
@@ -322,11 +322,11 @@ public class TenantController extends DefaultController {
      */
     @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<KekListDto<AddressDto>> getTenantAddresses(@PathVariable String guid) {
+    public ResponseEntity<ListWrapperDto<AddressDto>> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
 
         List<IAddress> addresses = addressService.getAllForTenant(UUID.fromString(guid));
-        KekListDto<AddressDto> addressListDto = new KekListDto<>(addresses
+        ListWrapperDto<AddressDto> addressListDto = new ListWrapperDto<>(addresses
                 .stream()
                 .map(this::transformAddress)
                 .collect(Collectors.toList()));
@@ -347,10 +347,10 @@ public class TenantController extends DefaultController {
     @PostMapping(value = "/{guid}/addresses", consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<KekListDto<AddressDto>> addTenantAddresses(@PathVariable String guid,
-                                                                     @RequestBody @Valid KekListDto<AddressDto> newAddressesDto) {
+    public ResponseEntity<ListWrapperDto<AddressDto>> addTenantAddresses(@PathVariable String guid,
+                                                                         @RequestBody @Valid ListWrapperDto<AddressDto> newAddressesDto) {
         logger.info("Accepted requested to create a new addresses for tenant:{}:\n", newAddressesDto);
-        KekListDto<AddressDto> createdAddresses = new KekListDto<>();
+        ListWrapperDto<AddressDto> createdAddresses = new ListWrapperDto<>();
 
         for (AddressDto newAddress : newAddressesDto.getList()) {
             IAddress createdAddress = addressService.createForTenant(newAddress, UUID.fromString(guid));
