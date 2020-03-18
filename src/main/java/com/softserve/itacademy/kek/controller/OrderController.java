@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -99,12 +99,11 @@ public class OrderController extends DefaultController {
      */
     @PostMapping(consumes = KekMediaType.ORDER_LIST, produces = KekMediaType.ORDER_LIST)
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<KekListDto<OrderDto>> addOrder(@RequestBody @Valid KekListDto<OrderDto> newOrderListDto,
-                                                         Authentication authentication) {
+    public ResponseEntity<KekListDto<OrderDto>> addOrder(@RequestBody @Valid KekListDto<OrderDto> newOrderListDto) {
         logger.debug("Accepted requested to create a new order:\n{}", newOrderListDto);
 
         final KekListDto<OrderDto> createdOrdersListDto = new KekListDto<>();
-        final IUser user = (IUser) authentication.getPrincipal();
+        final IUser user = (IUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         for (OrderDto orderDto : newOrderListDto.getList()) {
             IOrder createdOrder = orderService.create(orderDto, UUID.fromString(user.getGuid().toString()));
@@ -214,9 +213,8 @@ public class OrderController extends DefaultController {
             produces = KekMediaType.EVENT)
     @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR') or hasRole('USER')")
     public ResponseEntity<OrderEventDto> addEvent(@RequestBody @Valid OrderEventDto orderEventDto,
-                                                  @PathVariable String guid,
-                                                  Authentication authentication) {
-        final IUser user = (IUser) authentication.getPrincipal();
+                                                  @PathVariable String guid) {
+        final IUser user = (IUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         logger.info("Accepted request to create a new event for the order {} created by actor\n{}",
                 user.getGuid(),
