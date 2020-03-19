@@ -34,10 +34,12 @@ public class Identity extends AbstractEntity implements Serializable, IIdentity 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idIdentity;
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_identity_type")
     private IdentityType identityType;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
     private User user;
