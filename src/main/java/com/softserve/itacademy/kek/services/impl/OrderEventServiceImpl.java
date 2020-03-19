@@ -4,6 +4,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -229,26 +230,30 @@ public class OrderEventServiceImpl implements IOrderEventService {
     }
 
     private Actor getActor(Tenant tenant, UUID actorGuid, String eventTypeName) {
-        final Actor actor = actorRepository.findByGuid(actorGuid);
+        final Optional<Actor> actorByUserGuid = actorRepository.findByUserGuid(actorGuid);
 
-        //if there isn`t actor for actorGuid
-        if (actor == null || !actor.getTenant().getGuid().equals(tenant.getGuid())) {
+        //if there isn`t actor for actorGuid or if its actor exist for another tenant
+        if ( actorByUserGuid.isEmpty() || ! actorByUserGuid.get().getTenant().getGuid().equals(tenant.getGuid())) {
+
             return saveActor(tenant, actorGuid);
-        }
 
-        //if actor for eventType ASSIGNED doesn`t have role CURRIER than save it with CURRIER role
-        if (
+            //if actor for eventType ASSIGNED does`t have role CURRIER than save it with CURRIER role
+        } else if (
+
                 eventTypeName.equals(EventType.ASSIGNED.toString())
                         &&
-                        actor.getActorRoles()
+                        actorByUserGuid.get()
+                                .getActorRoles()
                                 .stream()
                                 .noneMatch(actorRole -> actorRole.getName().equals(ActorRoleEnum.CURRIER.toString()))
+
         ) {
 
-            return updateActorWithNewRole(actor, ActorRoleEnum.CURRIER);
+            return updateActorWithNewRole(actorByUserGuid.get(), ActorRoleEnum.CURRIER);
+
         }
 
-        return actor;
+        return actorByUserGuid.get();
     }
 
     private Actor saveActor(Tenant tenant, UUID userGuid) {
