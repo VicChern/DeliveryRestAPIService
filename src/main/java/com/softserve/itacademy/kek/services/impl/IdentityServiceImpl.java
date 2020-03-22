@@ -101,7 +101,7 @@ public class IdentityServiceImpl implements IIdentityService {
 
     @Transactional
     @Override
-    public void delete(Identity identity) {
+    public void delete(IIdentity identity) {
         logger.info("Deleting identity from the DB: {}", identity);
 
         try {

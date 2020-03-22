@@ -1,9 +1,12 @@
 package com.softserve.itacademy.kek.services;
 
 
+import java.util.UUID;
+
 import com.softserve.itacademy.kek.models.IIdentity;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.impl.Identity;
+import com.softserve.itacademy.kek.models.impl.User;
 
 public interface IIdentityService {
 
@@ -38,6 +41,8 @@ public interface IIdentityService {
      *
      * @param identity
      */
-    void delete(Identity identity);
+    void delete(IIdentity identity);
+
+
 
 }
