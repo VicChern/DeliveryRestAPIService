@@ -25,8 +25,11 @@ public class Identity extends AbstractEntity implements Serializable, IIdentity 
     public Identity() {
     }
 
-    public Identity(User user, @NotNull @Size(min = 1, max = 4096) String payload) {
+    public Identity(User user,
+                    IdentityType identityType,
+                    @NotNull @Size(min = 1, max = 4096) String payload) {
         this.user = user;
+        this.identityType = identityType;
         this.payload = payload;
     }
 
