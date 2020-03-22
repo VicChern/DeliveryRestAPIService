@@ -53,7 +53,7 @@ public class CreateUserServiceImpl implements ICreateUserService {
 
         final IUser dbUser = userService.create(user);
 
-        identityService.savePassword((User) dbUser, passwordEncoder.encode(userData.getPassword()));
+        identityService.create(dbUser, passwordEncoder.encode(userData.getPassword()));
 
         logger.info("User has been added to DB {}", userData);
         return dbUser;
