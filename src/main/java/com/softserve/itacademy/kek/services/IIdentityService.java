@@ -1,12 +1,9 @@
 package com.softserve.itacademy.kek.services;
 
 
-import java.util.UUID;
-
 import com.softserve.itacademy.kek.models.IIdentity;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.impl.Identity;
-import com.softserve.itacademy.kek.models.impl.User;
 
 public interface IIdentityService {
 
@@ -17,7 +14,7 @@ public interface IIdentityService {
      * @param password
      * @return inserted user data
      */
-    IIdentity savePassword(IUser userData, String password);
+    IIdentity create(IUser userData, String password);
 
     /**
      * Get user password from db
@@ -25,7 +22,7 @@ public interface IIdentityService {
      * @param email
      * @return user password
      */
-    IIdentity getPassword(String email);
+    IIdentity read(String email);
 
     /**
      * Set new user password
@@ -34,7 +31,7 @@ public interface IIdentityService {
      * @param password
      * @return user password
      */
-    IIdentity updatePassword(User user, String password);
+    IIdentity update(IUser user, String password);
 
     /**
      * Delete user password
@@ -42,7 +39,5 @@ public interface IIdentityService {
      * @param identity
      */
     void delete(Identity identity);
-
-
 
 }
