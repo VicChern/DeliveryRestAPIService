@@ -89,7 +89,7 @@ public class Identity extends AbstractEntity implements Serializable, IIdentity 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Identity)) return false;
         Identity identity = (Identity) o;
         return Objects.equals(idIdentity, identity.idIdentity) &&
                 Objects.equals(identityType, identity.identityType) &&

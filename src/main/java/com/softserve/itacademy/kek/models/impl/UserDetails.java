@@ -69,7 +69,7 @@ public class UserDetails extends AbstractEntity implements IUserDetails, Seriali
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof UserDetails)) return false;
         UserDetails that = (UserDetails) o;
         return Objects.equals(idUser, that.idUser) &&
                 Objects.equals(user, that.user) &&
