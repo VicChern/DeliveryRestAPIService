@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.Tenant;
 
 /**
  * Service interface for {@link IOrder}
@@ -34,6 +35,13 @@ public interface IOrderService {
      * @return guid
      */
     IOrder getByGuid(UUID guid);
+
+    /**
+     *  Gets list of orders by {@link Tenant} guid
+     *
+     * @param guid {@link Tenant} guid
+     * @return list of Orders
+     */
 
     List <IOrder> getAllByTenantGuid(UUID guid);
 
