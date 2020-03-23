@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -130,6 +131,18 @@ public class OrderServiceImpl implements IOrderService {
         LOGGER.info("Order with guid: {}, was found: {}", guid, order);
         return order;
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<IOrder> getAllByTenantGuid(UUID guid) {
+        LOGGER.info("Inside method getAllByTenantGuid");
+        List <? extends IOrder> orders = orderRepository.findAllByTenantGuid(guid);
+        LOGGER.info("return list of orders{}",orders);
+        return (List<IOrder>) orders;
+
+
+    }
+
 
     @Transactional
     @Override

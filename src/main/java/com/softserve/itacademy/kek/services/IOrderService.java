@@ -35,6 +35,8 @@ public interface IOrderService {
      */
     IOrder getByGuid(UUID guid);
 
+    List <IOrder> getAllByTenantGuid(UUID guid);
+
     /**
      * Updates {@link Order}
      *
