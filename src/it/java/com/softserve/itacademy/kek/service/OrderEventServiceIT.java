@@ -1,17 +1,20 @@
 package com.softserve.itacademy.kek.service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.transaction.annotation.Transactional;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 import com.softserve.itacademy.kek.models.enums.EventType;
@@ -38,7 +41,9 @@ import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getActor;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrder;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderEvent;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
@@ -63,61 +68,72 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     @Autowired
     private IOrderEventService orderEventService;
 
-    private ActorRole actorRole1;
-    private ActorRole actorRole2;
+    private ActorRole customerRole;
+    private ActorRole currierRole;
 
-    private OrderEventType orderEventType1;
-    private OrderEventType orderEventType2;
-    private OrderEventType orderEventType3;
-    private OrderEventType orderEventType4;
+    private OrderEventType orderEventTypeCreated;
+    private OrderEventType orderEventTypeAssigned;
+    private OrderEventType orderEventTypeStarted;
+    private OrderEventType orderEventTypeDelivered;
 
     private User user;
     private User customer;
     private Tenant tenant;
     private Order order;
+    private Actor actor;
+
+    private OrderEvent orderEventAssigned;
+    private OrderEvent orderEventStarted;
+    private OrderEvent orderEventDelivered;
 
     @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
-        actorRole1 = new ActorRole();
-        actorRole1.setName(ActorRoleEnum.CUSTOMER.toString());
-        actorRole2 = new ActorRole();
-        actorRole2.setName(ActorRoleEnum.CURRIER.toString());
+        customerRole = new ActorRole();
+        customerRole.setName(ActorRoleEnum.CUSTOMER.name());
+        currierRole = new ActorRole();
+        currierRole.setName(ActorRoleEnum.CURRIER.name());
 
-        orderEventType1 = new OrderEventType();
-        orderEventType1.setName(EventType.CREATED.toString());
+        actorRoleRepository.save(customerRole);
+        actorRoleRepository.save(currierRole);
 
-        orderEventType2 = new OrderEventType();
-        orderEventType2.setName(EventType.ASSIGNED.toString());
+        orderEventTypeCreated = new OrderEventType();
+        orderEventTypeCreated.setName(EventType.CREATED.toString());
 
-        orderEventType3 = new OrderEventType();
-        orderEventType3.setName(EventType.STARTED.toString());
+        orderEventTypeAssigned = new OrderEventType();
+        orderEventTypeAssigned.setName(EventType.ASSIGNED.toString());
 
-        orderEventType4 = new OrderEventType();
-        orderEventType4.setName(EventType.DELIVERED.toString());
+        orderEventTypeStarted = new OrderEventType();
+        orderEventTypeStarted.setName(EventType.STARTED.toString());
 
-        actorRoleRepository.save(actorRole1);
-        actorRoleRepository.save(actorRole2);
+        orderEventTypeDelivered = new OrderEventType();
+        orderEventTypeDelivered.setName(EventType.DELIVERED.toString());
 
-        orderEventTypeRepository.save(orderEventType1);
-        orderEventTypeRepository.save(orderEventType2);
-        orderEventTypeRepository.save(orderEventType3);
-        orderEventTypeRepository.save(orderEventType4);
+        orderEventTypeRepository.save(orderEventTypeCreated);
+        orderEventTypeRepository.save(orderEventTypeAssigned);
+        orderEventTypeRepository.save(orderEventTypeStarted);
+        orderEventTypeRepository.save(orderEventTypeDelivered);
 
         user = createOrdinaryUser(1);
         customer = createOrdinaryUser(2);
         tenant = createOrdinaryTenant(1);
 
-        User savedUser = userRepository.save(user);
+        final User savedUser = userRepository.save(user);
         assertNotNull(savedUser);
 
-        User savedCustomer = userRepository.save(customer);
+        final User savedCustomer = userRepository.save(customer);
         assertNotNull(savedCustomer);
 
         tenant.setTenantOwner(savedUser);
-        Tenant savedTenant = tenantRepository.save(tenant);
+        final Tenant savedTenant = tenantRepository.save(tenant);
         assertNotNull(savedTenant);
 
-        order = getOrder(tenant);
+        order = (Order) orderService.create(getOrder(tenant), customer.getGuid());
+        assertNotNull(order);
+
+        actor = actorRepository.findByUserGuid(customer.getGuid()).get();
+        orderEventAssigned = getOrderEvent(order, orderEventTypeAssigned, actor);
+        orderEventStarted = getOrderEvent(order, orderEventTypeStarted, actor);
+        orderEventDelivered = getOrderEvent(order, orderEventTypeDelivered, actor);
     }
 
     @AfterMethod(groups = {"integration-tests"})
@@ -135,16 +151,14 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void createSuccess() {
         //when
-        IOrder createdOrder = orderService.create(order, customer.getGuid());
+        final Actor currier = getActor(user, tenant, currierRole);
 
-        final Actor actor = getActor(user, tenant, actorRole2);
+        final OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(order.getGuid()), orderEventTypeAssigned, currier);
 
-        OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(createdOrder.getGuid()), orderEventType2, actor);
-
-        IOrderEvent createdOrderEvent = orderEventService.create(orderEvent, createdOrder.getGuid());
+        final IOrderEvent createdOrderEvent = orderEventService.create(orderEvent, order.getGuid());
 
         //than
-        IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid());
+        final IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid());
 
         assertEquals(createdOrderEvent.getPayload(), foundOrderEvent.getPayload());
     }
@@ -153,28 +167,158 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void getAllEventsForOrderSuccess() {
         //when
-        IOrder createdOrder = orderService.create(order, customer.getGuid());
+        final Actor currier = getActor(user, tenant, currierRole);
+        final Actor createdCurrier = actorRepository.save(currier);
 
-        order = (Order) createdOrder;
-        //order.setIdOrder(2L);
-
-        final Actor actor = getActor(user, tenant, actorRole2);
-        final Actor createdActor = actorRepository.save(actor);
-
-        OrderEvent orderEvent1 = getOrderEvent(order, orderEventType2, createdActor);
-        OrderEvent orderEvent2 = getOrderEvent(order, orderEventType3, createdActor);
-        OrderEvent orderEvent3 = getOrderEvent(order, orderEventType4, createdActor);
+        final OrderEvent orderEvent1 = getOrderEvent(order, orderEventTypeAssigned, createdCurrier);
+        final OrderEvent orderEvent2 = getOrderEvent(order, orderEventTypeStarted, createdCurrier);
+        final OrderEvent orderEvent3 = getOrderEvent(order, orderEventTypeDelivered, createdCurrier);
 
         orderEventRepository.save(orderEvent1);
         orderEventRepository.save(orderEvent2);
         orderEventRepository.save(orderEvent3);
 
-        List<IOrderEvent> orderEventList = orderEventService.getAllEventsForOrder(order.getGuid());
+        final List<IOrderEvent> orderEventList = orderEventService.getAllEventsForOrder(order.getGuid());
 
         //then
         assertEquals(orderEventList.size(), 4);
         assertEquals(orderEventList.get(1).getGuid(), orderEvent1.getGuid());
         assertEquals(orderEventList.get(2).getGuid(), orderEvent2.getGuid());
         assertEquals(orderEventList.get(3).getGuid(), orderEvent3.getGuid());
+    }
+
+    @Test(groups = {"integration-tests"})
+    @Transactional
+    public void createOrderEventSuccess() {
+        //when
+        // orderEvent1 with OrderEventType CREATED is created when order is saved, so we don`t need to save it
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
+
+        //then
+        assertEquals(orderEventRepository.findAll().size(), 7);
+        final List<OrderEvent> orderEventList = orderEventRepository.findAll();
+
+        final List<EventType> orderEventTypeList = orderEventList
+                .stream()
+                .map(orderEvent -> EventType.valueOf(orderEvent.getOrderEventType().getName()))
+                .distinct()
+                .collect(Collectors.toList());
+
+        final List<EventType> orderEventTypeList1 = Arrays.asList(EventType.values());
+        assertTrue(orderEventTypeList1.containsAll(orderEventTypeList));
+    }
+
+    @Test(groups = {"integration-tests"})
+    public void getLastAddedEventSuccess() {
+        //given
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+
+        final IOrderEvent lastSavedEvent = orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
+
+        //when
+        final OrderEvent lastAddedEvent = (OrderEvent) orderEventService.getLastAddedEvent(order.getGuid());
+
+        //then
+        assertEquals(lastAddedEvent, lastSavedEvent);
+    }
+
+    @Test(groups = {"integration-tests"})
+    public void getAllEventsForOrder() {
+        //given
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
+
+        //when
+        final List<IOrderEvent> orderEventList = orderEventService.getAllEventsForOrder(order.getGuid());
+
+        //then
+        assertEquals(7, orderEventList.size());
+
+        assertTrue(orderEventList
+                .stream()
+                .allMatch(orderEvent ->
+                        orderEvent
+                                .getOrder()
+                                .getGuid()
+                                .equals(order.getGuid())));
+    }
+
+    @Test(groups = {"integration-tests"})
+    public void ifOrderEventCanBeTrackedSuccess() {
+        //given
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+
+        //when
+        final boolean canBeTracked = orderEventService.ifOrderEventCanBeTracked(order.getGuid());
+
+        assertTrue(canBeTracked);
+    }
+
+    @Test(groups = {"integration-tests"})
+    public void ifOrderEventCanBeTrackedNotSuccess() {
+        //given
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
+
+        //when
+        final boolean canBeTracked = orderEventService.ifOrderEventCanBeTracked(order.getGuid());
+
+        //then
+        assertFalse(canBeTracked);
+    }
+
+    @Test(groups = {"integration-tests"})
+    @Transactional
+    public void findAllThatDeliveringNow() {
+        //given
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+
+        final User customer2 = userRepository.save(createOrdinaryUser(3));
+        final Order order2 = (Order) orderService.create(getOrder(tenant), customer2.getGuid());
+        final Actor actor2 = actorRepository.findByUserGuid(customer2.getGuid()).get();
+
+        orderEventAssigned = getOrderEvent(orderRepository.findByGuid(order2.getGuid()), orderEventTypeAssigned, actor2);
+        orderEventStarted = getOrderEvent(orderRepository.findByGuid(order2.getGuid()), orderEventTypeStarted, actor2);
+
+        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventAssigned);
+        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
+        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
+
+        //when
+        final List<IOrderEvent> orderEvents = orderEventService.findAllThatDeliveringNow();
+
+        assertEquals(orderEvents.size(), 2);
+        assertTrue(
+                orderEvents
+                        .stream()
+                        .allMatch(orderEvent -> orderEvent.getOrderEventType().getName().equals(EventType.STARTED.toString()))
+        );
     }
 }
