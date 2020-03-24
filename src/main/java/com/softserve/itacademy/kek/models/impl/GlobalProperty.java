@@ -74,7 +74,7 @@ public class GlobalProperty extends AbstractEntity implements IGlobalProperty, S
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof GlobalProperty)) return false;
         GlobalProperty that = (GlobalProperty) o;
         return Objects.equals(idProperty, that.idProperty) &&
                 Objects.equals(propertyType, that.propertyType) &&

@@ -162,7 +162,7 @@ public class User implements IUser, Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof User)) return false;
         User user = (User) o;
         return Objects.equals(idUser, user.idUser) &&
                 Objects.equals(guid, user.guid) &&

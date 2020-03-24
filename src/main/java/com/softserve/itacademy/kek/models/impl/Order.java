@@ -101,7 +101,7 @@ public class Order extends AbstractEntity implements IOrder, Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Order)) return false;
         Order order = (Order) o;
         return Objects.equals(idOrder, order.idOrder) &&
                 Objects.equals(tenant, order.tenant) &&

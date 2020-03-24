@@ -46,7 +46,7 @@ public class OrderEventType extends AbstractEntity implements IOrderEventType, S
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof OrderEventType)) return false;
         OrderEventType that = (OrderEventType) o;
         return Objects.equals(idOrderEventType, that.idOrderEventType) &&
                 Objects.equals(name, that.name);

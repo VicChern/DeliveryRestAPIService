@@ -119,7 +119,7 @@ public class Address extends AbstractEntity implements IAddress, Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Address)) return false;
         Address address1 = (Address) o;
         return Objects.equals(idAddress, address1.idAddress) &&
                 Objects.equals(guid, address1.guid) &&

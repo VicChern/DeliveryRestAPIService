@@ -110,7 +110,7 @@ public class Actor extends AbstractEntity implements IActor, Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Actor)) return false;
         Actor actor = (Actor) o;
         return Objects.equals(idActor, actor.idActor) &&
                 Objects.equals(tenant, actor.tenant) &&
