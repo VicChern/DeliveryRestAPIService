@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.dto.ActorDto;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.OrderDetailsDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
+import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.IOrder;
+import com.softserve.itacademy.kek.services.IActorService;
 import com.softserve.itacademy.kek.services.IOrderService;
 
 @RestController
@@ -29,10 +33,12 @@ public class StatisticsController extends DefaultController {
     private final Logger logger = LoggerFactory.getLogger(StatisticsController.class);
 
     private final IOrderService orderService;
+    private final IActorService actorService;
 
     @Autowired
-    public StatisticsController(IOrderService orderService) {
+    public StatisticsController(IOrderService orderService, IActorService actorService) {
         this.orderService = orderService;
+        this.actorService = actorService;
     }
 
     private OrderDto transformOrder(IOrder order) {
@@ -42,8 +48,13 @@ public class StatisticsController extends DefaultController {
         return orderDto;
     }
 
+    private ActorDto transformActor(IActor actor) {
+        ActorDto actorDto = new ActorDto(actor.getGuid(), actor.getTenant().getGuid(), actor.getUser().getGuid(), actor.getAlias());
+        return actorDto;
+    }
+
     @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.ORDER_LIST)
-//    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
+//    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<ListWrapperDto<OrderDto>> getListOfOrdersForCurrentTenant(@PathVariable String guid) {
         logger.debug("Client requested the list of all orders");
 
@@ -58,6 +69,20 @@ public class StatisticsController extends DefaultController {
                 .status(HttpStatus.OK)
                 .body(orderListDto);
 
+    }
+
+    @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.ACTOR)
+    @PreAuthorize(" hasRole('USER'")
+    public ResponseEntity<ActorDto> getActorByUserGuid(@PathVariable String guid) {
+        logger.debug("Client requested the actor {}", guid);
+
+        IActor actor = actorService.getAllByUserGuid(UUID.fromString(guid));
+        ActorDto actorDto = transformActor(actor);
+
+        logger.debug("Sending the order {} to the client", actorDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(actorDto);
     }
 
 }

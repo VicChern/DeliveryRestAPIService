@@ -17,5 +17,5 @@ public interface IActorService {
 
     Actor saveActor(Tenant tenant, User user, ActorRole actorRole);
 
-    List<Optional<Actor>> getAllByUserGuid(UUID guid);
+    Actor getAllByUserGuid(UUID guid);
 }

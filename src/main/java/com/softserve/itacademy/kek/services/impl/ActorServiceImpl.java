@@ -1,10 +1,7 @@
 package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.PersistenceException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -58,10 +55,12 @@ public class ActorServiceImpl implements IActorService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Optional<Actor>> getAllByUserGuid(UUID guid) {
-        LOGGER.info("Getting list of all actors by tenant guid{}", guid);
-        List<Optional<Actor>> actorList = new ArrayList<>();
-        actorList.add(actorRepository.findByUserGuid(guid));
-        return actorList;
+    public Actor getAllByUserGuid(UUID guid) {
+        LOGGER.info("Getting actor by user guid{}", guid);
+        Actor actor = new Actor();
+        if (actorRepository.findByUserGuid(guid).isPresent())
+        actor = actorRepository.findByUserGuid(guid).get();
+
+        return actor;
     }
 }
