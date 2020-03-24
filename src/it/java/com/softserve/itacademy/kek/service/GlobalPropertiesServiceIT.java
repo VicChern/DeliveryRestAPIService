@@ -37,13 +37,13 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
     @Autowired
     private IGlobalPropertiesService globalPropertiesService;
 
-    @AfterMethod
+    @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         globalPropertiesRepository.deleteAll();
         propertyTypeRepository.deleteAll();
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void createSuccess() {
         //when
         final PropertyType propertyType = new PropertyType();
@@ -68,7 +68,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
         assertEquals(globalProperties.getPropertyType(), foundGlobalProperties.getPropertyType());
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void updateSuccess() {
         //when
         final PropertyType propertyType = new PropertyType();
@@ -100,7 +100,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getByKeySuccess() {
         //when
         final PropertyType propertyType = new PropertyType();
@@ -125,7 +125,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
         assertEquals(globalProperties.getPropertyType(), foundGlobalProperties.getPropertyType());
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void getAllSuccess() {
         //when
         final PropertyType propertyType = new PropertyType();
@@ -159,7 +159,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
         assertEquals(foundGlobalPropertiesList.get(1), globalProperties1);
     }
 
-    @Test
+    @Test(groups = {"integration-tests"})
     public void deleteByKey() {
         //when
         final PropertyType propertyType = new PropertyType();
