@@ -27,7 +27,7 @@ deploy:
     - npx gae-ayaml-env
 
     - gcloud app deploy app.yaml --quiet --project $GOOGLE_PROJECT_ID
-  only:
-    - merge_requests
-    - master
-    - develop
+#   only:
+#     - merge_requests
+#     - master
+#     - develop
