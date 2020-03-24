@@ -101,7 +101,7 @@ public class OrderEvent extends AbstractEntity implements IOrderEvent, Serializa
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof OrderEvent)) return false;
         OrderEvent that = (OrderEvent) o;
         return Objects.equals(idOrderEvent, that.idOrderEvent) &&
                 Objects.equals(orderEventType, that.orderEventType) &&

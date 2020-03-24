@@ -59,7 +59,7 @@ public class PropertyType extends AbstractEntity implements IPropertyType, Seria
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof PropertyType)) return false;
         PropertyType that = (PropertyType) o;
         return Objects.equals(idPropertyType, that.idPropertyType) &&
                 Objects.equals(name, that.name) &&

@@ -69,7 +69,7 @@ public class TenantDetails extends AbstractEntity implements ITenantDetails, Ser
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TenantDetails)) return false;
         TenantDetails that = (TenantDetails) o;
         return Objects.equals(idTenant, that.idTenant) &&
                 Objects.equals(payload, that.payload) &&

@@ -99,7 +99,7 @@ public class TenantProperties extends AbstractEntity implements ITenantPropertie
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TenantProperties)) return false;
         TenantProperties that = (TenantProperties) o;
         return Objects.equals(idProperty, that.idProperty) &&
                 Objects.equals(guid, that.guid) &&

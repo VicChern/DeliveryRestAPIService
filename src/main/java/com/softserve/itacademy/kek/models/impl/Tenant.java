@@ -156,7 +156,7 @@ public class Tenant extends AbstractEntity implements ITenant, Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Tenant)) return false;
         Tenant tenant = (Tenant) o;
         return Objects.equals(idTenant, tenant.idTenant) &&
                 Objects.equals(tenantOwner, tenant.tenantOwner) &&
