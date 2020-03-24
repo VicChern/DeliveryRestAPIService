@@ -1,13 +1,33 @@
-image: maven:3.6.1
+image: google/cloud-sdk:alpine
 
 stages:
-  - test
+  - build
+  - deploy
 
-maven_build:
-  stage: test
+build:
+  image: maven:latest
+  stage: build
   script:
-    - mvn verify -B
-#  only:
-#    - merge_requests
-#    - master
-#    - develop
+    - mvn -Pmaster clean install -B
+  artifacts:
+    expire_in: 1 days
+    paths:
+      - target
+      - target-frontend
+
+deploy:
+  stage: deploy
+  script:
+    - gcloud auth activate-service-account --key-file $GOOGLE_SERVICE_ACCOUNT_FILE
+
+    # update and install yarn
+    - apk update && apk add yarn nodejs npm
+
+    # populate app.yaml file from app.template.yaml and env variables defined in gitlab CI/CD
+    - npx gae-ayaml-env
+
+    - gcloud app deploy app.yaml --quiet --project $GOOGLE_PROJECT_ID
+  only:
+    - merge_requests
+    - master
+    - develop
