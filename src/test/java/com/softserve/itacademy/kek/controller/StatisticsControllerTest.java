@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -105,7 +104,7 @@ public class StatisticsControllerTest {
     }
 
     @Test
-    public void getListOfOrdersForCurrentTenant() throws Exception{
+    public void getListOfOrdersForCurrentTenant() throws Exception {
         when(orderService.getAllByTenantGuid(any(UUID.class))).thenReturn(orderList);
 
         mockMvc.perform(get("/statistics"))

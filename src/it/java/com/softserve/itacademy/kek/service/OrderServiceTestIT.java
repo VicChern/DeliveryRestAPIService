@@ -1,7 +1,6 @@
 package com.softserve.itacademy.kek.service;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -194,6 +193,8 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
         //then
         IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
 
+        assertNotNull(createdOrder);
+        assertNotNull(foundOrder);
         assertEquals(createdOrder.getGuid(), foundOrder.getGuid());
         assertEquals(createdOrder.getOrderDetails(), foundDetails);
         assertEquals(createdOrder.getSummary(), foundOrder.getSummary());
@@ -202,17 +203,17 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
 
     @Rollback
     @Test(groups = {"integration-tests"})
-    public void getAllByTenantGuidSuccess(){
+    public void getAllByTenantGuidSuccess() {
         //given
         Order createdOrder = orderRepository.save(order);
 
         //when
-        List <IOrder> orderList = orderService.getAllByTenantGuid(tenant.getGuid());
+        List<IOrder> orderList = orderService.getAllByTenantGuid(tenant.getGuid());
 
         //then
         assertNotNull(createdOrder);
         assertNotNull(orderList);
-        assertEquals(orderList.size(),1);
+        assertEquals(orderList.size(), 1);
     }
 
     @Rollback

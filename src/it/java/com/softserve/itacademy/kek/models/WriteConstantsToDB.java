@@ -7,7 +7,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.configuration.PersistenceJPAConfig;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 import com.softserve.itacademy.kek.models.enums.EventType;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
@@ -16,7 +16,7 @@ import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 
 
-@ContextConfiguration(classes = {PersistenceTestConfig.class})
+@ContextConfiguration(classes = {PersistenceJPAConfig.class})
 public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
 
     @Autowired
@@ -57,8 +57,8 @@ public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
 
     @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
-        actorRoleRepository.deleteAll();
-        orderEventTypeRepository.deleteAll();
+//        actorRoleRepository.deleteAll();
+//        orderEventTypeRepository.deleteAll();
     }
 
     @Test(groups = {"integration-tests"})

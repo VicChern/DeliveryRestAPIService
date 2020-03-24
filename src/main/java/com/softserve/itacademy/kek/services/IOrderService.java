@@ -37,13 +37,13 @@ public interface IOrderService {
     IOrder getByGuid(UUID guid);
 
     /**
-     *  Gets list of orders by {@link Tenant} guid
+     * Gets list of orders by {@link Tenant} guid
      *
      * @param guid {@link Tenant} guid
      * @return list of Orders
      */
 
-    List <IOrder> getAllByTenantGuid(UUID guid);
+    List<IOrder> getAllByTenantGuid(UUID guid);
 
     /**
      * Updates {@link Order}

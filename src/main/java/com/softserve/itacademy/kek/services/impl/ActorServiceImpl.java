@@ -1,7 +1,10 @@
 package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.PersistenceException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -51,5 +54,14 @@ public class ActorServiceImpl implements IActorService {
             LOGGER.error("Actor wasn`t saved for tenant: {}, user: {}, actorRole: {}", tenant, user, actorRole);
             throw new OrderServiceException("Actor wasn`t saved for tenant: " + tenant + ", user: " + user + ", actorRole: " + actorRole);
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Optional<Actor>> getAllByUserGuid(UUID guid) {
+        LOGGER.info("Getting list of all actors by tenant guid{}", guid);
+        List<Optional<Actor>> actorList = new ArrayList<>();
+        actorList.add(actorRepository.findByUserGuid(guid));
+        return actorList;
     }
 }

@@ -15,8 +15,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.services.impl.CloudStorageService;
 import com.softserve.itacademy.kek.models.ICloudStorageObject;
+import com.softserve.itacademy.kek.services.impl.CloudStorageService;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;

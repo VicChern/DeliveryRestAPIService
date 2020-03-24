@@ -23,10 +23,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.services.AbstractService;
-import com.softserve.itacademy.kek.services.ICloudStorageService;
 import com.softserve.itacademy.kek.models.ICloudStorageObject;
 import com.softserve.itacademy.kek.models.impl.CloudStorageObject;
+import com.softserve.itacademy.kek.services.AbstractService;
+import com.softserve.itacademy.kek.services.ICloudStorageService;
 
 @Component
 public class CloudStorageService extends AbstractService implements ICloudStorageService {

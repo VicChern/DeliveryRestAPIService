@@ -10,5 +10,6 @@ import com.softserve.itacademy.kek.models.impl.Order;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Order findByGuid(UUID guid);
+
     List<Order> findAllByTenantGuid(UUID guid);
 }
