@@ -1,43 +1,49 @@
 package com.softserve.itacademy.kek.services;
 
 
+import java.util.UUID;
+
+import com.softserve.itacademy.kek.exception.IdentityServiceException;
 import com.softserve.itacademy.kek.models.IIdentity;
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.impl.Identity;
+import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
 
 public interface IIdentityService {
 
     /**
-     * Inserts new user password to db
+     * Inserts new user identity into db
      *
-     * @param userData
-     * @param password
-     * @return inserted user data
+     * @param userGuid user GUID
+     * @param type     identity type
+     * @param payload  payload
+     * @return inserted user identity
      */
-    IIdentity create(IUser userData, String password);
+    IIdentity create(UUID userGuid, IdentityTypeDef type, String payload);
 
     /**
-     * Get user password from db
+     * Get user identity from db
      *
-     * @param email
+     * @param userGuid user GUID
+     * @param type     predefined identity type
      * @return user password
      */
-    IIdentity read(String email);
+    IIdentity read(UUID userGuid, IdentityTypeDef type);
 
     /**
-     * Set new user password
+     * Updates user identity
      *
-     * @param user
-     * @param password
-     * @return user password
+     * @param userGuid user data
+     * @param type     identity type
+     * @param payload  payload
+     * @return Identity
+     * @throws IdentityServiceException
      */
-    IIdentity update(IUser user, String password);
+    IIdentity update(UUID userGuid, IdentityTypeDef type, String payload) throws IdentityServiceException;
 
     /**
-     * Delete user password
+     * Delete user indentity
      *
-     * @param identity
+     * @param userGuid user GUID
+     * @param type     identity type
      */
-    void delete(Identity identity);
-
+    void delete(UUID userGuid, IdentityTypeDef type) throws IdentityServiceException;
 }
