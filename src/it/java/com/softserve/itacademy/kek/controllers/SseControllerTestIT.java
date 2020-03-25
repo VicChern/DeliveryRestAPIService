@@ -170,7 +170,7 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
                 .andReturn();
 
         String content = mvcResult.getResponse().getContentAsString();
-        Assert.assertEquals(content.trim(), "data:{lat: 0, lng: 0}");
+        Assert.assertEquals(content.trim(), "data: {lat: 0, lng: 0}");
     }
 
     @Test(groups = {"integration-tests"})
