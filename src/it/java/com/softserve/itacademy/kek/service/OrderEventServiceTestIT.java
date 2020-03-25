@@ -147,7 +147,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         savedOrder1 = (Order) orderService.create(order1, savedCustomer1.getGuid());
         assertNotNull(savedOrder1);
 
-        actor1 = actorRepository.findByUserGuid(savedCustomer1.getGuid()).get();
+        actor1 = actorRepository.findFirstByUserGuid(savedCustomer1.getGuid()).get();
         orderEventAssigned = getOrderEvent(orderRepository.findByGuid(savedOrder1.getGuid()), orderEventTypeAssigned, actor1);
         orderEventStarted = getOrderEvent(orderRepository.findByGuid(savedOrder1.getGuid()), orderEventTypeStarted, actor1);
         orderEventDelivered = getOrderEvent(orderRepository.findByGuid(savedOrder1.getGuid()), orderEventTypeDelivered, actor1);
@@ -283,7 +283,7 @@ public class OrderEventServiceTestIT extends AbstractTestNGSpringContextTests {
         savedCustomer2 = userRepository.save(createOrdinaryUser(3));
         savedOrder2 = (Order) orderService.create(order2, savedCustomer2.getGuid());
 
-        actor2 = actorRepository.findByUserGuid(savedCustomer2.getGuid()).get();
+        actor2 = actorRepository.findFirstByUserGuid(savedCustomer2.getGuid()).get();
 
         orderEventAssigned = getOrderEvent(orderRepository.findByGuid(savedOrder2.getGuid()), orderEventTypeAssigned, actor2);
         orderEventStarted = getOrderEvent(orderRepository.findByGuid(savedOrder2.getGuid()), orderEventTypeStarted, actor2);

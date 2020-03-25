@@ -230,7 +230,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
     }
 
     private Actor getActor(Tenant tenant, UUID actorGuid, String eventTypeName) {
-        final Optional<Actor> actorByUserGuid = actorRepository.findByUserGuid(actorGuid);
+        final Optional<Actor> actorByUserGuid = actorRepository.findFirstByUserGuid(actorGuid);
 
         //if there isn`t actor for actorGuid or if its actor exist for another tenant
         if ( actorByUserGuid.isEmpty() || ! actorByUserGuid.get().getTenant().getGuid().equals(tenant.getGuid())) {

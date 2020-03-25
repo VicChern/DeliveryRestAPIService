@@ -14,6 +14,6 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
 
     Actor findByUser(IUser user);
 
-    Optional<Actor> findByUserGuid(UUID guid);
+    Optional<Actor> findFirstByUserGuid(UUID guid);
 
 }
