@@ -41,20 +41,20 @@ public class SseController {
     public ResponseEntity<SseEmitter> trackOrder(@PathVariable final UUID orderGuid) {
         logger.info("Getting request to provide last event payload for order guid={}", orderGuid);
 
-        HttpHeaders responseHeaders = new HttpHeaders();
+        final HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Cache-Control", "no-store");
 
-        IOrderEvent lastAddedEvent = orderEventService.getLastAddedEvent(orderGuid);
+        final IOrderEvent lastAddedEvent = orderEventService.getLastAddedEvent(orderGuid);
 
         if (!isDelivering(lastAddedEvent)) {
             throw new TrackingException(String.format("Order %s is not delivering now", orderGuid));
         }
 
-        SseEmitter emitter = new SseEmitter(180_000L);
+        final SseEmitter emitter = new SseEmitter(180_000L);
 
         try {
-            String payload = lastAddedEvent.getPayload();
-            emitter.send(payload);
+            final String payload = lastAddedEvent.getPayload();
+            emitter.send(getEventData(payload));
             logger.debug("Send payload {} for order guid={}", payload, orderGuid);
             addEmitter(orderGuid, emitter);
             logger.debug("Emitter for order guid={} was added for tracking", orderGuid);
@@ -101,7 +101,7 @@ public class SseController {
             emitters.forEach(sseEmitter -> {
                 String payload = deliveringOrdersToPayloads.get(guid);
                 try {
-                    sseEmitter.send(payload);
+                    sseEmitter.send(getEventData(payload));
                     logger.debug("Send payload {} for order guid={}", payload, guid);
                 } catch (IOException e) {
 
@@ -137,4 +137,11 @@ public class SseController {
         return type.equals(EventType.STARTED.toString());
     }
 
+    private String getEventData(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return text;
+        } else {
+            return " " + text;
+        }
+    }
 }
