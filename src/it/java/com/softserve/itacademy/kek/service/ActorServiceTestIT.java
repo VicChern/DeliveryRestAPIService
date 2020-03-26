@@ -100,19 +100,4 @@ public class ActorServiceTestIT extends AbstractTestNGSpringContextTests {
         assertEquals(createActor.getTenant().getGuid(), tenant.getGuid());
     }
 
-    @Rollback
-    @Test(groups = {"integration-tests"})
-    public void getAllByUserSuccess() {
-        //given
-        Actor createActor = actorService.saveActor(tenant, user, actorRole1);
-
-        //when
-        List<Optional<Actor>> actorList = new ArrayList<>();
-        actorList.add(actorRepository.findByUserGuid(createActor.getUser().getGuid()));
-
-        //then
-        assertNotNull(createActor);
-        assertNotNull(actorList);
-        assertEquals(actorList.size(), 1);
-    }
 }

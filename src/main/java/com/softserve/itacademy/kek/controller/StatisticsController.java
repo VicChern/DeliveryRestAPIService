@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,18 +70,17 @@ public class StatisticsController extends DefaultController {
 
     }
 
-    @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.ACTOR)
-    @PreAuthorize(" hasRole('USER'")
-    public ResponseEntity<ActorDto> getActorByUserGuid(@PathVariable String guid) {
-        logger.debug("Client requested the actor {}", guid);
+    @GetMapping(value = KekMappingValues.ACTORS, produces = KekMediaType.ACTOR_LIST)
+    public ResponseEntity<ListWrapperDto<ActorDto>> getListOfActorsForCurrentTenant(@PathVariable String guid) {
+        logger.debug("Client requested the actorsList {}", guid);
 
-        IActor actor = actorService.getAllByUserGuid(UUID.fromString(guid));
-        ActorDto actorDto = transformActor(actor);
-
-        logger.debug("Sending the order {} to the client", actorDto);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(actorDto);
+        List<IActor> actorList = actorService.getAllByTenantGuid(UUID.fromString(guid));
+        ListWrapperDto<ActorDto> actorListDto = new ListWrapperDto<>(actorList
+                .stream()
+                .map(this::transformActor)
+                .collect(Collectors.toList()));
+        logger.debug("Sending the actorsList {} to the client", actorListDto);
+        return ResponseEntity.status(HttpStatus.OK).body(actorListDto);
     }
 
 }

@@ -168,7 +168,7 @@ public class UserController extends DefaultController {
      * @param guid user guid from the URN
      * @return Response Entity with list of the {@link AddressDto} objects as a JSON
      */
-    @GetMapping(value = KekMappingValues.ADRRESSES, produces = KekMediaType.ADDRESS_LIST)
+    @GetMapping(value = KekMappingValues.ADDRESSES, produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<ListWrapperDto<AddressDto>> getUserAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses of the employee {}", guid);
@@ -192,7 +192,7 @@ public class UserController extends DefaultController {
      * @param newAddressesDto list of address objects as a JSON
      * @return Response entity with list of the {@link AddressDto} objects as a JSON
      */
-    @PostMapping(value = KekMappingValues.ADRRESSES,
+    @PostMapping(value = KekMappingValues.ADDRESSES,
             consumes = KekMediaType.ADDRESS_LIST,
             produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('USER')")

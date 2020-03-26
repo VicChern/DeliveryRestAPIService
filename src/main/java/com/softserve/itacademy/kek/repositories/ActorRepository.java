@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,5 +16,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
     Actor findByUser(IUser user);
 
     Optional<Actor> findByUserGuid(UUID guid);
+
+    List<Actor> findAllByTenantGuid(UUID guid);
 
 }

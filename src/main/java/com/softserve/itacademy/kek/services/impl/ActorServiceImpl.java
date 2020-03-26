@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.persistence.PersistenceException;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.OrderServiceException;
+import com.softserve.itacademy.kek.models.IActor;
+import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Tenant;
@@ -53,14 +56,13 @@ public class ActorServiceImpl implements IActorService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
-    public Actor getAllByUserGuid(UUID guid) {
-        LOGGER.info("Getting actor by user guid{}", guid);
-        Actor actor = new Actor();
-        if (actorRepository.findByUserGuid(guid).isPresent())
-        actor = actorRepository.findByUserGuid(guid).get();
-
-        return actor;
+    public List <IActor> getAllByTenantGuid(UUID guid) {
+        LOGGER.info("Getting list of actors by tenant guid{}", guid);
+        List<? extends IActor> actors = actorRepository.findAllByTenantGuid(guid);
+        LOGGER.info("return list of actors{}", actors);
+        return (List<IActor>) actors;
     }
+
 }

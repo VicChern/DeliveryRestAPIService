@@ -322,7 +322,7 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from URN tenant property
      * @return Response entity with a list of {@link AddressDto} objects as a JSON
      */
-    @GetMapping(value = KekMappingValues.ADRRESSES, produces = KekMediaType.ADDRESS_LIST)
+    @GetMapping(value = KekMappingValues.ADDRESSES, produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<AddressDto>> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
@@ -346,7 +346,7 @@ public class TenantController extends DefaultController {
      * @param newAddressesDto object with a list of {@link AddressDto} as a JSON
      * @return Response entity with a list of {@link AddressDto} objects as a JSON
      */
-    @PostMapping(value = KekMappingValues.ADRRESSES, consumes = KekMediaType.ADDRESS,
+    @PostMapping(value = KekMappingValues.ADDRESSES, consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<AddressDto>> addTenantAddresses(@PathVariable String guid,
