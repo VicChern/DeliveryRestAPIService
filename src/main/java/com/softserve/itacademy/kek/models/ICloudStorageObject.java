@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.services.model;
+package com.softserve.itacademy.kek.models;
 
 public interface ICloudStorageObject {
 

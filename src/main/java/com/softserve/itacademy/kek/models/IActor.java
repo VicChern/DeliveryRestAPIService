@@ -34,4 +34,5 @@ public interface IActor {
      * @return Actor's alias
      */
     String getAlias();
+
 }
