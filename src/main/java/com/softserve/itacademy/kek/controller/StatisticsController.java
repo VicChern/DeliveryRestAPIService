@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +29,7 @@ import com.softserve.itacademy.kek.services.IOrderService;
 
 @RestController
 @RequestMapping(path = "/statistics")
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class StatisticsController extends DefaultController {
     private final Logger logger = LoggerFactory.getLogger(StatisticsController.class);
 
@@ -53,7 +55,7 @@ public class StatisticsController extends DefaultController {
     }
 
     @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.ORDER_LIST)
-//    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<ListWrapperDto<OrderDto>> getListOfOrdersForCurrentTenant(@PathVariable String guid) {
         logger.debug("Client requested the list of all orders");
 
@@ -71,6 +73,7 @@ public class StatisticsController extends DefaultController {
     }
 
     @GetMapping(value = KekMappingValues.ACTORS, produces = KekMediaType.ACTOR_LIST)
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<ListWrapperDto<ActorDto>> getListOfActorsForCurrentTenant(@PathVariable String guid) {
         logger.debug("Client requested the actorsList {}", guid);
 

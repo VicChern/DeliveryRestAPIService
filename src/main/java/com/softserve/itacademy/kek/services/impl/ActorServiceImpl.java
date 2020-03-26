@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Tenant;
@@ -58,7 +57,7 @@ public class ActorServiceImpl implements IActorService {
 
     @Transactional
     @Override
-    public List <IActor> getAllByTenantGuid(UUID guid) {
+    public List<IActor> getAllByTenantGuid(UUID guid) {
         LOGGER.info("Getting list of actors by tenant guid{}", guid);
         List<? extends IActor> actors = actorRepository.findAllByTenantGuid(guid);
         LOGGER.info("return list of actors{}", actors);

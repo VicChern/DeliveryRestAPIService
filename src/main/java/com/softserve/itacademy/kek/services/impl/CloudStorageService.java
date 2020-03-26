@@ -128,7 +128,6 @@ public class CloudStorageService extends AbstractService implements ICloudStorag
         return result;
     }
 
-    // TODO: refactor this, get rid off global ENV variables
     Storage getStorageObject() {
         logger.debug("Creating storage object");
 
@@ -165,7 +164,6 @@ public class CloudStorageService extends AbstractService implements ICloudStorag
         return storage;
     }
 
-    // TODO: replace this method with a property service call
     String getBucketName() {
         logger.debug("Getting name of Google Cloud Storage default bucket");
 

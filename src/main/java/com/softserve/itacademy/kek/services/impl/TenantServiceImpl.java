@@ -51,8 +51,6 @@ public class TenantServiceImpl implements ITenantService {
         tenantForSaving.setGuid(UUID.randomUUID());
 
         // check if exist user for tenant
-        //TODO replace by checking whether the ownerGuid is guid of principal user (when will be added security)
-
         final User tenantOwner = userRepository.findByGuid(ownerGuid).orElse(null);
 
         if (tenantOwner == null) {

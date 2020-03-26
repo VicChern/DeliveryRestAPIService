@@ -1,7 +1,6 @@
 package com.softserve.itacademy.kek.services;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.softserve.itacademy.kek.models.IActor;
@@ -17,5 +16,5 @@ public interface IActorService {
 
     Actor saveActor(Tenant tenant, User user, ActorRole actorRole);
 
-    List <IActor> getAllByTenantGuid(UUID guid);
+    List<IActor> getAllByTenantGuid(UUID guid);
 }

@@ -27,6 +27,7 @@ public class ActorDto implements IActor {
     public TenantDto getTenant() {
         return new TenantDto(tenant, null, null, null);
     }
+
     @Transient
     @Override
     public UserDto getUser() {
