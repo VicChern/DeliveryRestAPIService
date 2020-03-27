@@ -6,6 +6,8 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,15 +32,16 @@ public class RegistrationController {
     }
 
     @PostMapping(path = "/registration", consumes = KekMediaType.REGISTRATION_USER, produces = KekMediaType.REGISTRATION_USER)
-    public void userRegistration(@RequestBody @Valid RegistrationDto userData, HttpServletResponse response) throws Exception {
+    public ResponseEntity userRegistration(@RequestBody @Valid RegistrationDto userData, HttpServletResponse response)  {
         logger.info("Created request for user registration: {}", userData);
 
         final IUser user = createUser.createNewUser(userData);
 
+//        final String redirectUrl = authenticationService.authenticateKekUser(user);
+//
+//        logger.debug("redirecting after authentication = {}", redirectUrl);
+//        response.sendRedirect(redirectUrl);
 
-        final String redirectUrl = authenticationService.authenticateKekUser(user);
-
-        logger.debug("redirecting after authentication = {}", redirectUrl);
-        response.sendRedirect(redirectUrl);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
