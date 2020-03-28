@@ -44,7 +44,7 @@ public class IdentityServiceImpl implements IIdentityService {
         logger.info("Creating identity in DB: user.guid = {}, type = {}", userGuid, type);
 
         final User user = internalGetUserByGuid(userGuid);
-        final IdentityType identityType = internalGetIdentityType(type);
+        final IdentityType identityType = internalGetForcedIdentityType(type);
         final Identity identity = new Identity(user, identityType, payload);
 
         try {
@@ -115,14 +115,27 @@ public class IdentityServiceImpl implements IIdentityService {
         }
     }
 
-    private IdentityType internalGetIdentityType(IdentityTypeDef type) {
-        logger.debug("Find Identity type in DB: type = {}", type);
+    private IdentityType internalGetForcedIdentityType(IdentityTypeDef type) {
+        logger.debug("Getting Identity Type: {}", type);
 
-        IdentityType identityType = identityTypeRepository.findByName(type.name());
-        if (identityType == null) {
-            identityType = new IdentityType(type);
+        try {
+            IdentityType dbIdentityType = identityTypeRepository.findByName(type.name());
+
+            if (dbIdentityType == null) {
+                logger.debug("Inserting Identity Type: {}", type);
+
+                final IdentityType newType = new IdentityType(type);
+
+                dbIdentityType = identityTypeRepository.saveAndFlush(newType);
+
+                logger.debug("Identity Type was inserted into DB: {}", dbIdentityType);
+            }
+
+            return dbIdentityType;
+        } catch (DataAccessException ex) {
+            logger.error("An error occurred while getting Identity Type " + type, ex);
+            throw new IdentityServiceException("An error occurred while getting identity type", ex);
         }
-        return identityType;
     }
 
     private User internalGetUserByGuid(UUID guid) throws IdentityServiceException {
