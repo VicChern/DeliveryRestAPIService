@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.dto.SignInDto;
+import com.softserve.itacademy.kek.exception.InvalidPasswordException;
 import com.softserve.itacademy.kek.exception.NoSuchUserException;
 import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
 import com.softserve.itacademy.kek.models.impl.Identity;
@@ -30,19 +31,19 @@ public class SignInController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private UserRepository userRepository;
-    private IIdentityService service;
-    private IdentityRepository repository;
+    private IIdentityService iIdentityService;
+    private IdentityRepository identityRepository;
     private PasswordEncoder passwordEncoder;
     private IAuthenticationService authenticationService;
     private IGetTokenService getTokenService;
 
     @Autowired
-    public SignInController(UserRepository userRepository, IIdentityService service,
-                            IdentityRepository repository, PasswordEncoder passwordEncoder,
+    public SignInController(UserRepository userRepository, IIdentityService iIdentityService,
+                            IdentityRepository identityRepository, PasswordEncoder passwordEncoder,
                             IAuthenticationService authenticationService, IGetTokenService getTokenService) {
         this.userRepository = userRepository;
-        this.service = service;
-        this.repository = repository;
+        this.iIdentityService = iIdentityService;
+        this.identityRepository = identityRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationService = authenticationService;
         this.getTokenService = getTokenService;
@@ -51,38 +52,35 @@ public class SignInController {
     @GetMapping(path = "/signin", consumes = "application/vnd.softserve.signin+json",
             produces = "application/vnd.softserve.signin+json")
     public void signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
-                                 HttpServletResponse response) throws Exception {
+                       HttpServletResponse response) throws Exception {
         final User user;
         final Identity identity;
 
         try {
-           user = userRepository.findByEmail(dto.getEmail());
+            user = userRepository.findByEmail(dto.getEmail());
         } catch (DataAccessException ex) {
-           throw new NoSuchUserException("There is no user with this email", ex);
+            throw new NoSuchUserException("There is no user with this email", ex);
         }
 
-        identity = (Identity) service.read(user.getGuid(), IdentityTypeDef.KEY);
+        identity = (Identity) iIdentityService.read(user.getGuid(), IdentityTypeDef.KEY);
 
         boolean isCorrect = passwordEncoder.matches(dto.getPassword(), identity.getPayload());
 
-        if ( isCorrect ) {
+        if (isCorrect) {
+            logger.info("Password is correct. Starting user authentication: {}", user);
             authenticationService.authenticateKekUser(user);
 
-            Cookie cookie = new Cookie("token", "");
+            Cookie cookie = new Cookie("token", getTokenService.getToken(user.getEmail()));
 
-            cookie.setValue(getTokenService.getToken(user.getEmail()));
             cookie.setSecure(true);
             cookie.setHttpOnly(true);
-            cookie.setDomain("/");
+            cookie.setPath("/");
 
             response.addCookie(cookie);
 
         } else {
-
-            /**
-             * etosoriystystdhgfdkj
-             */
-            throw new Exception();
+            logger.info("Invalid password login attempt for user: {}", user);
+            throw new InvalidPasswordException("Invalid password");
         }
 
     }
