@@ -227,8 +227,8 @@ public class TenantController extends DefaultController {
      * @param tenantPropertiesListDto list of {@link TenantPropertiesDto} objects as a JSON
      * @return Response entity with a list of {@link TenantPropertiesDto} objects as a JSON
      */
-    @PostMapping(value = KekMappingValues.PROPERTIES, consumes = KekMediaType.TENANT_PROPERTY,
-            produces = KekMediaType.TENANT_PROPERTY)
+    @PostMapping(value = KekMappingValues.PROPERTIES, consumes = KekMediaType.TENANT_PROPERTY_LIST,
+            produces = KekMediaType.TENANT_PROPERTY_LIST)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<TenantPropertiesDto>> addTenantProperties(@PathVariable String guid,
                                                                                    @RequestBody ListWrapperDto<TenantPropertiesDto> tenantPropertiesListDto) {
