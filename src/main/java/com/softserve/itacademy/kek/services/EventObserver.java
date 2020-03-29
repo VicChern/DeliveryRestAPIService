@@ -33,7 +33,7 @@ public class EventObserver {
     }
 
 
-    //@Scheduled(fixedRate = 6000)
+    @Scheduled(fixedRate = 6000)
     public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
         final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
         LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());

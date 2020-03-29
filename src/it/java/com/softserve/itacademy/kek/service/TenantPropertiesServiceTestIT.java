@@ -82,6 +82,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
     @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         tenantPropertiesRepository.deleteAll();
+        propertyTypeRepository.deleteAll();
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }
