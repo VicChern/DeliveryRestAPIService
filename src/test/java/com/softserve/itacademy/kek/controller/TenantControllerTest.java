@@ -60,6 +60,19 @@ public class TenantControllerTest {
             "  },\n" +
             "  \"value\": \"string\"\n" +
             "}";
+    private final String tenantPropertyListJson = "{\n" +
+            "  \"list\": [\n" +
+            "    {\n" +
+            "      \"guid\": \"48c5db5c-af58-4350-874e-b99b33c6af86\",\n" +
+            "      \"key\": \"string\",\n" +
+            "      \"propertyType\": {\n" +
+            "        \"name\": \"string\",\n" +
+            "        \"schema\": \"string\"\n" +
+            "      },\n" +
+            "      \"value\": \"string\"\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
     private final String addressListJson = "{\n" +
             "  \"list\": [\n" +
             "    {\n" +
@@ -237,11 +250,11 @@ public class TenantControllerTest {
         when(tenantPropertiesService.create(anyList(), any(UUID.class))).thenReturn(tenantPropertiesList);
 
         mockMvc.perform(post("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/properties")
-                .contentType(KekMediaType.TENANT_PROPERTY)
-                .accept(KekMediaType.TENANT_PROPERTY)
+                .contentType(KekMediaType.TENANT_PROPERTY_LIST)
+                .accept(KekMediaType.TENANT_PROPERTY_LIST)
                 .content(tenantPropertyJson))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(KekMediaType.TENANT_PROPERTY))
+                .andExpect(content().contentType(KekMediaType.TENANT_PROPERTY_LIST))
                 .andExpect(jsonPath("$.list.[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(jsonPath("$.list.[0].key").value("string"))
                 .andExpect(jsonPath("$.list.[0].propertyType.name").value("string"))

@@ -38,7 +38,7 @@ public class Identity extends AbstractEntity implements Serializable, IIdentity 
     private Long idIdentity;
 
     @NotNull
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "id_identity_type")
     private IdentityType identityType;
 

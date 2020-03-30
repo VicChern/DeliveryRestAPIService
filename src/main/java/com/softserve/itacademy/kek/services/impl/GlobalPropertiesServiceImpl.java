@@ -10,25 +10,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.GlobalPropertiesServiceException;
 import com.softserve.itacademy.kek.models.IGlobalProperty;
-import com.softserve.itacademy.kek.models.IPropertyType;
 import com.softserve.itacademy.kek.models.impl.GlobalProperty;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.repositories.GlobalPropertiesRepository;
-import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
 import com.softserve.itacademy.kek.services.IGlobalPropertiesService;
+import com.softserve.itacademy.kek.services.IPropertyTypeService;
 
 @Service
 public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(IGlobalPropertiesService.class);
 
-    private final PropertyTypeRepository propertyTypeRepository;
     private final GlobalPropertiesRepository globalPropertiesRepository;
+    private final IPropertyTypeService propertyTypeService;
 
     @Autowired
-    public GlobalPropertiesServiceImpl(GlobalPropertiesRepository globalPropertiesRepository, PropertyTypeRepository propertyTypeRepository) {
-        this.propertyTypeRepository = propertyTypeRepository;
+    public GlobalPropertiesServiceImpl(GlobalPropertiesRepository globalPropertiesRepository,
+                                       IPropertyTypeService propertyTypeService) {
         this.globalPropertiesRepository = globalPropertiesRepository;
+        this.propertyTypeService = propertyTypeService;
     }
 
     @Transactional
@@ -36,20 +36,8 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
     public IGlobalProperty create(IGlobalProperty globalProperties) throws GlobalPropertiesServiceException {
         LOGGER.info("Saving globalProperties: {}", globalProperties);
 
-        final PropertyType actualPropertyType;
-        final PropertyType foundPropertyType = propertyTypeRepository.getByName(globalProperties.getPropertyType().getName());
         final GlobalProperty actualProperties = new GlobalProperty();
-
-        if (foundPropertyType == null) {
-            final PropertyType savedPropertyType = new PropertyType();
-
-            savedPropertyType.setName(globalProperties.getPropertyType().getName());
-            savedPropertyType.setSchema(globalProperties.getPropertyType().getSchema());
-
-            actualPropertyType = propertyTypeRepository.save(savedPropertyType);
-        } else {
-            actualPropertyType = foundPropertyType;
-        }
+        final PropertyType actualPropertyType = (PropertyType) propertyTypeService.createOrUpdate(globalProperties.getPropertyType());
 
         actualProperties.setPropertyType(actualPropertyType);
         actualProperties.setKey(globalProperties.getKey());
@@ -68,12 +56,8 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
     public IGlobalProperty update(IGlobalProperty globalProperties) throws GlobalPropertiesServiceException {
         LOGGER.info("Updating globalProperties: {}", globalProperties);
 
-        final IPropertyType newPropertyType = globalProperties.getPropertyType();
         final GlobalProperty actualProperties = globalPropertiesRepository.findByIdProperty(globalProperties.getIdProperty());
-        final PropertyType actualPropertyType = propertyTypeRepository.getByName(actualProperties.getPropertyType().getName());
-
-        actualPropertyType.setName(newPropertyType.getName());
-        actualPropertyType.setSchema(newPropertyType.getSchema());
+        final PropertyType actualPropertyType = (PropertyType) propertyTypeService.createOrUpdate(globalProperties.getPropertyType());
 
         actualProperties.setPropertyType(actualPropertyType);
         actualProperties.setKey(globalProperties.getKey());
