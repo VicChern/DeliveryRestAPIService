@@ -9,12 +9,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -83,7 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     AuthenticationFilter authenticationFilter() throws Exception {
         final AuthenticationFilter filter = new AuthenticationFilter(
                 new OrRequestMatcher(
-                        new AntPathRequestMatcher("/api/**")
+                        new AntPathRequestMatcher("/api/v1/**")
                 )
         );
         filter.setAuthenticationManager(authenticationManager());
@@ -97,9 +100,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 /*        http.authorizeRequests().anyRequest().authenticated()
                 .and().httpBasic();*/
 
-        http
-                .authorizeRequests()
+//TODO :: investigate config to exclude sign in and login pages from filter(now token is needed)
+
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
+                .antMatchers("/api/v1/**").authenticated()
+                .antMatchers("/api/v1/signin").permitAll()
+                .and()
+
+
                 .formLogin()
                 .loginPage(loginURL)
                 .successForwardUrl(profileURL)

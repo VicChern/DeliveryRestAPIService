@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,10 +53,12 @@ public class SignInController {
 
     @GetMapping(path = "/signin", consumes = "application/vnd.softserve.signin+json",
             produces = "application/vnd.softserve.signin+json")
-    public void signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
-                       HttpServletResponse response) throws Exception {
+    public ResponseEntity signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
         final User user;
         final Identity identity;
+
+        request.getSession(false);
 
         try {
             user = userRepository.findByEmail(dto.getEmail());
@@ -70,13 +74,9 @@ public class SignInController {
             logger.info("Password is correct. Starting user authentication: {}", user);
             authenticationService.authenticateKekUser(user);
 
-            Cookie cookie = new Cookie("token", getTokenService.getToken(user.getEmail()));
-
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-
-            response.addCookie(cookie);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(getTokenService.getToken(user.getEmail()));
 
         } else {
             logger.info("Invalid password login attempt for user: {}", user);

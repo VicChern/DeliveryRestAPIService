@@ -46,6 +46,8 @@ public class AuthController extends DefaultController {
         response.sendRedirect(redirectUrl);
     }
 
+    //TODO: get principal need user details for now. investigate exception and solutions
+
     @GetMapping(path = "/profile")
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     protected ResponseEntity<String> profile(Authentication authentication) {

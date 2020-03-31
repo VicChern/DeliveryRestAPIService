@@ -30,6 +30,7 @@ public class GetTokenServiceImpl implements IGetTokenService {
 
         tokenData.put("authorities", user.getAuthorities());
         tokenData.put("email", email);
+//        tokenData.put("details", user.toString());
 
         tokenData.put("token_create_date", new Date().getTime());
 

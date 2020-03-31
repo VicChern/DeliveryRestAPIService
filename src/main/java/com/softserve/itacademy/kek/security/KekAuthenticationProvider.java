@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class KekAuthenticationProvider implements AuthenticationProvider {
 
+    //TODO: investigate provider
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String name = authentication.getName();
-        String password = authentication.getCredentials().toString();
-        return new UsernamePasswordAuthenticationToken(name, password, new ArrayList<>());
+        return authentication;
     }
 
     @Override
