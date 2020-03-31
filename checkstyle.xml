@@ -5,23 +5,26 @@
     <property name="fileExtensions" value="java"/>
 
     <module name="TreeWalker">
-        <module name="AvoidStarImport"/>
-
         <module name="EmptyLineSeparator">
-            <property name="tokens" value="PACKAGE_DEF, IMPORT, METHOD_DEF"/>
+            <property name="tokens" value="PACKAGE_DEF, IMPORT, CLASS_DEF, METHOD_DEF"/>
+            <!-- TODO: Consider adding two following validations -->
             <!--property name="allowMultipleEmptyLines" value="false"/-->
             <!--property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/-->
         </module>
 
-        <!-- TODO: figure how to track the order of javax and java packages -->
-        <module name="CustomImportOrder">
-            <property name="customImportOrderRules"
-                      value="STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STATIC"/>
-            <property name="specialImportsRegExp" value="^(com|org|net|springfox)\.(?!softserve)"/>
-            <property name="thirdPartyPackageRegExp" value="^com\.softserve\.itacademy\."/>
-            <property name="separateLineBetweenGroups" value="true"/>
+        <module name="AvoidStarImport"/>
+        <module name="UnusedImports"/>
+        <module name="ImportOrder">
+            <property name="groups" value="javax,java,*,/^com\.softserve\.itacademy\..*/"/>
+            <property name="ordered" value="true"/>
+            <property name="separated" value="true"/>
+            <property name="option" value="bottom"/>
+            <property name="sortStaticImportsAlphabetically" value="true"/>
         </module>
 
-        <module name="LocalFinalVariableName"/>
+        <module name="SuppressionXpathSingleFilter">
+            <property name="checks" value="ImportOrder"/>
+            <property name="message" value="^'java\..*'.*"/>
+        </module>
     </module>
 </module>
