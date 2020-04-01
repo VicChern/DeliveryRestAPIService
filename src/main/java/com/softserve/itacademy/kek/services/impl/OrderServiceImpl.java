@@ -1,13 +1,13 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +39,7 @@ import com.softserve.itacademy.kek.services.IUserService;
 @Service
 public class OrderServiceImpl implements IOrderService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(IOrderService.class);
+    private final static Logger logger = LoggerFactory.getLogger(IOrderService.class);
 
     private final OrderRepository orderRepository;
     private final TenantRepository tenantRepository;
@@ -69,7 +69,7 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional
     @Override
     public IOrder create(IOrder iOrder, UUID customerGuid) throws OrderServiceException {
-        LOGGER.info("Saving Order to db: {}", iOrder);
+        logger.info("Insert Order into DB: customerGuid = {}, order = {}", customerGuid, iOrder);
 
         final User customer = (User) userService.getByGuid(customerGuid);
         final Tenant tenant = (Tenant) tenantService.getByGuid(iOrder.getTenant().getGuid());
@@ -77,11 +77,12 @@ public class OrderServiceImpl implements IOrderService {
         final Order savedOrder;
 
         try {
-            savedOrder = orderRepository.save(actualOrder);
-            LOGGER.info("Order was saved: {}", savedOrder);
-        } catch (PersistenceException e) {
-            LOGGER.error("Order wasn`t saved: {}", actualOrder);
-            throw new OrderServiceException("Order wasn`t saved");
+            savedOrder = orderRepository.saveAndFlush(actualOrder);
+
+            logger.debug("Order was inserted into DB: {}", savedOrder);
+        } catch (ConstraintViolationException | DataAccessException ex) {
+            logger.error("Error while inserting Order into DB: " + actualOrder, ex);
+            throw new OrderServiceException("An error occurred while inserting order", ex);
         }
 
         final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CUSTOMER.toString());
@@ -97,58 +98,61 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional(readOnly = true)
     @Override
     public List<IOrder> getAll() throws OrderServiceException {
-        LOGGER.info("Getting all Orders from db");
-        final List<? extends IOrder> orderList;
+        logger.info("Get all Orders from DB");
 
         try {
-            orderList = orderRepository.findAll();
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Orders weren't find");
-            throw new OrderServiceException("Orders weren't find");
+            final List<? extends IOrder> orderList = orderRepository.findAll();
+            return (List<IOrder>) orderList;
+        } catch (DataAccessException ex) {
+            logger.error("Error while getting Orders from DB", ex);
+            throw new OrderServiceException("An error occurred while getting order", ex);
         }
-
-        return (List<IOrder>) orderList;
     }
 
     @Transactional(readOnly = true)
     @Override
     public IOrder getByGuid(UUID guid) throws OrderServiceException {
-        LOGGER.info("Getting Order from db by guid{}", guid);
-        final Order order;
+        logger.info("Get Order from DB by guid: {}", guid);
 
         try {
-            order = orderRepository.findByGuid(guid);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Order with guid: {}, wasn`t found", guid);
-            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
-        }
+            final Order order = orderRepository.findByGuid(guid);
 
-        LOGGER.info("Order with guid: {}, was found: {}", guid, order);
-        return order;
+            logger.debug("Order was found in DB: {}", order);
+
+            return order;
+        } catch (DataAccessException ex) {
+            logger.error("Error while getting Order from DB: " + guid, ex);
+            throw new OrderServiceException("An error occurred while getting order", ex);
+        }
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<IOrder> getAllByTenantGuid(UUID guid) {
-        LOGGER.info("Getting list of orders by tenant guid{}", guid);
-        List<? extends IOrder> orders = orderRepository.findAllByTenantGuid(guid);
-        LOGGER.info("return list of orders{}", orders);
-        return (List<IOrder>) orders;
+    public List<IOrder> getAllByTenantGuid(UUID guid) throws OrderServiceException {
+        logger.info("Get a list of Orders by Tenant guid: {}", guid);
 
+        try {
+            List<? extends IOrder> orders = orderRepository.findAllByTenantGuid(guid);
 
+            logger.debug("A list of orders was read from DB by tenant guid: {}", guid);
+
+            return (List<IOrder>) orders;
+        } catch (DataAccessException ex) {
+            logger.error("Error while getting a list of Orders from DB by Tenant guid: " + guid, ex);
+            throw new OrderServiceException("An error occurred while getting orders", ex);
+        }
     }
-
 
     @Transactional
     @Override
-    public IOrder update(IOrder order, UUID guid) {
-        LOGGER.info("Updating order: {}, with guid: {}", order, guid);
+    public IOrder update(IOrder order, UUID guid) throws OrderServiceException {
+        logger.info("Update Order in DB: guid = {}, order = {}", guid, order);
 
         final Order actualOrder;
         try {
             actualOrder = orderRepository.findByGuid(guid);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Order with guid: {}, wasn`t found", guid);
+        } catch (DataAccessException e) {
+            logger.error("Order with guid: {}, wasn`t found", guid);
             throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
         }
 
@@ -163,36 +167,40 @@ public class OrderServiceImpl implements IOrderService {
         actualOrder.setSummary(order.getSummary());
 
         try {
-            LOGGER.info("Order with guid: {}, was updated: {}", guid, actualOrder);
-            return orderRepository.save(actualOrder);
-        } catch (PersistenceException e) {
-            LOGGER.error("Order with guid: {}, wasn`t updated: {}", guid, actualOrder);
-            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t updated: " + actualOrder);
+            Order updatedOrder = orderRepository.saveAndFlush(actualOrder);
+
+            logger.debug("Order was updated in DB: {}", updatedOrder);
+
+            return updatedOrder;
+        } catch (ConstraintViolationException | DataAccessException ex) {
+            logger.error("Error while updating Order in DB: " + actualOrder, ex);
+            throw new OrderServiceException("An error occurred while updating order", ex);
         }
     }
 
     @Transactional
     @Override
     public void deleteByGuid(UUID guid) throws OrderServiceException {
-        LOGGER.info("Deleting Order from db by guid: {}", guid);
+        logger.info("Delete Order from DB by guid: {}", guid);
 
         final Order actualOrder;
 
         try {
             actualOrder = orderRepository.findByGuid(guid);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Order with guid: {}, wasn`t found", guid);
-            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
+        } catch (DataAccessException ex) {
+            logger.error("Error while getting Order from DB: " + guid, ex);
+            throw new OrderServiceException("An error occurred while getting order");
         }
 
         try {
             orderRepository.deleteById(actualOrder.getIdOrder());
-        } catch (PersistenceException e) {
-            LOGGER.error("Order wasn`t deleted from db: {}", actualOrder);
-            throw new OrderServiceException("Order wasn`t deleted: " + actualOrder);
-        }
+            orderRepository.flush();
 
-        LOGGER.info("Order with guid: {}, was deleted", guid);
+            logger.debug("Order was deleted from DB: {}", actualOrder);
+        } catch (DataAccessException ex) {
+            logger.error("Error while deleting Order from DB: " + actualOrder, ex);
+            throw new OrderServiceException("An error occurred while deleting order", ex);
+        }
     }
 
     @Transactional

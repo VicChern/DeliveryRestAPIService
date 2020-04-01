@@ -3,6 +3,7 @@ package com.softserve.itacademy.kek.services;
 import java.util.List;
 import java.util.UUID;
 
+import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.Tenant;
@@ -19,14 +20,14 @@ public interface IOrderService {
      * @param customerGuid customerGuid
      * @return saved order
      */
-    IOrder create(IOrder order, UUID customerGuid);
+    IOrder create(IOrder order, UUID customerGuid) throws OrderServiceException;
 
     /**
      * Gets all orders
      *
      * @return a list of all orders
      */
-    List<IOrder> getAll();
+    List<IOrder> getAll() throws OrderServiceException;
 
     /**
      * Gets order by {@link Order} guid
@@ -34,7 +35,7 @@ public interface IOrderService {
      * @param guid {@link Order} guid
      * @return guid
      */
-    IOrder getByGuid(UUID guid);
+    IOrder getByGuid(UUID guid) throws OrderServiceException;
 
     /**
      * Gets list of orders by {@link Tenant} guid
@@ -43,7 +44,7 @@ public interface IOrderService {
      * @return list of Orders
      */
 
-    List<IOrder> getAllByTenantGuid(UUID guid);
+    List<IOrder> getAllByTenantGuid(UUID guid) throws OrderServiceException;
 
     /**
      * Updates {@link Order}
@@ -52,12 +53,12 @@ public interface IOrderService {
      * @param guid  {@link Order} guid
      * @return updated order
      */
-    IOrder update(IOrder order, UUID guid);
+    IOrder update(IOrder order, UUID guid) throws OrderServiceException;
 
     /**
      * Deletes order by {@link Order} guid
      *
      * @param guid
      */
-    void deleteByGuid(UUID guid);
+    void deleteByGuid(UUID guid) throws OrderServiceException;
 }

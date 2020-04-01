@@ -76,7 +76,7 @@ public class TenantServiceImpl implements ITenantService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ITenant> getAll() {
+    public List<ITenant> getAll() throws TenantServiceException {
         logger.info("Get all Tenants from DB");
 
         try {
@@ -108,7 +108,7 @@ public class TenantServiceImpl implements ITenantService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<ITenant> getAllPageable(Pageable pageable) {
+    public Page<ITenant> getAllPageable(Pageable pageable) throws TenantServiceException {
         logger.info("Get a page of Tenants from DB: {}", pageable);
 
         try {

@@ -106,7 +106,7 @@ public class PropertyTypeServiceImpl implements IPropertyTypeService {
         try {
             propertyType = propertyTypeRepository.getByName(name);
 
-            logger.debug("Property Type was got from DB: {}", propertyType);
+            logger.debug("Property Type was gotten from DB: {}", propertyType);
 
             return propertyType;
         } catch (DataAccessException ex) {
