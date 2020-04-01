@@ -88,8 +88,8 @@ public class TenantServiceImpl implements ITenantService {
         try {
             final Tenant tenant = tenantRepository.findByGuid(guid).orElseThrow(() -> {
                 LOGGER.error("Tenant wasn't found in the database");
-                return new TenantServiceException("Tenant was not found in database for guid guid: " + guid, new NoSuchElementException());
-            });
+                return new TenantServiceException("Tenant was not found in database for guid: " + guid, new NoSuchElementException());
+        });
             return tenant;
 
         } catch (DataAccessException ex) {

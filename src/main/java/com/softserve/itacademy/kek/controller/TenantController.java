@@ -40,7 +40,7 @@ import com.softserve.itacademy.kek.services.ITenantService;
 
 @RestController
 @RequestMapping(path = "/tenants")
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TenantController extends DefaultController {
     private final static Logger logger = LoggerFactory.getLogger(TenantController.class);
 
@@ -229,7 +229,7 @@ public class TenantController extends DefaultController {
      */
     @PostMapping(value = KekMappingValues.PROPERTIES, consumes = KekMediaType.TENANT_PROPERTY_LIST,
             produces = KekMediaType.TENANT_PROPERTY_LIST)
-    @PreAuthorize("hasRole('TENANT')")
+//    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<TenantPropertiesDto>> addTenantProperties(@PathVariable String guid,
                                                                                    @RequestBody ListWrapperDto<TenantPropertiesDto> tenantPropertiesListDto) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesListDto);
@@ -258,11 +258,11 @@ public class TenantController extends DefaultController {
      * @return Response entity with a specific tenant property {@link TenantPropertiesDto}
      */
     @GetMapping(value = KekMappingValues.PROP_GUID, produces = KekMediaType.TENANT_PROPERTY)
-    @PreAuthorize("hasRole('TENANT')")
+//    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantPropertiesDto> getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Sending the tenant's({}) specific property({}) to the client", guid, propGuid);
 
-        ITenantProperties tenantProperties = tenantPropertiesService.get(UUID.fromString(guid), UUID.fromString(propGuid));
+        ITenantProperties tenantProperties = tenantPropertiesService.getPropertyByTenantGuid(UUID.fromString(guid), UUID.fromString(propGuid));
         TenantPropertiesDto tenantPropertiesDto = transformProperty(tenantProperties);
 
         logger.info("Sending specific property of the tenant {} to the client:\n{}", guid, tenantPropertiesDto);

@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import com.softserve.itacademy.kek.services.IPropertyTypeService;
 
 @Service
 public class PropertyTypeServiceImpl implements IPropertyTypeService {
-    private final static Logger logger = LoggerFactory.getLogger(PropertyTypeServiceImpl.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PropertyTypeServiceImpl.class);
 
     private final PropertyTypeRepository propertyTypeRepository;
 
@@ -28,25 +29,23 @@ public class PropertyTypeServiceImpl implements IPropertyTypeService {
 
     @Transactional
     public IPropertyType createOrUpdate(IPropertyType typeData) throws PropertyTypeServiceException {
-        logger.info("Getting Property Type: {}", typeData);
+        LOGGER.info("Getting Property Type: {}", typeData);
 
         final PropertyType dbPropertyType;
         try {
-            dbPropertyType = propertyTypeRepository.getByName(typeData.getName());
+            dbPropertyType = propertyTypeRepository.findByName(typeData.getName()).orElseThrow(() -> {
+                LOGGER.debug("Get PropertyType  by name from db: {}", typeData);
+                return new PropertyTypeServiceException("Property type was not found in database for type of data: " + typeData, new NoSuchElementException());
+            });
+            return dbPropertyType;
         } catch (DataAccessException ex) {
-            logger.error("An error occurred while getting Property Type " + typeData, ex);
+            LOGGER.error("An error occurred while getting Property Type " + typeData, ex);
             throw new PropertyTypeServiceException("An error occurred while getting property type", ex);
-        }
-
-        if (dbPropertyType == null) {
-            return internalCreate(typeData);
-        } else {
-            return internalUpdate(dbPropertyType, typeData);
         }
     }
 
     private IPropertyType internalCreate(IPropertyType typeData) throws PropertyTypeServiceException {
-        logger.debug("Inserting Property Type into DB: {}", typeData);
+        LOGGER.debug("Inserting Property Type into DB: {}", typeData);
 
         final PropertyType propertyType = new PropertyType();
         propertyType.setName(typeData.getName());
@@ -55,17 +54,17 @@ public class PropertyTypeServiceImpl implements IPropertyTypeService {
         try {
             final PropertyType dbPropertyType = propertyTypeRepository.saveAndFlush(propertyType);
 
-            logger.debug("Property Type was inserted into DB: {}", dbPropertyType);
+            LOGGER.debug("Property Type was inserted into DB: {}", dbPropertyType);
 
             return dbPropertyType;
         } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("An error occurred while inserting Property Type " + typeData, ex);
+            LOGGER.error("An error occurred while inserting Property Type " + typeData, ex);
             throw new PropertyTypeServiceException("An error occurred while inserting property type", ex);
         }
     }
 
     private IPropertyType internalUpdate(PropertyType propertyType, IPropertyType typeData) throws PropertyTypeServiceException {
-        logger.debug("Updating Property Type in DB: {}", typeData);
+        LOGGER.debug("Updating Property Type in DB: {}", typeData);
 
         if (typeData.getName() != null) {
             propertyType.setName(typeData.getName());
@@ -77,11 +76,11 @@ public class PropertyTypeServiceImpl implements IPropertyTypeService {
         try {
             final PropertyType dbPropertyType = propertyTypeRepository.saveAndFlush(propertyType);
 
-            logger.debug("Property Type was updated into DB: {}", dbPropertyType);
+            LOGGER.debug("Property Type was updated into DB: {}", dbPropertyType);
 
             return dbPropertyType;
         } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("An error occurred while updating Property Type " + propertyType, ex);
+            LOGGER.error("An error occurred while updating Property Type " + propertyType, ex);
             throw new PropertyTypeServiceException("An error occurred while updating property type", ex);
         }
     }

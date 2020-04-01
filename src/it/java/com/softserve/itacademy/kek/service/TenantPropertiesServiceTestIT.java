@@ -152,7 +152,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
         assertNotNull(savedTenantProperties);
 
         //when
-        final ITenantProperties receivedTenantProperty = tenantPropertiesService.get(
+        final ITenantProperties receivedTenantProperty = tenantPropertiesService.getPropertyByTenantGuid(
                 tenant.getGuid(),
                 savedTenantProperties.get(0).getGuid());
 
