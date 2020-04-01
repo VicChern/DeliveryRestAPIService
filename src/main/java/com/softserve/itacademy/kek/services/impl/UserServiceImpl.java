@@ -32,7 +32,7 @@ import com.softserve.itacademy.kek.services.IUserService;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    private final static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private UserRepository userRepository;
     private TenantRepository tenantRepository;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     @Override
     public IUser create(IUser userData) throws UserServiceException {
-        logger.info("Insert User into DB: {}", userData);
+        LOGGER.info("Insert User into DB: {}", userData);
 
         final User user = new User();
 
@@ -70,11 +70,11 @@ public class UserServiceImpl implements IUserService {
         try {
             final User userFromDB = userRepository.saveAndFlush(user);
 
-            logger.debug("User was inserted into DB: {}", userFromDB);
+            LOGGER.debug("User was inserted into DB: {}", userFromDB);
 
             return userFromDB;
         } catch (DataAccessException ex) {
-            logger.error("User was not inserted into DB: " + user, ex);
+            LOGGER.error("User was not inserted into DB: " + user, ex);
             throw new UserServiceException("An error occurred while inserting the user into the Database", ex);
         }
     }
@@ -82,7 +82,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     @Override
     public IUser update(IUser userData) throws UserServiceException {
-        logger.info("Update User in DB: {}", userData);
+        LOGGER.info("Update User in DB: {}", userData);
 
         final User user = internalGetByGuid(userData.getGuid());
 
@@ -104,11 +104,11 @@ public class UserServiceImpl implements IUserService {
         try {
             final User userFromDB = userRepository.saveAndFlush(user);
 
-            logger.debug("User was updated in DB: {}", userFromDB);
+            LOGGER.debug("User was updated in DB: {}", userFromDB);
 
             return userFromDB;
         } catch (DataAccessException ex) {
-            logger.error("User was not updated in DB: " + user, ex);
+            LOGGER.error("User was not updated in DB: " + user, ex);
             throw new UserServiceException("An error occurred while updating the user in the Database", ex);
         }
     }
@@ -116,7 +116,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     @Override
     public void deleteByGuid(UUID guid) throws UserServiceException {
-        logger.info("Delete User from DB: guid = {}", guid);
+        LOGGER.info("Delete User from DB: guid = {}", guid);
 
         final User user = internalGetByGuid(guid);
 
@@ -124,9 +124,9 @@ public class UserServiceImpl implements IUserService {
             userRepository.deleteById(user.getIdUser());
             userRepository.flush();
 
-            logger.debug("User was deleted from DB: {}", user);
+            LOGGER.debug("User was deleted from DB: {}", user);
         } catch (DataAccessException ex) {
-            logger.error("User was not deleted from DB: " + user, ex);
+            LOGGER.error("User was not deleted from DB: " + user, ex);
             throw new UserServiceException("An error occurred while deleting the user from the Database", ex);
         }
     }
@@ -134,20 +134,20 @@ public class UserServiceImpl implements IUserService {
     @Transactional(readOnly = true)
     @Override
     public IUser getByGuid(UUID guid) throws UserServiceException {
-        logger.info("Get User from DB by guid: guid = {}", guid);
+        LOGGER.info("Get User from DB by guid: guid = {}", guid);
         return internalGetByGuid(guid);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<IUser> getAll() throws UserServiceException {
-        logger.info("Get all Users");
+        LOGGER.info("Get all Users");
 
         try {
             final List<? extends IUser> users = userRepository.findAll();
             return (List<IUser>) users;
         } catch (DataAccessException ex) {
-            logger.error("An error while getting all users from DB", ex);
+            LOGGER.error("An error while getting all users from DB", ex);
             throw new UserServiceException("An error occurred while getting users from the Database", ex);
         }
     }
@@ -155,45 +155,45 @@ public class UserServiceImpl implements IUserService {
     @Transactional(readOnly = true)
     @Override
     public Page<IUser> getAll(Pageable pageable) throws UserServiceException {
-        logger.info("Getting a page of Users from DB: {}", pageable);
+        LOGGER.info("Getting a page of Users from DB: {}", pageable);
 
         try {
             final Page<? extends IUser> users = userRepository.findAll(pageable);
             return (Page<IUser>) users;
         } catch (DataAccessException ex) {
-            logger.error("An error while getting a page of users from DB", ex);
+            LOGGER.error("An error while getting a page of users from DB", ex);
             throw new UserServiceException("An error occurred while getting users from the Database", ex);
         }
     }
 
     private User internalGetByGuid(UUID guid) throws UserServiceException {
-        logger.debug("Find User in DB: guid = {}", guid);
+        LOGGER.debug("Find User in DB: guid = {}", guid);
 
         try {
             final User user = userRepository.findByGuid(guid).orElseThrow(
                     () -> {
-                        logger.error("User wasn't found in the database");
-                        return new UserServiceException("User was not found in database: guid: " + guid, new NoSuchElementException());
+                        LOGGER.error("User wasn't found in the database");
+                        return new UserServiceException("User was not found in database for guid: " + guid, new NoSuchElementException());
                     }
             );
             return user;
 
         } catch (DataAccessException ex) {
-            logger.error("DB exception for User {}", guid);
-            throw new UserServiceException("An error occurred while getting users from the Database", ex);
+            LOGGER.error("DB exception for User {}", guid);
+            throw new UserServiceException("An error occurred while getting user from the Database", ex);
         }
     }
 
     @Transactional(readOnly = true)
     @Override
     public Collection<? extends GrantedAuthority> getUserAuthorities(String email) {
-        logger.info("Find User in DB: email = {}", email);
+        LOGGER.info("Find User in DB: email = {}", email);
 
         final List<GrantedAuthority> authorityList = new ArrayList<>();
 
         final IUser user = userRepository.findByEmail(email);
         if (user == null) {
-            logger.warn("User wasn't found in DB: email = {}", email);
+            LOGGER.warn("User wasn't found in DB: email = {}", email);
             return authorityList;
         } else {
             authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));

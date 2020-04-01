@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -85,10 +86,15 @@ public class TenantServiceImpl implements ITenantService {
         LOGGER.debug("Get Tenant by guid from db: {}", guid);
 
         try {
-            return tenantRepository.findByGuid(guid).orElseThrow();
-        } catch (NoSuchElementException ex) {
-            LOGGER.error("There is no Tenant in db for guid: {}", guid);
-            throw new TenantServiceException("Tenant wasn't found for guid: " + guid, ex);
+            final Tenant tenant = tenantRepository.findByGuid(guid).orElseThrow(() -> {
+                LOGGER.error("Tenant wasn't found in the database");
+                return new TenantServiceException("Tenant was not found in database for guid guid: " + guid, new NoSuchElementException());
+            });
+            return tenant;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("DB exception for Tenant {}", guid);
+            throw new TenantServiceException("An error occurred while getting tenant from the Database", ex);
         }
     }
 

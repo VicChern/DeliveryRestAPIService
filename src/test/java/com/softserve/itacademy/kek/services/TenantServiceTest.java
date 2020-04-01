@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.exception.ServiceException;
+import com.softserve.itacademy.kek.exception.TenantServiceException;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.TenantDetails;
@@ -198,7 +199,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void deleteThrowsServiceExceptionWhenRepositoryReturnsEmptyOptional() {
         //given
-        doThrow(NoSuchElementException.class).when(tenantRepository).findByGuid(any(UUID.class));
+        doThrow(TenantServiceException.class).when(tenantRepository).findByGuid(any(UUID.class));
 
         // when
         tenantService.deleteByGuid(tenant.getGuid());
