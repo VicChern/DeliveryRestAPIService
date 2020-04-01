@@ -25,8 +25,11 @@ public class Identity extends AbstractEntity implements Serializable, IIdentity 
     public Identity() {
     }
 
-    public Identity(User user, @NotNull @Size(min = 1, max = 4096) String payload) {
+    public Identity(User user,
+                    IdentityType identityType,
+                    @NotNull @Size(min = 1, max = 4096) String payload) {
         this.user = user;
+        this.identityType = identityType;
         this.payload = payload;
     }
 
@@ -34,10 +37,12 @@ public class Identity extends AbstractEntity implements Serializable, IIdentity 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idIdentity;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @NotNull
+    @OneToOne
     @JoinColumn(name = "id_identity_type")
     private IdentityType identityType;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
     private User user;
@@ -89,7 +94,7 @@ public class Identity extends AbstractEntity implements Serializable, IIdentity 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Identity)) return false;
         Identity identity = (Identity) o;
         return Objects.equals(idIdentity, identity.idIdentity) &&
                 Objects.equals(identityType, identity.identityType) &&

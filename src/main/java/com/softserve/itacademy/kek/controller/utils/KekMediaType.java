@@ -11,6 +11,7 @@ public class KekMediaType {
     public static final String TENANT = "application/vnd.softserve.tenant+json";
     public static final String TENANT_LIST = "application/vnd.softserve.tenantList+json";
     public static final String TENANT_PROPERTY = "application/vnd.softserve.tenantproperty+json";
+    public static final String TENANT_PROPERTY_LIST = "application/vnd.softserve.tenantPropertyList+json";
     public static final String ADDRESS = "application/vnd.softserve.address+json";
     public static final String ADDRESS_LIST = "application/vnd.softserve.addressList+json";
     public static final String USER = "application/vnd.softserve.user+json";
@@ -21,6 +22,7 @@ public class KekMediaType {
     public static final String EVENT_LIST = "application/vnd.softserve.eventList+json";
     public static final String REGISTRATION_USER = "application/vnd.softserve.registrationUser+json";
     public static final String SESSION = "application/vnd.softserve.session+json";
+    public static final String ACTOR_LIST = "application/vnd.softserve.actorList+json";
 
 }
 

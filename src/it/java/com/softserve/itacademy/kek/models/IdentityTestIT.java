@@ -23,6 +23,7 @@ import com.softserve.itacademy.kek.repositories.UserRepository;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createIdentity;
+import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createIdentityType;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
 import static org.testng.Assert.assertEquals;
@@ -37,6 +38,7 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
 
     private User user;
     private Identity identity;
+    private IdentityType identityType;
 
     @Autowired
     private UserRepository userRepository;
@@ -49,6 +51,7 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
     void setUp() {
         user = createOrdinaryUser(1);
         identity = createIdentity();
+        identityType = createIdentityType();
     }
 
     @AfterMethod(groups = {"integration-tests"})
@@ -63,6 +66,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
             description = "Test Identity_01. Should saves user with valid identity fields.")
     public void testUserIsSavedWithValidIdentityFields() {
         //given
+        final IdentityType savedIdentityType = identityTypeRepository.save(identityType);
+        identity.setIdentityType(savedIdentityType);
         user.addIdentity(identity);
 
         //when
@@ -88,10 +93,14 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
     public void testIdentityIsSavedWithExistingInDbUserAndValidIdentityFields() {
 
         //given
-        User savedUser = userRepository.save(user);
+        final User savedUser = userRepository.save(user);
         assertNotNull(userRepository.findById(savedUser.getIdUser()).orElse(null));
 
+        final IdentityType savedIdentityType = identityTypeRepository.save(identityType);
+        assertNotNull(identityTypeRepository.findByName(savedIdentityType.getName()));
+
         identity.setUser(savedUser);
+        identity.setIdentityType(savedIdentityType);
 
         //when
         identityRepository.save(identity);
@@ -114,66 +123,48 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
             description = "Test Identity_02. Should throw ConstraintViolationException when saves user with null identityType name field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void testUserIsNotSavedWithNullIdentityTypeName() {
+    public void testNullIdentityTypeName() {
         //given
-        identity.getIdentityType().setName(null);
-        user.addIdentity(identity);
+        identityType.setName(null);
 
         //when
-        userRepository.save(user);
+        identityTypeRepository.save(identityType);
     }
 
     @Test(groups = {"integration-tests"},
             description = "Test Identity_03. Should throw ConstraintViolationException when saves user with empty identityType name field",
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void testUserIsNotSavedWithEmptyIdentityTypeName() {
+    public void testEmptyIdentityTypeName() {
         //given
-        identity.getIdentityType().setName("");
-        user.addIdentity(identity);
+        identityType.setName("");
 
         //when
-        userRepository.save(user);
+        identityTypeRepository.save(identityType);
     }
 
     @Test(groups = {"integration-tests"},
             description = "Test Identity_04. Should throw ConstraintViolationException when saves user with a name field length of identityType more than " + MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
-    public void testUserIsNotSavedWitIdentityTypeNameMoreThanMaxLength() {
+    public void testIdentityTypeNameMoreThanMaxLength() {
         //given
-        String name = createRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
-        User user = createOrdinaryUser(1);
-        Identity identity = createIdentity();
-        identity.getIdentityType().setName(name);
-        user.addIdentity(identity);
+        final String name = createRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
+
+        identityType.setName(name);
 
         //when
-        userRepository.save(user);
+        identityTypeRepository.save(identityType);
     }
 
     @Test(groups = {"integration-tests"},
             description = "Test Identity_05. Should throw DataIntegrityViolationException when saves user with not unique identityType name field",
             expectedExceptions = DataIntegrityViolationException.class,
             expectedExceptionsMessageRegExp = "could not execute statement; .*")
-    public void testUserIsSavedWithUniqueIdentityTypeName() {
-        //given
-        User user1 = user;
-        User user2 = createOrdinaryUser(2);
-
-        Identity identity1 = createIdentity();
-        Identity identity2 = createIdentity();
-
-        //      makes identityType names equals
-        identity2.getIdentityType().setName(identity1.getIdentityType().getName());
-
-        user1.addIdentity(identity1);
-        user2.addIdentity(identity2);
-
-        //when
-        User savedUser1 = userRepository.save(user1);
-        assertEquals(savedUser1, user1);
-        userRepository.save(user2);
+    public void testUniqueIdentityTypeName() {
+        identityTypeRepository.save(identityType);
+        identityType.setIdIdentityType(null);
+        identityTypeRepository.save(identityType);
     }
 
 
@@ -184,6 +175,8 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithNullIdentityPayload() {
         //given
+        final IdentityType savedIdentityType = identityTypeRepository.save(identityType);
+        identity.setIdentityType(savedIdentityType);
         identity.setPayload(null);
         user.addIdentity(identity);
 
@@ -197,7 +190,9 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWithEmptyIdentityPayload() {
         //given
-        identity.getIdentityType().setName("");
+        final IdentityType savedIdentityType = identityTypeRepository.save(identityType);
+        identity.setIdentityType(savedIdentityType);
+        identity.setPayload("");
         user.addIdentity(identity);
 
         //when
@@ -210,7 +205,10 @@ public class IdentityTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testUserIsNotSavedWitIdentityPayloadMoreThanMaxLength() {
         //given
-        String payload = createRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50));
+        final IdentityType savedIdentityType = identityTypeRepository.save(identityType);
+        identity.setIdentityType(savedIdentityType);
+
+        final String payload = createRandomLetterString(MAX_LENGTH_4096 + 1 + new Random().nextInt(50));
         identity.setPayload(payload);
         user.addIdentity(identity);
 

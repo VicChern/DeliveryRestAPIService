@@ -48,16 +48,19 @@ public class GlobalPropertiesTestIT extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
-        PropertyType propertyType1 = getPropertyType();
-        properties1 = getGlobalProperty(propertyType1);
+        final PropertyType propertyType1 = getPropertyType();
+        final PropertyType savedPropertyType1 = typeRepository.save(propertyType1);
+        properties1 = getGlobalProperty(savedPropertyType1);
 
-        PropertyType propertyType2 = getPropertyType();
-        properties2 = getGlobalProperty(propertyType2);
+        final PropertyType propertyType2 = getPropertyType();
+        final PropertyType savedPropertyType2 = typeRepository.save(propertyType2);
+        properties2 = getGlobalProperty(savedPropertyType2);
     }
 
     @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         propertiesRepository.deleteAll();
+        typeRepository.deleteAll();
     }
 
     @Test(groups = {"integration-tests"})

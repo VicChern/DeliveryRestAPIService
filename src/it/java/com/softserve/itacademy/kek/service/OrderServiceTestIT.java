@@ -136,14 +136,15 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @Rollback
     @Test(groups = {"integration-tests"})
     public void createSuccess() {
-        //when
+        //given
         IOrder createdOrder = orderService.create(order, customer.getGuid());
 
-        //then
+        //when
         IOrder foundOrder = orderRepository.findByGuid(createdOrder.getGuid());
 
         IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
 
+        //then
         assertEquals(createdOrder.getGuid(), foundOrder.getGuid());
         assertEquals(createdOrder.getOrderDetails(), foundDetails);
         assertEquals(createdOrder.getSummary(), foundOrder.getSummary());
@@ -153,7 +154,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @Rollback
     @Test(groups = {"integration-tests"})
     public void updateSuccess() {
-        //when
+        //given
         Order createdOrder = orderRepository.save(order);
 
         OrderDetails orderDetails = orderDetailsRepository.findByOrder(order);
@@ -162,14 +163,14 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
         createdOrder.setSummary(newSummary);
         createdOrder.setOrderDetails(orderDetails);
 
+        //when
         IOrder updatedOrder = orderService.update(order, order.getGuid());
 
-        //then
         IOrder foundOrder = orderRepository.findByGuid(order.getGuid());
 
         IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
 
-
+        //then
         assertNotNull(createdOrder);
         assertNotNull(updatedOrder);
         assertEquals(updatedOrder.getSummary(), newSummary);
@@ -183,14 +184,17 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @Rollback
     @Test(groups = {"integration-tests"})
     public void getByGuidSuccess() {
-        //when
+        //given
         Order createdOrder = orderRepository.save(order);
 
-        //then
+        //when
         IOrder foundOrder = orderService.getByGuid(order.getGuid());
 
+        //then
         IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
 
+        assertNotNull(createdOrder);
+        assertNotNull(foundOrder);
         assertEquals(createdOrder.getGuid(), foundOrder.getGuid());
         assertEquals(createdOrder.getOrderDetails(), foundDetails);
         assertEquals(createdOrder.getSummary(), foundOrder.getSummary());
@@ -199,13 +203,29 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
 
     @Rollback
     @Test(groups = {"integration-tests"})
-    public void getAllSuccess() {
-        //when
+    public void getAllByTenantGuidSuccess() {
+        //given
         Order createdOrder = orderRepository.save(order);
 
+        //when
+        List<IOrder> orderList = orderService.getAllByTenantGuid(tenant.getGuid());
+
         //then
+        assertNotNull(createdOrder);
+        assertNotNull(orderList);
+        assertEquals(orderList.size(), 1);
+    }
+
+    @Rollback
+    @Test(groups = {"integration-tests"})
+    public void getAllSuccess() {
+        //given
+        Order createdOrder = orderRepository.save(order);
+
+        //when
         List<IOrder> orderList = orderService.getAll();
 
+        //then
         assertNotNull(createdOrder);
         assertNotNull(orderList);
         assertEquals(orderList.size(), 1);
@@ -214,12 +234,13 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @Rollback
     @Test(groups = {"integration-tests"})
     public void deleteByGuidSuccess() {
-        //when
+        //given
         IOrder createdOrder = orderService.create(order, customer.getGuid());
 
-        //then
+        //when
         orderService.deleteByGuid(createdOrder.getGuid());
 
+        //then
         Order foundOrder = orderRepository.findByGuid(createdOrder.getGuid());
         OrderDetails foundOrderDetails = orderDetailsRepository.findByOrder(createdOrder);
 

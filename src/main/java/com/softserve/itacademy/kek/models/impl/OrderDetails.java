@@ -71,7 +71,7 @@ public class OrderDetails extends AbstractEntity implements IOrderDetails, Seria
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof OrderDetails)) return false;
         OrderDetails that = (OrderDetails) o;
         return Objects.equals(idOrder, that.idOrder) &&
                 Objects.equals(payload, that.payload) &&

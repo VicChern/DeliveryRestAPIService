@@ -117,7 +117,7 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional(readOnly = true)
     @Override
     public IOrder getByGuid(UUID guid) throws OrderServiceException {
-        LOGGER.info("Getting Order from db by guid");
+        LOGGER.info("Getting Order from db by guid{}", guid);
         final Order order;
 
         try {
@@ -130,6 +130,18 @@ public class OrderServiceImpl implements IOrderService {
         LOGGER.info("Order with guid: {}, was found: {}", guid, order);
         return order;
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<IOrder> getAllByTenantGuid(UUID guid) {
+        LOGGER.info("Getting list of orders by tenant guid{}", guid);
+        List<? extends IOrder> orders = orderRepository.findAllByTenantGuid(guid);
+        LOGGER.info("return list of orders{}", orders);
+        return (List<IOrder>) orders;
+
+
+    }
+
 
     @Transactional
     @Override

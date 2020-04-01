@@ -23,10 +23,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
+import com.softserve.itacademy.kek.models.ICloudStorageObject;
+import com.softserve.itacademy.kek.models.impl.CloudStorageObject;
 import com.softserve.itacademy.kek.services.AbstractService;
 import com.softserve.itacademy.kek.services.ICloudStorageService;
-import com.softserve.itacademy.kek.services.model.ICloudStorageObject;
-import com.softserve.itacademy.kek.services.model.impl.CloudStorageObject;
 
 @Component
 public class CloudStorageService extends AbstractService implements ICloudStorageService {
@@ -128,7 +128,6 @@ public class CloudStorageService extends AbstractService implements ICloudStorag
         return result;
     }
 
-    // TODO: refactor this, get rid off global ENV variables
     Storage getStorageObject() {
         logger.debug("Creating storage object");
 
@@ -165,7 +164,6 @@ public class CloudStorageService extends AbstractService implements ICloudStorag
         return storage;
     }
 
-    // TODO: replace this method with a property service call
     String getBucketName() {
         logger.debug("Getting name of Google Cloud Storage default bucket");
 

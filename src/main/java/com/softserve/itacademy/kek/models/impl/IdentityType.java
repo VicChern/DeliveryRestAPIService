@@ -11,9 +11,17 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
+
 @Entity
 @Table(name = "def_identity_type")
 public class IdentityType extends AbstractEntity implements Serializable {
+    public IdentityType() {
+    }
+
+    public IdentityType(IdentityTypeDef identityTypeDef) {
+        this.name = identityTypeDef.name();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +52,7 @@ public class IdentityType extends AbstractEntity implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof IdentityType)) return false;
         IdentityType that = (IdentityType) o;
         return Objects.equals(idIdentityType, that.idIdentityType) &&
                 Objects.equals(name, that.name);

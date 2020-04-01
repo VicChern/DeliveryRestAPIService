@@ -44,7 +44,7 @@ public class ActorRole extends AbstractEntity implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ActorRole)) return false;
         ActorRole actorRole = (ActorRole) o;
         return Objects.equals(idActorRole, actorRole.idActorRole) &&
                 Objects.equals(name, actorRole.name);

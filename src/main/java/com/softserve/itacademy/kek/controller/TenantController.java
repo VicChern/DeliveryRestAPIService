@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
@@ -35,6 +36,7 @@ import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
+
 
 @RestController
 @RequestMapping(path = "/tenants")
@@ -123,7 +125,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PostMapping(consumes = KekMediaType.TENANT, produces = KekMediaType.TENANT)
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto tenantDto) {
         logger.info("Accepted requested to create a new tenant:\n{}", tenantDto);
 
@@ -140,7 +142,7 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from the URL
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
-    @GetMapping(value = "/{guid}", produces = KekMediaType.TENANT)
+    @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.TENANT)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantDto> getTenant(@PathVariable String guid) {
         logger.info("Client requested the tenant {}", guid);
@@ -162,7 +164,7 @@ public class TenantController extends DefaultController {
      * @param tenant tenant object
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
-    @PutMapping(value = "/{guid}", consumes = KekMediaType.TENANT,
+    @PutMapping(value = KekMappingValues.GUID, consumes = KekMediaType.TENANT,
             produces = KekMediaType.TENANT)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
@@ -182,7 +184,7 @@ public class TenantController extends DefaultController {
      *
      * @param guid tenant ID from the URL
      */
-    @DeleteMapping("/{guid}")
+    @DeleteMapping(KekMappingValues.GUID)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity deleteTenant(@PathVariable String guid) {
         logger.info("Accepted request to delete the tenant {}", guid);
@@ -201,7 +203,7 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from URL
      * @return Response Entity with a List of {@link TenantPropertiesDto} objects as a JSON
      */
-    @GetMapping(value = "/{guid}/properties", produces = KekMediaType.TENANT_PROPERTY)
+    @GetMapping(value = KekMappingValues.PROPERTIES, produces = KekMediaType.TENANT_PROPERTY)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<TenantPropertiesDto>> getTenantProperties(@PathVariable String guid) {
         logger.info("Client requested all the properties of the tenant {}", guid);
@@ -225,8 +227,8 @@ public class TenantController extends DefaultController {
      * @param tenantPropertiesListDto list of {@link TenantPropertiesDto} objects as a JSON
      * @return Response entity with a list of {@link TenantPropertiesDto} objects as a JSON
      */
-    @PostMapping(value = "/{guid}/properties", consumes = KekMediaType.TENANT_PROPERTY,
-            produces = KekMediaType.TENANT_PROPERTY)
+    @PostMapping(value = KekMappingValues.PROPERTIES, consumes = KekMediaType.TENANT_PROPERTY_LIST,
+            produces = KekMediaType.TENANT_PROPERTY_LIST)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<TenantPropertiesDto>> addTenantProperties(@PathVariable String guid,
                                                                                    @RequestBody ListWrapperDto<TenantPropertiesDto> tenantPropertiesListDto) {
@@ -255,7 +257,7 @@ public class TenantController extends DefaultController {
      * @param propGuid ID of the tenant specific property
      * @return Response entity with a specific tenant property {@link TenantPropertiesDto}
      */
-    @GetMapping(value = "/{guid}/properties/{propguid}", produces = KekMediaType.TENANT_PROPERTY)
+    @GetMapping(value = KekMappingValues.PROP_GUID, produces = KekMediaType.TENANT_PROPERTY)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantPropertiesDto> getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Sending the tenant's({}) specific property({}) to the client", guid, propGuid);
@@ -300,7 +302,7 @@ public class TenantController extends DefaultController {
      * @param guid     tenant ID from the URN
      * @param propGuid address ID from the URN
      */
-    @DeleteMapping("/{guid}/properties/{propguid}")
+    @DeleteMapping(KekMappingValues.PROP_GUID)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity deleteTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Accepted request to delete the property {} ot the tenant {}", propGuid, guid);
@@ -320,7 +322,7 @@ public class TenantController extends DefaultController {
      * @param guid tenant ID from URN tenant property
      * @return Response entity with a list of {@link AddressDto} objects as a JSON
      */
-    @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS_LIST)
+    @GetMapping(value = KekMappingValues.ADDRESSES, produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<AddressDto>> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
@@ -344,7 +346,7 @@ public class TenantController extends DefaultController {
      * @param newAddressesDto object with a list of {@link AddressDto} as a JSON
      * @return Response entity with a list of {@link AddressDto} objects as a JSON
      */
-    @PostMapping(value = "/{guid}/addresses", consumes = KekMediaType.ADDRESS,
+    @PostMapping(value = KekMappingValues.ADDRESSES, consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<AddressDto>> addTenantAddresses(@PathVariable String guid,
@@ -372,7 +374,7 @@ public class TenantController extends DefaultController {
      * @param addrGuid ID of the specific address
      * @return Response Entity with a specific tenant tenant property{@link TenantPropertiesDto}
      */
-    @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = KekMediaType.ADDRESS)
+    @GetMapping(value = KekMappingValues.ADDR_GUID, produces = KekMediaType.ADDRESS)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<AddressDto> getTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address {} of the tenant {}", addrGuid, guid);
@@ -394,7 +396,7 @@ public class TenantController extends DefaultController {
      * @param tenantAddressDto The tenant address to modify
      * @return Response entity with modified tenant address{@link AddressDto} object
      */
-    @PutMapping(value = "/{guid}/addresses/{addrguid}", consumes = KekMediaType.ADDRESS,
+    @PutMapping(value = KekMappingValues.ADDR_GUID, consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<AddressDto> modifyTenantAddress(@PathVariable("guid") String guid,
@@ -417,7 +419,7 @@ public class TenantController extends DefaultController {
      * @param guid     tenant ID from the URN
      * @param addrGuid specific address ID from the URN
      */
-    @DeleteMapping("/{guid}/addresses/{addrguid}")
+    @DeleteMapping(KekMappingValues.ADDR_GUID)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity deleteTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Accepted request to delete the address {} ot the tenant {}", addrGuid, guid);

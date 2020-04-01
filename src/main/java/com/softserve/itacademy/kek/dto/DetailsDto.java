@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import com.softserve.itacademy.kek.models.IUserDetails;
 
-// TODO: 2/18/2020 add other two interfaces(ITenantDetails, IOrderDetails) and remove duplicate classes(TenantDetailsDto, OrderDetailsDto)
 public class DetailsDto implements IUserDetails {
 
     @Size(max = 4096)

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.DetailsDto;
@@ -106,7 +107,7 @@ public class UserController extends DefaultController {
      * @param guid user ID from the URN
      * @return Response entity with {@link UserDto} object as a JSON
      */
-    @GetMapping(value = "/{guid}", produces = KekMediaType.USER)
+    @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.USER)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<UserDto> getUser(@PathVariable String guid) {
         logger.info("Client requested the user {}", guid);
@@ -127,7 +128,7 @@ public class UserController extends DefaultController {
      * @param user user object as a JSON
      * @return Response entity with {@link UserDto} object as a JSON
      */
-    @PutMapping(value = "/{guid}",
+    @PutMapping(value = KekMappingValues.GUID,
             consumes = KekMediaType.USER,
             produces = KekMediaType.USER)
     @PreAuthorize("hasRole('USER')")
@@ -148,7 +149,7 @@ public class UserController extends DefaultController {
      *
      * @param guid user guid from the URN
      */
-    @DeleteMapping("/{guid}")
+    @DeleteMapping(KekMappingValues.GUID)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity deleteUser(@PathVariable String guid) {
         logger.info("Accepted request to delete the user {}", guid);
@@ -167,7 +168,7 @@ public class UserController extends DefaultController {
      * @param guid user guid from the URN
      * @return Response Entity with list of the {@link AddressDto} objects as a JSON
      */
-    @GetMapping(value = "/{guid}/addresses", produces = KekMediaType.ADDRESS_LIST)
+    @GetMapping(value = KekMappingValues.ADDRESSES, produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<ListWrapperDto<AddressDto>> getUserAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses of the employee {}", guid);
@@ -191,7 +192,7 @@ public class UserController extends DefaultController {
      * @param newAddressesDto list of address objects as a JSON
      * @return Response entity with list of the {@link AddressDto} objects as a JSON
      */
-    @PostMapping(value = "/{guid}/addresses",
+    @PostMapping(value = KekMappingValues.ADDRESSES,
             consumes = KekMediaType.ADDRESS_LIST,
             produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('USER')")
@@ -220,7 +221,7 @@ public class UserController extends DefaultController {
      * @param addrGuid address guid from the URN
      * @return Response entity with {@link AddressDto} object as a JSON
      */
-    @GetMapping(value = "/{guid}/addresses/{addrguid}", produces = KekMediaType.ADDRESS)
+    @GetMapping(value = KekMappingValues.ADDR_GUID, produces = KekMediaType.ADDRESS)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<AddressDto> getUserAddress(@PathVariable("guid") String guid,
                                                      @PathVariable("addrguid") String addrGuid) {
@@ -243,7 +244,7 @@ public class UserController extends DefaultController {
      * @param addressDto address object as a JSON
      * @return Response Entity with {@link AddressDto} object as a JSON
      */
-    @PutMapping(value = "/{guid}/addresses/{addrguid}",
+    @PutMapping(value = KekMappingValues.ADDR_GUID,
             consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
     @PreAuthorize("hasRole('USER')")
@@ -267,7 +268,7 @@ public class UserController extends DefaultController {
      * @param guid     user ID from the URN
      * @param addrGuid address ID from the URN
      */
-    @DeleteMapping("/{guid}/addresses/{addrguid}")
+    @DeleteMapping(KekMappingValues.ADDR_GUID)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity deleteUserAddress(@PathVariable("guid") String guid,
                                             @PathVariable("addrguid") String addrGuid) {

@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.models.impl;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,28 +23,33 @@ import com.softserve.itacademy.kek.models.ITenantProperties;
 @Table(name = "obj_tenant_properties")
 public class TenantProperties extends AbstractEntity implements ITenantProperties, Serializable {
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "id_tenant", nullable = false)
+    @JoinColumn(name = "id_tenant")
     Tenant tenant;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_property")
     private Long idProperty;
+
     @NotNull
-    @Column(name = "guid", unique = true, nullable = false)
+    @Column(name = "guid", unique = true)
     private UUID guid;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_Property_Type", nullable = false)
+
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "id_Property_Type")
     private PropertyType propertyType;
 
     @NotNull
     @Size(min = 1, max = 256)
-    @Column(name = "key", nullable = false, unique = true, length = 256)
+    @Column(name = "key", unique = true, length = 256)
     private String key;
 
     @NotNull
     @Size(min = 1, max = 4096)
-    @Column(name = "value", nullable = false, length = 4096)
+    @Column(name = "value", length = 4096)
     private String value;
 
     public Long getIdProperty() {
@@ -92,14 +96,14 @@ public class TenantProperties extends AbstractEntity implements ITenantPropertie
         return propertyType;
     }
 
-    public void setPropertyType(IPropertyType propertyType) {
-        this.propertyType = (PropertyType) propertyType;
+    public void setPropertyType(PropertyType propertyType) {
+        this.propertyType = propertyType;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TenantProperties)) return false;
         TenantProperties that = (TenantProperties) o;
         return Objects.equals(idProperty, that.idProperty) &&
                 Objects.equals(guid, that.guid) &&

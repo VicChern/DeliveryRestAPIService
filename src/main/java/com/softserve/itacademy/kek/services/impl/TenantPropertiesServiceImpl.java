@@ -1,6 +1,6 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -11,16 +11,19 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.TenantPropertiesServiceException;
+import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.TenantProperties;
 import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.services.IPropertyTypeService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
 
@@ -35,12 +38,15 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
     private final TenantPropertiesRepository tenantPropertiesRepository;
     private final TenantRepository tenantRepository;
     private final ITenantService tenantService;
+    private final IPropertyTypeService propertyTypeService;
 
     @Autowired
     public TenantPropertiesServiceImpl(TenantPropertiesRepository tenantPropertiesRepository,
                                        TenantRepository tenantRepository,
-                                       ITenantService tenantService) {
+                                       ITenantService tenantService,
+                                       IPropertyTypeService propertyTypeService) {
         this.tenantPropertiesRepository = tenantPropertiesRepository;
+        this.propertyTypeService = propertyTypeService;
         this.tenantRepository = tenantRepository;
         this.tenantService = tenantService;
     }
@@ -63,14 +69,18 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
         final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
 
         List<TenantProperties> tenantProperties = new ArrayList<>();
-        iTenantProperties.forEach(iTenantProperty -> tenantProperties.add(transform(iTenantProperty)));
+        for (ITenantProperties p : iTenantProperties) {
+            TenantProperties tenantProperty = transform(p);
+            tenantProperty.setGuid(UUID.randomUUID());
+            tenantProperties.add(tenantProperty);
+        }
 
         tenantProperties.forEach(tenant::addTenantProperty);
 
         final Tenant updatedTenant;
         try {
             updatedTenant = tenantRepository.save(tenant);
-        } catch (PersistenceException ex) {
+        } catch (ConstraintViolationException | DataAccessException ex) {
             LOGGER.error("Tenant properties wasn't saved for tenant guid: {}, properties: {}", tenantGuid, iTenantProperties);
             throw new TenantPropertiesServiceException("Tenant properties wasn't saved for tenant guid: " + tenantGuid, ex);
         }
@@ -115,14 +125,6 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
         final TenantProperties tenantProperty = (TenantProperties) get(tenantGuid, tenantPropertyGuid);
 
         // update tenant property
-        final PropertyType propertyType = (PropertyType) tenantProperty.getPropertyType();
-        if (iTenantProperty.getPropertyType().getName() != null) {
-            propertyType.setName(iTenantProperty.getPropertyType().getName());
-        }
-        if (iTenantProperty.getPropertyType().getSchema() != null) {
-            propertyType.setSchema(iTenantProperty.getPropertyType().getSchema());
-        }
-
         if (iTenantProperty.getKey() != null) {
             tenantProperty.setKey(iTenantProperty.getKey());
         }
@@ -130,12 +132,13 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
             tenantProperty.setValue(iTenantProperty.getValue());
         }
 
+        final PropertyType propertyType = (PropertyType) propertyTypeService.createOrUpdate(iTenantProperty.getPropertyType());
         tenantProperty.setPropertyType(propertyType);
 
         // save updated tenant property
         try {
             return tenantPropertiesRepository.save(tenantProperty);
-        } catch (PersistenceException ex) {
+        } catch (ConstraintViolationException | DataAccessException ex) {
             LOGGER.error("Tenant property wasn't updated for tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
             throw new TenantPropertiesServiceException("Tenant wasn't updated for tenant guid: "
                     + tenantGuid + "and tenantProperty guid: " + tenantPropertyGuid, ex);
@@ -148,7 +151,12 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
         LOGGER.debug("Delete Tenant property by tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
 
         final TenantProperties tenantProperties = (TenantProperties) get(tenantGuid, tenantPropertyGuid);
-        tenantPropertiesRepository.delete(tenantProperties);
+        try {
+            tenantPropertiesRepository.delete(tenantProperties);
+        } catch (DataAccessException ex) {
+            LOGGER.error("Tenant Property was not deleted from DB: " + tenantProperties, ex);
+            throw new UserServiceException("An error occurred while deleting the tenant property from the Database", ex);
+        }
 
         LOGGER.debug("Tenant property was deleted for tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
     }
@@ -161,15 +169,12 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
      */
     private TenantProperties transform(ITenantProperties iTenantProperties) {
 
-        PropertyType propertyType = new PropertyType();
-        propertyType.setName(iTenantProperties.getPropertyType().getName());
-        propertyType.setSchema(iTenantProperties.getPropertyType().getSchema());
-
-        TenantProperties tenantProperties = new TenantProperties();
-
+        final TenantProperties tenantProperties = new TenantProperties();
         tenantProperties.setGuid(iTenantProperties.getGuid());
         tenantProperties.setKey(iTenantProperties.getKey());
         tenantProperties.setValue(iTenantProperties.getValue());
+
+        final PropertyType propertyType = (PropertyType) propertyTypeService.createOrUpdate(iTenantProperties.getPropertyType());
         tenantProperties.setPropertyType(propertyType);
 //        tenantProperties.setTenant(iTenantProperties.getTenant());
 
