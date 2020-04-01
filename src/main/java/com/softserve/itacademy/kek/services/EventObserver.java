@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.softserve.itacademy.kek.controller.SseController;
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
@@ -35,18 +36,20 @@ public class EventObserver {
 
     @Scheduled(fixedRate = 6000)
     public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
-        final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
-        LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());
+        if (!SseController.getOrderEmitters().isEmpty()) {
+            OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
 
-        final Function<OrderEvent, UUID> getOrderGuid = oe -> oe.getOrder().getGuid();
-        final Map<UUID, String> ordersToPayloads = lastEvents
-                .stream()
-                .map(oe -> (OrderEvent) oe)
-                .collect(Collectors.toMap(getOrderGuid, OrderEvent::getPayload));
+            final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
+            LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());
 
-        OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
-        wrapper.setMap(ordersToPayloads);
+            final Function<OrderEvent, UUID> getOrderGuid = oe -> oe.getOrder().getGuid();
+            final Map<UUID, String> ordersToPayloads = lastEvents
+                    .stream()
+                    .map(oe -> (OrderEvent) oe)
+                    .collect(Collectors.toMap(getOrderGuid, OrderEvent::getPayload));
+            wrapper.setMap(ordersToPayloads);
 
-        this.eventPublisher.publishEvent(wrapper);
+            this.eventPublisher.publishEvent(wrapper);
+        }
     }
 }

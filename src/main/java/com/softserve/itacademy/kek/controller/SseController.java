@@ -46,7 +46,7 @@ public class SseController {
 
         final IOrderEvent lastAddedEvent = orderEventService.getLastAddedEvent(orderGuid);
 
-        if (!isDelivering(lastAddedEvent)) {
+        if (!hasStartedType(lastAddedEvent)) {
             throw new TrackingException(String.format("Order %s is not delivering now", orderGuid));
         }
 
@@ -56,7 +56,7 @@ public class SseController {
             final String payload = lastAddedEvent.getPayload();
             emitter.send(getEventData(payload));
             logger.debug("Send payload {} for order guid={}", payload, orderGuid);
-            addEmitter(orderGuid, emitter);
+            addEmitter(ORDER_EMITTERS, orderGuid, emitter);
             logger.debug("Emitter for order guid={} was added for tracking", orderGuid);
         } catch (IOException e) {
             logger.debug("Emitter was closed by timeout. Server can't send geolocation");
@@ -95,7 +95,6 @@ public class SseController {
         //remove emitters for which order's delivering was finished
         ORDER_EMITTERS.keySet().removeAll(alreadyDelivered);
 
-
         //update payloads for emitters of Orders that are delivering
         ORDER_EMITTERS.forEach((guid, emitters) -> {
             emitters.forEach(sseEmitter -> {
@@ -106,14 +105,8 @@ public class SseController {
                 } catch (IOException e) {
 
                     //add broken emitters into separate Map
-                    List<SseEmitter> emitterWrapedInList = new ArrayList<>();
-                    emitterWrapedInList.add(sseEmitter);
-                    if (deadEmitters.containsKey(guid)) {
-                        deadEmitters.get(guid).add(sseEmitter);
-                    } else {
-                        deadEmitters.put(guid, emitterWrapedInList);
-                        logger.debug("All emitters for order guid={} was completed or closed by timeout. Server can't send geolocation", guid);
-                    }
+                    addEmitter(deadEmitters, guid, sseEmitter);
+                    logger.debug("All emitters for order guid={} was completed or closed by timeout. Server can't send geolocation", guid);
                 }
             });
         });
@@ -122,17 +115,17 @@ public class SseController {
         deadEmitters.forEach((key, list) -> ORDER_EMITTERS.get(key).removeAll(list));
     }
 
-    private void addEmitter(UUID orderGuid, SseEmitter emitter) {
+    private void addEmitter(Map<UUID, List<SseEmitter>> map, UUID guid, SseEmitter emitter) {
         List<SseEmitter> emitterWrappedInList = new ArrayList<>();
         emitterWrappedInList.add(emitter);
-        if (ORDER_EMITTERS.containsKey(orderGuid)) {
-            ORDER_EMITTERS.get(orderGuid).add(emitter);
+        if (map.containsKey(guid)) {
+            map.get(guid).add(emitter);
         } else {
-            ORDER_EMITTERS.put(orderGuid, emitterWrappedInList);
+            map.put(guid, emitterWrappedInList);
         }
     }
 
-    private boolean isDelivering(IOrderEvent lastAddedEvent) {
+    private boolean hasStartedType(IOrderEvent lastAddedEvent) {
         String type = lastAddedEvent.getOrderEventType().getName();
         return type.equals(EventType.STARTED.toString());
     }
@@ -143,5 +136,9 @@ public class SseController {
         } else {
             return " " + text;
         }
+    }
+
+    public static Map<UUID, List<SseEmitter>> getOrderEmitters() {
+        return ORDER_EMITTERS;
     }
 }
