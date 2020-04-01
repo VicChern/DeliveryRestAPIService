@@ -8,7 +8,8 @@ build:
   image: maven:latest
   stage: build
   script:
-    - mvn -Pmaster clean install -B
+    - mvn clean install -B
+    # - mvn -Pmaster clean install -B
   artifacts:
     expire_in: 1 days
     paths:
