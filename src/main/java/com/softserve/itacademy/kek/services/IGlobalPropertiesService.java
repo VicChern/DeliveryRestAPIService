@@ -13,18 +13,18 @@ public interface IGlobalPropertiesService {
     /**
      * Saved new {@link GlobalProperty} for customer with customerGuid to db
      *
-     * @param globalProperties globalProperties
+     * @param globalProperty globalProperties
      * @return saved globalProperties
      */
-    IGlobalProperty create(IGlobalProperty globalProperties);
+    IGlobalProperty create(IGlobalProperty globalProperty);
 
     /**
      * Updates {@link GlobalProperty} by key
      *
-     * @param globalProperties globalProperties
+     * @param globalProperty globalProperties
      * @return updated globalProperties
      */
-    IGlobalProperty update(IGlobalProperty globalProperties);
+    IGlobalProperty update(IGlobalProperty globalProperty);
 
     /**
      * Gets globalProperties by {@link GlobalProperty} key
