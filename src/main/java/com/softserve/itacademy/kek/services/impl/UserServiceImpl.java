@@ -170,10 +170,17 @@ public class UserServiceImpl implements IUserService {
         logger.debug("Find User in DB: guid = {}", guid);
 
         try {
-            return userRepository.findByGuid(guid).orElseThrow();
-        } catch (NoSuchElementException | DataAccessException ex) {
-            logger.error("User was not found in DB: guid = {}", guid);
-            throw new UserServiceException("The user was not found in the Database", ex);
+            final User user = userRepository.findByGuid(guid).orElseThrow(
+                    () -> {
+                        logger.error("User wasn't found in the database");
+                        return new UserServiceException("User was not found in database: guid: " + guid, new NoSuchElementException());
+                    }
+            );
+            return user;
+
+        } catch (DataAccessException ex) {
+            logger.error("DB exception for User {}", guid);
+            throw new UserServiceException("An error occurred while getting users from the Database", ex);
         }
     }
 
