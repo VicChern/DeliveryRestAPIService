@@ -14,9 +14,11 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
+import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.TenantProperties;
 import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
 import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
@@ -40,12 +42,13 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
     private UserRepository userRepository;
     @Autowired
     private TenantRepository tenantRepository;
+    @Autowired
+    private PropertyTypeRepository propertyTypeRepository;
 
     private TenantProperties tenantProperties;
     private User user1;
-    private User user2;
     private Tenant tenant1;
-    private Tenant tenant2;
+    private PropertyType propertyType1;
 
     @DataProvider(name = "illegal_keys")
     public static Object[][] keys() {
@@ -62,6 +65,7 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
 
         user1 = createOrdinaryUser(1);
         tenant1 = createOrdinaryTenant(1);
+        propertyType1 = getPropertyType();
 
         userRepository.save(user1);
         assertNotNull(userRepository.findById(user1.getIdUser()));
@@ -70,13 +74,17 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
         tenantRepository.save(tenant1);
         assertNotNull(tenantRepository.findById(tenant1.getIdTenant()));
 
-        tenantProperties = getTenantProperties(tenant1, getPropertyType());
+        propertyTypeRepository.save(propertyType1);
+        assertNotNull(propertyTypeRepository.findById(propertyType1.getIdPropertyType()));
+
+        tenantProperties = getTenantProperties(tenant1, propertyType1);
 
     }
 
     @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         tenantPropertiesRepository.deleteAll();
+        propertyTypeRepository.deleteAll();
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -86,7 +94,7 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
         //when
         tenantPropertiesRepository.save(tenantProperties);
 
-        Optional<TenantProperties> savedTenantProperty = tenantPropertiesRepository.findById(tenantProperties.getIdProperty());
+        final Optional<TenantProperties> savedTenantProperty = tenantPropertiesRepository.findById(tenantProperties.getIdProperty());
         //then
         Assert.assertNotNull(savedTenantProperty.orElse(null));
         Assert.assertEquals(savedTenantProperty.get().getIdProperty(), tenantProperties.getIdProperty());
@@ -113,8 +121,8 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"}, expectedExceptions = DataIntegrityViolationException.class)
     public void testTenantPropertiesIsSavedWithUniqueKey() {
         //given
-        user2 = createOrdinaryUser(2);
-        tenant2 = createOrdinaryTenant(2);
+        final User user2 = createOrdinaryUser(2);
+        final Tenant tenant2 = createOrdinaryTenant(2);
 
         userRepository.save(user2);
         assertNotNull(userRepository.findById(user2.getIdUser()));
@@ -126,7 +134,11 @@ public class TenantPropertiesTestIT extends AbstractTestNGSpringContextTests {
         tenantPropertiesRepository.save(tenantProperties);
         assertNotNull(tenantPropertiesRepository.findById(tenantProperties.getIdProperty()));
 
-        TenantProperties tenantProperties2 = getTenantProperties(tenant2, getPropertyType());
+        final PropertyType propertyType2 = getPropertyType();
+        propertyTypeRepository.save(propertyType2);
+        assertNotNull(propertyTypeRepository.findById(propertyType2.getIdPropertyType()));
+
+        TenantProperties tenantProperties2 = getTenantProperties(tenant2, propertyType2);
         tenantProperties2.setKey(tenantProperties.getKey());
 
         //when

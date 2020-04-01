@@ -25,18 +25,19 @@ public class GlobalProperty extends AbstractEntity implements IGlobalProperty, S
     @Column(name = "id_property")
     private Long idProperty;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_Property_Type", nullable = false)
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "id_Property_Type")
     private PropertyType propertyType;
 
     @NotNull
     @Size(min = 1, max = 256)
-    @Column(name = "key", unique = true, nullable = false, length = 256)
+    @Column(name = "key", unique = true, length = 256)
     private String key;
 
     @NotNull
     @Size(min = 1, max = 4096)
-    @Column(name = "value", nullable = false, length = 4096)
+    @Column(name = "value", length = 4096)
     private String value;
 
     public Long getIdProperty() {

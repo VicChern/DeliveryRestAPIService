@@ -19,6 +19,7 @@ import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.TenantProperties;
 import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.PropertyTypeRepository;
 import com.softserve.itacademy.kek.repositories.TenantPropertiesRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
@@ -45,6 +46,8 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
     private TenantRepository tenantRepository;
     @Autowired
     private TenantPropertiesRepository tenantPropertiesRepository;
+    @Autowired
+    private PropertyTypeRepository propertyTypeRepository;
 
     private User user;
     private Tenant tenant;
@@ -56,21 +59,30 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
 
-        User savedUser = userRepository.save(user);
+        final User savedUser = userRepository.save(user);
         assertNotNull(savedUser);
 
         tenant.setTenantOwner(savedUser);
-        Tenant savedTenant = tenantRepository.save(tenant);
+        final Tenant savedTenant = tenantRepository.save(tenant);
         assertNotNull(savedTenant);
 
+        final PropertyType propertyType1 = getPropertyType();
+        propertyTypeRepository.save(propertyType1);
+        assertNotNull(propertyType1);
+
+        final PropertyType propertyType2 = getPropertyType();
+        propertyTypeRepository.save(propertyType2);
+        assertNotNull(propertyType2);
+
         tenantProperties = new ArrayList<>();
-        tenantProperties.add(getTenantProperties(tenant, getPropertyType()));
-        tenantProperties.add(getTenantProperties(tenant, getPropertyType()));
+        tenantProperties.add(getTenantProperties(tenant, propertyType1));
+        tenantProperties.add(getTenantProperties(tenant, propertyType2));
     }
 
     @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
         tenantPropertiesRepository.deleteAll();
+        propertyTypeRepository.deleteAll();
         tenantRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -80,20 +92,22 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
     @Test(groups = {"integration-tests"})
     public void createSuccess() {
         //when
-        List<ITenantProperties> savedTenantProperties = tenantPropertiesService.create(tenantProperties, tenant.getGuid());
+        final List<ITenantProperties> savedTenantProperties = tenantPropertiesService.create(tenantProperties, tenant.getGuid());
 
         //then
         assertNotNull(savedTenantProperties);
         assertEquals(savedTenantProperties.size(), tenantProperties.size());
 
-        Set<String> keys = savedTenantProperties
+        final Set<String> keys = savedTenantProperties
                 .stream()
                 .map(ITenantProperties::getKey)
                 .collect(Collectors.toSet());
-        Set<String> keys1 = tenantProperties
+
+        final Set<String> keys1 = tenantProperties
                 .stream()
                 .map(ITenantProperties::getKey)
                 .collect(Collectors.toSet());
+
         assertTrue(keys.containsAll(keys1));
     }
 
@@ -104,24 +118,26 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
         //given
         tenantProperties.forEach(tenantProperty -> tenant.addTenantProperty((TenantProperties) tenantProperty));
         tenant = tenantRepository.save(tenant);
-        List<TenantProperties> savedTenantProperties = tenant.getTenantPropertiesList();
+        final List<TenantProperties> savedTenantProperties = tenant.getTenantPropertiesList();
         assertNotNull(savedTenantProperties);
 
         //when
-        List<ITenantProperties> receivedTenantProperties = tenantPropertiesService.getAllForTenant(tenant.getGuid());
+        final List<ITenantProperties> receivedTenantProperties = tenantPropertiesService.getAllForTenant(tenant.getGuid());
 
         //then
         assertNotNull(receivedTenantProperties);
         assertEquals(savedTenantProperties.size(), receivedTenantProperties.size());
 
-        Set<String> keys = savedTenantProperties
+        final Set<String> keys = savedTenantProperties
                 .stream()
                 .map(ITenantProperties::getKey)
                 .collect(Collectors.toSet());
-        Set<String> keys1 = receivedTenantProperties
+
+        final Set<String> keys1 = receivedTenantProperties
                 .stream()
                 .map(ITenantProperties::getKey)
                 .collect(Collectors.toSet());
+
         assertTrue(keys.containsAll(keys1));
     }
 
@@ -132,11 +148,11 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
         //given
         tenantProperties.forEach(tenantProperty -> tenant.addTenantProperty((TenantProperties) tenantProperty));
         tenant = tenantRepository.save(tenant);
-        List<TenantProperties> savedTenantProperties = tenant.getTenantPropertiesList();
+        final List<TenantProperties> savedTenantProperties = tenant.getTenantPropertiesList();
         assertNotNull(savedTenantProperties);
 
         //when
-        ITenantProperties receivedTenantProperty = tenantPropertiesService.get(
+        final ITenantProperties receivedTenantProperty = tenantPropertiesService.get(
                 tenant.getGuid(),
                 savedTenantProperties.get(0).getGuid());
 
@@ -154,21 +170,23 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
         //given
         tenantProperties.forEach(tenantProperty -> tenant.addTenantProperty((TenantProperties) tenantProperty));
         tenant = tenantRepository.save(tenant);
-        List<TenantProperties> savedTenantProperties = tenant.getTenantPropertiesList();
+        final List<TenantProperties> savedTenantProperties = tenant.getTenantPropertiesList();
         assertNotNull(savedTenantProperties);
 
-        TenantProperties propertyForUpdate = new TenantProperties();
+        final TenantProperties propertyForUpdate = new TenantProperties();
         propertyForUpdate.setKey("updated key");
         propertyForUpdate.setValue("updated value");
 
-        PropertyType propertyTypeForUpdate = new PropertyType();
+        final PropertyType propertyTypeForUpdate = new PropertyType();
         propertyTypeForUpdate.setName("updated name");
         propertyTypeForUpdate.setSchema("updated schema");
+        propertyTypeRepository.save(propertyTypeForUpdate);
+        assertNotNull(propertyTypeForUpdate);
 
         propertyForUpdate.setPropertyType(propertyTypeForUpdate);
 
         //when
-        ITenantProperties updatedTenantProperty = tenantPropertiesService.update(
+        final ITenantProperties updatedTenantProperty = tenantPropertiesService.update(
                 tenant.getGuid(),
                 savedTenantProperties.get(0).getGuid(),
                 propertyForUpdate);
@@ -189,7 +207,7 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
         //given
         tenantProperties.forEach(tenantProperty -> tenant.addTenantProperty((TenantProperties) tenantProperty));
         tenant = tenantRepository.save(tenant);
-        List<TenantProperties> savedTenantProperties = tenant.getTenantPropertiesList();
+        final List<TenantProperties> savedTenantProperties = tenant.getTenantPropertiesList();
         assertNotNull(savedTenantProperties);
 
         //when
