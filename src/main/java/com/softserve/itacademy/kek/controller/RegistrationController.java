@@ -33,14 +33,9 @@ public class RegistrationController {
 
     @PostMapping(path = "/registration", consumes = KekMediaType.REGISTRATION_USER, produces = KekMediaType.REGISTRATION_USER)
     public ResponseEntity userRegistration(@RequestBody @Valid RegistrationDto userData, HttpServletResponse response)  {
-        logger.info("Created request for user registration: {}", userData);
+        logger.info("Creating request for user registration: {}", userData);
 
         final IUser user = createUser.createNewUser(userData);
-
-//        final String redirectUrl = authenticationService.authenticateKekUser(user);
-//
-//        logger.debug("redirecting after authentication = {}", redirectUrl);
-//        response.sendRedirect(redirectUrl);
 
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -86,7 +86,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     AuthenticationFilter authenticationFilter() throws Exception {
         final AuthenticationFilter filter = new AuthenticationFilter(
                 new OrRequestMatcher(
-                        new AntPathRequestMatcher("/api/v1/**")
+                        new AntPathRequestMatcher("/api/v1/orders/**"),
+                        new AntPathRequestMatcher("/api/v1/tenants/**"),
+                        new AntPathRequestMatcher("/api/v1/users/**"),
+                        new AntPathRequestMatcher("/api/v1/profile")
                 )
         );
         filter.setAuthenticationManager(authenticationManager());
@@ -100,18 +103,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 /*        http.authorizeRequests().anyRequest().authenticated()
                 .and().httpBasic();*/
 
-//TODO :: investigate config to exclude sign in and login pages from filter(now token is needed)
-
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/api/v1/**").authenticated()
-                .antMatchers("/api/v1/signin").permitAll()
                 .and()
-
-
                 .formLogin()
                 .loginPage(loginURL)
                 .successForwardUrl(profileURL)

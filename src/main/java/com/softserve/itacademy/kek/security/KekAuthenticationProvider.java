@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.security;
 
-import java.util.ArrayList;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,11 +10,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class KekAuthenticationProvider implements AuthenticationProvider {
 
-    //TODO: investigate provider
-
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return authentication;
+
+        return new UsernamePasswordAuthenticationToken(
+                authentication.getPrincipal(), null, authentication.getAuthorities());
     }
 
     @Override
