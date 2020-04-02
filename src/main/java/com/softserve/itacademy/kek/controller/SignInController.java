@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.controller;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -17,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.dto.SignInDto;
-import com.softserve.itacademy.kek.exception.InvalidPasswordException;
-import com.softserve.itacademy.kek.exception.NoSuchUserException;
+import com.softserve.itacademy.kek.exception.InvalidCredentialsException;
 import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
 import com.softserve.itacademy.kek.models.impl.Identity;
 import com.softserve.itacademy.kek.models.impl.User;
@@ -58,12 +56,11 @@ public class SignInController {
         final User user;
         final Identity identity;
 
-        request.getSession(false);
-
         try {
             user = userRepository.findByEmail(dto.getEmail());
         } catch (DataAccessException ex) {
-            throw new NoSuchUserException("There is no user with this email", ex);
+            logger.error("There is no user with this email: {}", dto.getEmail());
+            throw new InvalidCredentialsException("Invalid credentials. Try again.", ex);
         }
 
         identity = (Identity) iIdentityService.read(user.getGuid(), IdentityTypeDef.KEY);
@@ -79,10 +76,8 @@ public class SignInController {
                     .body(getTokenService.getToken(user.getEmail()));
 
         } else {
-            logger.info("Invalid password login attempt for user: {}", user);
-            throw new InvalidPasswordException("Invalid password");
+            logger.error("Invalid password login attempt for user: {}", user);
+            throw new InvalidCredentialsException("Invalid credentials. Try again.");
         }
-
     }
-
 }

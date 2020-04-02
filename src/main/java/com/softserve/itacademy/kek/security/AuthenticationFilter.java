@@ -6,24 +6,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import com.softserve.itacademy.kek.models.impl.UserDetails;
-
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     AuthenticationFilter(final RequestMatcher requiresAuth) {
         super(requiresAuth);
@@ -33,21 +36,23 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException {
 
         String token = httpServletRequest.getHeader(AUTHORIZATION);
+        List<GrantedAuthority> roles = new ArrayList<>();
 
         Claims claims = Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary("abc123"))
                 .parseClaimsJws(token).getBody();
 
-        String roles = claims.get("authorities").toString()
-                .replaceAll("[\\[\\]]", "")
-                .replaceAll("\\{authority=", "")
-                .replaceAll("\\}", "");
+        String authorities = claims.get("authorities").toString();
 
-        List<GrantedAuthority> list = AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
+        if ( authorities.contains("ROLE_USER") ) {
+            roles.add(new SimpleGrantedAuthority("ROLE_USER"));
+        } else if (authorities.contains("ROLE_TENANT")) {
+            roles.add(new SimpleGrantedAuthority("ROLE_TENANT"));
+        } else if (authorities.contains("ROLE_ACTOR")) {
+            roles.add(new SimpleGrantedAuthority("ROLE_ACTOR"));
+        }
 
-        //TODO: investigate userdetails in requestAuthentication? and data parsing from token
-
-        Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(claims.get("email"), null ,  list);
+        Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(claims.get("email"), null ,  roles);
 
         return getAuthenticationManager().authenticate(requestAuthentication);
     }

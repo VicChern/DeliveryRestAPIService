@@ -22,9 +22,6 @@ import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.security.TokenAuthentication;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
 
-// TODO :: in method setUsernamePasswordAuthentication usernamePasswordAuthenticationToken first variable changed to email  from user details, need to investigate
-
-
 @Service
 @PropertySource("classpath:server.properties")
 public class AuthenticationServiceImpl implements IAuthenticationService {
