@@ -26,10 +26,11 @@ import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
-import com.softserve.itacademy.kek.dto.PropertyTypeDto;
-import com.softserve.itacademy.kek.dto.TenantDetailsDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
+import com.softserve.itacademy.kek.mapper.IAddressMapper;
+import com.softserve.itacademy.kek.mapper.ITenantMapper;
+import com.softserve.itacademy.kek.mapper.ITenantPropertiesMapper;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantProperties;
@@ -47,53 +48,23 @@ public class TenantController extends DefaultController {
     private final ITenantService tenantService;
     private final ITenantPropertiesService tenantPropertiesService;
     private final IAddressService addressService;
+    private final ITenantMapper tenantMapper;
+    private final ITenantPropertiesMapper tenantPropertiesMapper;
+    private final IAddressMapper addressMapper;
 
     @Autowired
-    public TenantController(ITenantService tenantService, ITenantPropertiesService tenantPropertiesService, IAddressService addressService) {
+    public TenantController(ITenantService tenantService,
+                            ITenantPropertiesService tenantPropertiesService,
+                            IAddressService addressService,
+                            ITenantMapper tenantMapper,
+                            ITenantPropertiesMapper tenantPropertiesMapper,
+                            IAddressMapper addressMapper) {
         this.tenantService = tenantService;
         this.tenantPropertiesService = tenantPropertiesService;
         this.addressService = addressService;
-    }
-
-    /**
-     * Transform {@link ITenant} to {@link TenantDto}
-     *
-     * @param iTenant iTenant
-     * @return tenantDto
-     */
-    private TenantDto transform(ITenant iTenant) {
-        TenantDetailsDto tenantDetailsDto = new TenantDetailsDto(iTenant.getTenantDetails().getPayload(), iTenant.getTenantDetails().getImageUrl());
-        TenantDto tenantDto = new TenantDto(iTenant.getGuid(), iTenant.getOwner(), iTenant.getName(), tenantDetailsDto);
-        return tenantDto;
-    }
-
-    /**
-     * Transform {@link ITenantProperties} to {@link TenantPropertiesDto}
-     *
-     * @param tenantProperties tenantProperties
-     * @return tenantPropertiesDto
-     */
-    private TenantPropertiesDto transformProperty(ITenantProperties tenantProperties) {
-        PropertyTypeDto propertyType = new PropertyTypeDto(
-                tenantProperties.getPropertyType().getName(),
-                tenantProperties.getPropertyType().getSchema());
-
-        TenantPropertiesDto tenantPropertiesDto = new TenantPropertiesDto(
-                tenantProperties.getGuid(),
-                propertyType,
-                tenantProperties.getKey(),
-                tenantProperties.getValue());
-        return tenantPropertiesDto;
-    }
-
-    /**
-     * Transform {@link ITenantProperties} to {@link TenantPropertiesDto}
-     *
-     * @param address address
-     * @return new AddressDto
-     */
-    private AddressDto transformAddress(IAddress address) {
-        return new AddressDto(address.getGuid(), address.getAlias(), address.getAddress(), address.getNotes());
+        this.tenantMapper = tenantMapper;
+        this.tenantPropertiesMapper = tenantPropertiesMapper;
+        this.addressMapper = addressMapper;
     }
 
     /**
@@ -109,7 +80,7 @@ public class TenantController extends DefaultController {
         List<ITenant> tenantList = tenantService.getAll();
         ListWrapperDto<TenantDto> tenantListDto = new ListWrapperDto<>(tenantList
                 .stream()
-                .map(this::transform)
+                .map(tenantMapper::fromITenant)
                 .collect(Collectors.toList()));
 
         logger.info("Sending list of all tenants to the client:\n{}", tenantList);
@@ -133,7 +104,7 @@ public class TenantController extends DefaultController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(transform(iTenant));
+                .body(tenantMapper.fromITenant(iTenant));
     }
 
     /**
@@ -148,7 +119,7 @@ public class TenantController extends DefaultController {
         logger.info("Client requested the tenant {}", guid);
 
         ITenant tenant = tenantService.getByGuid(UUID.fromString(guid));
-        TenantDto tenantDto = transform(tenant);
+        TenantDto tenantDto = tenantMapper.fromITenant(tenant);
 
         logger.info("Sending the specific tenant({}) to the client", guid);
         return ResponseEntity
@@ -171,7 +142,7 @@ public class TenantController extends DefaultController {
         logger.info("Accepted current tenant from the client:\n{}", tenant);
 
         ITenant modifiedTenant = tenantService.update(tenant, UUID.fromString(guid));
-        TenantDto modifiedTenantDto = transform(modifiedTenant);
+        TenantDto modifiedTenantDto = tenantMapper.fromITenant(modifiedTenant);
 
         logger.info("Sending the modified tenant to the client:\n{}", tenant);
         return ResponseEntity
@@ -211,7 +182,7 @@ public class TenantController extends DefaultController {
         List<ITenantProperties> tenantProperties = tenantPropertiesService.getAllForTenant(UUID.fromString(guid));
         ListWrapperDto<TenantPropertiesDto> tenantPropertiesListDto = new ListWrapperDto<>(tenantProperties
                 .stream()
-                .map(this::transformProperty)
+                .map(tenantPropertiesMapper::fromITenantProperties)
                 .collect(Collectors.toList()));
 
         logger.info("Sending the list of tenant's({}) properties to the client:\n{}", tenantPropertiesListDto, guid);
@@ -240,7 +211,7 @@ public class TenantController extends DefaultController {
 
         List<TenantPropertiesDto> tenantPropertiesDto = tenantProperties
                 .stream()
-                .map(this::transformProperty)
+                .map(tenantPropertiesMapper::fromITenantProperties)
                 .collect(Collectors.toList());
         ListWrapperDto<TenantPropertiesDto> tenantPropertiesList = new ListWrapperDto<>(tenantPropertiesDto);
 
@@ -263,7 +234,7 @@ public class TenantController extends DefaultController {
         logger.info("Sending the tenant's({}) specific property({}) to the client", guid, propGuid);
 
         ITenantProperties tenantProperties = tenantPropertiesService.get(UUID.fromString(guid), UUID.fromString(propGuid));
-        TenantPropertiesDto tenantPropertiesDto = transformProperty(tenantProperties);
+        TenantPropertiesDto tenantPropertiesDto = tenantPropertiesMapper.fromITenantProperties(tenantProperties);
 
         logger.info("Sending specific property of the tenant {} to the client:\n{}", guid, tenantPropertiesDto);
         return ResponseEntity
@@ -288,7 +259,7 @@ public class TenantController extends DefaultController {
         logger.info("Sending the modified tenant's({}) property({}) to the client", guid, propGuid);
 
         ITenantProperties modifiedTenant = tenantPropertiesService.update(UUID.fromString(guid), UUID.fromString(propGuid), tenantPropertiesDto);
-        TenantPropertiesDto modifiedTenantDto = transformProperty(modifiedTenant);
+        TenantPropertiesDto modifiedTenantDto = tenantPropertiesMapper.fromITenantProperties(modifiedTenant);
 
         logger.info("Sending the modified property of the tenant {} to the client:\n{}", guid, tenantPropertiesDto);
         return ResponseEntity
@@ -330,7 +301,7 @@ public class TenantController extends DefaultController {
         List<IAddress> addresses = addressService.getAllForTenant(UUID.fromString(guid));
         ListWrapperDto<AddressDto> addressListDto = new ListWrapperDto<>(addresses
                 .stream()
-                .map(this::transformAddress)
+                .map(addressMapper::fromIAddress)
                 .collect(Collectors.toList()));
 
         logger.info("Sending the list of addresses of the tenant {} to the client:\n{}", guid, addressListDto);
@@ -356,7 +327,7 @@ public class TenantController extends DefaultController {
 
         for (AddressDto newAddress : newAddressesDto.getList()) {
             IAddress createdAddress = addressService.createForTenant(newAddress, UUID.fromString(guid));
-            AddressDto addressDto = transformAddress(createdAddress);
+            AddressDto addressDto = addressMapper.fromIAddress(createdAddress);
 
             createdAddresses.addKekItem(addressDto);
         }
@@ -380,7 +351,7 @@ public class TenantController extends DefaultController {
         logger.info("Client requested the address {} of the tenant {}", addrGuid, guid);
 
         IAddress address = addressService.getForTenant(UUID.fromString(addrGuid), UUID.fromString(guid));
-        AddressDto addressDto = transformAddress(address);
+        AddressDto addressDto = addressMapper.fromIAddress(address);
 
         logger.info("Sending the address of the tenant {} to the client:\n{}", guid, addressDto);
         return ResponseEntity
@@ -405,7 +376,7 @@ public class TenantController extends DefaultController {
         logger.info("Accepted modified address of the tenant {} from the client:\n{}", guid, tenantAddressDto);
 
         IAddress modifiedAddress = addressService.updateForTenant(tenantAddressDto, UUID.fromString(guid), UUID.fromString(addrGuid));
-        AddressDto modifiedAddressDto = transformAddress(modifiedAddress);
+        AddressDto modifiedAddressDto = addressMapper.fromIAddress(modifiedAddress);
 
         logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, tenantAddressDto);
         return ResponseEntity
