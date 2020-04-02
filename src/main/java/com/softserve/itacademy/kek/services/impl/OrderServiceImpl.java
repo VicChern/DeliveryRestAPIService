@@ -86,7 +86,7 @@ public class OrderServiceImpl implements IOrderService {
         }
 
         final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CUSTOMER.toString());
-        final Actor savedActor = actorService.saveActor(tenant, customer, actorRole);
+        final Actor savedActor = actorService.createActor(tenant, customer, actorRole);
 
         OrderEvent orderEvent = createOrderEvent();
 

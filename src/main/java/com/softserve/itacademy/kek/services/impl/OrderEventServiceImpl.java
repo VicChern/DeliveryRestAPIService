@@ -266,7 +266,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
         final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CURRIER.toString());
         final User user = (User) userService.getByGuid(userGuid);
 
-        return actorService.saveActor(tenant, user, actorRole);
+        return actorService.createActor(tenant, user, actorRole);
     }
 
     private Actor updateActorWithNewRole(Actor actor, ActorRoleEnum actorRoleEnum) {
