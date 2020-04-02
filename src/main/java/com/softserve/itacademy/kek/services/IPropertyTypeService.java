@@ -38,6 +38,7 @@ public interface IPropertyTypeService {
      *
      * @param propertyType property type data
      * @return property type from db
+     * @throws PropertyTypeServiceException
      */
     IPropertyType produce(IPropertyType propertyType) throws PropertyTypeServiceException;
 }

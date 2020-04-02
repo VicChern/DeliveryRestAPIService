@@ -69,7 +69,7 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional
     @Override
     public IOrder create(IOrder iOrder, UUID customerGuid) throws OrderServiceException {
-        logger.info("Insert Order into DB: customerGuid = {}, order = {}", customerGuid, iOrder);
+        logger.info("Insert order into DB: customerGuid = {}", customerGuid);
 
         final User customer = (User) userService.getByGuid(customerGuid);
         final Tenant tenant = (Tenant) tenantService.getByGuid(iOrder.getTenant().getGuid());
@@ -81,12 +81,12 @@ public class OrderServiceImpl implements IOrderService {
 
             logger.debug("Order was inserted into DB: {}", savedOrder);
         } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while inserting Order into DB: " + actualOrder, ex);
+            logger.error("Error while inserting order into DB: " + actualOrder, ex);
             throw new OrderServiceException("An error occurred while inserting order", ex);
         }
 
         final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CUSTOMER.toString());
-        final Actor savedActor = actorService.createActor(tenant, customer, actorRole);
+        final Actor savedActor = actorService.create(tenant, customer, actorRole);
 
         OrderEvent orderEvent = createOrderEvent();
 
@@ -98,21 +98,24 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional(readOnly = true)
     @Override
     public List<IOrder> getAll() throws OrderServiceException {
-        logger.info("Get all Orders from DB");
+        logger.info("Get all orders from DB");
 
         try {
             final List<? extends IOrder> orderList = orderRepository.findAll();
+
+            logger.debug("Orders were read from DB");
+
             return (List<IOrder>) orderList;
         } catch (DataAccessException ex) {
-            logger.error("Error while getting Orders from DB", ex);
-            throw new OrderServiceException("An error occurred while getting order", ex);
+            logger.error("Error while getting orders from DB", ex);
+            throw new OrderServiceException("An error occurred while getting orders", ex);
         }
     }
 
     @Transactional(readOnly = true)
     @Override
     public IOrder getByGuid(UUID guid) throws OrderServiceException {
-        logger.info("Get Order from DB by guid: {}", guid);
+        logger.info("Get order from DB: guid = {}", guid);
 
         try {
             final Order order = orderRepository.findByGuid(guid);
@@ -121,7 +124,7 @@ public class OrderServiceImpl implements IOrderService {
 
             return order;
         } catch (DataAccessException ex) {
-            logger.error("Error while getting Order from DB: " + guid, ex);
+            logger.error("Error while getting order from DB: " + guid, ex);
             throw new OrderServiceException("An error occurred while getting order", ex);
         }
     }
@@ -129,16 +132,16 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional(readOnly = true)
     @Override
     public List<IOrder> getAllByTenantGuid(UUID guid) throws OrderServiceException {
-        logger.info("Get a list of Orders by Tenant guid: {}", guid);
+        logger.info("Get a list of orders for tenant: tenantGuid = {}", guid);
 
         try {
             List<? extends IOrder> orders = orderRepository.findAllByTenantGuid(guid);
 
-            logger.debug("A list of orders was read from DB by tenant guid: {}", guid);
+            logger.debug("A list of orders for tenant was read from DB: tenantGuid = {}", guid);
 
             return (List<IOrder>) orders;
         } catch (DataAccessException ex) {
-            logger.error("Error while getting a list of Orders from DB by Tenant guid: " + guid, ex);
+            logger.error("Error while getting a list of orders for tenant from DB: tenantGuid = " + guid, ex);
             throw new OrderServiceException("An error occurred while getting orders", ex);
         }
     }
@@ -146,7 +149,7 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional
     @Override
     public IOrder update(IOrder order, UUID guid) throws OrderServiceException {
-        logger.info("Update Order in DB: guid = {}, order = {}", guid, order);
+        logger.info("Update order in DB: guid = {}", guid);
 
         final Order actualOrder;
         try {
@@ -173,7 +176,7 @@ public class OrderServiceImpl implements IOrderService {
 
             return updatedOrder;
         } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while updating Order in DB: " + actualOrder, ex);
+            logger.error("Error while updating order in DB: " + actualOrder, ex);
             throw new OrderServiceException("An error occurred while updating order", ex);
         }
     }
@@ -181,14 +184,14 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional
     @Override
     public void deleteByGuid(UUID guid) throws OrderServiceException {
-        logger.info("Delete Order from DB by guid: {}", guid);
+        logger.info("Delete order from DB: guid = {}", guid);
 
         final Order actualOrder;
 
         try {
             actualOrder = orderRepository.findByGuid(guid);
         } catch (DataAccessException ex) {
-            logger.error("Error while getting Order from DB: " + guid, ex);
+            logger.error("Error while getting order from DB: " + guid, ex);
             throw new OrderServiceException("An error occurred while getting order");
         }
 
@@ -198,7 +201,7 @@ public class OrderServiceImpl implements IOrderService {
 
             logger.debug("Order was deleted from DB: {}", actualOrder);
         } catch (DataAccessException ex) {
-            logger.error("Error while deleting Order from DB: " + actualOrder, ex);
+            logger.error("Error while deleting order from DB: " + actualOrder, ex);
             throw new OrderServiceException("An error occurred while deleting order", ex);
         }
     }

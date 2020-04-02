@@ -19,6 +19,7 @@ public interface IOrderEventService {
      * @param orderEvent {@link OrderEvent}
      * @param orderGuid  {@link Order} guid
      * @return saved {@link OrderEvent} orderEvent
+     * @throws OrderEventServiceException
      */
     IOrderEvent create(IOrderEvent orderEvent, UUID orderGuid) throws OrderEventServiceException;
 
@@ -29,6 +30,7 @@ public interface IOrderEventService {
      * @param customerGuid customerGuid
      * @param iOrderEvent  order event
      * @return saved order event
+     * @throws OrderEventServiceException
      */
     IOrderEvent createOrderEvent(UUID orderGuid, UUID customerGuid, IOrderEvent iOrderEvent) throws OrderEventServiceException;
 
@@ -37,6 +39,7 @@ public interface IOrderEventService {
      *
      * @param guid {@link IOrderEvent} guid
      * @return guid
+     * @throws OrderEventServiceException
      */
     IOrderEvent getByGuid(UUID guid) throws OrderEventServiceException;
 
@@ -45,6 +48,7 @@ public interface IOrderEventService {
      *
      * @param orderGuid order guid
      * @return last added order event by order guid
+     * @throws OrderEventServiceException
      */
     IOrderEvent getLastAddedEvent(UUID orderGuid) throws OrderEventServiceException;
 
@@ -53,6 +57,7 @@ public interface IOrderEventService {
      *
      * @param orderGuid order guid
      * @return if {@link IOrderEvent} can be tracked
+     * @throws OrderEventServiceException
      */
     Boolean ifOrderEventCanBeTracked(UUID orderGuid) throws OrderEventServiceException;
 
@@ -61,6 +66,7 @@ public interface IOrderEventService {
      *
      * @param orderGuid {@link Order} guid
      * @return all OrderEvents for order
+     * @throws OrderEventServiceException
      */
     List<IOrderEvent> getAllEventsForOrder(UUID orderGuid) throws OrderEventServiceException;
 
@@ -68,6 +74,7 @@ public interface IOrderEventService {
      * Gets all {@link IOrderEvent} that is delivering now
      *
      * @return all {@link IOrderEvent} that is delivering now
+     * @throws OrderEventServiceException
      */
     List<IOrderEvent> findAllThatDeliveringNow() throws OrderEventServiceException;
 }

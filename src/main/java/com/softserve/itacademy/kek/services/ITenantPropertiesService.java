@@ -36,8 +36,9 @@ public interface ITenantPropertiesService {
      *
      * @param tenantGuid tenant guid
      * @return tenantProperties by tenant guid
+     * @throws TenantPropertiesServiceException
      */
-    List<ITenantProperties> getAllForTenant(UUID tenantGuid);
+    List<ITenantProperties> getAllForTenant(UUID tenantGuid) throws TenantPropertiesServiceException;
 
     /**
      * Updates tenantProperty by tenant guid and tenantProperty guid

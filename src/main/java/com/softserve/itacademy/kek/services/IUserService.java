@@ -20,6 +20,7 @@ public interface IUserService {
      *
      * @param userData user data
      * @return inserted user data
+     * @throws UserServiceException
      */
     IUser create(IUser userData) throws UserServiceException;
 
@@ -28,6 +29,7 @@ public interface IUserService {
      *
      * @param userData user data
      * @return updated user data
+     * @throws UserServiceException
      */
     IUser update(IUser userData) throws UserServiceException;
 
@@ -35,6 +37,7 @@ public interface IUserService {
      * Deletes user in DB by user guid
      *
      * @param guid user guid
+     * @throws UserServiceException
      */
     void deleteByGuid(UUID guid) throws UserServiceException;
 
@@ -43,6 +46,7 @@ public interface IUserService {
      *
      * @param guid user guid
      * @return user data
+     * @throws UserServiceException
      */
     IUser getByGuid(UUID guid) throws UserServiceException;
 
@@ -50,6 +54,7 @@ public interface IUserService {
      * Returns all users
      *
      * @return all users
+     * @throws UserServiceException
      */
     List<IUser> getAll() throws UserServiceException;
 
@@ -58,6 +63,7 @@ public interface IUserService {
      *
      * @param pageable {@code Pageable} definition of page options, must not be {@literal null}.
      * @return a page of {@link IUser}
+     * @throws UserServiceException
      */
     Page<IUser> getAll(Pageable pageable) throws UserServiceException;
 
@@ -65,6 +71,7 @@ public interface IUserService {
      * Returns user roles
      *
      * @return list of user roles
+     * @throws UserServiceException
      */
     Collection<? extends GrantedAuthority> getUserAuthorities(String email);
 

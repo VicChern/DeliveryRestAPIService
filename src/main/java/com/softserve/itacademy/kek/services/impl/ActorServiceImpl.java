@@ -39,7 +39,10 @@ public class ActorServiceImpl implements IActorService {
 
     @Transactional
     @Override
-    public Actor createActor(Tenant tenant, User user, ActorRole actorRole) throws ActorServiceException {
+    public Actor create(Tenant tenant, User user, ActorRole actorRole) throws ActorServiceException {
+        logger.info("Insert actor into DB: tenantGuid = {}, userGuid = {}, roleName = {}",
+                tenant.getGuid(), user.getGuid(), actorRole.getName());
+
         final Actor actor = new Actor();
 
         actor.setTenant(tenant);
@@ -56,8 +59,7 @@ public class ActorServiceImpl implements IActorService {
 
             return insertedActor;
         } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error(String.format("Error while inserting actor into DB: tenantGuid = %s, userGuid = %s, actor = %s",
-                    tenant.getGuid(), user.getGuid(), actor), ex);
+            logger.error("Error while inserting actor into DB: actor = " + actor, ex);
             throw new ActorServiceException("An error occurred while inserting actor", ex);
         }
     }
@@ -68,15 +70,14 @@ public class ActorServiceImpl implements IActorService {
         logger.info("Get a list of actors for tenant from DB: tenantGuid = {}", guid);
 
         try {
-            List<? extends IActor> actors = actorRepository.findAllByTenantGuid(guid);
+            final List<? extends IActor> actors = actorRepository.findAllByTenantGuid(guid);
 
-            logger.debug("A list of actors for tenant was gotten: tenantGuid = {}", guid);
+            logger.debug("A list of actors for tenant was gotten from DB: tenantGuid = {}", guid);
 
             return (List<IActor>) actors;
         } catch (DataAccessException ex) {
             logger.error("Error while getting a list of actors for tenant from DB: tenantGuid = " + guid, ex);
-            throw new ActorServiceException("An error occurred while getting a list of actors for tenant", ex);
+            throw new ActorServiceException("An error occurred while getting actors for tenant", ex);
         }
     }
-
 }

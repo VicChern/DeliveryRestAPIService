@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.TenantPropertiesServiceException;
-import com.softserve.itacademy.kek.exception.TenantServiceException;
 import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
@@ -54,23 +53,25 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ITenantProperties> getAllForTenant(UUID tenantGuid) {
-        logger.info("Get a list of Tenant Properties from DB: Tenant.guid = {}", tenantGuid);
+    public List<ITenantProperties> getAllForTenant(UUID tenantGuid) throws TenantPropertiesServiceException {
+        logger.info("Get a list of tenant properties from DB: tenantGuid = {}", tenantGuid);
 
         try {
             final List<? extends ITenantProperties> tenantProperties = tenantPropertiesRepository.findAll();
+
+            logger.debug("A list of tenant properties was read from DB: tenantGuid = {}", tenantGuid);
+
             return (List<ITenantProperties>) tenantProperties;
         } catch (DataAccessException ex) {
-            logger.error("Error while getting a list of Tenant Properties from DB: Tenant.guid = " + tenantGuid, ex);
-            throw new TenantServiceException("An error occurs while getting tenant properties", ex);
+            logger.error("Error while getting a list of tenant properties from DB: tenantGuid = " + tenantGuid, ex);
+            throw new TenantPropertiesServiceException("An error occurs while getting tenant properties", ex);
         }
     }
 
     @Transactional
     @Override
     public List<ITenantProperties> create(List<ITenantProperties> iTenantProperties, UUID tenantGuid) throws TenantPropertiesServiceException {
-        logger.info("Insert a list of Tenant Properties into DB: Tenant.guid = {}, TenantProperties = {}",
-                tenantGuid, iTenantProperties);
+        logger.info("Insert tenant properties into DB: tenantGuid = {}", tenantGuid);
 
         final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
 
@@ -87,11 +88,10 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
         try {
             updatedTenant = tenantRepository.saveAndFlush(tenant);
 
-            logger.debug("A list of Tenant Properties was inserted into DB: Tenant = {}, TenantProperties = {}",
-                    tenant, tenantProperties);
+            logger.debug("Tenant properties were inserted into DB: tenantGuid = {}", tenantGuid);
         } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error(String.format("Error while inserting a list of Tenant Properties into DB: Tenant = %s, TenantProperties = %s",
-                    tenant, tenantProperties), ex);
+            logger.error(String.format("Error while inserting tenant properties into DB: tenantGuid = %s, tenantProperties = %s",
+                    tenantGuid, tenantProperties), ex);
             throw new TenantPropertiesServiceException("An error occurs while inserting tenant properties", ex);
         }
 
@@ -111,7 +111,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
     @Transactional(readOnly = true)
     @Override
     public ITenantProperties getPropertyByTenantGuid(UUID tenantGuid, UUID tenantPropertyGuid) throws TenantPropertiesServiceException {
-        logger.debug("Getting TenantProperties by tenant guid: {} and tenantProperty guid: {}", tenantGuid, tenantPropertyGuid);
+        logger.debug("Get tenant property: tenantGuid = {}, tenantPropertyGuid = {}", tenantGuid, tenantPropertyGuid);
 
         try {
             final TenantProperties tenantProperties = tenantPropertiesRepository
@@ -123,7 +123,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
             return tenantProperties;
 
         } catch (DataAccessException ex) {
-            logger.error(String.format("Error while getting Tenant Property from DB: Tenant.guid = %s, TenantProperties.guid = %s",
+            logger.error(String.format("Error while getting tenant property from DB: tenantGuid = %s, tenantPropertyGuid = %s",
                     tenantGuid, tenantPropertyGuid), ex);
             throw new TenantPropertiesServiceException("An error occurs while getting tenant property", ex);
         }
@@ -132,8 +132,7 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
     @Transactional
     @Override
     public ITenantProperties update(UUID tenantGuid, UUID tenantPropertyGuid, ITenantProperties iTenantProperty) throws TenantPropertiesServiceException {
-        logger.info("Update Tenant Property in DB: Tenant.guid = {}, TenantProperties.guid = {}, new TenantProperties = {}",
-                tenantGuid, tenantPropertyGuid, iTenantProperty);
+        logger.info("Update tenant property in DB: tenantGuid = {}, tenantPropertyGuid = {}", tenantGuid, tenantPropertyGuid);
 
         // find tenant property for updating
         final TenantProperties tenantProperty = (TenantProperties) getPropertyByTenantGuid(tenantGuid, tenantPropertyGuid);
@@ -152,34 +151,34 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
         try {
             final TenantProperties updatedProperties = tenantPropertiesRepository.saveAndFlush(tenantProperty);
 
-            logger.debug("Tenant Property was updated in DB: Tenant.guid = {},  TenantProperties = {}",
+            logger.debug("Tenant property was updated in DB: tenantGuid = {},  updatedProperties = {}",
                     tenantGuid, updatedProperties);
 
             return updatedProperties;
         } catch (ConstraintViolationException | DataAccessException ex) {
             logger.error(String.format(
-                    "Error while updating Tenant Property in DB: Tenant.guid = %s, TenantProperties.guid = %s, new TenantProperties = %s",
+                    "Error while updating tenant property in DB: tenantGuid = %s, tenantPropertyGuid = %s, tenantProperty = %s",
                     tenantGuid, tenantPropertyGuid, iTenantProperty), ex);
-            throw new TenantPropertiesServiceException("An error occurs while updating Tenant Properties", ex);
+            throw new TenantPropertiesServiceException("An error occurs while updating tenant properties", ex);
         }
     }
 
     @Transactional
     @Override
     public void delete(UUID tenantGuid, UUID tenantPropertyGuid) throws TenantPropertiesServiceException {
-        logger.info("Delete Tenant Property from DB: Tenant.guid = {}, TenantProperties.guid = {}",
+        logger.info("Delete tenant property from DB: tenantGuid = {}, tenantPropertyGuid = {}",
                 tenantGuid, tenantPropertyGuid);
 
-        final TenantProperties tenantProperties = (TenantProperties) getPropertyByTenantGuid(tenantGuid, tenantPropertyGuid);
+        final TenantProperties tenantProperty = (TenantProperties) getPropertyByTenantGuid(tenantGuid, tenantPropertyGuid);
         try {
-            tenantPropertiesRepository.delete(tenantProperties);
+            tenantPropertiesRepository.delete(tenantProperty);
             tenantPropertiesRepository.flush();
 
-            logger.debug("Tenant Property was deleted from DB: Tenant.guid = {},  TenantProperties = {}",
-                    tenantGuid, tenantProperties);
+            logger.debug("Tenant property was deleted from DB: tenantGuid = {}, tenantProperty = {}",
+                    tenantGuid, tenantProperty);
         } catch (DataAccessException ex) {
-            logger.error(String.format("Error while deleting Tenant Property from DB: Tenant.guid = %s, TenantProperties = %s",
-                    tenantGuid, tenantProperties), ex);
+            logger.error(String.format("Error while deleting Tenant Property from DB: tenantGuid = %s, tenantProperty = %s",
+                    tenantGuid, tenantProperty), ex);
             throw new UserServiceException("An error occurred while deleting tenant property", ex);
         }
     }

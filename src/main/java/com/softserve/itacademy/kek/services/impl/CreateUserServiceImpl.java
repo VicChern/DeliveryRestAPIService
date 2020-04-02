@@ -26,7 +26,6 @@ public class CreateUserServiceImpl implements ICreateUserService {
     private final IUserService userService;
     private final IIdentityService identityService;
 
-
     @Autowired
     public CreateUserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, IUserService userService, IIdentityService identityService) {
         this.userRepository = userRepository;
@@ -35,13 +34,14 @@ public class CreateUserServiceImpl implements ICreateUserService {
         this.identityService = identityService;
     }
 
-
     @Transactional
     @Override
     public IUser createNewUser(RegistrationDto userData) {
+        logger.info("User registration: email = {}", userData.getEmail());
+
         final boolean isAlreadyRegistered = userRepository.findByEmail(userData.getEmail()) != null;
         if (isAlreadyRegistered) {
-            logger.info("User already exists in DB {}", userData);
+            logger.info("User already exists in DB: email = {}", userData.getEmail());
             throw new UserAlreadyExistException(userData.toString());
         }
 
@@ -57,6 +57,7 @@ public class CreateUserServiceImpl implements ICreateUserService {
         identityService.create(dbUser.getGuid(), IdentityTypeEnum.KEY, passwordEncoder.encode(userData.getPassword()));
 
         logger.info("User has been added to DB {}", userData);
+
         return dbUser;
     }
 }

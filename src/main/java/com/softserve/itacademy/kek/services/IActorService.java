@@ -15,7 +15,23 @@ import com.softserve.itacademy.kek.models.impl.User;
  */
 public interface IActorService {
 
-    Actor createActor(Tenant tenant, User user, ActorRole actorRole) throws ActorServiceException;
+    /**
+     * Creates actor
+     *
+     * @param tenant    tenant
+     * @param user      user
+     * @param actorRole role
+     * @return created actor
+     * @throws ActorServiceException
+     */
+    Actor create(Tenant tenant, User user, ActorRole actorRole) throws ActorServiceException;
 
+    /**
+     * Returns a list of actors for tenant
+     *
+     * @param guid tenant guid
+     * @return a list of actors for tenant
+     * @throws ActorServiceException
+     */
     List<IActor> getAllByTenantGuid(UUID guid) throws ActorServiceException;
 }
