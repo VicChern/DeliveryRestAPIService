@@ -22,7 +22,8 @@ import com.softserve.itacademy.kek.services.IGetTokenService;
 @Service
 public class GetTokenServiceImpl implements IGetTokenService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static final Logger logger = LoggerFactory.getLogger(GetTokenServiceImpl.class);
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -52,9 +53,7 @@ public class GetTokenServiceImpl implements IGetTokenService {
 
         logger.info("Building token for user: {}" + user);
 
-        String key = "abc123";
-
-        return jwtBuilder.signWith(SignatureAlgorithm.HS512, key).compact();
+        return jwtBuilder.signWith(SignatureAlgorithm.HS512, System.getenv("KekSecurityKey")).compact();
     }
 
 }
