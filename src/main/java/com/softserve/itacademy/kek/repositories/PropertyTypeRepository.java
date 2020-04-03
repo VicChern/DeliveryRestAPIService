@@ -6,12 +6,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.softserve.itacademy.kek.models.impl.PropertyType;
 
+/**
+ * Repository for work with Tenant property types
+ */
 public interface PropertyTypeRepository extends JpaRepository<PropertyType, Long> {
     /**
-     * Gets property type from DB
+     * Retrieves a tenant by its name.
      *
-     * @param name name of property type
-     * @return property type
+     * @param name
+     * @return the tenant properties with the given guid or {@literal Optional#empty()} if none found
      */
     Optional<PropertyType> getByName(String name);
 }
