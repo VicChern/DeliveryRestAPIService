@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,11 +88,16 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
         logger.info("Get global property from DB: key = {}", key);
 
         try {
-            final GlobalProperty globalProperty = globalPropertiesRepository.findByKey(key);
+            final GlobalProperty globalProperty = globalPropertiesRepository.findByKey(key).orElseThrow(
+                    () -> {
+                        logger.error("Global property wasn't found in the database");
+                        return new GlobalPropertiesServiceException("User was not found in database for guid: " + key, new NoSuchElementException());
+                    });
 
             logger.debug("Global property was gotten from DB: globalProperty = {}", globalProperty);
 
             return globalProperty;
+
         } catch (DataAccessException ex) {
             logger.error("Error while getting global property: key = " + key, ex);
             throw new GlobalPropertiesServiceException("An error occurred while getting global property", ex);

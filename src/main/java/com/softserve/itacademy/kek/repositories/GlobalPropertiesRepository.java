@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.softserve.itacademy.kek.models.impl.GlobalProperty;
@@ -23,7 +25,7 @@ public interface GlobalPropertiesRepository extends JpaRepository<GlobalProperty
      * @param key
      * @return the Global Property with the given key
      */
-    GlobalProperty findByKey(String key);
+    Optional <GlobalProperty> findByKey(String key);
 
     void deleteByKey(String key);
 }
