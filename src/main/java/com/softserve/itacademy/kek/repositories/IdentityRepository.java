@@ -19,5 +19,5 @@ public interface IdentityRepository extends JpaRepository<Identity, Long> {
      * @param typeName identity type name
      * @return the identity or {@literal Optional#empty()} if none found
      */
-    Optional<Identity> findByUserGuidAndIdentityTypeName(UUID userGuid, String typeName);
+    Optional <Identity> findByUserGuidAndIdentityTypeName(UUID userGuid, String typeName);
 }

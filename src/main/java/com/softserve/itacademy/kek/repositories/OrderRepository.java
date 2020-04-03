@@ -26,5 +26,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      * @param guid
      * @return the list of orders
      */
-    List<Order> findAllByTenantGuid(UUID guid);
+    List <Order> findAllByTenantGuid(UUID guid);
 }

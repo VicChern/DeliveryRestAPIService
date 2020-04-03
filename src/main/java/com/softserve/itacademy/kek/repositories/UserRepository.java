@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param guid
      * @return the user with the given guid or {@literal Optional#empty()} if none found
      */
-    Optional<User> findByGuid(UUID guid);
+    Optional <User> findByGuid(UUID guid);
 
 
     /**
@@ -27,8 +27,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email
      * @return the user with the given email
      */
-
-    // TODO: 03.04.2020 return later and refactor
-    User findByEmail(String email);
+     User findByEmail(String email);
 
 }
