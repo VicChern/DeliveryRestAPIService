@@ -1,5 +1,7 @@
 package com.softserve.itacademy.kek.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.softserve.itacademy.kek.models.impl.IdentityType;
@@ -15,5 +17,5 @@ public interface IdentityTypeRepository extends JpaRepository<IdentityType, Long
      * @param name
      * @return the Identity Type with the given order
      */
-    IdentityType findByName(String name);
+    Optional <IdentityType> findByName(String name);
 }

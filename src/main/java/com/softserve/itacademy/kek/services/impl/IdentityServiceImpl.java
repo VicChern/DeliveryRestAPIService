@@ -122,19 +122,22 @@ public class IdentityServiceImpl implements IIdentityService {
         logger.info("Get identity type: {}", type.name());
 
         try {
-            IdentityType identityType = identityTypeRepository.findByName(type.name());
+            IdentityType identityType = identityTypeRepository.findByName(type.name()).orElseThrow(() -> {
+                logger.error("Identity type wasn't found in the database");
+                return new IdentityServiceException("Identity type was not found in database for name: " + type.name(), new NoSuchElementException());
+            });
 
             if (identityType == null) {
                 logger.info("Insert identity type: {}", type);
 
                 final IdentityType newIdentityType = new IdentityType(type);
-
                 identityType = identityTypeRepository.saveAndFlush(newIdentityType);
 
                 logger.debug("Identity type was inserted into DB: {}", identityType);
             }
 
             return identityType;
+
         } catch (DataAccessException ex) {
             logger.error("Error while getting identity type " + type.name(), ex);
             throw new IdentityServiceException("An error occurred while getting identity type", ex);
