@@ -157,7 +157,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         final IOrderEvent createdOrderEvent = orderEventService.create(orderEvent, order.getGuid());
 
         //than
-        final IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid());
+        final IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid()).orElse(null);
 
         assertEquals(createdOrderEvent.getPayload(), foundOrderEvent.getPayload());
     }
