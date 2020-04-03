@@ -187,12 +187,14 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional(readOnly = true)
     @Override
-    public Collection<? extends GrantedAuthority> getUserAuthorities(String email) {
+    public Collection<? extends GrantedAuthority> getUserAuthorities(String email) throws UserServiceException{
         logger.info("Find User in DB: email = {}", email);
 
         final List<GrantedAuthority> authorityList = new ArrayList<>();
 
+        // TODO: 03.04.2020 return later and refactor
         final IUser user = userRepository.findByEmail(email);
+
         if (user == null) {
             logger.warn("User wasn't found in DB: email = {}", email);
             return authorityList;

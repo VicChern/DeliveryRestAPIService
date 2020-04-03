@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.repositories;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +19,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
      * @param guid address guid
      * @return address
      */
-    Address findByGuid(UUID guid);
+    Optional <Address> findByGuid(UUID guid);
 
     /**
      * Returns user address list

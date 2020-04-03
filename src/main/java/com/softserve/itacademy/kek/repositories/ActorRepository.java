@@ -13,7 +13,7 @@ import com.softserve.itacademy.kek.models.impl.Actor;
  * Repository for work with Actor role
  */
 public interface ActorRepository extends JpaRepository<Actor, Long> {
-
+// TODO: 03.04.2020 refactor later oll of this
     /**
      * Retrieves an Actor  by its guid.
      *

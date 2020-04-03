@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.AddressServiceException;
+import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.impl.Address;
 import com.softserve.itacademy.kek.models.impl.Tenant;
@@ -256,12 +258,12 @@ public class AddressServiceImpl implements IAddressService {
         logger.info("Find address in DB: guid = {}", guid);
 
         try {
-            Address address = addressRepository.findByGuid(guid);
-            if (address == null) {
+            Address address = addressRepository.findByGuid(guid).orElseThrow(() ->{
                 logger.error("Address wasn't found in DB: guid = {}", guid);
-                throw new AddressServiceException("Address wasn't found");
-            }
+                return new AddressServiceException("Address was not found in database for guid: " + guid, new NoSuchElementException());
+            });
             return address;
+
         } catch (DataAccessException ex) {
             logger.error("Error while getting address from DB: guid = " + guid, ex);
             throw new AddressServiceException("An error occurred while getting address", ex);
