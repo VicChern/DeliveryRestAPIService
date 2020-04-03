@@ -27,6 +27,6 @@ public interface TenantRepository extends JpaRepository<Tenant, Long> {
      * @param user owner
      * @return the tenant with the given guid
      */
-    Tenant findByTenantOwner(IUser user);
+    Optional <Tenant> findByTenantOwner(IUser user);
 
 }

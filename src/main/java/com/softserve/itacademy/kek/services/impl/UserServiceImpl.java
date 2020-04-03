@@ -18,6 +18,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.softserve.itacademy.kek.exception.TenantServiceException;
 import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.ITenant;
@@ -187,7 +188,7 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional(readOnly = true)
     @Override
-    public Collection<? extends GrantedAuthority> getUserAuthorities(String email) throws UserServiceException{
+    public Collection<? extends GrantedAuthority> getUserAuthorities(String email) throws UserServiceException {
         logger.info("Find User in DB: email = {}", email);
 
         final List<GrantedAuthority> authorityList = new ArrayList<>();
@@ -202,9 +203,16 @@ public class UserServiceImpl implements IUserService {
             authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
 
-        final ITenant tenant = tenantRepository.findByTenantOwner(user);
-        if (tenant != null) {
+        try {
+            final ITenant tenant = tenantRepository.findByTenantOwner(user).orElseThrow(() -> {
+                        logger.error("Tenant wasn't found in the database");
+                        return new UserServiceException("Tenant was not found in database for user: " + user, new NoSuchElementException());
+                    }
+            );
             authorityList.add(new SimpleGrantedAuthority("ROLE_TENANT"));
+        } catch (DataAccessException ex) {
+            logger.error("Error while getting Tenant from DB by user " + user, ex);
+            throw new TenantServiceException("An error occurred while getting tenant by user", ex);
         }
 
         final IActor actor = actorRepository.findByUser(user);
