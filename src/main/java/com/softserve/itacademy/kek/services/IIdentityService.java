@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.softserve.itacademy.kek.exception.IdentityServiceException;
 import com.softserve.itacademy.kek.models.IIdentity;
-import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
+import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 
 public interface IIdentityService {
 
@@ -17,7 +17,7 @@ public interface IIdentityService {
      * @param payload  payload
      * @return inserted user identity
      */
-    IIdentity create(UUID userGuid, IdentityTypeDef type, String payload);
+    IIdentity create(UUID userGuid, IdentityTypeEnum type, String payload);
 
     /**
      * Get user identity from db
@@ -26,7 +26,7 @@ public interface IIdentityService {
      * @param type     predefined identity type
      * @return user password
      */
-    IIdentity read(UUID userGuid, IdentityTypeDef type);
+    IIdentity read(UUID userGuid, IdentityTypeEnum type);
 
     /**
      * Updates user identity
@@ -37,7 +37,7 @@ public interface IIdentityService {
      * @return Identity
      * @throws IdentityServiceException
      */
-    IIdentity update(UUID userGuid, IdentityTypeDef type, String payload) throws IdentityServiceException;
+    IIdentity update(UUID userGuid, IdentityTypeEnum type, String payload) throws IdentityServiceException;
 
     /**
      * Delete user indentity
@@ -45,5 +45,5 @@ public interface IIdentityService {
      * @param userGuid user GUID
      * @param type     identity type
      */
-    void delete(UUID userGuid, IdentityTypeDef type) throws IdentityServiceException;
+    void delete(UUID userGuid, IdentityTypeEnum type) throws IdentityServiceException;
 }

@@ -15,7 +15,7 @@ import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderDetails;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
-import com.softserve.itacademy.kek.models.enums.EventType;
+import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Order;
@@ -200,7 +200,7 @@ public class OrderServiceImpl implements IOrderService {
         OrderEvent orderEvent = new OrderEvent();
 
         OrderEventType orderEventType = new OrderEventType();
-        orderEventType.setName(EventType.CREATED.toString());
+        orderEventType.setName(EventTypeEnum.CREATED.toString());
 
         orderEvent.setOrderEventType(orderEventType);
         orderEvent.setPayload("{lat: 0, lng: 0}");
