@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.softserve.itacademy.kek.exception.IdentityServiceException;
 import com.softserve.itacademy.kek.models.IIdentity;
-import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
+import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Identity;
 import com.softserve.itacademy.kek.models.impl.IdentityType;
 import com.softserve.itacademy.kek.models.impl.User;
@@ -40,7 +40,7 @@ public class IdentityServiceImpl implements IIdentityService {
 
     @Transactional
     @Override
-    public IIdentity create(UUID userGuid, IdentityTypeDef type, String payload) throws IdentityServiceException {
+    public IIdentity create(UUID userGuid, IdentityTypeEnum type, String payload) throws IdentityServiceException {
         logger.info("Creating identity in DB: user.guid = {}, type = {}", userGuid, type);
 
         final User user = internalGetUserByGuid(userGuid);
@@ -61,14 +61,14 @@ public class IdentityServiceImpl implements IIdentityService {
 
     @Override
     @Transactional
-    public IIdentity read(UUID userGuid, IdentityTypeDef type) {
+    public IIdentity read(UUID userGuid, IdentityTypeEnum type) {
         logger.info("Reading identity: user.guid = {}, type = {}", userGuid, type.name());
         return internalGetIdentity(userGuid, type);
     }
 
     @Override
     @Transactional
-    public IIdentity update(UUID userGuid, IdentityTypeDef type, String payload) throws IdentityServiceException {
+    public IIdentity update(UUID userGuid, IdentityTypeEnum type, String payload) throws IdentityServiceException {
         logger.info("Updating identity in DB: user.guid = {}, type = {}", userGuid, type);
 
         final Identity identity = internalGetIdentity(userGuid, type);
@@ -91,7 +91,7 @@ public class IdentityServiceImpl implements IIdentityService {
 
     @Transactional
     @Override
-    public void delete(UUID userGuid, IdentityTypeDef type) {
+    public void delete(UUID userGuid, IdentityTypeEnum type) {
         logger.info("Deleting identity from the DB: user.guid = {}, type = {}", userGuid, type);
 
         final Identity identity = internalGetIdentity(userGuid, type);
@@ -104,7 +104,7 @@ public class IdentityServiceImpl implements IIdentityService {
         }
     }
 
-    private Identity internalGetIdentity(UUID userGuid, IdentityTypeDef type) throws IdentityServiceException {
+    private Identity internalGetIdentity(UUID userGuid, IdentityTypeEnum type) throws IdentityServiceException {
         logger.debug("Find Identity in DB: user.guid = {}, type = {}", userGuid, type);
 
         try {
@@ -115,7 +115,7 @@ public class IdentityServiceImpl implements IIdentityService {
         }
     }
 
-    private IdentityType internalGetForcedIdentityType(IdentityTypeDef type) {
+    private IdentityType internalGetForcedIdentityType(IdentityTypeEnum type) {
         logger.debug("Getting Identity Type: {}", type);
 
         try {

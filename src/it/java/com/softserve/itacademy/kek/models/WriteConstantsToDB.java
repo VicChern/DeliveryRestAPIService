@@ -7,10 +7,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.softserve.itacademy.kek.configuration.PersistenceJPAConfig;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
-import com.softserve.itacademy.kek.models.enums.EventType;
+import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
@@ -44,16 +43,16 @@ public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
         actorRole2.setName(ActorRoleEnum.CURRIER.toString());
 
         orderEventType1 = new OrderEventType();
-        orderEventType1.setName(EventType.CREATED.toString());
+        orderEventType1.setName(EventTypeEnum.CREATED.toString());
 
         orderEventType2 = new OrderEventType();
-        orderEventType2.setName(EventType.ASSIGNED.toString());
+        orderEventType2.setName(EventTypeEnum.ASSIGNED.toString());
 
         orderEventType3 = new OrderEventType();
-        orderEventType3.setName(EventType.STARTED.toString());
+        orderEventType3.setName(EventTypeEnum.STARTED.toString());
 
         orderEventType4 = new OrderEventType();
-        orderEventType4.setName(EventType.DELIVERED.toString());
+        orderEventType4.setName(EventTypeEnum.DELIVERED.toString());
     }
 
     @AfterMethod(groups = {"integration-tests"})

@@ -18,7 +18,7 @@ import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.configuration.WebMvcConfig;
-import com.softserve.itacademy.kek.models.enums.EventType;
+import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
 import com.softserve.itacademy.kek.models.impl.OrderEventType;
@@ -88,13 +88,13 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order);
 
         orderEventTypeCreated = new OrderEventType();
-        orderEventTypeCreated.setName(EventType.CREATED.toString());
+        orderEventTypeCreated.setName(EventTypeEnum.CREATED.toString());
 
         orderEventTypeStarted = new OrderEventType();
-        orderEventTypeStarted.setName(EventType.STARTED.toString());
+        orderEventTypeStarted.setName(EventTypeEnum.STARTED.toString());
 
         orderEventTypeDelivered = new OrderEventType();
-        orderEventTypeDelivered.setName(EventType.DELIVERED.toString());
+        orderEventTypeDelivered.setName(EventTypeEnum.DELIVERED.toString());
 
         orderEventTypeRepository.save(orderEventTypeCreated);
         orderEventTypeRepository.save(orderEventTypeStarted);
@@ -115,7 +115,7 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = ".*is not delivering now.*")
     public void testTrackingNotBeginForNotDeliveringOrder() throws Exception {
         //given
-        orderEventTypeCreated.setName(EventType.CREATED.toString());
+        orderEventTypeCreated.setName(EventTypeEnum.CREATED.toString());
         OrderEvent createdEvent = getOrderEvent(order, orderEventTypeCreated, null);
         orderEventRepository.save(createdEvent);
 
@@ -130,15 +130,15 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
             expectedExceptionsMessageRegExp = ".*is not delivering now.*")
     public void testTrackingNotBeginForDeliveredOrder() throws Exception {
         //given
-        orderEventTypeCreated.setName(EventType.CREATED.toString());
+        orderEventTypeCreated.setName(EventTypeEnum.CREATED.toString());
         OrderEvent createdEvent = getOrderEvent(order, orderEventTypeCreated, null);
         orderEventRepository.save(createdEvent);
 
-        orderEventTypeStarted.setName(EventType.STARTED.toString());
+        orderEventTypeStarted.setName(EventTypeEnum.STARTED.toString());
         OrderEvent startedEvent = getOrderEvent(order, orderEventTypeStarted, null);
         orderEventRepository.save(startedEvent);
 
-        orderEventTypeDelivered.setName(EventType.DELIVERED.toString());
+        orderEventTypeDelivered.setName(EventTypeEnum.DELIVERED.toString());
         OrderEvent deliveredEvent = getOrderEvent(order, orderEventTypeDelivered, null);
         orderEventRepository.save(deliveredEvent);
 
@@ -152,11 +152,11 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void testTrackingBeginForDeliveringOrder() throws Exception {
         //given
-        orderEventTypeCreated.setName(EventType.CREATED.toString());
+        orderEventTypeCreated.setName(EventTypeEnum.CREATED.toString());
         OrderEvent createdEvent = getOrderEvent(order, orderEventTypeCreated, null);
         orderEventRepository.save(createdEvent);
 
-        orderEventTypeStarted.setName(EventType.STARTED.toString());
+        orderEventTypeStarted.setName(EventTypeEnum.STARTED.toString());
         OrderEvent startedEvent1 = getOrderEvent(order, orderEventTypeStarted, null);
         orderEventRepository.save(startedEvent1);
 
