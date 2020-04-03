@@ -46,9 +46,13 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
 
         if ( authorities.contains("ROLE_USER") ) {
             roles.add(new SimpleGrantedAuthority("ROLE_USER"));
-        } else if (authorities.contains("ROLE_TENANT")) {
+        }
+
+        if (authorities.contains("ROLE_TENANT")) {
             roles.add(new SimpleGrantedAuthority("ROLE_TENANT"));
-        } else if (authorities.contains("ROLE_ACTOR")) {
+        }
+
+        if (authorities.contains("ROLE_ACTOR")) {
             roles.add(new SimpleGrantedAuthority("ROLE_ACTOR"));
         }
 

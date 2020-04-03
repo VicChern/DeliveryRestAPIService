@@ -19,7 +19,7 @@ import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.SignInDto;
 import com.softserve.itacademy.kek.exception.InvalidCredentialsException;
-import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
+import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Identity;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.UserRepository;
@@ -61,7 +61,7 @@ public class SignInController {
             throw new InvalidCredentialsException("Invalid credentials. Try again.", ex);
         }
 
-        identity = (Identity) iIdentityService.read(user.getGuid(), IdentityTypeDef.KEY);
+        identity = (Identity) iIdentityService.read(user.getGuid(), IdentityTypeEnum.KEY);
 
         boolean isCorrect = passwordEncoder.matches(dto.getPassword(), identity.getPayload());
 
