@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceJPAConfig;
+import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 import com.softserve.itacademy.kek.models.enums.EventType;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
@@ -16,7 +17,7 @@ import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 
 
-@ContextConfiguration(classes = {PersistenceJPAConfig.class})
+@ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
 
     @Autowired

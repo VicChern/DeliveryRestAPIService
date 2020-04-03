@@ -15,7 +15,6 @@ import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.TenantDetails;
 import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.TenantDetailsRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 
@@ -39,8 +38,6 @@ public class TenantDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private TenantRepository tenantRepository;
-    @Autowired
-    private TenantDetailsRepository tenantDetailsRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -75,11 +72,6 @@ public class TenantDetailsTestIT extends AbstractTestNGSpringContextTests {
         assertEquals(1, tenantRepository.findAll().spliterator().estimateSize());
         Optional<Tenant> tenantOptional = tenantRepository.findById(tenant.getIdTenant());
         assertNotNull(tenantOptional.orElse(null));
-
-        //delete if we wouldn't use tenantDetailsRepository
-        assertEquals(1, tenantDetailsRepository.findAll().spliterator().estimateSize());
-        Optional<TenantDetails> tenantDetailsOptional = tenantDetailsRepository.findById(tenantDetails.getIdTenant());
-        assertNotNull(tenantDetailsOptional.orElse(null));
 
         TenantDetails tenantDetails = (TenantDetails) tenantOptional.get().getTenantDetails();
         assertEquals(tenantOptional.get().getIdTenant(), tenantDetails.getIdTenant());

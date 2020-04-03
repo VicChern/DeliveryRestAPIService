@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.IOrderDetails;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 import com.softserve.itacademy.kek.models.enums.EventType;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
@@ -23,7 +22,6 @@ import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
-import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
@@ -43,6 +41,7 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
 
     public static final String newSummary = "new summary";
     public static final String newImageUrl = "new image url";
+    private static final String newPayload = "new payload";
 
 
     @Autowired
@@ -53,8 +52,6 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     private OrderRepository orderRepository;
     @Autowired
     private ActorRepository actorRepository;
-    @Autowired
-    private OrderDetailsRepository orderDetailsRepository;
     @Autowired
     private OrderEventTypeRepository orderEventTypeRepository;
     @Autowired
@@ -136,17 +133,15 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
     @Rollback
     @Test(groups = {"integration-tests"})
     public void createSuccess() {
-        //given
+        //when
         IOrder createdOrder = orderService.create(order, customer.getGuid());
 
-        //when
+        //then
         IOrder foundOrder = orderRepository.findByGuid(createdOrder.getGuid());
 
-        IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
-
-        //then
         assertEquals(createdOrder.getGuid(), foundOrder.getGuid());
-        assertEquals(createdOrder.getOrderDetails(), foundDetails);
+        assertEquals(createdOrder.getOrderDetails().getImageUrl(), order.getOrderDetails().getImageUrl());
+        assertEquals(createdOrder.getOrderDetails().getPayload(), order.getOrderDetails().getPayload());
         assertEquals(createdOrder.getSummary(), foundOrder.getSummary());
         assertEquals(createdOrder.getTenant(), foundOrder.getTenant());
     }
@@ -157,8 +152,9 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
         //given
         Order createdOrder = orderRepository.save(order);
 
-        OrderDetails orderDetails = orderDetailsRepository.findByOrder(order);
+        OrderDetails orderDetails = new OrderDetails();
         orderDetails.setImageUrl(newImageUrl);
+        orderDetails.setPayload(newPayload);
 
         createdOrder.setSummary(newSummary);
         createdOrder.setOrderDetails(orderDetails);
@@ -168,15 +164,14 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
 
         IOrder foundOrder = orderRepository.findByGuid(order.getGuid());
 
-        IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
-
         //then
         assertNotNull(createdOrder);
         assertNotNull(updatedOrder);
         assertEquals(updatedOrder.getSummary(), newSummary);
 
         assertEquals(updatedOrder.getGuid(), foundOrder.getGuid());
-        assertEquals(updatedOrder.getOrderDetails(), foundDetails);
+        assertEquals(updatedOrder.getOrderDetails().getPayload(), createdOrder.getOrderDetails().getPayload());
+        assertEquals(updatedOrder.getOrderDetails().getImageUrl(), createdOrder.getOrderDetails().getImageUrl());
         assertEquals(updatedOrder.getSummary(), foundOrder.getSummary());
         assertEquals(updatedOrder.getTenant(), foundOrder.getTenant());
     }
@@ -191,12 +186,10 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
         IOrder foundOrder = orderService.getByGuid(order.getGuid());
 
         //then
-        IOrderDetails foundDetails = orderDetailsRepository.findByOrder(createdOrder);
-
         assertNotNull(createdOrder);
         assertNotNull(foundOrder);
         assertEquals(createdOrder.getGuid(), foundOrder.getGuid());
-        assertEquals(createdOrder.getOrderDetails(), foundDetails);
+        assertEquals(createdOrder.getOrderDetails(), foundOrder.getOrderDetails());
         assertEquals(createdOrder.getSummary(), foundOrder.getSummary());
         assertEquals(createdOrder.getTenant(), foundOrder.getTenant());
     }
@@ -242,10 +235,8 @@ public class OrderServiceTestIT extends AbstractTestNGSpringContextTests {
 
         //then
         Order foundOrder = orderRepository.findByGuid(createdOrder.getGuid());
-        OrderDetails foundOrderDetails = orderDetailsRepository.findByOrder(createdOrder);
 
         assertNotNull(createdOrder);
         assertNull(foundOrder);
-        assertNull(foundOrderDetails);
     }
 }
