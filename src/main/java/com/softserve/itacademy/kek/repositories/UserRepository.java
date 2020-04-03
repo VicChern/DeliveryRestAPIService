@@ -27,6 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email
      * @return the user with the given email
      */
+    //todo refactor
      User findByEmail(String email);
 
 }

@@ -22,7 +22,7 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
      * @param guid
      * @return the order event with the given guid
      */
-    OrderEvent findByGuid(UUID guid);
+    Optional <OrderEvent> findByGuid(UUID guid);
 
     /**
      * Retrieves an order by its guid.

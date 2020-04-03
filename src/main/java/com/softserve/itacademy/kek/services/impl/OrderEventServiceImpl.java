@@ -151,11 +151,15 @@ public class OrderEventServiceImpl implements IOrderEventService {
         logger.info("Get order event from DB: guid = {}", guid);
 
         try {
-            final OrderEvent orderEvent = orderEventRepository.findByGuid(guid);
+            final OrderEvent orderEvent = orderEventRepository.findByGuid(guid).orElseThrow(() -> {
+                logger.error("Order event was not found in the DB: {}", guid);
+                return new OrderEventServiceException("User was not found in database for guid: " + guid, new NoSuchElementException());
+            });
 
             logger.debug("Order event was read from DB: {}", orderEvent);
 
             return orderEvent;
+
         } catch (DataAccessException ex) {
             logger.error("Error while getting order event from DB: guid = " + guid, ex);
             throw new OrderEventServiceException("An error occurred while getting order event", ex);
