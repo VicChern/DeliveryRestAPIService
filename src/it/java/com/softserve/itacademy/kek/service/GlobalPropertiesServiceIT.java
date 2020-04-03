@@ -61,7 +61,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
         globalPropertiesService.create(globalProperties);
         //then
-        final GlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey());
+        final IGlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey()).orElse(null);
 
         assertEquals(globalProperties.getKey(), foundGlobalProperties.getKey());
         assertEquals(globalProperties.getValue(), foundGlobalProperties.getValue());
@@ -95,7 +95,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
         globalPropertiesService.update(savedGlobalProperty);
         //then
-        final GlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(savedGlobalProperty.getKey());
+        final IGlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(savedGlobalProperty.getKey()).orElseThrow();
 
         assertEquals(savedGlobalProperty, foundGlobalProperties);
         assertEquals(savedGlobalProperty.getKey(), foundGlobalProperties.getKey());
@@ -189,7 +189,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
         globalPropertiesService.deleteByKey(globalProperties.getKey());
         //then
-        final GlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey());
+        final IGlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey()).orElse(null);
 
         assertNull(foundGlobalProperties);
     }
