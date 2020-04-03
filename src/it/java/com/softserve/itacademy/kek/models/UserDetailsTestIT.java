@@ -14,7 +14,6 @@ import org.testng.annotations.Test;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.models.impl.UserDetails;
-import com.softserve.itacademy.kek.repositories.UserDetailsRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 
 import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_4096;
@@ -36,8 +35,6 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
 
     @BeforeMethod(groups = {"integration-tests"})
     void setUp() {
@@ -51,7 +48,6 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
     @AfterMethod(groups = {"integration-tests"})
     void tearDown() {
         userRepository.deleteAll();
-        userDetailsRepository.deleteAll();
     }
 
 
@@ -63,15 +59,13 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
 
         //then
         assertEquals(1, userRepository.findAll().spliterator().estimateSize());
-        assertEquals(1, userDetailsRepository.findAll().spliterator().estimateSize());
 
         Optional<User> userOptional = userRepository.findById(user.getIdUser());
         assertNotNull(userOptional.orElse(null));
 
-        Optional<UserDetails> userDetailsOptional = userDetailsRepository.findById(userDetails.getIdUser());
-        assertNotNull(userDetailsOptional.orElse(null));
+       UserDetails userDetails = (UserDetails) userOptional.get().getUserDetails();
 
-        assertEquals(userOptional.get().getIdUser(), userDetailsOptional.get().getIdUser());
+        assertEquals(userOptional.get().getIdUser(), userDetails.getIdUser());
     }
 
 

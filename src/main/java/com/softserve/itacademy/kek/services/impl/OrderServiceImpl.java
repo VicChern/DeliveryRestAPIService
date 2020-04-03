@@ -25,7 +25,6 @@ import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
-import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.services.IActorService;
@@ -45,7 +44,6 @@ public class OrderServiceImpl implements IOrderService {
     private final OrderRepository orderRepository;
     private final TenantRepository tenantRepository;
     private final ActorRoleRepository actorRoleRepository;
-    private final OrderDetailsRepository orderDetailsRepository;
     private final IUserService userService;
     private final ITenantService tenantService;
     private final IActorService actorService;
@@ -58,12 +56,10 @@ public class OrderServiceImpl implements IOrderService {
                             IUserService userService,
                             ITenantService tenantService,
                             IActorService actorService,
-                            IOrderEventService orderEventService,
-                            OrderDetailsRepository orderDetailsRepository) {
+                            IOrderEventService orderEventService) {
         this.orderRepository = orderRepository;
         this.tenantRepository = tenantRepository;
         this.actorRoleRepository = actorRoleRepository;
-        this.orderDetailsRepository = orderDetailsRepository;
         this.userService = userService;
         this.tenantService = tenantService;
         this.actorService = actorService;
@@ -148,26 +144,23 @@ public class OrderServiceImpl implements IOrderService {
     public IOrder update(IOrder order, UUID guid) {
         LOGGER.info("Updating order: {}, with guid: {}", order, guid);
 
-        final Order actualOrder = orderRepository.findByGuid(guid);
-        final Tenant actualTenant = tenantRepository.findByGuid(order.getTenant().getGuid()).get();
+        final Order actualOrder;
+        try {
+            actualOrder = orderRepository.findByGuid(guid);
+        } catch (EntityNotFoundException e) {
+            LOGGER.error("Order with guid: {}, wasn`t found", guid);
+            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
+        }
+
         final IOrderDetails orderDetails = order.getOrderDetails();
-        final OrderDetails actualDetails = orderDetailsRepository.findByOrder(actualOrder);
+        final OrderDetails actualDetails = (OrderDetails) actualOrder.getOrderDetails();
 
         actualDetails.setPayload(orderDetails.getPayload());
         actualDetails.setImageUrl(orderDetails.getImageUrl());
         actualDetails.setOrder(actualOrder);
 
         actualOrder.setOrderDetails(actualDetails);
-        actualOrder.setGuid(order.getGuid());
         actualOrder.setSummary(order.getSummary());
-        actualOrder.setTenant(actualTenant);
-
-        try {
-            orderRepository.findByGuid(guid);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Order with guid: {}, wasn`t found", guid);
-            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
-        }
 
         try {
             LOGGER.info("Order with guid: {}, was updated: {}", guid, actualOrder);
