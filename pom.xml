@@ -475,6 +475,7 @@
                         <configuration>
                             <configLocation>checkstyle.xml</configLocation>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <maxAllowedViolations>30</maxAllowedViolations>
                         </configuration>
                         <executions>
                             <execution>
