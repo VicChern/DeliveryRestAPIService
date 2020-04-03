@@ -13,6 +13,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -25,8 +26,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     AuthenticationFilter(final RequestMatcher requiresAuth) {
         super(requiresAuth);
@@ -39,7 +39,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
         List<GrantedAuthority> roles = new ArrayList<>();
 
         Claims claims = Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary("abc123"))
+                .setSigningKey(DatatypeConverter.parseBase64Binary(System.getenv("KekSecurityKey")))
                 .parseClaimsJws(token).getBody();
 
         String authorities = claims.get("authorities").toString();

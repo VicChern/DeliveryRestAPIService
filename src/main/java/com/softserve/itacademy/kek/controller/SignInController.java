@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.SignInDto;
 import com.softserve.itacademy.kek.exception.InvalidCredentialsException;
 import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
 import com.softserve.itacademy.kek.models.impl.Identity;
 import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.IdentityRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
 import com.softserve.itacademy.kek.services.IGetTokenService;
@@ -28,29 +29,26 @@ import com.softserve.itacademy.kek.services.IIdentityService;
 
 @RestController
 public class SignInController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(SignInController.class);
 
     private UserRepository userRepository;
     private IIdentityService iIdentityService;
-    private IdentityRepository identityRepository;
     private PasswordEncoder passwordEncoder;
     private IAuthenticationService authenticationService;
     private IGetTokenService getTokenService;
 
     @Autowired
     public SignInController(UserRepository userRepository, IIdentityService iIdentityService,
-                            IdentityRepository identityRepository, PasswordEncoder passwordEncoder,
-                            IAuthenticationService authenticationService, IGetTokenService getTokenService) {
+                            PasswordEncoder passwordEncoder, IAuthenticationService authenticationService,
+                            IGetTokenService getTokenService) {
         this.userRepository = userRepository;
         this.iIdentityService = iIdentityService;
-        this.identityRepository = identityRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationService = authenticationService;
         this.getTokenService = getTokenService;
     }
 
-    @GetMapping(path = "/signin", consumes = "application/vnd.softserve.signin+json",
-            produces = "application/vnd.softserve.signin+json")
+    @GetMapping(path = KekMappingValues.SIGNIN, consumes = KekMediaType.SIGNIN, produces = KekMediaType.SIGNIN)
     public ResponseEntity signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
         final User user;
