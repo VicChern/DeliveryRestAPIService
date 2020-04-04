@@ -8,4 +8,5 @@ public class KekMappingValues {
     public final static String ADDR_GUID = "/{guid}/addresses/{addrguid}";
     public final static String GUID_EVENTS = "/{guid}/events";
     public final static String ACTORS = "/{guid}/actors";
+    public final static String  ORDERS_GUID_TRACKING = "/orders/{orderGuid}/tracking/";
 }

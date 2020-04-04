@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.exception.TrackingException;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
@@ -37,12 +38,12 @@ public class SseController {
     @Autowired
     OrderTrackingService trackingService;
 
-    @GetMapping(value = "/orders/{orderGuid}/tracking/")
+    @GetMapping(value = KekMappingValues.ORDERS_GUID_TRACKING)
     public ResponseEntity<SseEmitter> trackOrder(@PathVariable final UUID orderGuid) {
         logger.info("Getting request to provide last event payload for order guid={}", orderGuid);
 
         final HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Cache-Control", "no-store");
+        responseHeaders.set(HttpHeaders.CACHE_CONTROL, "no-store");
 
         final IOrderEvent lastAddedEvent = orderEventService.getLastAddedEvent(orderGuid);
 
@@ -56,16 +57,23 @@ public class SseController {
             final String payload = lastAddedEvent.getPayload();
             emitter.send(trackingService.formatForApacheClient(payload));
             logger.debug("Send payload {} for order guid={}", payload, orderGuid);
+
             trackingService.addEmitter(OrderTrackingService.getActiveEmitters(), orderGuid, emitter);
             logger.debug("Emitter for order guid={} was added for tracking", orderGuid);
+
         } catch (IOException e) {
             logger.debug("Emitter was closed by timeout. Server can't send geolocation");
+
         } catch (NullPointerException e) {
             logger.debug("Tracking for order guid={} was not started", orderGuid);
+
         }
 
         emitter.onCompletion(() -> OrderTrackingService.getActiveEmitters().get(orderGuid).remove(emitter));
+        logger.trace("One emitter for order guid={} was completed", orderGuid);
+
         emitter.onTimeout(() -> OrderTrackingService.getActiveEmitters().get(orderGuid).remove(emitter));
+        logger.trace("One emitter for order guid={} was timeouted", orderGuid);
 
         return ResponseEntity.ok()
                 .headers(responseHeaders)

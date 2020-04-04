@@ -28,14 +28,16 @@ public class OrderTrackingService {
     @EventListener
     public void enrichEmitters(OrderTrackingWrapper eventWrapper) {
         final Map<UUID, List<SseEmitter>> deadEmitters = new HashMap<>();
-        final Map<UUID, String> deliveringOrdersToPayloads = eventWrapper.getMap();
+        final Map<UUID, String> deliveringOrdersAndPayloads = eventWrapper.getMap();
+        logger.trace("Count of orders that are delivering is {}", deliveringOrdersAndPayloads.size());
 
         //get order's guids for which delivering was finished
         List<UUID> alreadyDelivered = ACTIVE_EMITTERS
                 .keySet()
                 .stream()
-                .filter(key -> !(deliveringOrdersToPayloads.containsKey(key)))
+                .filter(key -> !(deliveringOrdersAndPayloads.containsKey(key)))
                 .collect(Collectors.toList());
+        logger.trace("Count of orders that are not valid for tracking anymore is {}", alreadyDelivered.size());
 
         //complete emitters for which order's delivering was finished
         ACTIVE_EMITTERS.forEach((k, v) -> {
@@ -43,14 +45,16 @@ public class OrderTrackingService {
                 v.forEach(ResponseBodyEmitter::complete);
             }
         });
+        logger.trace("Completed emitters for which delivering was already finished");
 
         //remove emitters for which order's delivering was finished
         ACTIVE_EMITTERS.keySet().removeAll(alreadyDelivered);
+        logger.debug("Removed emitters from tracking map for which delivering was finished");
 
         //update payloads for emitters of Orders that are delivering
         ACTIVE_EMITTERS.forEach((guid, emitters) -> {
             emitters.forEach(sseEmitter -> {
-                String payload = deliveringOrdersToPayloads.get(guid);
+                String payload = deliveringOrdersAndPayloads.get(guid);
                 try {
                     sseEmitter.send(formatForApacheClient(payload));
                     logger.debug("Send payload {} for order guid={}", payload, guid);
@@ -65,6 +69,7 @@ public class OrderTrackingService {
 
         //remove emitters, that were closed by timeout or completed
         deadEmitters.forEach((key, list) -> ACTIVE_EMITTERS.get(key).removeAll(list));
+        logger.debug("Removed all emitters from tracking map that were closed by timeout or completion");
     }
 
     public void addEmitter(Map<UUID, List<SseEmitter>> map, UUID guid, SseEmitter emitter) {
