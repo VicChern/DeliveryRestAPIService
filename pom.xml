@@ -48,6 +48,8 @@
         <version.org.json>20180813</version.org.json>
         <version.gson>2.8.5</version.gson>
 
+        <version.jwt>0.9.1</version.jwt>
+
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.hibernate.validator>6.0.18.Final</version.hibernate.validator>
         <version.javax.el>3.0.1-b10</version.javax.el>
@@ -183,6 +185,13 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${version.gson}</version>
+        </dependency>
+
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${version.jwt}</version>
         </dependency>
 
         <!-- Validation -->

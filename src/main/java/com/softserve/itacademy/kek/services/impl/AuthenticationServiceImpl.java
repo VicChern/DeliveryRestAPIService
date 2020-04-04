@@ -90,7 +90,8 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
         final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
+                email, null, userDetails.getAuthorities());
+
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 
