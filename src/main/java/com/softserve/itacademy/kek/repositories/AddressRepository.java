@@ -19,7 +19,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
      * @param guid address guid
      * @return address
      */
-    Optional <Address> findByGuid(UUID guid);
+    Optional<Address> findByGuid(UUID guid);
 
     /**
      * Returns user address list
@@ -27,7 +27,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
      * @param guid user guid
      * @return user address list
      */
-    List <Address> findAllByUserGuid(UUID guid);
+    List<Address> findAllByUserGuid(UUID guid);
 
     /**
      * Returns tenant address list
@@ -35,5 +35,5 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
      * @param guid tenant guid
      * @return tenant address list
      */
-    List <Address> findAllByTenantGuid(UUID guid);
+    List<Address> findAllByTenantGuid(UUID guid);
 }

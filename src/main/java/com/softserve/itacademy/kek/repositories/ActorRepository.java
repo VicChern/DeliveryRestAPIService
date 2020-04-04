@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.repositories;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +19,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
      * @param guid
      * @return the Actor  with the given guid
      */
-    Optional <Actor> findByGuid(UUID guid);
+    Optional<Actor> findByGuid(UUID guid);
 
     /**
      * Retrieves an Actor by its user owner.
@@ -28,7 +27,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
      * @param user
      * @return the Actor with the given user owner
      */
-    Optional <Actor> findByUser(IUser user);
+    Optional<Actor> findByUser(IUser user);
 
     /**
      * Retrieves an Actor by its user guid.

@@ -16,5 +16,5 @@ public interface PropertyTypeRepository extends JpaRepository<PropertyType, Long
      * @param name
      * @return the tenant properties with the given guid or {@literal Optional#empty()} if none found
      */
-    Optional <PropertyType> getByName(String name);
+    Optional<PropertyType> getByName(String name);
 }

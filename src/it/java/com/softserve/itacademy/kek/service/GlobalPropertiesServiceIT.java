@@ -24,7 +24,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
     public static final String SCHEMA = "schema";
     public static final String VALUE = "value";
-    public static final String NEW_VALUE = "value";
+    public static final String NEW_VALUE = "new value";
     public static final String NAME = "name";
     public static final String NEW_NAME = "new name";
     public static final String KEY = "key";
@@ -72,14 +72,12 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
     public void updateSuccess() {
         //when
         final PropertyType propertyType = new PropertyType();
-
         propertyType.setName(NAME);
         propertyType.setSchema(SCHEMA);
 
         final PropertyType savedPropertyType = propertyTypeRepository.save(propertyType);
 
         final GlobalProperty globalProperties = new GlobalProperty();
-
         globalProperties.setValue(VALUE);
         globalProperties.setKey(KEY);
         globalProperties.setPropertyType(savedPropertyType);
@@ -95,7 +93,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
         globalPropertiesService.update(savedGlobalProperty);
         //then
-        final IGlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(savedGlobalProperty.getKey()).orElseThrow();
+        final IGlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(savedGlobalProperty.getKey()).orElse(null);
 
         assertEquals(savedGlobalProperty, foundGlobalProperties);
         assertEquals(savedGlobalProperty.getKey(), foundGlobalProperties.getKey());

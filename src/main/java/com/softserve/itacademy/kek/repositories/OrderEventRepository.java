@@ -22,7 +22,7 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
      * @param guid
      * @return the order event with the given guid
      */
-    Optional <OrderEvent> findByGuid(UUID guid);
+    Optional<OrderEvent> findByGuid(UUID guid);
 
     /**
      * Retrieves an order by its guid.
@@ -30,7 +30,7 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
      * @param orderGuid
      * @return the distinct order with the given guid or {@literal Optional#empty()} if none found
      */
-    Optional <OrderEvent> findDistinctTopByOrderGuidOrderByLastModifiedDateDesc(UUID orderGuid);
+    Optional<OrderEvent> findDistinctTopByOrderGuidOrderByLastModifiedDateDesc(UUID orderGuid);
 
     @Query(value =
             "SELECT OOE.* " +

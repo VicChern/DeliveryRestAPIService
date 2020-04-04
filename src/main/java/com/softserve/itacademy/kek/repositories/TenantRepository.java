@@ -19,7 +19,7 @@ public interface TenantRepository extends JpaRepository<Tenant, Long> {
      * @param guid
      * @return the user with the given guid or {@literal Optional#empty()} if none found
      */
-    Optional <Tenant> findByGuid(UUID guid);
+    Optional<Tenant> findByGuid(UUID guid);
 
     /**
      * Retrieves a tenant by its guid.
@@ -27,6 +27,6 @@ public interface TenantRepository extends JpaRepository<Tenant, Long> {
      * @param user owner
      * @return the tenant with the given guid
      */
-    Optional <Tenant> findByTenantOwner(IUser user);
+    Optional<Tenant> findByTenantOwner(IUser user);
 
 }

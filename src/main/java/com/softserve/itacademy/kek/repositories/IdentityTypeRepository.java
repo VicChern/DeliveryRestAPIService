@@ -17,5 +17,5 @@ public interface IdentityTypeRepository extends JpaRepository<IdentityType, Long
      * @param name
      * @return the Identity Type with the given order
      */
-    Optional <IdentityType> findByName(String name);
+    Optional<IdentityType> findByName(String name);
 }
