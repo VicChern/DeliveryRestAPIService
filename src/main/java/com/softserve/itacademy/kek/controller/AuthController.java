@@ -19,7 +19,7 @@ import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
 
 @RestController
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AuthController extends DefaultController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -47,7 +47,7 @@ public class AuthController extends DefaultController {
     }
 
     @GetMapping(path = "/profile")
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
+//    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     protected ResponseEntity<String> profile(Authentication authentication) {
 
         return ResponseEntity.ok("You are in profile");

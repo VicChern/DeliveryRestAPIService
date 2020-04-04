@@ -194,9 +194,9 @@ public class UserServiceImpl implements IUserService {
         final List<GrantedAuthority> authorityList = new ArrayList<>();
 
         // TODO: 03.04.2020 return later and refactor
-        final IUser user = userRepository.findByEmail(email);
+        final IUser user = userRepository.findByEmail(email).get();
 
-        if (user == null) {
+        if (userRepository.findByEmail(email).isEmpty()) {
             logger.warn("User wasn't found in DB: email = {}", email);
             return authorityList;
         } else {
@@ -204,12 +204,11 @@ public class UserServiceImpl implements IUserService {
         }
 
         try {
-            final ITenant tenant = tenantRepository.findByTenantOwner(user).orElseThrow(() -> {
-                        logger.error("Tenant wasn't found in the database");
-                        return new UserServiceException("Tenant was not found in database for user: " + user, new NoSuchElementException());
-                    }
-            );
-            authorityList.add(new SimpleGrantedAuthority("ROLE_TENANT"));
+            final ITenant tenant = tenantRepository.findByTenantOwner(user).orElse(null);
+            if (tenantRepository.findByTenantOwner(user).isPresent()) {
+                authorityList.add(new SimpleGrantedAuthority("ROLE_TENANT"));
+            }
+
         } catch (DataAccessException ex) {
             logger.error("Error while getting Tenant from DB by user " + user, ex);
             throw new TenantServiceException("An error occurred while getting tenant by user", ex);

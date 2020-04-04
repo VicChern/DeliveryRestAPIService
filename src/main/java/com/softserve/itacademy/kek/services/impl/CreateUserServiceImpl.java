@@ -39,7 +39,7 @@ public class CreateUserServiceImpl implements ICreateUserService {
     public IUser createNewUser(RegistrationDto userData) {
         logger.info("User registration: email = {}", userData.getEmail());
 
-        final boolean isAlreadyRegistered = userRepository.findByEmail(userData.getEmail()) != null;
+        final boolean isAlreadyRegistered = userRepository.findByEmail(userData.getEmail()).isPresent();
         if (isAlreadyRegistered) {
             logger.info("User already exists in DB: email = {}", userData.getEmail());
             throw new UserAlreadyExistException(userData.toString());
