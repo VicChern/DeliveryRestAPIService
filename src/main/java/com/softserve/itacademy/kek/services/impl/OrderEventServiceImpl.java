@@ -17,7 +17,7 @@ import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
-import com.softserve.itacademy.kek.models.enums.EventType;
+import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Order;
@@ -178,9 +178,9 @@ public class OrderEventServiceImpl implements IOrderEventService {
     public Boolean ifOrderEventCanBeTracked(UUID orderGuid) {
 
         Boolean started = orderEventRepository
-                .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventType.STARTED.toString());
+                .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventTypeEnum.STARTED.toString());
         Boolean delivered = orderEventRepository
-                .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventType.DELIVERED.toString());
+                .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventTypeEnum.DELIVERED.toString());
 
 
         Boolean canBeTracked = started && !delivered;
@@ -212,7 +212,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
     public List<IOrderEvent> findAllThatDeliveringNow() {
         LOGGER.debug("Getting all order events that delivering now");
 
-        List<? extends IOrderEvent> orderEvents = orderEventRepository.findAllLastAddedOrderEventsForEventType(EventType.STARTED.toString());
+        List<? extends IOrderEvent> orderEvents = orderEventRepository.findAllLastAddedOrderEventsForEventType(EventTypeEnum.STARTED.toString());
 
         return (List<IOrderEvent>) orderEvents;
     }
@@ -240,7 +240,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
             //if actor for eventType ASSIGNED does`t have role CURRIER than save it with CURRIER role
         } else if (
 
-                eventTypeName.equals(EventType.ASSIGNED.toString())
+                eventTypeName.equals(EventTypeEnum.ASSIGNED.toString())
                         &&
                         actorByUserGuid.get()
                                 .getActorRoles()

@@ -23,7 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.softserve.itacademy.kek.exception.TrackingException;
 import com.softserve.itacademy.kek.models.IOrderEvent;
-import com.softserve.itacademy.kek.models.enums.EventType;
+import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
 import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.OrderTrackingWrapper;
 
@@ -127,7 +127,7 @@ public class SseController {
 
     private boolean hasStartedType(IOrderEvent lastAddedEvent) {
         String type = lastAddedEvent.getOrderEventType().getName();
-        return type.equals(EventType.STARTED.toString());
+        return type.equals(EventTypeEnum.STARTED.toString());
     }
 
     private String getEventData(String text) {

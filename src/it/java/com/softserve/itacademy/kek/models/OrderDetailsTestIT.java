@@ -14,7 +14,6 @@ import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderDetails;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.OrderDetailsRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
@@ -39,8 +38,6 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
     private TenantRepository tenantRepository;
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private OrderDetailsRepository orderDetailsRepository;
 
     private OrderDetails orderDetails;
 
@@ -65,7 +62,6 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order);
 
         assertEquals(1, orderRepository.findAll().spliterator().estimateSize());
-        assertEquals(1, orderDetailsRepository.findAll().spliterator().estimateSize());
     }
 
     @Rollback
@@ -77,7 +73,6 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order);
 
         assertEquals(0, orderRepository.findAll().spliterator().estimateSize());
-        assertEquals(0, orderDetailsRepository.findAll().spliterator().estimateSize());
     }
 
     @Rollback
@@ -89,7 +84,6 @@ public class OrderDetailsTestIT extends AbstractTestNGSpringContextTests {
         orderRepository.save(order);
 
         assertEquals(0, orderRepository.findAll().spliterator().estimateSize());
-        assertEquals(0, orderDetailsRepository.findAll().spliterator().estimateSize());
     }
 
     private Order getOrderForOrderDetails() {

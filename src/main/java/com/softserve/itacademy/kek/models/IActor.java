@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.models;
 import java.util.UUID;
 
 /**
- * Interface for Actor data exchange with service layer
+ * Interface for Actor data exchange with service and public api layers
  */
 public interface IActor {
 
