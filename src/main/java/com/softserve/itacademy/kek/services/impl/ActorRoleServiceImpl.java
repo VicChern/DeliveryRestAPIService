@@ -34,6 +34,8 @@ public class ActorRoleServiceImpl implements IActorRoleService {
 
         try {
             actorRole = actorRoleRepository.findByName(name);
+
+            logger.debug("Actor role was read from DB: {}", actorRole);
         } catch (Exception ex) {
             logger.error("Error while getting actor role from DB", ex);
             throw new ActorRoleServiceException("An error occurred while getting actor role", ex);
@@ -44,8 +46,6 @@ public class ActorRoleServiceImpl implements IActorRoleService {
             logger.error("Actor role was not found in DB", ex);
             throw new ActorRoleServiceException("Actor role was not found", ex);
         }
-
-        logger.debug("Actor role was obtained from DB: {}", actorRole.get());
 
         return actorRole.get();
     }

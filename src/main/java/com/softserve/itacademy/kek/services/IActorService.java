@@ -27,6 +27,15 @@ public interface IActorService {
     Actor create(Tenant tenant, User user, ActorRole actorRole) throws ActorServiceException;
 
     /**
+     * Gets an actor by guid
+     *
+     * @param guid guid
+     * @return actor
+     * @throws ActorServiceException
+     */
+    IActor getByGuid(UUID guid) throws ActorServiceException;
+
+    /**
      * Returns a list of actors for tenant
      *
      * @param guid tenant guid

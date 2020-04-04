@@ -3,6 +3,8 @@ package com.softserve.itacademy.kek.services.impl;
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -62,6 +64,29 @@ public class ActorServiceImpl implements IActorService {
             logger.error("Error while inserting actor into DB: actor = " + actor, ex);
             throw new ActorServiceException("An error occurred while inserting actor", ex);
         }
+    }
+
+    public IActor getByGuid(UUID guid) throws ActorServiceException {
+        logger.info("Get actor from DB by guid: {}", guid);
+
+        final Optional<Actor> actor;
+
+        try {
+            actor = actorRepository.findByGuid(guid);
+
+            logger.debug("Actor was read from DB: {}", actor);
+        } catch (Exception ex) {
+            logger.error("Error while getting actor from DB", ex);
+            throw new ActorServiceException("An error occurred while getting actor", ex);
+        }
+
+        if (actor.isEmpty()) {
+            Exception ex = new NoSuchElementException();
+            logger.error("Actor was not found in DB", ex);
+            throw new ActorServiceException("Actor was not found", ex);
+        }
+
+        return actor.get();
     }
 
     @Transactional
