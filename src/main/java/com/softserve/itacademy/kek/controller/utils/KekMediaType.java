@@ -15,6 +15,7 @@ public class KekMediaType {
     public static final String ADDRESS = "application/vnd.softserve.address+json";
     public static final String ADDRESS_LIST = "application/vnd.softserve.addressList+json";
     public static final String USER = "application/vnd.softserve.user+json";
+    public static final String USER_WITH_IMAGE = "application/vnd.softserve.userWithImage+json";
     public static final String USER_LIST = "application/vnd.softserve.userList+json";
     public static final String ORDER = "application/vnd.softserve.order+json";
     public static final String ORDER_LIST = "application/vnd.softserve.orderList+json";
