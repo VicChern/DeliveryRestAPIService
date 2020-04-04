@@ -17,7 +17,7 @@ public interface GlobalPropertiesRepository extends JpaRepository<GlobalProperty
      * @param id
      * @return the Global Property with the given id
      */
-    GlobalProperty findByIdProperty(Long id);
+    Optional <GlobalProperty> findByIdProperty(Long id);
 
     /**
      * Retrieves an Global Properties by its id.

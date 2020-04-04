@@ -63,13 +63,15 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
     public IGlobalProperty update(IGlobalProperty globalProperty) throws GlobalPropertiesServiceException {
         logger.info("Update global property in DB: key = {}", globalProperty.getKey());
 
-        final GlobalProperty actualProperties = globalPropertiesRepository.findByIdProperty(globalProperty.getIdProperty());
+        final boolean isEmpty = globalPropertiesRepository.findByIdProperty(globalProperty.getIdProperty()).isEmpty();
+        final GlobalProperty actualProperties = globalPropertiesRepository.findByIdProperty(globalProperty.getIdProperty()).get();
         final PropertyType actualPropertyType = (PropertyType) propertyTypeService.produce(globalProperty.getPropertyType());
 
-        actualProperties.setPropertyType(actualPropertyType);
-        actualProperties.setKey(globalProperty.getKey());
-        actualProperties.setValue(globalProperty.getValue());
-
+        if (isEmpty) {
+            actualProperties.setPropertyType(actualPropertyType);
+            actualProperties.setKey(globalProperty.getKey());
+            actualProperties.setValue(globalProperty.getValue());
+        }
         try {
             final GlobalProperty updatedGlobalProperty = globalPropertiesRepository.saveAndFlush(actualProperties);
 

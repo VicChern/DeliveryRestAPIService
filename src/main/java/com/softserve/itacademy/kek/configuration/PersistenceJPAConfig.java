@@ -46,12 +46,12 @@ public class PersistenceJPAConfig {
     public DataSource dataSource(Environment env) {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-        dataSource.setUrl(System.getenv("KEK_DB_URL"));
-        dataSource.setUsername(System.getenv("KEK_DB_USER"));
-        dataSource.setPassword(System.getenv("KEK_DB_PASS"));
-//        dataSource.setUrl(env.getProperty("jdbc.url"));
-//        dataSource.setUsername(env.getProperty("jdbc.user"));
-//        dataSource.setPassword(env.getProperty("jdbc.pass"));
+//        dataSource.setUrl(System.getenv("KEK_DB_URL"));
+//        dataSource.setUsername(System.getenv("KEK_DB_USER"));
+//        dataSource.setPassword(System.getenv("KEK_DB_PASS"));
+        dataSource.setUrl(env.getProperty("jdbc.url"));
+        dataSource.setUsername(env.getProperty("jdbc.user"));
+        dataSource.setPassword(env.getProperty("jdbc.pass"));
 
         return dataSource;
     }
