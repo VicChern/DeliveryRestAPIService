@@ -1,7 +1,7 @@
 package com.softserve.itacademy.kek.models;
 
 /**
- * Interface for PropertyType data exchange with service layer
+ * Interface for PropertyType data exchange with service and public api layers
  */
 public interface IPropertyType {
 

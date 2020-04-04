@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.models;
 import com.softserve.itacademy.kek.models.impl.GlobalProperty;
 
 /**
- * Interface for GlobalProperties data exchange with Service Layer
+ * Interface for GlobalProperties data exchange with service and public api layers
  */
 public interface IGlobalProperty {
 

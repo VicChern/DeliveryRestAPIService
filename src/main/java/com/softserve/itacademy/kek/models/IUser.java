@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.models;
 import java.util.UUID;
 
 /**
- * Interface for User data exchange with Service Layer
+ * Interface for User data exchange with service and public api layers
  */
 public interface IUser {
     /**

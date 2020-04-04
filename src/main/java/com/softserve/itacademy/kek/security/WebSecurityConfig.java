@@ -3,20 +3,29 @@ package com.softserve.itacademy.kek.security;
 import com.auth0.AuthenticationController;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.JwkProviderBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:server.properties")
+@ComponentScan("com.softserve.itacademy.kek.security")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * This is your auth0 domain (tenant you have created when registering with auth0 - account name)
@@ -47,6 +56,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value(value = "${logout.url}")
     private String logoutURL;
 
+    @Autowired
+    private KekAuthenticationProvider authProvider;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authProvider);
+    }
+
     @Bean
     public AuthenticationController authenticationController() {
         JwkProvider jwkProvider = new JwkProviderBuilder(domain).build();
@@ -65,11 +82,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    AuthenticationFilter authenticationFilter() throws Exception {
+        final AuthenticationFilter filter = new AuthenticationFilter(
+                new OrRequestMatcher(
+                        new AntPathRequestMatcher("/api/v1/orders/**"),
+                        new AntPathRequestMatcher("/api/v1/tenants/**"),
+                        new AntPathRequestMatcher("/api/v1/users/**"),
+                        new AntPathRequestMatcher("/api/v1/profile")
+                )
+        );
+        filter.setAuthenticationManager(authenticationManager());
+        return filter;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
 
-        http
+/*        http.authorizeRequests().anyRequest().authenticated()
+                .and().httpBasic();*/
+
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .and()
                 .formLogin()
