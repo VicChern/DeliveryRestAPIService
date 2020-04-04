@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.service;
 
 import java.io.FileInputStream;
 import java.util.List;
+import java.util.UUID;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
@@ -39,6 +40,7 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
     private Blob blob;
 
     private byte[] data;
+    private UUID guid;
 
     @BeforeMethod(groups = {"integration-tests"})
     public void setUp() throws Exception {
@@ -51,6 +53,8 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
         bucket = storage.get(bucketName);
 
         data = new byte[]{1, 2, 4, 5};
+        guid = UUID.randomUUID();
+
     }
 
     @AfterMethod(groups = {"integration-tests"})
@@ -60,7 +64,7 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
 
     @Test(groups = {"integration-tests"})
     public void uploadBinaryData() throws Exception {
-        cloudStorageObject = cloudStorageService.uploadBinaryData(data);
+        cloudStorageObject = cloudStorageService.uploadBinaryData(data, guid);
 
         blob = bucket.get(cloudStorageObject.getGuid());
 
@@ -71,7 +75,7 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
 
     @Test(groups = {"integration-tests"})
     public void getCloudStorageObject() throws Exception {
-        ICloudStorageObject uploadedObject = cloudStorageService.uploadBinaryData(data);
+        ICloudStorageObject uploadedObject = cloudStorageService.uploadBinaryData(data, guid);
         ICloudStorageObject cloudStorageObject = cloudStorageService.getCloudStorageObject(uploadedObject.getGuid());
 
         blob = bucket.get(uploadedObject.getGuid());
