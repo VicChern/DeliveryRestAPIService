@@ -10,7 +10,7 @@ import com.softserve.itacademy.kek.models.impl.GlobalProperty;
  * Repository for work with GlobalProperties
  */
 public interface GlobalPropertiesRepository extends JpaRepository<GlobalProperty, Long> {
-//todo refactor all of this
+
     /**
      * Retrieves an Global Properties by its id.
      *
