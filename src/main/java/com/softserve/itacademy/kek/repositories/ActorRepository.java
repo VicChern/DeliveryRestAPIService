@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.repositories;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,7 +14,6 @@ import com.softserve.itacademy.kek.models.impl.Actor;
  * Repository for work with Actor role
  */
 public interface ActorRepository extends JpaRepository<Actor, Long> {
-// TODO: 03.04.2020 refactor later oll of this
     /**
      * Retrieves an Actor  by its guid.
      *
@@ -28,7 +28,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
      * @param user
      * @return the Actor with the given user owner
      */
-    Actor findByUser(IUser user);
+    Optional <Actor> findByUser(IUser user);
 
     /**
      * Retrieves an Actor by its user guid.

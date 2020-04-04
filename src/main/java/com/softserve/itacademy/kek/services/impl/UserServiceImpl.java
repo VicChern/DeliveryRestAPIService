@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.TenantServiceException;
 import com.softserve.itacademy.kek.exception.UserServiceException;
-import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
@@ -213,8 +212,8 @@ public class UserServiceImpl implements IUserService {
             throw new TenantServiceException("An error occurred while getting tenant by user", ex);
         }
 
-        final IActor actor = actorRepository.findByUser(user);
-        if (actor != null) {
+        final boolean existActor = actorRepository.findByUser(user).isPresent();
+        if (existActor) {
             authorityList.add(new SimpleGrantedAuthority("ROLE_ACTOR"));
         }
         return authorityList;
