@@ -35,19 +35,19 @@ public class CloudStorageServiceImpl extends AbstractService implements ICloudSt
     private final String storagePropertiesFileName = "storage.properties";
 
     @Override
-    public ICloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {
+    public ICloudStorageObject uploadBinaryData(final byte[] data, UUID guid) throws CloudStorageServiceException {
         logger.info("Uploading binary data to Google Cloud Storage default bucket");
 
         try {
             final String bucket = getBucketName();
-            return uploadBinaryData(data, bucket);
+            return uploadBinaryData(data, guid, bucket);
         } catch (Exception ex) {
             logger.error("Can't uploadBinaryData; data = " + data, ex);
             throw new CloudStorageServiceException(ex);
         }
     }
 
-    ICloudStorageObject uploadBinaryData(final byte[] data, final String bucketName) throws Exception {
+    ICloudStorageObject uploadBinaryData(final byte[] data, UUID guid, final String bucketName) throws Exception {
         logger.debug("Uploading binary data to Google Cloud Storage bucket; bucketName = {}", bucketName);
 
         final Storage storageConnection = getStorageObject();
@@ -61,11 +61,10 @@ public class CloudStorageServiceImpl extends AbstractService implements ICloudSt
             logger.debug("Google Cloud Storage bucket created successfully; bucketName = {}", bucketName);
         }
 
-        final String guid = UUID.randomUUID().toString();
-        final Blob blob = bucket.create(guid, data);
+        final Blob blob = bucket.create(guid.toString(), data);
         final String url = blob.getMediaLink();
 
-        return new CloudStorageObject(url, guid, data);
+        return new CloudStorageObject(url, guid.toString(), data);
     }
 
     @Override

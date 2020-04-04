@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
 import com.softserve.itacademy.kek.models.services.ICloudStorageObject;
@@ -13,7 +14,7 @@ public interface ICloudStorageService {
      * @return CloudStorageObject with unique GUID
      * @throws CloudStorageServiceException
      */
-    ICloudStorageObject uploadBinaryData(byte[] data) throws CloudStorageServiceException;
+    ICloudStorageObject uploadBinaryData(byte[] data, UUID guid) throws CloudStorageServiceException;
 
     /**
      * Gets stored data from Google Cloud Storage bucket by GUID
