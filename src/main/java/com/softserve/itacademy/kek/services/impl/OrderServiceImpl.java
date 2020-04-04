@@ -24,9 +24,9 @@ import com.softserve.itacademy.kek.models.impl.OrderEvent;
 import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
+import com.softserve.itacademy.kek.services.IActorRoleService;
 import com.softserve.itacademy.kek.services.IActorService;
 import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.IOrderService;
@@ -43,26 +43,26 @@ public class OrderServiceImpl implements IOrderService {
 
     private final OrderRepository orderRepository;
     private final TenantRepository tenantRepository;
-    private final ActorRoleRepository actorRoleRepository;
     private final IUserService userService;
     private final ITenantService tenantService;
     private final IActorService actorService;
+    private final IActorRoleService actorRoleService;
     private final IOrderEventService orderEventService;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             TenantRepository tenantRepository,
-                            ActorRoleRepository actorRoleRepository,
                             IUserService userService,
                             ITenantService tenantService,
                             IActorService actorService,
+                            IActorRoleService actorRoleService,
                             IOrderEventService orderEventService) {
         this.orderRepository = orderRepository;
         this.tenantRepository = tenantRepository;
-        this.actorRoleRepository = actorRoleRepository;
         this.userService = userService;
         this.tenantService = tenantService;
         this.actorService = actorService;
+        this.actorRoleService = actorRoleService;
         this.orderEventService = orderEventService;
     }
 
@@ -85,7 +85,7 @@ public class OrderServiceImpl implements IOrderService {
             throw new OrderServiceException("An error occurred while inserting order", ex);
         }
 
-        final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CUSTOMER.name()).orElse(null);
+        final ActorRole actorRole = (ActorRole) actorRoleService.getByName(ActorRoleEnum.CUSTOMER.name());
         final Actor savedActor = actorService.create(tenant, customer, actorRole);
 
         OrderEvent orderEvent = createOrderEvent();

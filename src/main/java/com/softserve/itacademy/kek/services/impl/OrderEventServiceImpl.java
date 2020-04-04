@@ -25,10 +25,10 @@ import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
-import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
+import com.softserve.itacademy.kek.services.IActorRoleService;
 import com.softserve.itacademy.kek.services.IActorService;
 import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.ITenantService;
@@ -46,29 +46,29 @@ public class OrderEventServiceImpl implements IOrderEventService {
     private final OrderEventTypeRepository orderEventTypeRepository;
     private final OrderRepository orderRepository;
     private final ActorRepository actorRepository;
-    private final ActorRoleRepository actorRoleRepository;
 
     private final IUserService userService;
     private final ITenantService tenantService;
     private final IActorService actorService;
+    private final IActorRoleService actorRoleService;
 
     @Autowired
     public OrderEventServiceImpl(OrderEventRepository orderEventRepository,
                                  OrderRepository orderRepository,
                                  ActorRepository actorRepository,
                                  OrderEventTypeRepository orderEventTypeRepository,
-                                 ActorRoleRepository actorRoleRepository,
                                  IUserService userService,
                                  ITenantService tenantService,
-                                 IActorService actorService) {
+                                 IActorService actorService,
+                                 IActorRoleService actorRoleService) {
         this.orderEventRepository = orderEventRepository;
         this.orderEventTypeRepository = orderEventTypeRepository;
         this.orderRepository = orderRepository;
         this.actorRepository = actorRepository;
-        this.actorRoleRepository = actorRoleRepository;
         this.userService = userService;
         this.tenantService = tenantService;
         this.actorService = actorService;
+        this.actorRoleService = actorRoleService;
     }
 
     @Transactional
@@ -283,7 +283,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
     }
 
     private Actor saveActor(Tenant tenant, UUID userGuid) {
-        final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CURRIER.name()).orElse(null);
+        final ActorRole actorRole = (ActorRole) actorRoleService.getByName(ActorRoleEnum.CURRIER.name());
         final User user = (User) userService.getByGuid(userGuid);
 
         return actorService.create(tenant, user, actorRole);
@@ -293,7 +293,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
         logger.info("Update actor: actor = {}, actorRoleEnum = {}", actor, actorRoleEnum);
 
         try {
-            final ActorRole actorRole = actorRoleRepository.findByName(actorRoleEnum.name()).orElse(null);
+            final ActorRole actorRole = (ActorRole) actorRoleService.getByName(actorRoleEnum.name());
             actor.addActorRole(actorRole);
 
             final Actor updatedActor = actorRepository.saveAndFlush(actor);
