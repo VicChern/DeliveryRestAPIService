@@ -44,6 +44,12 @@ public class CloudStorageController {
         this.userService = userService;
     }
 
+    /**
+     * Gets stored data from Google Cloud Storage bucket by GUID
+     *
+     * @param guid user ID from the URN
+     * @return Response entity with {@link UserWithImageDto} object as a JSON
+     */
     @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.USER_WITH_IMAGE)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserWithImageDto> getData(@PathVariable String guid) {
@@ -58,6 +64,12 @@ public class CloudStorageController {
                 .body(userWithImageDto);
     }
 
+    /**
+     * Gets list of stored objects from Google Cloud Storage bucket
+     *
+     * @param bucket bucket name from the URN
+     * @return Response entity with list of {@link UserWithImageDto} object as a JSON
+     */
     @GetMapping(value = KekMappingValues.BUCKET, produces = KekMediaType.USER_WITH_IMAGE)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<UserWithImageDto>> getDataList(@PathVariable String bucket) {
@@ -75,6 +87,12 @@ public class CloudStorageController {
                 .body(users);
     }
 
+    /**
+     * Uploads byte array to Google Cloud Storage
+     *
+     * @param userWithImage {@link UserWithImageDto} object as a JSON
+     * @return Response entity with {@link UserDto} object as a JSON
+     */
     @PostMapping(consumes = KekMediaType.USER_WITH_IMAGE, produces = KekMediaType.USER)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserDto> uploadData(@RequestBody @Valid UserWithImageDto userWithImage) {
