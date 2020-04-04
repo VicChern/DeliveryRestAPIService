@@ -29,11 +29,9 @@ import com.softserve.itacademy.kek.services.AbstractService;
 import com.softserve.itacademy.kek.services.ICloudStorageService;
 
 @Component
-public class CloudStorageService extends AbstractService implements ICloudStorageService {
-    private static final Logger logger = LoggerFactory.getLogger(CloudStorageService.class);
+public class CloudStorageServiceImpl extends AbstractService implements ICloudStorageService {
+    private static final Logger logger = LoggerFactory.getLogger(CloudStorageServiceImpl.class);
 
-    //    @Value("gcp.storage.filename")
-//    private String storagePropertiesFileName;
     private final String storagePropertiesFileName = "storage.properties";
 
     @Override
