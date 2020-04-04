@@ -58,7 +58,7 @@ public class CloudStorageController {
                 .body(userWithImageDto);
     }
 
-    @GetMapping(value = "/bucket", produces = KekMediaType.USER_WITH_IMAGE)
+    @GetMapping(value = KekMappingValues.BUCKET, produces = KekMediaType.USER_WITH_IMAGE)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<UserWithImageDto>> getDataList(@PathVariable String bucket) {
         List<ICloudStorageObject> dataList = cloudStorageService.getCloudStorageObjects(bucket);
