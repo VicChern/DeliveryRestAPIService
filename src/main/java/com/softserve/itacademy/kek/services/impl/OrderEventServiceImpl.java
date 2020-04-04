@@ -283,7 +283,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
     }
 
     private Actor saveActor(Tenant tenant, UUID userGuid) {
-        final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CURRIER.toString());
+        final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CURRIER.name()).orElse(null);
         final User user = (User) userService.getByGuid(userGuid);
 
         return actorService.create(tenant, user, actorRole);
@@ -293,7 +293,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
         logger.info("Update actor: actor = {}, actorRoleEnum = {}", actor, actorRoleEnum);
 
         try {
-            final ActorRole actorRole = actorRoleRepository.findByName(actorRoleEnum.toString());
+            final ActorRole actorRole = actorRoleRepository.findByName(actorRoleEnum.name()).orElse(null);
             actor.addActorRole(actorRole);
 
             final Actor updatedActor = actorRepository.saveAndFlush(actor);

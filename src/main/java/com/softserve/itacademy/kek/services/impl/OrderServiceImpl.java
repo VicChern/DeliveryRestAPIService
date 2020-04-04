@@ -85,7 +85,7 @@ public class OrderServiceImpl implements IOrderService {
             throw new OrderServiceException("An error occurred while inserting order", ex);
         }
 
-        final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CUSTOMER.toString());
+        final ActorRole actorRole = actorRoleRepository.findByName(ActorRoleEnum.CUSTOMER.name()).orElse(null);
         final Actor savedActor = actorService.create(tenant, customer, actorRole);
 
         OrderEvent orderEvent = createOrderEvent();
