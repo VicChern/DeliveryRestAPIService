@@ -24,7 +24,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
     public static final String SCHEMA = "schema";
     public static final String VALUE = "value";
-    public static final String NEW_VALUE = "new value";
+    public static final String NEW_VALUE = "value";
     public static final String NAME = "name";
     public static final String NEW_NAME = "new name";
     public static final String KEY = "key";
