@@ -193,7 +193,6 @@ public class UserServiceImpl implements IUserService {
 
         final List<GrantedAuthority> authorityList = new ArrayList<>();
 
-        // TODO: 03.04.2020 return later and refactor
         final IUser user = userRepository.findByEmail(email).get();
 
         if (userRepository.findByEmail(email).isEmpty()) {

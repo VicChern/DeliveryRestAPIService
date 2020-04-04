@@ -20,7 +20,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
      * @param guid
      * @return the Actor  with the given guid
      */
-    Actor findByGuid(UUID guid);
+    Optional <Actor> findByGuid(UUID guid);
 
     /**
      * Retrieves an Actor by its user owner.

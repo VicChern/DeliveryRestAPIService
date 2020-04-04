@@ -79,15 +79,19 @@ public class OrderEventServiceImpl implements IOrderEventService {
         final OrderEvent orderEvent = new OrderEvent();
 
         final Order order = orderRepository.findByGuid(orderGuid);
-        final Actor actor = actorRepository.findByGuid(iOrderEvent.getActor().getGuid());
-        final OrderEventType orderEventType = orderEventTypeRepository.findByName(iOrderEvent.getOrderEventType().getName());
+        final boolean existingActor = actorRepository.findByGuid(iOrderEvent.getActor().getGuid()).isEmpty();
 
-        orderEvent.setOrder(order);
-        orderEvent.setGuid(iOrderEvent.getGuid());
-        orderEvent.setActor(actor);
-        orderEvent.setOrderEventType(orderEventType);
-        orderEvent.setPayload(iOrderEvent.getPayload());
+        if (existingActor) {
+            final Actor actor = actorRepository.findByGuid(iOrderEvent.getActor().getGuid()).orElse(null);
 
+            final OrderEventType orderEventType = orderEventTypeRepository.findByName(iOrderEvent.getOrderEventType().getName());
+
+            orderEvent.setOrder(order);
+            orderEvent.setGuid(iOrderEvent.getGuid());
+            orderEvent.setActor(actor);
+            orderEvent.setOrderEventType(orderEventType);
+            orderEvent.setPayload(iOrderEvent.getPayload());
+        }
         try {
             final OrderEvent insertedOrderEvent = orderEventRepository.saveAndFlush(orderEvent);
 
