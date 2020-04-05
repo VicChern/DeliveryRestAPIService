@@ -145,9 +145,9 @@ public class UserServiceImpl implements IUserService {
         logger.info("Getting User from DB by email: email = {}", email);
 
         final User userFromDB = userRepository.findByEmail(email).orElseThrow(()->{
-        logger.error("User was not received from DB: by email {}", email);
-        throw new UserServiceException("An error occurred while getting the user from " +
-                "the Database by email {}" + email, new NoSuchElementException());
+            logger.error("User was not received from DB: by email {}", email);
+            throw new UserServiceException("An error occurred while getting the user from " +
+                    "the Database by email {}" + email, new NoSuchElementException());
         });
 
         logger.debug("User was found in DB: {}", userFromDB);
@@ -166,19 +166,6 @@ public class UserServiceImpl implements IUserService {
         } catch (DataAccessException ex) {
             logger.error("Error while getting all Users from DB", ex);
             throw new UserServiceException("An error occurred while getting users", ex);
-        }
-    }
-
-    @Transactional
-    @Override
-    public IUser getByEmail(String email) throws UserServiceException {
-        //TODO change for Optional
-        final IUser user = userRepository.findByEmail(email);
-        if (user == null) {
-            logger.error("User wasn't found in DB: email = {}", email);
-            throw new UserServiceException("User wasn't found in DB: email = " + email, new NoSuchElementException());
-        } else {
-           return user;
         }
     }
 

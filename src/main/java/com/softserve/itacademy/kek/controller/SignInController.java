@@ -50,7 +50,7 @@ public class SignInController {
 
     @PostMapping(path = KekMappingValues.SIGNIN, consumes = KekMediaType.SIGNIN,
             produces = KekMediaType.TOKEN)
-    public ResponseEntity signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
+    public ResponseEntity<TokenDto> signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
         logger.info("{} trying to sign in", dto.getEmail());
         final User user;
