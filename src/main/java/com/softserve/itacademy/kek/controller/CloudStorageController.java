@@ -53,12 +53,15 @@ public class CloudStorageController {
     @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.USER_WITH_IMAGE)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserWithImageDto> getData(@PathVariable String guid) {
+        logger.info("Client requested the data from Cloud Storage for user:\n{}", guid);
+
         ICloudStorageObject cloudStorageObject = cloudStorageService.getCloudStorageObject(guid);
 
         IUser user = userService.getByGuid(UUID.fromString(guid));
 
         UserWithImageDto userWithImageDto = transformUser(user, cloudStorageObject);
 
+        logger.info("Sending the user with data from Cloud Storage to the client:\n{}", userWithImageDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userWithImageDto);
@@ -73,6 +76,8 @@ public class CloudStorageController {
     @GetMapping(value = KekMappingValues.BUCKET, produces = KekMediaType.USER_WITH_IMAGE)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<UserWithImageDto>> getDataList(@PathVariable String bucket) {
+        logger.info("Client requested the list of data from Cloud Storage which stored in bucket:\n{}", bucket);
+
         List<ICloudStorageObject> dataList = cloudStorageService.getCloudStorageObjects(bucket);
 
         ListWrapperDto<UserWithImageDto> users = new ListWrapperDto<>();
@@ -82,6 +87,8 @@ public class CloudStorageController {
 
             users.addKekItem(transformUser(user, cloudStorageObject));
         }
+
+        logger.info("Sending the list of users with data from Cloud Storage to the client:\n{}", users);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(users);
@@ -96,6 +103,8 @@ public class CloudStorageController {
     @PostMapping(consumes = KekMediaType.USER_WITH_IMAGE, produces = KekMediaType.USER)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserDto> uploadData(@RequestBody @Valid UserWithImageDto userWithImage) {
+        logger.info("Accepted requested to upload data to Cloud Storage for user:\n{}", userWithImage);
+
         UserDetailsWithImageDto userDetails = userWithImage.getUserDetailsWithImage();
         String data = userDetails.getImage();
 
@@ -106,6 +115,7 @@ public class CloudStorageController {
 
         UserDto userDto = transformUser(userWithImage, url);
 
+        logger.info("Sending the user with uploaded data to Cloud Storage:\n{}", userDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userDto);
