@@ -7,6 +7,9 @@ import com.softserve.itacademy.kek.exception.IdentityServiceException;
 import com.softserve.itacademy.kek.models.IIdentity;
 import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 
+/**
+ * Service interface for {@link IIdentity}
+ */
 public interface IIdentityService {
 
     /**

@@ -5,6 +5,9 @@ import java.util.List;
 import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
 import com.softserve.itacademy.kek.models.ICloudStorageObject;
 
+/**
+ * Service for {@link ICloudStorageObject}
+ */
 public interface ICloudStorageService {
     /**
      * Uploads byte array to Google Cloud Storage
