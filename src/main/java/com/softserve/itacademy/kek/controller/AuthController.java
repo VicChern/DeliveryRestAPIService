@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,10 +58,10 @@ public class AuthController extends DefaultController {
 
     @GetMapping(path = KekMappingValues.PROFILE, produces = KekMediaType.USER)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
-    protected ResponseEntity<UserDto> profile(Authentication authentication) {
-        logger.info("Performing profile request for: {}", authentication.getPrincipal());
+    protected ResponseEntity<UserDto> profile() {
+        final String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        logger.info("Performing profile request for: {}", email);
 
-        final String email = (String) authentication.getPrincipal();
         final IUser user = userService.getByEmail(email);
 
         UserDto userDto = toUserDto(user);
