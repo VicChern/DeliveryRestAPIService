@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.controller.utils;
+package com.softserve.itacademy.kek.controller.utils.Validation;
 
 
 import javax.validation.Constraint;
