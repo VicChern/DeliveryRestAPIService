@@ -22,7 +22,7 @@ import com.softserve.itacademy.kek.services.ICloudStorageService;
 @RestController
 @RequestMapping(path = "/users/cloud")
 public class CloudStorageController {
-    private final Logger logger = LoggerFactory.getLogger(CloudStorageController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CloudStorageController.class);
 
     private final ICloudStorageService cloudStorageService;
 

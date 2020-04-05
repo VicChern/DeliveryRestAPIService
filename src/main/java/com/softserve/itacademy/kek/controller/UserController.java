@@ -26,8 +26,8 @@ import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.UserDto;
-import com.softserve.itacademy.kek.mapper.IAddressMapper;
-import com.softserve.itacademy.kek.mapper.IUserMapper;
+import com.softserve.itacademy.kek.mappers.IAddressMapper;
+import com.softserve.itacademy.kek.mappers.IUserMapper;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAddressService;
@@ -37,19 +37,15 @@ import com.softserve.itacademy.kek.services.IUserService;
 @RequestMapping(path = "/users")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class UserController extends DefaultController {
-    final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final IUserService userService;
     private final IAddressService addressService;
-    private final IUserMapper userMapper;
-    private final IAddressMapper addressMapper;
 
     @Autowired
-    public UserController(IUserService userService, IAddressService addressService, IUserMapper userMapper, IAddressMapper addressMapper) {
+    public UserController(IUserService userService, IAddressService addressService) {
         this.userService = userService;
         this.addressService = addressService;
-        this.userMapper = userMapper;
-        this.addressMapper = addressMapper;
     }
 
     /**
@@ -65,7 +61,7 @@ public class UserController extends DefaultController {
         List<IUser> userList = userService.getAll();
         ListWrapperDto<UserDto> userListDto = new ListWrapperDto<>(userList
                 .stream()
-                .map(userMapper::fromIUser)
+                .map(IUserMapper.INSTANCE::toUserDto)
                 .collect(Collectors.toList()));
 
         logger.info("Sending list of all users to the client:\n{}", userListDto);
@@ -87,7 +83,7 @@ public class UserController extends DefaultController {
         logger.info("Accepted requested to create a new user:\n{}", newUserDto);
 
         IUser createdUser = userService.create(newUserDto);
-        UserDto createdUserDto = userMapper.fromIUser(createdUser);
+        UserDto createdUserDto = IUserMapper.INSTANCE.toUserDto(createdUser);
 
         logger.info("Sending the created users to the client:\n{}", createdUserDto);
         return ResponseEntity
@@ -107,7 +103,7 @@ public class UserController extends DefaultController {
         logger.info("Client requested the user {}", guid);
 
         IUser user = userService.getByGuid(UUID.fromString(guid));
-        UserDto userDto = userMapper.fromIUser(user);
+        UserDto userDto = IUserMapper.INSTANCE.toUserDto(user);
 
         logger.info("Sending the user to the client:\n{}", userDto);
         return ResponseEntity
@@ -130,7 +126,7 @@ public class UserController extends DefaultController {
         logger.info("Accepted modified user from the client:\n{}", user);
 
         IUser modifiedUser = userService.update(user);
-        UserDto modifiedUserDto = userMapper.fromIUser(modifiedUser);
+        UserDto modifiedUserDto = IUserMapper.INSTANCE.toUserDto(modifiedUser);
 
         logger.info("Sending the modified user to the client:\n{}", modifiedUserDto);
         return ResponseEntity
@@ -170,7 +166,7 @@ public class UserController extends DefaultController {
         List<IAddress> addresses = addressService.getAllForUser(UUID.fromString(guid));
         ListWrapperDto<AddressDto> addressList = new ListWrapperDto<>(addresses
                 .stream()
-                .map(addressMapper::fromIAddress)
+                .map(IAddressMapper.INSTANCE::toAddressDto)
                 .collect(Collectors.toList()));
 
         logger.info("Sending the list of addresses of the user {} to the client:\n", addressList);
@@ -197,7 +193,7 @@ public class UserController extends DefaultController {
 
         for (AddressDto newAddress : newAddressesDto.getList()) {
             IAddress createdAddress = addressService.createForUser(newAddress, UUID.fromString(guid));
-            AddressDto addressDto = addressMapper.fromIAddress(createdAddress);
+            AddressDto addressDto = IAddressMapper.INSTANCE.toAddressDto(createdAddress);
 
             createdAddresses.addKekItem(addressDto);
         }
@@ -222,7 +218,7 @@ public class UserController extends DefaultController {
         logger.info("Client requested the address {} of the employee {}", addrGuid, guid);
 
         IAddress address = addressService.getForUser(UUID.fromString(addrGuid), UUID.fromString(guid));
-        AddressDto addressDto = addressMapper.fromIAddress(address);
+        AddressDto addressDto = IAddressMapper.INSTANCE.toAddressDto(address);
 
         logger.info("Sending the address of the user {} to the client:\n{}", guid, addressDto);
         return ResponseEntity
@@ -248,7 +244,7 @@ public class UserController extends DefaultController {
         logger.info("Accepted modified address of the user {} from the client:\n{}", guid, addressDto);
 
         IAddress modifiedAddress = addressService.updateForUser(addressDto, UUID.fromString(guid));
-        AddressDto modifiedAddressDto = addressMapper.fromIAddress(modifiedAddress);
+        AddressDto modifiedAddressDto = IAddressMapper.INSTANCE.toAddressDto(modifiedAddress);
 
         logger.info("Sending the modified address of the user {} to the client:\n{}", guid, modifiedAddressDto);
         return ResponseEntity

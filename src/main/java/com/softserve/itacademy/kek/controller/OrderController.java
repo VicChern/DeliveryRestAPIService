@@ -27,8 +27,8 @@ import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.OrderEventDto;
-import com.softserve.itacademy.kek.mapper.IOrderEventMapper;
-import com.softserve.itacademy.kek.mapper.IOrderMapper;
+import com.softserve.itacademy.kek.mappers.IOrderEventMapper;
+import com.softserve.itacademy.kek.mappers.IOrderMapper;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.IUser;
@@ -40,22 +40,15 @@ import com.softserve.itacademy.kek.services.IOrderService;
 @RequestMapping(path = "/orders")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class OrderController extends DefaultController {
-    private final static Logger logger = LoggerFactory.getLogger(OrderController.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     private final IOrderService orderService;
     private final IOrderEventService orderEventService;
-    private final IOrderMapper orderMapper;
-    private final IOrderEventMapper orderEventMapper;
 
     @Autowired
-    public OrderController(IOrderService orderService,
-                           IOrderEventService orderEventService,
-                           IOrderMapper orderMapper,
-                           IOrderEventMapper orderEventMapper) {
+    public OrderController(IOrderService orderService, IOrderEventService orderEventService) {
         this.orderService = orderService;
         this.orderEventService = orderEventService;
-        this.orderMapper = orderMapper;
-        this.orderEventMapper = orderEventMapper;
     }
 
     /**
@@ -66,12 +59,12 @@ public class OrderController extends DefaultController {
     @GetMapping(produces = KekMediaType.ORDER_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     public ResponseEntity<ListWrapperDto<OrderDto>> getOrderList() {
-        logger.info("Client requested the list of all orders related to the current user");
+        logger.info("Client requested the list of all orders");
 
         List<IOrder> orderList = orderService.getAll();
         ListWrapperDto<OrderDto> orderListDto = new ListWrapperDto<>(orderList
                 .stream()
-                .map(orderMapper::fromIOrder)
+                .map(IOrderMapper.INSTANCE::toOrderDto)
                 .collect(Collectors.toList()));
 
         logger.info("Sending list of all orders to the client:\n{}", orderListDto);
@@ -96,7 +89,7 @@ public class OrderController extends DefaultController {
 
         for (OrderDto orderDto : newOrderListDto.getList()) {
             IOrder createdOrder = orderService.create(orderDto, UUID.fromString(user.getGuid().toString()));
-            OrderDto createdOrderDto = orderMapper.fromIOrder(createdOrder);
+            OrderDto createdOrderDto = IOrderMapper.INSTANCE.toOrderDto(createdOrder);
 
             createdOrdersListDto.addKekItem(createdOrderDto);
         }
@@ -120,7 +113,7 @@ public class OrderController extends DefaultController {
         logger.info("Client requested the order {}", guid);
 
         IOrder order = orderService.getByGuid(UUID.fromString(guid));
-        OrderDto orderDto = orderMapper.fromIOrder(order);
+        OrderDto orderDto = IOrderMapper.INSTANCE.toOrderDto(order);
 
         logger.info("Sending the order {} to the client", orderDto);
         return ResponseEntity
@@ -143,7 +136,7 @@ public class OrderController extends DefaultController {
         logger.info("Accepted modified order {} from the client", orderDto);
 
         IOrder modifiedOrder = orderService.update(orderDto, UUID.fromString(guid));
-        OrderDto modifiedOrderDto = orderMapper.fromIOrder(modifiedOrder);
+        OrderDto modifiedOrderDto = IOrderMapper.INSTANCE.toOrderDto(modifiedOrder);
 
         logger.info("Sending the modified order {} to the client", modifiedOrderDto);
         return ResponseEntity
@@ -182,7 +175,7 @@ public class OrderController extends DefaultController {
 
         List<IOrderEvent> events = orderEventService.getAllEventsForOrder(UUID.fromString(guid));
         ListWrapperDto<OrderEventDto> orderEventListDto = new ListWrapperDto<>(events.stream()
-                .map(orderEventMapper::fromIOrderEvent)
+                .map(IOrderEventMapper.INSTANCE::toOrderEventDto)
                 .collect(Collectors.toList()));
 
         logger.info("Sending the list of events of the order {} to the client", orderEventListDto);
@@ -203,9 +196,7 @@ public class OrderController extends DefaultController {
     @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
     public ResponseEntity<OrderEventDto> addEvent(@RequestBody @Valid OrderEventDto orderEventDto,
                                                   @PathVariable String guid) {
-        logger.info("Accepted request to create a new event for the order {} created by actor\n{}",
-                guid,
-                orderEventDto);
+        logger.info("Accepted request to create a new event for the order {} created by actor", orderEventDto);
 
         final IUser user = (IUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -213,7 +204,7 @@ public class OrderController extends DefaultController {
                 user.getGuid(),
                 orderEventDto);
 
-        OrderEventDto createdOrderEventDto = orderEventMapper.fromIOrderEvent(createdOrderEvent);
+        OrderEventDto createdOrderEventDto = IOrderEventMapper.INSTANCE.toOrderEventDto(createdOrderEvent);
 
         logger.info("Sending the created order event to the client:\n{}", createdOrderEventDto);
         return ResponseEntity

@@ -31,7 +31,7 @@ import com.softserve.itacademy.kek.services.IOrderService;
 @RequestMapping(path = "/statistics")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class StatisticsController extends DefaultController {
-    private final Logger logger = LoggerFactory.getLogger(StatisticsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(StatisticsController.class);
 
     private final IOrderService orderService;
     private final IActorService actorService;
