@@ -265,7 +265,7 @@ public class TenantControllerTest {
 
     @Test
     public void getTenantPropertyTest() throws Exception {
-        when(tenantPropertiesService.get(any(UUID.class), any(UUID.class))).thenReturn(tenantProperties);
+        when(tenantPropertiesService.getPropertyByTenantGuid(any(UUID.class), any(UUID.class))).thenReturn(tenantProperties);
 
         mockMvc.perform(get("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/properties/48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(status().isOk())

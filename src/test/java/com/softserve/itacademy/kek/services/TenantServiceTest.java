@@ -1,7 +1,5 @@
 package com.softserve.itacademy.kek.services;
 
-import javax.persistence.PersistenceException;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +9,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.exception.ServiceException;
+import com.softserve.itacademy.kek.exception.TenantServiceException;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.TenantDetails;
@@ -72,7 +71,7 @@ public class TenantServiceTest {
     void createSuccess() {
         //given
         when(userRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(user));
-        when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
+        when(tenantRepository.saveAndFlush(any(Tenant.class))).thenReturn(tenant);
 
         // when
         ITenant createdTenant = tenantService.create(tenant);
@@ -85,7 +84,7 @@ public class TenantServiceTest {
         assertEquals(createdTenant.getTenantDetails().getImageUrl(), tenant.getTenantDetails().getImageUrl());
 
         verify(userRepository, times(1)).findByGuid(any(UUID.class));
-        verify(tenantRepository, times(1)).save(any(Tenant.class));
+        verify(tenantRepository, times(1)).saveAndFlush(any(Tenant.class));
 
     }
 
@@ -102,7 +101,7 @@ public class TenantServiceTest {
     void createThrowsServiceExceptionWhenRepositoryThrowsPersistenceException() {
         //given
         when(userRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(user));
-        when(tenantRepository.save(any(Tenant.class))).thenThrow(PersistenceException.class);
+        when(tenantRepository.saveAndFlush(any(Tenant.class))).thenThrow(TenantServiceException.class);
 
         // when
         tenantService.create(tenant);
@@ -147,7 +146,7 @@ public class TenantServiceTest {
         updatedTenant.setName("newName");
         updatedTenant.setTenantDetails(new TenantDetails());
 
-        when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
+        when(tenantRepository.saveAndFlush(any(Tenant.class))).thenReturn(tenant);
 
         // when
         ITenant createdTenant = tenantService.update(updatedTenant, user.getGuid());
@@ -160,7 +159,7 @@ public class TenantServiceTest {
         assertEquals(createdTenant.getTenantDetails().getImageUrl(), updatedTenant.getTenantDetails().getImageUrl());
 
         verify(tenantRepository, times(1)).findByGuid(any(UUID.class));
-        verify(tenantRepository, times(1)).save(any(Tenant.class));
+        verify(tenantRepository, times(1)).saveAndFlush(any(Tenant.class));
     }
 
     @Test(expectedExceptions = ServiceException.class)
@@ -176,7 +175,7 @@ public class TenantServiceTest {
     void updateThrowsServiceExceptionWhenRepositoryThrowsPersistenceException() {
         //given
         when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(tenant));
-        when(tenantRepository.save(any(Tenant.class))).thenThrow(PersistenceException.class);
+        when(tenantRepository.saveAndFlush(any(Tenant.class))).thenThrow(TenantServiceException.class);
 
         // when
         tenantService.update(tenant, user.getGuid());
@@ -198,7 +197,7 @@ public class TenantServiceTest {
     @Test(expectedExceptions = ServiceException.class)
     void deleteThrowsServiceExceptionWhenRepositoryReturnsEmptyOptional() {
         //given
-        doThrow(NoSuchElementException.class).when(tenantRepository).findByGuid(any(UUID.class));
+        doThrow(TenantServiceException.class).when(tenantRepository).findByGuid(any(UUID.class));
 
         // when
         tenantService.deleteByGuid(tenant.getGuid());

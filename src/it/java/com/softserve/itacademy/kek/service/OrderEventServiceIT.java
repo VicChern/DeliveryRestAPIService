@@ -151,13 +151,15 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     public void createSuccess() {
         //when
         final Actor currier = getActor(user, tenant, currierRole);
+        final Actor createdCurrier = actorRepository.save(currier);
+        assertNotNull(createdCurrier);
 
-        final OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(order.getGuid()), orderEventTypeAssigned, currier);
+        final OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(order.getGuid()), orderEventTypeAssigned, createdCurrier);
 
         final IOrderEvent createdOrderEvent = orderEventService.create(orderEvent, order.getGuid());
 
         //than
-        final IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid());
+        final IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid()).orElse(null);
 
         assertEquals(createdOrderEvent.getPayload(), foundOrderEvent.getPayload());
     }
@@ -168,6 +170,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         //when
         final Actor currier = getActor(user, tenant, currierRole);
         final Actor createdCurrier = actorRepository.save(currier);
+        assertNotNull(createdCurrier);
 
         final OrderEvent orderEvent1 = getOrderEvent(order, orderEventTypeAssigned, createdCurrier);
         final OrderEvent orderEvent2 = getOrderEvent(order, orderEventTypeStarted, createdCurrier);

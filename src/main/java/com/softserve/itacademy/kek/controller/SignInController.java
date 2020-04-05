@@ -3,11 +3,12 @@ package com.softserve.itacademy.kek.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.SignInDto;
 import com.softserve.itacademy.kek.exception.InvalidCredentialsException;
+import com.softserve.itacademy.kek.exception.KekException;
 import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Identity;
 import com.softserve.itacademy.kek.models.impl.User;
@@ -51,22 +53,32 @@ public class SignInController {
     @GetMapping(path = KekMappingValues.SIGNIN, consumes = KekMediaType.SIGNIN, produces = KekMediaType.SIGNIN)
     public ResponseEntity signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
-        final User user;
-        final Identity identity;
+        logger.info("Client requested login: {}", dto.getEmail());
 
+        final Optional<User> userFromDb;
         try {
-            user = userRepository.findByEmail(dto.getEmail());
-        } catch (DataAccessException ex) {
-            logger.error("There is no user with this email: {}", dto.getEmail());
-            throw new InvalidCredentialsException("Invalid credentials. Try again.", ex);
+            userFromDb = userRepository.findByEmail(dto.getEmail());
+        } catch (Exception ex) {
+            logger.error("Error while getting user by email", ex);
+            throw new KekException("An error occurs while signing in.", ex);
         }
 
-        identity = (Identity) iIdentityService.read(user.getGuid(), IdentityTypeEnum.KEY);
+        if (userFromDb.isEmpty()) {
+            logger.error("User was not found in DB by email", new NoSuchElementException());
+            throw new InvalidCredentialsException("Invalid credentials. Try again.");
+        }
+
+        logger.debug("User was found in DB by email: {}", dto.getEmail());
+
+        final User user = userFromDb.get();
+
+        final Identity identity = (Identity) iIdentityService.read(user.getGuid(), IdentityTypeEnum.KEY);
 
         boolean isCorrect = passwordEncoder.matches(dto.getPassword(), identity.getPayload());
 
         if (isCorrect) {
             logger.info("Password is correct. Starting user authentication: {}", user);
+
             authenticationService.authenticateKekUser(user);
 
             return ResponseEntity
