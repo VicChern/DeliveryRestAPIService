@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.controller.utils;
+package com.softserve.itacademy.kek.controller.utils.Validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -13,15 +13,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = PasswordConstraintValidator.class)
+@Constraint(validatedBy = EmailConstrainsValidator.class)
 @Documented
-public @interface ValidPassword {
-
-    String message() default "Invalid Password";
+public @interface ValidEmail {
+    String message() default "Invalid email";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
 }
-

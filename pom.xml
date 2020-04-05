@@ -53,6 +53,9 @@
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.hibernate.validator>6.0.18.Final</version.hibernate.validator>
         <version.javax.el>3.0.1-b10</version.javax.el>
+        <version.passay>1.5.0</version.passay>
+        <version.commons-validator>1.6</version.commons-validator>
+        <version.libphonenumber>8.12.0</version.libphonenumber>
 
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
@@ -210,7 +213,21 @@
             <artifactId>javax.el</artifactId>
             <version>${version.javax.el}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>${version.passay}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>${version.commons-validator}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.libphonenumber</groupId>
+            <artifactId>libphonenumber</artifactId>
+            <version>${version.libphonenumber}</version>
+        </dependency>
 
         <!-- Hibernate -->
         <dependency>

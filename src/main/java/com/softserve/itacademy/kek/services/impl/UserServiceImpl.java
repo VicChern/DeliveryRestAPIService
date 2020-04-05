@@ -141,6 +141,25 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional(readOnly = true)
     @Override
+    public IUser getByEmail(String email) throws UserServiceException {
+        logger.info("Getting User from DB by email: email = {}", email);
+
+        try {
+            final User userFromDB = userRepository.findByEmail(email);
+
+            logger.debug("User was found in DB: {}", userFromDB);
+
+            return userFromDB;
+        } catch (DataAccessException ex) {
+
+            logger.error("User was not received from DB: by email " + email, ex);
+            throw new UserServiceException("An error occurred while getting the user from " +
+                    "the Database by email " + email, ex);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<IUser> getAll() throws UserServiceException {
         logger.info("Get all Users from DB");
 
