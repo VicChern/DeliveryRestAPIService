@@ -20,6 +20,7 @@ import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
+import com.softserve.itacademy.kek.services.IUserService;
 
 import static com.softserve.itacademy.kek.mapper.UserMapper.toUserDto;
 
@@ -30,6 +31,9 @@ public class AuthController extends DefaultController {
 
     @Autowired
     private IAuthenticationService authenticationService;
+
+    @Autowired
+    private IUserService userService;
 
     @GetMapping(path = "/login")
     protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -56,7 +60,8 @@ public class AuthController extends DefaultController {
     protected ResponseEntity<UserDto> profile(Authentication authentication) {
         logger.info("Performing profile request for: {}", authentication.getPrincipal());
 
-        final IUser user = (IUser) authentication.getPrincipal();
+        final String email = (String) authentication.getPrincipal();
+        final IUser user = userService.getByEmail(email);
 
         UserDto userDto = toUserDto(user);
 

@@ -152,6 +152,19 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
+    @Transactional
+    @Override
+    public IUser getByEmail(String email) throws UserServiceException {
+        //TODO change for Optional
+        final IUser user = userRepository.findByEmail(email);
+        if (user == null) {
+            logger.error("User wasn't found in DB: email = {}", email);
+            throw new UserServiceException("User wasn't found in DB: email = " + email, new NoSuchElementException());
+        } else {
+           return user;
+        }
+    }
+
     @Transactional(readOnly = true)
     @Override
     public Page<IUser> getAll(Pageable pageable) throws UserServiceException {
