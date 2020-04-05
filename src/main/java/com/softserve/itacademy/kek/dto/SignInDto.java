@@ -5,8 +5,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-import com.softserve.itacademy.kek.controller.utils.ValidEmail;
-import com.softserve.itacademy.kek.controller.utils.ValidPassword;
+import com.softserve.itacademy.kek.controller.utils.Validation.ValidEmail;
+import com.softserve.itacademy.kek.controller.utils.Validation.ValidPassword;
 
 public class SignInDto {
 

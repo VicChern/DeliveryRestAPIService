@@ -23,6 +23,6 @@ public class KekMediaType {
     public static final String REGISTRATION_USER = "application/vnd.softserve.registrationUser+json";
     public static final String SIGNIN = "application/vnd.softserve.signin+json";
     public static final String ACTOR_LIST = "application/vnd.softserve.actorList+json";
-
+    public static final String TOKEN = "application/vnd.softserve.token+json";
 }
 

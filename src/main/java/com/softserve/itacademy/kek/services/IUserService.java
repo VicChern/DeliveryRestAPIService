@@ -47,6 +47,14 @@ public interface IUserService {
     IUser getByGuid(UUID guid) throws UserServiceException;
 
     /**
+     * Returns user data by user email
+     *
+     * @param email user guid
+     * @return user data
+     */
+    IUser getByEmail(String email) throws UserServiceException;
+
+    /**
      * Returns all users
      *
      * @return all users
