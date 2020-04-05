@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.softserve.itacademy.kek.dto.RegistrationDto;
 import com.softserve.itacademy.kek.exception.UserAlreadyExistException;
 import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
+import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.ICreateUserService;
@@ -26,7 +26,6 @@ public class CreateUserServiceImpl implements ICreateUserService {
     private final IUserService userService;
     private final IIdentityService identityService;
 
-
     @Autowired
     public CreateUserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, IUserService userService, IIdentityService identityService) {
         this.userRepository = userRepository;
@@ -35,13 +34,14 @@ public class CreateUserServiceImpl implements ICreateUserService {
         this.identityService = identityService;
     }
 
-
     @Transactional
     @Override
     public IUser createNewUser(RegistrationDto userData) {
-        final boolean isAlreadyRegistered = userRepository.findByEmail(userData.getEmail()) != null;
+        logger.info("User registration: email = {}", userData.getEmail());
+
+        final boolean isAlreadyRegistered = userRepository.findByEmail(userData.getEmail()).isPresent();
         if (isAlreadyRegistered) {
-            logger.info("User already exists in DB {}", userData);
+            logger.info("User already exists in DB: email = {}", userData.getEmail());
             throw new UserAlreadyExistException(userData.toString());
         }
 
@@ -54,9 +54,10 @@ public class CreateUserServiceImpl implements ICreateUserService {
 
         final IUser dbUser = userService.create(user);
 
-        identityService.create(dbUser.getGuid(), IdentityTypeDef.KEY, passwordEncoder.encode(userData.getPassword()));
+        identityService.create(dbUser.getGuid(), IdentityTypeEnum.KEY, passwordEncoder.encode(userData.getPassword()));
 
         logger.info("User has been added to DB {}", userData);
+
         return dbUser;
     }
 }

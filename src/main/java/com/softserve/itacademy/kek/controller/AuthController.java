@@ -50,9 +50,7 @@ public class AuthController extends DefaultController {
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
     protected ResponseEntity<String> profile(Authentication authentication) {
 
-        final IUser user = (IUser) authentication.getPrincipal();
-
-        return ResponseEntity.ok(user.toString());
+        return ResponseEntity.ok("You are in profile");
     }
 
 

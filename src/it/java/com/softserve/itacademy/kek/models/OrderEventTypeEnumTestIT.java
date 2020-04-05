@@ -21,7 +21,7 @@ import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getOrderEv
 
 @Rollback
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
-public class OrderEventTypeTestIT extends AbstractTestNGSpringContextTests {
+public class OrderEventTypeEnumTestIT extends AbstractTestNGSpringContextTests {
 
     public static final int MAX_NAME_LENGTH = MAX_LENGTH_256;
 

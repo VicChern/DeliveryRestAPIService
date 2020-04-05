@@ -1,13 +1,15 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.PropertyTypeServiceException;
 import com.softserve.itacademy.kek.models.IPropertyType;
@@ -27,62 +29,89 @@ public class PropertyTypeServiceImpl implements IPropertyTypeService {
     }
 
     @Transactional
-    public IPropertyType createOrUpdate(IPropertyType typeData) throws PropertyTypeServiceException {
-        logger.info("Getting Property Type: {}", typeData);
+    @Override
+    public IPropertyType create(IPropertyType propertyType) throws PropertyTypeServiceException {
+        logger.info("Insert property type into DB: propertyType = {}", propertyType);
 
-        final PropertyType dbPropertyType;
-        try {
-            dbPropertyType = propertyTypeRepository.getByName(typeData.getName());
-        } catch (DataAccessException ex) {
-            logger.error("An error occurred while getting Property Type " + typeData, ex);
-            throw new PropertyTypeServiceException("An error occurred while getting property type", ex);
-        }
-
-        if (dbPropertyType == null) {
-            return internalCreate(typeData);
-        } else {
-            return internalUpdate(dbPropertyType, typeData);
-        }
-    }
-
-    private IPropertyType internalCreate(IPropertyType typeData) throws PropertyTypeServiceException {
-        logger.debug("Inserting Property Type into DB: {}", typeData);
-
-        final PropertyType propertyType = new PropertyType();
-        propertyType.setName(typeData.getName());
-        propertyType.setSchema(typeData.getSchema());
+        final PropertyType actualPropertyType = new PropertyType();
+        actualPropertyType.setName(propertyType.getName());
+        actualPropertyType.setSchema(propertyType.getSchema());
 
         try {
-            final PropertyType dbPropertyType = propertyTypeRepository.saveAndFlush(propertyType);
+            final PropertyType insertedPropertyType = propertyTypeRepository.saveAndFlush(actualPropertyType);
 
-            logger.debug("Property Type was inserted into DB: {}", dbPropertyType);
+            logger.debug("Property type was inserted into DB: {}", insertedPropertyType);
 
-            return dbPropertyType;
+            return insertedPropertyType;
         } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("An error occurred while inserting Property Type " + typeData, ex);
+            logger.error("Error while inserting property type into DB: " + actualPropertyType, ex);
             throw new PropertyTypeServiceException("An error occurred while inserting property type", ex);
         }
     }
 
-    private IPropertyType internalUpdate(PropertyType propertyType, IPropertyType typeData) throws PropertyTypeServiceException {
-        logger.debug("Updating Property Type in DB: {}", typeData);
+    @Transactional
+    @Override
+    public IPropertyType update(IPropertyType propertyType) throws PropertyTypeServiceException {
+        logger.info("Update property type in DB: propertyType = {}", propertyType);
 
-        if (typeData.getName() != null) {
-            propertyType.setName(typeData.getName());
-        }
-        if (typeData.getSchema() != null) {
-            propertyType.setSchema(typeData.getSchema());
-        }
+        final PropertyType actualPropertyType = (PropertyType) getByName(propertyType.getName());
+        actualPropertyType.setName(propertyType.getName());
+        actualPropertyType.setSchema(propertyType.getSchema());
 
         try {
-            final PropertyType dbPropertyType = propertyTypeRepository.saveAndFlush(propertyType);
+            final PropertyType updatedPropertyType = propertyTypeRepository.saveAndFlush(actualPropertyType);
 
-            logger.debug("Property Type was updated into DB: {}", dbPropertyType);
+            logger.debug("Property type was updated in DB: {}", updatedPropertyType);
 
-            return dbPropertyType;
+            return updatedPropertyType;
         } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("An error occurred while updating Property Type " + propertyType, ex);
+            logger.error("Error while updating property type in DB: " + propertyType, ex);
             throw new PropertyTypeServiceException("An error occurred while updating property type", ex);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public IPropertyType getByName(String name) throws PropertyTypeServiceException {
+        logger.info("Get property type from DB: name = {}", name);
+
+        final Optional<PropertyType> propertyType = internalGetByName(name);
+
+        return propertyType.orElseThrow(
+                () -> {
+                    Exception ex = new NoSuchElementException();
+                    logger.error("Property Type was not found in DB: " + name, ex);
+                    throw new PropertyTypeServiceException("Property Type was not found", ex);
+                });
+    }
+
+    @Transactional
+    @Override
+    public IPropertyType produce(IPropertyType propertyType) throws PropertyTypeServiceException {
+        logger.info("Produce property type in DB: {}", propertyType);
+
+        final Optional<PropertyType> actualPropertyType = internalGetByName(propertyType.getName());
+
+        if (actualPropertyType.isEmpty()) {
+            return create(propertyType);
+        } else {
+            return update(propertyType);
+        }
+    }
+
+    private Optional<PropertyType> internalGetByName(String name) throws PropertyTypeServiceException {
+        logger.debug("Get property type (Optional object) from DB: name = {}", name);
+
+        final Optional<PropertyType> propertyType;
+        try {
+            propertyType = propertyTypeRepository.getByName(name);
+
+            logger.debug("Property type was read from DB: {}", propertyType);
+
+            return propertyType;
+        } catch (DataAccessException ex) {
+            logger.error("Error while getting property type from DB: " + name, ex);
+            throw new PropertyTypeServiceException("An error occurred while getting property type", ex);
         }
     }
 }

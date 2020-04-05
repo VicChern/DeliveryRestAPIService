@@ -9,7 +9,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -17,7 +16,7 @@ import org.testng.annotations.Test;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
-import com.softserve.itacademy.kek.models.enums.EventType;
+import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Order;
@@ -97,16 +96,16 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         actorRoleRepository.save(currierRole);
 
         orderEventTypeCreated = new OrderEventType();
-        orderEventTypeCreated.setName(EventType.CREATED.toString());
+        orderEventTypeCreated.setName(EventTypeEnum.CREATED.toString());
 
         orderEventTypeAssigned = new OrderEventType();
-        orderEventTypeAssigned.setName(EventType.ASSIGNED.toString());
+        orderEventTypeAssigned.setName(EventTypeEnum.ASSIGNED.toString());
 
         orderEventTypeStarted = new OrderEventType();
-        orderEventTypeStarted.setName(EventType.STARTED.toString());
+        orderEventTypeStarted.setName(EventTypeEnum.STARTED.toString());
 
         orderEventTypeDelivered = new OrderEventType();
-        orderEventTypeDelivered.setName(EventType.DELIVERED.toString());
+        orderEventTypeDelivered.setName(EventTypeEnum.DELIVERED.toString());
 
         orderEventTypeRepository.save(orderEventTypeCreated);
         orderEventTypeRepository.save(orderEventTypeAssigned);
@@ -152,13 +151,15 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     public void createSuccess() {
         //when
         final Actor currier = getActor(user, tenant, currierRole);
+        final Actor createdCurrier = actorRepository.save(currier);
+        assertNotNull(createdCurrier);
 
-        final OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(order.getGuid()), orderEventTypeAssigned, currier);
+        final OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(order.getGuid()), orderEventTypeAssigned, createdCurrier);
 
         final IOrderEvent createdOrderEvent = orderEventService.create(orderEvent, order.getGuid());
 
         //than
-        final IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid());
+        final IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid()).orElse(null);
 
         assertEquals(createdOrderEvent.getPayload(), foundOrderEvent.getPayload());
     }
@@ -169,6 +170,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         //when
         final Actor currier = getActor(user, tenant, currierRole);
         final Actor createdCurrier = actorRepository.save(currier);
+        assertNotNull(createdCurrier);
 
         final OrderEvent orderEvent1 = getOrderEvent(order, orderEventTypeAssigned, createdCurrier);
         final OrderEvent orderEvent2 = getOrderEvent(order, orderEventTypeStarted, createdCurrier);
@@ -203,14 +205,14 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         assertEquals(orderEventRepository.findAll().size(), 7);
         final List<OrderEvent> orderEventList = orderEventRepository.findAll();
 
-        final List<EventType> orderEventTypeList = orderEventList
+        final List<EventTypeEnum> orderEventTypeEnumList = orderEventList
                 .stream()
-                .map(orderEvent -> EventType.valueOf(orderEvent.getOrderEventType().getName()))
+                .map(orderEvent -> EventTypeEnum.valueOf(orderEvent.getOrderEventType().getName()))
                 .distinct()
                 .collect(Collectors.toList());
 
-        final List<EventType> orderEventTypeList1 = Arrays.asList(EventType.values());
-        assertTrue(orderEventTypeList1.containsAll(orderEventTypeList));
+        final List<EventTypeEnum> orderEventTypeEnumList1 = Arrays.asList(EventTypeEnum.values());
+        assertTrue(orderEventTypeEnumList1.containsAll(orderEventTypeEnumList));
     }
 
     @Test(groups = {"integration-tests"})
@@ -318,7 +320,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         assertTrue(
                 orderEvents
                         .stream()
-                        .allMatch(orderEvent -> orderEvent.getOrderEventType().getName().equals(EventType.STARTED.toString()))
+                        .allMatch(orderEvent -> orderEvent.getOrderEventType().getName().equals(EventTypeEnum.STARTED.toString()))
         );
     }
 }

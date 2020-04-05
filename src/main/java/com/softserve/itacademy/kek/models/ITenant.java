@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.models;
 import java.util.UUID;
 
 /**
- * Interface for exchange data with tenant service layer
+ * Interface for exchange data with tenant service and public api layers
  */
 public interface ITenant {
 

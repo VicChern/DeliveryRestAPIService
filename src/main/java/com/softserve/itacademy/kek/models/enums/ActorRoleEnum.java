@@ -5,6 +5,13 @@ package com.softserve.itacademy.kek.models.enums;
  */
 public enum ActorRoleEnum {
 
+    /**
+     * actor role of user that make order
+     */
     CUSTOMER,
+
+    /**
+     * actor role of user that delivering order
+     */
     CURRIER
 }

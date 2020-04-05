@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
-import com.softserve.itacademy.kek.models.enums.IdentityTypeDef;
+import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 
 @Entity
 @Table(name = "def_identity_type")
@@ -19,8 +19,8 @@ public class IdentityType extends AbstractEntity implements Serializable {
     public IdentityType() {
     }
 
-    public IdentityType(IdentityTypeDef identityTypeDef) {
-        this.name = identityTypeDef.name();
+    public IdentityType(IdentityTypeEnum identityTypeEnum) {
+        this.name = identityTypeEnum.name();
     }
 
     @Id

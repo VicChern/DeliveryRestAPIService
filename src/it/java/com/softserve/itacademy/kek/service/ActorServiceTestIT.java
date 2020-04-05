@@ -1,9 +1,5 @@
 package com.softserve.itacademy.kek.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -92,7 +88,7 @@ public class ActorServiceTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void createSuccess() {
         //when
-        Actor createActor = actorService.saveActor(tenant, user, actorRole1);
+        Actor createActor = actorService.create(tenant, user, actorRole1);
 
         //then
         assertNotNull(createActor);

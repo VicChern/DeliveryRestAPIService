@@ -107,7 +107,7 @@ public class StatisticsControllerTest {
     public void getListOfOrdersForCurrentTenant() throws Exception {
         when(orderService.getAllByTenantGuid(any(UUID.class))).thenReturn(orderList);
 
-        mockMvc.perform(get("/statistics"))
+        mockMvc.perform(get("/statistics/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(KekMediaType.ORDER_LIST))
                 .andExpect(jsonPath("$.list[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))

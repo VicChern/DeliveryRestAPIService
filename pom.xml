@@ -26,6 +26,7 @@
         <version.failsafe.plugin>3.0.0-M4</version.failsafe.plugin>
         <version.build.helper.plugin>3.0.0</version.build.helper.plugin>
         <version.appassembler.plugin>2.1.0</version.appassembler.plugin>
+        <version.checkstyle.plugin>3.1.1</version.checkstyle.plugin>
         <version.frontend.plugin>1.8.0</version.frontend.plugin>
 
         <!-- Third-party versions -->
@@ -47,9 +48,14 @@
         <version.org.json>20180813</version.org.json>
         <version.gson>2.8.5</version.gson>
 
+        <version.jwt>0.9.1</version.jwt>
+
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.hibernate.validator>6.0.18.Final</version.hibernate.validator>
         <version.javax.el>3.0.1-b10</version.javax.el>
+        <version.passay>1.5.0</version.passay>
+        <version.commons-validator>1.6</version.commons-validator>
+        <version.libphonenumber>8.12.0</version.libphonenumber>
 
         <version.auth0>1.14.3</version.auth0>
         <version.auth0.spring.security.api>1.2.5</version.auth0.spring.security.api>
@@ -184,6 +190,13 @@
             <version>${version.gson}</version>
         </dependency>
 
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${version.jwt}</version>
+        </dependency>
+
         <!-- Validation -->
         <dependency>
             <groupId>javax.validation</groupId>
@@ -200,7 +213,21 @@
             <artifactId>javax.el</artifactId>
             <version>${version.javax.el}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>${version.passay}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>${version.commons-validator}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.libphonenumber</groupId>
+            <artifactId>libphonenumber</artifactId>
+            <version>${version.libphonenumber}</version>
+        </dependency>
 
         <!-- Hibernate -->
         <dependency>
@@ -463,6 +490,24 @@
                                 <phase>package</phase>
                                 <goals>
                                     <goal>assemble</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>${version.checkstyle.plugin}</version>
+                        <configuration>
+                            <configLocation>checkstyle.xml</configLocation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <maxAllowedViolations>30</maxAllowedViolations>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>check</goal>
                                 </goals>
                             </execution>
                         </executions>

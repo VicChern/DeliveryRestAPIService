@@ -3,7 +3,7 @@ package com.softserve.itacademy.kek.models;
 import java.util.UUID;
 
 /**
- * Interface for Order data exchange with service layer
+ * Interface for Order data exchange with service and public api layers
  */
 public interface IOrder {
 
