@@ -11,13 +11,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.SignInDto;
+import com.softserve.itacademy.kek.dto.TokenDto;
 import com.softserve.itacademy.kek.exception.InvalidCredentialsException;
 import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Identity;
@@ -48,8 +49,8 @@ public class SignInController {
         this.getTokenService = getTokenService;
     }
 
-    @GetMapping(path = KekMappingValues.SIGNIN, consumes = KekMediaType.SIGNIN, produces = KekMediaType.SIGNIN)
-    public ResponseEntity signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
+    @PostMapping(path = KekMappingValues.SIGNIN, consumes = KekMediaType.SIGNIN, produces = "application/vnd.softserve.token+json")
+    public ResponseEntity<TokenDto> signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
         final User user;
         final Identity identity;
@@ -69,9 +70,11 @@ public class SignInController {
             logger.info("Password is correct. Starting user authentication: {}", user);
             authenticationService.authenticateKekUser(user);
 
+            TokenDto tokenDto = new TokenDto(getTokenService.getToken(user.getEmail()));
+//            String tokenDto = getTokenService.getToken(user.getEmail());
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(getTokenService.getToken(user.getEmail()));
+                    .body(tokenDto);
 
         } else {
             logger.error("Invalid password login attempt for user: {}", user);
