@@ -71,7 +71,6 @@ public class SignInController {
             authenticationService.authenticateKekUser(user);
 
             TokenDto tokenDto = new TokenDto(getTokenService.getToken(user.getEmail()));
-//            String tokenDto = getTokenService.getToken(user.getEmail());
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(tokenDto);

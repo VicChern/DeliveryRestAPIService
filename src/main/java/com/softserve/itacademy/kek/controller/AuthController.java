@@ -15,8 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
+
+import static com.softserve.itacademy.kek.mapper.UserMapper.toUserDto;
 
 @RestController
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -46,12 +51,17 @@ public class AuthController extends DefaultController {
         response.sendRedirect(redirectUrl);
     }
 
-    @GetMapping(path = "/profile")
+    @GetMapping(path = KekMappingValues.PROFILE, produces = KekMediaType.USER)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
-    protected ResponseEntity<String> profile(Authentication authentication) {
+    protected ResponseEntity<UserDto> profile(Authentication authentication) {
+        logger.info("Performing profile request for: {}", authentication.getPrincipal());
 
-        return ResponseEntity.ok("You are in profile");
+        final IUser user = (IUser) authentication.getPrincipal();
+
+        UserDto userDto = toUserDto(user);
+
+        logger.debug("Performed profile request : {}", userDto);
+        return ResponseEntity.ok(userDto);
     }
-
 
 }
