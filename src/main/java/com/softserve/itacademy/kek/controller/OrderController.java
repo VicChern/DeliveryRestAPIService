@@ -35,6 +35,7 @@ import com.softserve.itacademy.kek.models.IOrderEventType;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.IOrderService;
+import com.softserve.itacademy.kek.services.IUserService;
 
 
 @RestController
@@ -45,12 +46,15 @@ public class OrderController extends DefaultController {
 
     private final IOrderService orderService;
     private final IOrderEventService orderEventService;
+    private final IUserService userService;
 
     @Autowired
-    public OrderController(IOrderService orderService, IOrderEventService orderEventService) {
+    public OrderController(IOrderService orderService, IOrderEventService orderEventService, IUserService userService) {
         this.orderService = orderService;
         this.orderEventService = orderEventService;
+        this.userService = userService;
     }
+
 
     private OrderDto transformOrder(IOrder order) {
         OrderDetailsDto orderDetailsDto = new OrderDetailsDto(order.getOrderDetails().getPayload(), order.getOrderDetails().getImageUrl());
@@ -104,7 +108,9 @@ public class OrderController extends DefaultController {
         logger.debug("Accepted requested to create a new order:\n{}", newOrderListDto);
 
         final ListWrapperDto<OrderDto> createdOrdersListDto = new ListWrapperDto<>();
-        final IUser user = (IUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        final String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final IUser user = userService.getByEmail(email);
 
         for (OrderDto orderDto : newOrderListDto.getList()) {
             IOrder createdOrder = orderService.create(orderDto, UUID.fromString(user.getGuid().toString()));
@@ -212,10 +218,12 @@ public class OrderController extends DefaultController {
     @PostMapping(value = KekMappingValues.GUID_EVENTS,
             consumes = KekMediaType.EVENT,
             produces = KekMediaType.EVENT)
-    @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR')")
+    @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR') or hasRole('USER')")
     public ResponseEntity<OrderEventDto> addEvent(@RequestBody @Valid OrderEventDto orderEventDto,
                                                   @PathVariable String guid) {
-        final IUser user = (IUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        final String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final IUser user = userService.getByEmail(email);
 
         logger.info("Accepted request to create a new event for the order {} created by actor\n{}",
                 user.getGuid(),
