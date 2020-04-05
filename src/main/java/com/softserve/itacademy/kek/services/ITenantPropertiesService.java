@@ -29,15 +29,16 @@ public interface ITenantPropertiesService {
      * @return tenantProperty
      * @throws TenantPropertiesServiceException if there is no one tenant properties with tenant guid and tenantProperty guid
      */
-    ITenantProperties get(UUID tenantGuid, UUID tenantPropertyGuid) throws TenantPropertiesServiceException;
+    ITenantProperties getPropertyByTenantGuid(UUID tenantGuid, UUID tenantPropertyGuid) throws TenantPropertiesServiceException;
 
     /**
      * Gets all tenantProperties for tenant by tenant guid
      *
      * @param tenantGuid tenant guid
      * @return tenantProperties by tenant guid
+     * @throws TenantPropertiesServiceException
      */
-    List<ITenantProperties> getAllForTenant(UUID tenantGuid);
+    List<ITenantProperties> getAllForTenant(UUID tenantGuid) throws TenantPropertiesServiceException;
 
     /**
      * Updates tenantProperty by tenant guid and tenantProperty guid

@@ -24,6 +24,7 @@ public class KekMediaType {
     public static final String REGISTRATION_USER = SOFTSERVE + ".registrationUser+json";
     public static final String SIGNIN = SOFTSERVE + ".signin+json";
     public static final String ACTOR_LIST = SOFTSERVE + ".actorList+json";
+    public static final String TOKEN = SOFTSERVE + ".token+json";
 
 }
 

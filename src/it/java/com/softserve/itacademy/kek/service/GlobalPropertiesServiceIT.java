@@ -61,7 +61,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
         globalPropertiesService.create(globalProperties);
         //then
-        final GlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey());
+        final IGlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey()).orElse(null);
 
         assertEquals(globalProperties.getKey(), foundGlobalProperties.getKey());
         assertEquals(globalProperties.getValue(), foundGlobalProperties.getValue());
@@ -72,14 +72,12 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
     public void updateSuccess() {
         //when
         final PropertyType propertyType = new PropertyType();
-
         propertyType.setName(NAME);
         propertyType.setSchema(SCHEMA);
 
         final PropertyType savedPropertyType = propertyTypeRepository.save(propertyType);
 
         final GlobalProperty globalProperties = new GlobalProperty();
-
         globalProperties.setValue(VALUE);
         globalProperties.setKey(KEY);
         globalProperties.setPropertyType(savedPropertyType);
@@ -95,7 +93,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
         globalPropertiesService.update(savedGlobalProperty);
         //then
-        final GlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(savedGlobalProperty.getKey());
+        final IGlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(savedGlobalProperty.getKey()).orElse(null);
 
         assertEquals(savedGlobalProperty, foundGlobalProperties);
         assertEquals(savedGlobalProperty.getKey(), foundGlobalProperties.getKey());
@@ -189,7 +187,7 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
 
         globalPropertiesService.deleteByKey(globalProperties.getKey());
         //then
-        final GlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey());
+        final IGlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(globalProperties.getKey()).orElse(null);
 
         assertNull(foundGlobalProperties);
     }

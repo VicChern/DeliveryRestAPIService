@@ -32,13 +32,14 @@ public class RegistrationController {
         this.createUser = createUser;
     }
 
-    @PostMapping(path = KekMappingValues.REGISTRATION, consumes = KekMediaType.REGISTRATION_USER,
-            produces = KekMediaType.REGISTRATION_USER)
-    public ResponseEntity userRegistration(@RequestBody @Valid RegistrationDto userData, HttpServletResponse response)  {
+    @PostMapping(path = KekMappingValues.REGISTRATION, consumes = KekMediaType.REGISTRATION_USER)
+    public ResponseEntity<Void> userRegistration(@RequestBody @Valid RegistrationDto userData, HttpServletResponse response)  {
         logger.info("Creating request for user registration: {}", userData);
 
-        final IUser user = createUser.createNewUser(userData);
+        createUser.createNewUser(userData);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
     }
 }
