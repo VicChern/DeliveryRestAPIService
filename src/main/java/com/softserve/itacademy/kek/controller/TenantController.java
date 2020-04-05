@@ -262,7 +262,7 @@ public class TenantController extends DefaultController {
     public ResponseEntity<TenantPropertiesDto> getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Sending the tenant's({}) specific property({}) to the client", guid, propGuid);
 
-        ITenantProperties tenantProperties = tenantPropertiesService.get(UUID.fromString(guid), UUID.fromString(propGuid));
+        ITenantProperties tenantProperties = tenantPropertiesService.getPropertyByTenantGuid(UUID.fromString(guid), UUID.fromString(propGuid));
         TenantPropertiesDto tenantPropertiesDto = transformProperty(tenantProperties);
 
         logger.info("Sending specific property of the tenant {} to the client:\n{}", guid, tenantPropertiesDto);

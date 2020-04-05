@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.softserve.itacademy.kek.models.impl.Identity;
 
+/**
+ * Repository for work with Identities
+ */
 public interface IdentityRepository extends JpaRepository<Identity, Long> {
 
     /**

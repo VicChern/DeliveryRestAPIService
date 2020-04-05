@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.softserve.itacademy.kek.models.impl.User;
 
+/**
+ * Repository for work with user
+ */
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
@@ -17,6 +20,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     Optional<User> findByGuid(UUID guid);
 
-    User findByEmail(String email);
+
+    /**
+     * Retrieves a user by its guid.
+     *
+     * @param email
+     * @return the user with the given email
+     */
+    Optional<User> findByEmail(String email);
 
 }

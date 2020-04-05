@@ -36,8 +36,11 @@ public interface ITenantService {
      * Gets all tenants for principal user
      *
      * @return all tenants for principal user
+     * @throws TenantServiceException
      */
-    List<ITenant> getAll();
+    List<ITenant> getAll() throws TenantServiceException;
+
+    ;
 
     /**
      * Gets a {@link Page} of {@link ITenant}
@@ -45,8 +48,9 @@ public interface ITenantService {
      *
      * @param pageable {@code Pageable} object that defines page options, must not be {@literal null}.
      * @return a page of {@link ITenant}
+     * @throws TenantServiceException
      */
-    Page<ITenant> getAllPageable(Pageable pageable);
+    Page<ITenant> getAllPageable(Pageable pageable) throws TenantServiceException;
 
     /**
      * Updates {@link ITenant}

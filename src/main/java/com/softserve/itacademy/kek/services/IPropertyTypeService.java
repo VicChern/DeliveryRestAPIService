@@ -5,11 +5,40 @@ import com.softserve.itacademy.kek.models.IPropertyType;
 
 public interface IPropertyTypeService {
     /**
-     * Creates or updates property type.
+     * Inserts property type into DB
+     *
+     * @param propertyType property type data
+     * @return inserted property type
+     * @throws PropertyTypeServiceException
+     */
+    IPropertyType create(IPropertyType propertyType) throws PropertyTypeServiceException;
+
+    /**
+     * Updates property type in DB
+     *
+     * @param propertyType property type data
+     * @return updated property type
+     * @throws PropertyTypeServiceException
+     */
+    IPropertyType update(IPropertyType propertyType) throws PropertyTypeServiceException;
+
+    /**
+     * Gets property type by name
+     *
+     * @param name name of property type
+     * @return property type
+     * @throws PropertyTypeServiceException
+     */
+    IPropertyType getByName(String name) throws PropertyTypeServiceException;
+
+    /**
+     * Produces property type.
      * If type doesn't exist in DB it will be created.
      * If type exists in DB it will be updated.
-     * @param typeData property type data
+     *
+     * @param propertyType property type data
      * @return property type from db
+     * @throws PropertyTypeServiceException
      */
-    IPropertyType createOrUpdate(IPropertyType typeData) throws PropertyTypeServiceException;
+    IPropertyType produce(IPropertyType propertyType) throws PropertyTypeServiceException;
 }

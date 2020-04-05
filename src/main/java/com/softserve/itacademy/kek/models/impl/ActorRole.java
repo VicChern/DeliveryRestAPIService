@@ -11,9 +11,11 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.softserve.itacademy.kek.models.IActorRole;
+
 @Entity
 @Table(name = "def_actor_role")
-public class ActorRole extends AbstractEntity implements Serializable {
+public class ActorRole extends AbstractEntity implements IActorRole, Serializable {
 
     @Id
     @Column(name = "id_actor_role")
