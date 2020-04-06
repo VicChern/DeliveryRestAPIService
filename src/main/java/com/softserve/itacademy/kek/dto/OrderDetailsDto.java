@@ -40,7 +40,7 @@ public class OrderDetailsDto implements IOrderDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof OrderDetailsDto)) return false;
         OrderDetailsDto that = (OrderDetailsDto) o;
         return Objects.equals(payload, that.payload) &&
                 Objects.equals(imageUrl, that.imageUrl);

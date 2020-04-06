@@ -120,7 +120,7 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
         orderEventRepository.save(createdEvent);
 
         //when
-        mvc.perform(get(String.format("/orders/%s/tracking/", order.getGuid())))
+        mvc.perform(get(String.format("/tracking/orders/%s/", order.getGuid())))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Cache-Control", "no-store"))
                 .andReturn();
@@ -143,7 +143,7 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
         orderEventRepository.save(deliveredEvent);
 
         //when
-        mvc.perform(get(String.format("/orders/%s/tracking/", order.getGuid())))
+        mvc.perform(get(String.format("/tracking/orders/%s/", order.getGuid())))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Cache-Control", "no-store"))
                 .andReturn();
@@ -164,7 +164,7 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
         orderEventRepository.save(startedEvent2);
 
         //when
-        MvcResult mvcResult = mvc.perform(get(String.format("/orders/%s/tracking/", order.getGuid())))
+        MvcResult mvcResult = mvc.perform(get(String.format("/tracking/orders/%s/", order.getGuid())))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Cache-Control", "no-store"))
                 .andReturn();
@@ -180,7 +180,7 @@ public class SseControllerTestIT extends AbstractTestNGSpringContextTests {
         Order byGuid = orderRepository.findByGuid(randomUuid);
         if (byGuid == null) {
             //when
-            mvc.perform(get(String.format("/orders/%s/tracking/", byGuid)))
+            mvc.perform(get(String.format("/tracking/orders/%s/", byGuid)))
                     .andExpect(status().isBadRequest());
         }
     }

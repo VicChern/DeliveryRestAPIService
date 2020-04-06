@@ -29,6 +29,7 @@
 //import com.softserve.itacademy.kek.models.impl.UserDetails;
 //import com.softserve.itacademy.kek.services.IOrderEventService;
 //import com.softserve.itacademy.kek.services.IOrderService;
+//import com.softserve.itacademy.kek.services.IUserService;
 //
 //import static org.mockito.ArgumentMatchers.any;
 //import static org.mockito.Mockito.when;
@@ -79,6 +80,8 @@
 //    private SecurityContext securityContext;
 //    @Spy
 //    private IOrderEventService orderEventService;
+//    @Spy
+//    private IUserService userService;
 //    private MockMvc mockMvc;
 //
 //    private Order order;
@@ -107,6 +110,7 @@
 //
 //        user = new User();
 //        user.setGuid(UUID.fromString("820671c6-7e2c-4de3-aeb8-42e6f84e6371"));
+//        user.setEmail("name@email.com");
 //
 //        User tenantOwner = new User();
 //        tenantOwner.setGuid(UUID.fromString("820671c6-7e2c-4de3-aeb8-42e6f84e6371"));
@@ -161,8 +165,9 @@
 //    @Test
 //    public void addOrderTest() throws Exception {
 //        when(securityContext.getAuthentication()).thenReturn(authentication);
-//        when(authentication.getPrincipal()).thenReturn(user);
+//        when(authentication.getPrincipal()).thenReturn(user.getEmail());
 //        when(orderService.create(any(OrderDto.class), any(UUID.class))).thenReturn(order);
+//        when(userService.getByEmail(any(String.class))).thenReturn(user);
 //
 //        mockMvc.perform(post("/orders")
 //                .contentType(KekMediaType.ORDER_LIST)
@@ -229,9 +234,11 @@
 //    @Test
 //    public void addEventTest() throws Exception {
 //        when(securityContext.getAuthentication()).thenReturn(authentication);
-//        when(authentication.getPrincipal()).thenReturn(user);
+//        when(authentication.getPrincipal()).thenReturn(user.getEmail());
 //        when(orderEventService.createOrderEvent(any(UUID.class), any(UUID.class), any(IOrderEvent.class)))
 //                .thenReturn(orderEvent);
+//        when(userService.getByEmail(any(String.class))).thenReturn(user);
+//
 //
 //        mockMvc.perform(post("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371/events")
 //                .contentType(KekMediaType.EVENT)

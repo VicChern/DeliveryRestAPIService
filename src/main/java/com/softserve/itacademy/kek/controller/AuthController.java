@@ -10,12 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
+import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.dto.UserDto;
+import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
+import com.softserve.itacademy.kek.services.IUserService;
+
+import static com.softserve.itacademy.kek.mapper.UserMapper.toUserDto;
 
 @RestController
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -24,6 +31,9 @@ public class AuthController extends DefaultController {
 
     @Autowired
     private IAuthenticationService authenticationService;
+
+    @Autowired
+    private IUserService userService;
 
     @GetMapping(path = "/login")
     protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -45,12 +55,18 @@ public class AuthController extends DefaultController {
         response.sendRedirect(redirectUrl);
     }
 
-    @GetMapping(path = "/profile")
+    @GetMapping(path = KekMappingValues.PROFILE, produces = KekMediaType.USER)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ACTOR')")
-    protected ResponseEntity<String> profile(Authentication authentication) {
+    protected ResponseEntity<UserDto> profile() {
+        final String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        logger.info("Performing profile request for: {}", email);
 
-        return ResponseEntity.ok("You are in profile");
+        final IUser user = userService.getByEmail(email);
+
+        UserDto userDto = toUserDto(user);
+
+        logger.debug("Performed profile request : {}", userDto);
+        return ResponseEntity.ok(userDto);
     }
-
 
 }
