@@ -38,7 +38,7 @@ public class CloudStorageObject implements ICloudStorageObject {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof CloudStorageObject)) return false;
         CloudStorageObject that = (CloudStorageObject) o;
         return Objects.equals(url, that.url) &&
                 Objects.equals(guid, that.guid) &&

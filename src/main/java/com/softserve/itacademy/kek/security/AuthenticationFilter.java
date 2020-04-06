@@ -13,7 +13,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -44,7 +43,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
 
         String authorities = claims.get("authorities").toString();
 
-        if ( authorities.contains("ROLE_USER") ) {
+        if (authorities.contains("ROLE_USER")) {
             roles.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
 
@@ -56,7 +55,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
             roles.add(new SimpleGrantedAuthority("ROLE_ACTOR"));
         }
 
-        Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(claims.get("email"), null ,  roles);
+        Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(claims.get("email"), null, roles);
 
         return getAuthenticationManager().authenticate(requestAuthentication);
     }

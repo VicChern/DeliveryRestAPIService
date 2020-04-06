@@ -10,6 +10,7 @@ public interface ICreateUserService {
 
     /**
      * Creates a new User
+     *
      * @param userData userData
      * @return created user
      */
