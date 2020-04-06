@@ -2,6 +2,9 @@ package com.softserve.itacademy.kek.models;
 
 import java.util.UUID;
 
+import com.softserve.itacademy.kek.dto.PropertyTypeDto;
+import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
+
 /**
  * Interface for TenantProperties data exchange with service and public api layers
  */
@@ -48,5 +51,23 @@ public interface ITenantProperties {
             return (T) Integer.valueOf(getValue());
         }
         return (T) getValue();
+    }
+
+    /**
+     * Transform {@link ITenantProperties} to {@link TenantPropertiesDto}
+     *
+     * @return tenantPropertiesDto
+     */
+    default TenantPropertiesDto transformProperty() {
+        PropertyTypeDto propertyType = new PropertyTypeDto(
+                getPropertyType().getName(),
+                getPropertyType().getSchema());
+
+        TenantPropertiesDto tenantPropertiesDto = new TenantPropertiesDto(
+                getGuid(),
+                propertyType,
+                getKey(),
+                getValue());
+        return tenantPropertiesDto;
     }
 }
