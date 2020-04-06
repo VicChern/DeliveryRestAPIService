@@ -24,7 +24,7 @@ export class SseControllerComponent implements OnInit {
       this.orderGuid = params.get('orderGuid')
     });
 
-          let source = new EventSource('./api/v1/orders/' + this.orderGuid + '/tracking/');
+          let source = new EventSource('./api/v1/tracking/orders/' + this.orderGuid);
           console.log("event source: " + source);
           source.addEventListener('message', message => {
 //               let n: Notification; //need to have this Notification model class in angular2
