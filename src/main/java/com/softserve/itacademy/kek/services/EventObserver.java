@@ -13,10 +13,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.softserve.itacademy.kek.controller.SseController;
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
+import com.softserve.itacademy.kek.services.impl.OrderTrackingService;
 
 @Service
 public class EventObserver {
@@ -36,7 +36,7 @@ public class EventObserver {
 
     @Scheduled(fixedRate = 6000)
     public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
-        if (!SseController.getOrderEmitters().isEmpty()) {
+        if (!OrderTrackingService.getActiveEmitters().isEmpty()) {
             OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
 
             final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
