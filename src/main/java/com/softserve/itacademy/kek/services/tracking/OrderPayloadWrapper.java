@@ -1,12 +1,12 @@
-package com.softserve.itacademy.kek.services;
+package com.softserve.itacademy.kek.services.tracking;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 
-//temporary added class, will be removed when use generics in Spring Events for SSE Controller job
-public class OrderTrackingWrapper {
+//wrapper, that allow generic Spring events for SSE Controller job
+public class OrderPayloadWrapper {
     Map<UUID, String> map;
 
     public Map<UUID, String> getMap() {
@@ -27,8 +27,8 @@ public class OrderTrackingWrapper {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OrderTrackingWrapper)) return false;
-        OrderTrackingWrapper that = (OrderTrackingWrapper) o;
+        if (!(o instanceof OrderPayloadWrapper)) return false;
+        OrderPayloadWrapper that = (OrderPayloadWrapper) o;
         return Objects.equals(map, that.map);
     }
 

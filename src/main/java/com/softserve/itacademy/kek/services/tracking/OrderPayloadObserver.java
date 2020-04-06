@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.services;
+package com.softserve.itacademy.kek.services.tracking;
 
 import java.util.List;
 import java.util.Map;
@@ -16,19 +16,19 @@ import org.springframework.stereotype.Service;
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
-import com.softserve.itacademy.kek.services.impl.OrderTrackingService;
+import com.softserve.itacademy.kek.services.IOrderEventService;
 
 @Service
-public class EventObserver {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventObserver.class);
+public class OrderPayloadObserver {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderPayloadObserver.class);
 
     public final ApplicationEventPublisher eventPublisher;
 
     private IOrderEventService orderEventService;
 
     @Autowired
-    public EventObserver(IOrderEventService orderEventService,
-                         ApplicationEventPublisher eventPublisher) {
+    public OrderPayloadObserver(IOrderEventService orderEventService,
+                                ApplicationEventPublisher eventPublisher) {
         this.orderEventService = orderEventService;
         this.eventPublisher = eventPublisher;
     }
@@ -37,7 +37,7 @@ public class EventObserver {
     @Scheduled(fixedRate = 6000)
     public void getPayloadsForDeliveringOrders() throws OrderEventServiceException {
         if (!OrderTrackingService.getActiveEmitters().isEmpty()) {
-            OrderTrackingWrapper wrapper = new OrderTrackingWrapper();
+            OrderPayloadWrapper wrapper = new OrderPayloadWrapper();
 
             final List<IOrderEvent> lastEvents = orderEventService.findAllThatDeliveringNow();
             LOGGER.debug("Get last event for every order that is delivering now. Count of orders in delivering state = {}", lastEvents.size());

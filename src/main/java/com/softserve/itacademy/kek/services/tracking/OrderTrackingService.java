@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.services.impl;
+package com.softserve.itacademy.kek.services.tracking;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import com.softserve.itacademy.kek.services.OrderTrackingWrapper;
-
 @Service
 public class OrderTrackingService {
     private static final Logger logger = LoggerFactory.getLogger(OrderTrackingService.class);
@@ -30,7 +28,7 @@ public class OrderTrackingService {
     }
 
     @EventListener
-    public void enrichEmitters(OrderTrackingWrapper eventWrapper) {
+    public void enrichEmitters(OrderPayloadWrapper eventWrapper) {
         final Map<UUID, List<SseEmitter>> deadEmitters = new HashMap<>();
         final Map<UUID, String> deliveringOrdersAndPayloads = eventWrapper.getMap();
         logger.trace("Count of orders that are delivering is {}", deliveringOrdersAndPayloads.size());

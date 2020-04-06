@@ -18,7 +18,7 @@ import com.softserve.itacademy.kek.exception.TrackingException;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
 import com.softserve.itacademy.kek.services.IOrderEventService;
-import com.softserve.itacademy.kek.services.impl.OrderTrackingService;
+import com.softserve.itacademy.kek.services.tracking.OrderTrackingService;
 
 @RestController
 public class SseController {
