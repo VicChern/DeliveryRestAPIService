@@ -10,7 +10,7 @@ import com.softserve.itacademy.kek.models.impl.User;
 /**
  * Interface for {@link User} mapping
  */
-@Mapper
+@Mapper(uses = IUserDetailsMapper.class)
 public interface IUserMapper {
 
     IUserMapper INSTANCE = Mappers.getMapper(IUserMapper.class);

@@ -31,6 +31,14 @@ public class TenantDetailsDto implements ITenantDetails {
         return imageUrl;
     }
 
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Override
     public String toString() {
         return "TenantDetailsDto{" +

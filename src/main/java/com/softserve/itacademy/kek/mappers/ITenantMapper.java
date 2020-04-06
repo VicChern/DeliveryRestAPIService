@@ -10,7 +10,7 @@ import com.softserve.itacademy.kek.models.impl.Tenant;
 /**
  * Interface for {@link Tenant} mapping
  */
-@Mapper
+@Mapper(uses = ITenantDetailsMapper.class)
 public interface ITenantMapper {
 
     ITenantMapper INSTANCE = Mappers.getMapper(ITenantMapper.class);
@@ -22,4 +22,5 @@ public interface ITenantMapper {
      * @return tenantDto
      */
     TenantDto toTenantDto(ITenant tenant);
+
 }

@@ -49,6 +49,22 @@ public class OrderEventDto implements IOrderEvent {
         return type;
     }
 
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
+    public void setOrderId(UUID orderId) {
+        this.orderId = orderId;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public void setType(OrderEventTypesDto type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

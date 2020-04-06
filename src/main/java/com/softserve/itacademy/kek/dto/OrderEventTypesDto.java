@@ -18,5 +18,9 @@ public enum OrderEventTypesDto implements IOrderEventType {
     public String getName() {
         return type;
     }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }
 

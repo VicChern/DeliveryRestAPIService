@@ -10,17 +10,29 @@ import com.softserve.itacademy.kek.models.impl.Order;
 /**
  * Interface for {@link Order} mapping
  */
-@Mapper
+@Mapper(uses = IOrderDetailsMapper.class)
 public interface IOrderMapper {
 
     IOrderMapper INSTANCE = Mappers.getMapper(IOrderMapper.class);
 
-    /**
-     * Transform {@link IOrder} to {@link OrderDto}
-     *
-     * @param order
-     * @return orderDto
-     */
+//    /**
+//     * Returns tenant GUID
+//     *
+//     * @param tenant
+//     * @return UUID
+//     */
+//    @Named("TenantToUUID")
+//    default UUID getTenantGuid(ITenant tenant) {
+//        return tenant.getGuid();
+//    }
+//
+//    /**
+//     * Transform {@link IOrder} to {@link OrderDto}
+//     *
+//     * @param order
+//     * @return orderDto
+//     */
+//    @Mapping(source = "tenant", target = "tenantGuid", qualifiedByName = "TenantToUUID")
     OrderDto toOrderDto(IOrder order);
 
 }
