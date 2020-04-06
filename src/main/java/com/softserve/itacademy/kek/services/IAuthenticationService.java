@@ -13,7 +13,8 @@ public interface IAuthenticationService {
 
     /**
      * Creates url for redirecting after request
-     * @param request request
+     *
+     * @param request  request
      * @param response request
      * @return string with url
      */
@@ -21,7 +22,8 @@ public interface IAuthenticationService {
 
     /**
      * Creates request and returns a string with user
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      * @return returns string with user
      * @throws IOException IOException
@@ -30,6 +32,7 @@ public interface IAuthenticationService {
 
     /**
      * Creates request and returns a string with User
+     *
      * @param user user
      * @return return response of user authentication
      */

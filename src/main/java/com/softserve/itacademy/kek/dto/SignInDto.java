@@ -42,7 +42,7 @@ public class SignInDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if ( !(o instanceof SignInDto) ) return false;
+        if (!(o instanceof SignInDto)) return false;
         SignInDto signInDto = (SignInDto) o;
         return Objects.equals(email, signInDto.email) &&
                 Objects.equals(password, signInDto.password);
