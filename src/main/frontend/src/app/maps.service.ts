@@ -19,7 +19,7 @@ export class MapsService {
   }
 
   getSseEmitter() {
-    return this.http.get<any>('./api/v1/orders/ef01a0cd-86a4-44cd-89dc-407a73961e4b/tracking/');
+    return this.http.get<any>('./api/v1/tracking/orders/ef01a0cd-86a4-44cd-89dc-407a73961e4b/');
   }
 
 }

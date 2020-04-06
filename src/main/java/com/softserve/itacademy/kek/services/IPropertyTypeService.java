@@ -2,7 +2,11 @@ package com.softserve.itacademy.kek.services;
 
 import com.softserve.itacademy.kek.exception.PropertyTypeServiceException;
 import com.softserve.itacademy.kek.models.IPropertyType;
+import com.softserve.itacademy.kek.models.ITenantProperties;
 
+/**
+ * Service interface for {@link  ITenantProperties}
+ */
 public interface IPropertyTypeService {
     /**
      * Inserts property type into DB

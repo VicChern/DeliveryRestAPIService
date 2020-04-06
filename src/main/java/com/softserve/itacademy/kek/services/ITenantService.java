@@ -40,8 +40,6 @@ public interface ITenantService {
      */
     List<ITenant> getAll() throws TenantServiceException;
 
-    ;
-
     /**
      * Gets a {@link Page} of {@link ITenant}
      * meeting the paging restriction provided in the {@code Pageable} object.

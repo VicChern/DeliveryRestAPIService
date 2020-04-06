@@ -5,8 +5,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-import com.softserve.itacademy.kek.controller.utils.ValidEmail;
-import com.softserve.itacademy.kek.controller.utils.ValidPassword;
+import com.softserve.itacademy.kek.controller.utils.Validation.ValidEmail;
+import com.softserve.itacademy.kek.controller.utils.Validation.ValidPassword;
 
 public class SignInDto {
 
@@ -42,7 +42,7 @@ public class SignInDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if ( !(o instanceof SignInDto) ) return false;
+        if (!(o instanceof SignInDto)) return false;
         SignInDto signInDto = (SignInDto) o;
         return Objects.equals(email, signInDto.email) &&
                 Objects.equals(password, signInDto.password);

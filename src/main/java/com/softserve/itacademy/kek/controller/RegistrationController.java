@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.RegistrationDto;
-import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
 import com.softserve.itacademy.kek.services.ICreateUserService;
 
@@ -32,13 +31,14 @@ public class RegistrationController {
         this.createUser = createUser;
     }
 
-    @PostMapping(path = KekMappingValues.REGISTRATION, consumes = KekMediaType.REGISTRATION_USER,
-            produces = KekMediaType.REGISTRATION_USER)
-    public ResponseEntity userRegistration(@RequestBody @Valid RegistrationDto userData, HttpServletResponse response)  {
+    @PostMapping(path = KekMappingValues.REGISTRATION, consumes = KekMediaType.REGISTRATION_USER)
+    public ResponseEntity<Void> userRegistration(@RequestBody @Valid RegistrationDto userData, HttpServletResponse response) {
         logger.info("Creating request for user registration: {}", userData);
 
-        final IUser user = createUser.createNewUser(userData);
+        createUser.createNewUser(userData);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
     }
 }

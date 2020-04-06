@@ -65,7 +65,7 @@ public class OrderDto implements IOrder {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof OrderDto)) return false;
         OrderDto orderDto = (OrderDto) o;
         return Objects.equals(tenantGuid, orderDto.tenantGuid) &&
                 Objects.equals(guid, orderDto.guid) &&
