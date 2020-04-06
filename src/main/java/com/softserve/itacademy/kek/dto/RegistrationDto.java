@@ -8,9 +8,9 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.softserve.itacademy.kek.controller.utils.ValidEmail;
-import com.softserve.itacademy.kek.controller.utils.ValidPassword;
-import com.softserve.itacademy.kek.controller.utils.ValidPhone;
+import com.softserve.itacademy.kek.controller.utils.Validation.ValidEmail;
+import com.softserve.itacademy.kek.controller.utils.Validation.ValidPassword;
+import com.softserve.itacademy.kek.controller.utils.Validation.ValidPhone;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
 

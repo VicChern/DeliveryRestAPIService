@@ -81,7 +81,7 @@ public class PropertyTypeServiceImpl implements IPropertyTypeService {
                 () -> {
                     Exception ex = new NoSuchElementException();
                     logger.error("Property Type was not found in DB: " + name, ex);
-                    return new PropertyTypeServiceException("Property Type was not found", ex);
+                    throw new PropertyTypeServiceException("Property Type was not found", ex);
                 });
     }
 
