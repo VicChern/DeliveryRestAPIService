@@ -35,19 +35,25 @@ public class CloudStorageServiceImpl extends AbstractService implements ICloudSt
     private final String storagePropertiesFileName = "storage.properties";
 
     @Override
-    public ICloudStorageObject uploadBinaryData(final byte[] data, UUID guid) throws CloudStorageServiceException {
+    public ICloudStorageObject uploadBinaryData(final byte[] data) throws CloudStorageServiceException {
         logger.info("Uploading binary data to Google Cloud Storage default bucket");
+
+
+        final ICloudStorageObject cloudStorageObject;
 
         try {
             final String bucket = getBucketName();
-            return uploadBinaryData(data, guid, bucket);
+            cloudStorageObject = uploadBinaryData(data, bucket);
+
+            logger.debug("Data uploaded successfully");
         } catch (Exception ex) {
             logger.error("Can't uploadBinaryData; data = " + data, ex);
             throw new CloudStorageServiceException(ex);
         }
+        return cloudStorageObject;
     }
 
-    ICloudStorageObject uploadBinaryData(final byte[] data, UUID guid, final String bucketName) throws Exception {
+    private ICloudStorageObject uploadBinaryData(final byte[] data, final String bucketName) throws Exception {
         logger.debug("Uploading binary data to Google Cloud Storage bucket; bucketName = {}", bucketName);
 
         final Storage storageConnection = getStorageObject();
@@ -61,26 +67,34 @@ public class CloudStorageServiceImpl extends AbstractService implements ICloudSt
             logger.debug("Google Cloud Storage bucket created successfully; bucketName = {}", bucketName);
         }
 
-        final Blob blob = bucket.create(guid.toString(), data);
+        final String guid = UUID.randomUUID().toString();
+        final Blob blob = bucket.create(guid, data);
         final String url = blob.getMediaLink();
 
-        return new CloudStorageObject(url, guid.toString(), data);
+        logger.debug("Data {} uploaded successfully to the bucket {}", guid, bucketName);
+
+        return new CloudStorageObject(url, guid, data);
     }
 
     @Override
     public ICloudStorageObject getCloudStorageObject(final String guid) throws CloudStorageServiceException {
         logger.info("Getting object by GUID from Google Cloud Storage default bucket; guid = {}", guid);
 
+        final ICloudStorageObject cloudStorageObject;
+
         try {
             final String bucket = getBucketName();
-            return getCloudStorageObject(guid, bucket);
+            cloudStorageObject = getCloudStorageObject(guid, bucket);
+
+            logger.debug("Data {} was read from Cloud Storage", guid);
         } catch (Exception ex) {
             logger.error("Can't getCloudStorageObject; guid = " + guid, ex);
             throw new CloudStorageServiceException(ex);
         }
+        return cloudStorageObject;
     }
 
-    ICloudStorageObject getCloudStorageObject(final String guid, final String bucketName) throws Exception {
+    private ICloudStorageObject getCloudStorageObject(final String guid, final String bucketName) throws Exception {
         logger.debug("Getting object by GUID from Google Cloud Storage bucket; bucketName = {}, guid = {}", bucketName, guid);
 
         final Storage storageConnection = getStorageObject();
@@ -90,22 +104,32 @@ public class CloudStorageServiceImpl extends AbstractService implements ICloudSt
         final byte[] data = blob.getContent();
         final String url = blob.getMediaLink();
 
+        logger.debug("Data {} was read from Cloud Storage bucket {}", guid, bucketName);
+
         return new CloudStorageObject(url, guid, data);
     }
 
     @Override
     public List<ICloudStorageObject> getCloudStorageObjects(final String filter) throws CloudStorageServiceException {
         logger.info("Getting list of objects from Google Cloud Storage bucket; filter = {}", filter);
+
+        List<ICloudStorageObject> cloudStorageObjectList;
+
         try {
             final String bucketName = getBucketName();
-            return getCloudStorageObjects(bucketName, filter);
+            cloudStorageObjectList = getCloudStorageObjects(bucketName, filter);
+
+            logger.debug("Data was read from Cloud Storage bucket {}", filter);
         } catch (Exception ex) {
             logger.error("Can't getCloudStorageObjects; filter = " + filter, ex);
             throw new CloudStorageServiceException(ex);
         }
+
+        return cloudStorageObjectList;
     }
 
-    List<ICloudStorageObject> getCloudStorageObjects(final String bucketName, final String filter) {
+    private List<ICloudStorageObject> getCloudStorageObjects(final String bucketName, final String filter) {
+        logger.debug("Getting list of objects from Google Cloud Storage bucket; filter = {}, bucketName = {}", filter, bucketName);
 
         final Storage storageConnection = getStorageObject();
         final Bucket bucket = storageConnection.get(bucketName);
@@ -125,7 +149,39 @@ public class CloudStorageServiceImpl extends AbstractService implements ICloudSt
         return result;
     }
 
-    Storage getStorageObject() {
+    @Override
+    public ICloudStorageObject updateBinaryData(final String guid, final byte[] data) throws CloudStorageServiceException {
+        logger.info("Update data by guid {} in Cloud Storage", guid);
+
+        final Storage storageConnection = getStorageObject();
+
+        final Bucket bucket = storageConnection.get(getBucketName());
+        final Blob blob = bucket.get(guid);
+
+        deleteByGuid(guid);
+
+        return uploadBinaryData(data);
+    }
+
+    @Override
+    public void deleteByGuid(final String guid) throws CloudStorageServiceException {
+        logger.info("Delete data from Cloud Storage by guid: {}", guid);
+
+        final Storage storageConnection = getStorageObject();
+
+        final Bucket bucket = storageConnection.get(getBucketName());
+        final Blob blob = bucket.get(guid);
+
+        try {
+            storageConnection.delete(blob.getBlobId());
+            logger.debug("Blob {} was deleted from Cloud Storage", blob.getBlobId());
+        } catch (Exception ex) {
+            logger.error("Error while deleting data from Cloud Storage: " + blob, ex);
+            throw new CloudStorageServiceException(ex);
+        }
+    }
+
+    private Storage getStorageObject() {
         logger.debug("Creating storage object");
 
         final StorageOptions storageOptions;
@@ -141,7 +197,7 @@ public class CloudStorageServiceImpl extends AbstractService implements ICloudSt
 
             logger.debug("Token parsed successfully");
         } catch (Exception ex) {
-            logger.warn("Token was not parsed", ex);
+            logger.error("Token was not parsed", ex);
             throw new CloudStorageServiceException(ex);
         }
 
@@ -154,14 +210,14 @@ public class CloudStorageServiceImpl extends AbstractService implements ICloudSt
 
             logger.debug("Storage object created successfully");
         } catch (Exception ex) {
-            logger.warn("Token was not found", ex);
+            logger.error("Token was not found", ex);
             throw new CloudStorageServiceException(ex);
         }
 
         return storage;
     }
 
-    String getBucketName() {
+    private String getBucketName() {
         logger.debug("Getting name of Google Cloud Storage default bucket");
 
         final String bucketName;
@@ -173,7 +229,7 @@ public class CloudStorageServiceImpl extends AbstractService implements ICloudSt
             properties.load(inputStream);
             bucketName = properties.getProperty("bucketName");
         } catch (Exception ex) {
-            logger.warn("Bucket name was not initialized, can't read it from file = " + storagePropertiesFileName, ex);
+            logger.error("Bucket name was not initialized, can't read it from file = " + storagePropertiesFileName, ex);
             throw new CloudStorageServiceException(ex);
         }
 

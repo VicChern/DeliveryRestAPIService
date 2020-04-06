@@ -64,7 +64,7 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
 
     @Test(groups = {"integration-tests"})
     public void uploadBinaryData() throws Exception {
-        cloudStorageObject = cloudStorageService.uploadBinaryData(data, guid);
+        cloudStorageObject = cloudStorageService.uploadBinaryData(data);
 
         blob = bucket.get(cloudStorageObject.getGuid());
 
@@ -75,7 +75,7 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
 
     @Test(groups = {"integration-tests"})
     public void getCloudStorageObject() throws Exception {
-        ICloudStorageObject uploadedObject = cloudStorageService.uploadBinaryData(data, guid);
+        ICloudStorageObject uploadedObject = cloudStorageService.uploadBinaryData(data);
         ICloudStorageObject cloudStorageObject = cloudStorageService.getCloudStorageObject(uploadedObject.getGuid());
 
         blob = bucket.get(uploadedObject.getGuid());
