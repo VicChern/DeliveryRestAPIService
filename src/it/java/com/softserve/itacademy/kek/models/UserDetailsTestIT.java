@@ -63,7 +63,7 @@ public class UserDetailsTestIT extends AbstractTestNGSpringContextTests {
         Optional<User> userOptional = userRepository.findById(user.getIdUser());
         assertNotNull(userOptional.orElse(null));
 
-       UserDetails userDetails = (UserDetails) userOptional.get().getUserDetails();
+        UserDetails userDetails = (UserDetails) userOptional.get().getUserDetails();
 
         assertEquals(userOptional.get().getIdUser(), userDetails.getIdUser());
     }

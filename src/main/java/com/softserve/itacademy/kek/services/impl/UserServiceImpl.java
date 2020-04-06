@@ -144,10 +144,10 @@ public class UserServiceImpl implements IUserService {
     public IUser getByEmail(String email) throws UserServiceException {
         logger.info("Getting User from DB by email: email = {}", email);
 
-        final User userFromDB = userRepository.findByEmail(email).orElseThrow(()->{
-        logger.error("User was not received from DB: by email {}", email);
-        throw new UserServiceException("An error occurred while getting the user from " +
-                "the Database by email {}" + email, new NoSuchElementException());
+        final User userFromDB = userRepository.findByEmail(email).orElseThrow(() -> {
+            logger.error("User was not received from DB: by email {}", email);
+            throw new UserServiceException("An error occurred while getting the user from " +
+                    "the Database by email {}" + email, new NoSuchElementException());
         });
 
         logger.debug("User was found in DB: {}", userFromDB);

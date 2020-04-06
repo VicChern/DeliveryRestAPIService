@@ -52,7 +52,7 @@ public class OrderEventDto implements IOrderEvent {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof OrderEventDto)) return false;
         OrderEventDto that = (OrderEventDto) o;
         return Objects.equals(guid, that.guid) &&
                 Objects.equals(orderId, that.orderId) &&

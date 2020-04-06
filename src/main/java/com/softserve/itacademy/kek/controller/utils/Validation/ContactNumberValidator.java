@@ -22,7 +22,7 @@ public class ContactNumberValidator implements ConstraintValidator<ValidPhone, S
         Phonenumber.PhoneNumber number = null;
 
         try {
-           number = phoneNumberUtil.parse(contactField, null);
+            number = phoneNumberUtil.parse(contactField, null);
         } catch (NumberParseException ex) {
             throw new DataValidationException("Invalid number");
         }

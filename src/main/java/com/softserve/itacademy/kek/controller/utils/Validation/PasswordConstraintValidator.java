@@ -3,10 +3,6 @@ package com.softserve.itacademy.kek.controller.utils.Validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
@@ -50,10 +46,6 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 
         RuleResult result = validator.validate(new PasswordData(password));
 
-        if (result.isValid()) {
-            return true;
-        }
-
-        return false;
+        return result.isValid();
     }
 }
