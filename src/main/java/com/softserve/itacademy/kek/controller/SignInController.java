@@ -57,12 +57,13 @@ public class SignInController {
         final Identity identity;
 
         user = (User) userService.getByEmail(dto.getEmail());
-        identity = (Identity) iIdentityService.read(user.getGuid(), IdentityTypeEnum.KEY);
+        identity = (Identity) iIdentityService.get(user.getGuid(), IdentityTypeEnum.KEY);
 
         boolean isCorrect = passwordEncoder.matches(dto.getPassword(), identity.getPayload());
 
         if (isCorrect) {
             logger.info("Password is correct. Starting user authentication: {}", user);
+
             authenticationService.authenticateKekUser(user);
 
             TokenDto token = new TokenDto(getTokenService.getToken(user.getEmail()));
