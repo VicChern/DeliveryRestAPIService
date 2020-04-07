@@ -1,13 +1,11 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +15,14 @@ import com.softserve.itacademy.kek.models.IOrderDetails;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Actor;
-import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Order;
 import com.softserve.itacademy.kek.models.impl.OrderDetails;
 import com.softserve.itacademy.kek.models.impl.OrderEvent;
 import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.OrderRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.services.IActorRoleService;
 import com.softserve.itacademy.kek.services.IActorService;
 import com.softserve.itacademy.kek.services.IOrderEventService;
 import com.softserve.itacademy.kek.services.IOrderService;
@@ -39,60 +35,54 @@ import com.softserve.itacademy.kek.services.IUserService;
 @Service
 public class OrderServiceImpl implements IOrderService {
 
-    private final static Logger logger = LoggerFactory.getLogger(IOrderService.class);
+    private final static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     private final OrderRepository orderRepository;
-    private final TenantRepository tenantRepository;
+    private final ActorRepository actorRepository;
     private final IUserService userService;
     private final ITenantService tenantService;
     private final IActorService actorService;
-    private final IActorRoleService actorRoleService;
     private final IOrderEventService orderEventService;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
-                            TenantRepository tenantRepository,
+                            ActorRepository actorRepository,
                             IUserService userService,
                             ITenantService tenantService,
                             IActorService actorService,
-                            IActorRoleService actorRoleService,
                             IOrderEventService orderEventService) {
         this.orderRepository = orderRepository;
-        this.tenantRepository = tenantRepository;
+        this.actorRepository = actorRepository;
         this.userService = userService;
         this.tenantService = tenantService;
         this.actorService = actorService;
-        this.actorRoleService = actorRoleService;
         this.orderEventService = orderEventService;
     }
 
     @Transactional
     @Override
-    public IOrder create(IOrder iOrder, UUID customerGuid) throws OrderServiceException {
-        logger.info("Insert order into DB: customerGuid = {}", customerGuid);
-
-        final User customer = (User) userService.getByGuid(customerGuid);
-        final Tenant tenant = (Tenant) tenantService.getByGuid(iOrder.getTenant().getGuid());
-        final Order actualOrder = transform(iOrder, tenant);
-        final Order savedOrder;
+    public IOrder create(IOrder order, UUID customerGuid) throws OrderServiceException {
+        logger.info("Insert order into DB: order = {}, customerGuid = {}", order, customerGuid);
 
         try {
-            savedOrder = orderRepository.saveAndFlush(actualOrder);
+            final User customer = (User) userService.getByGuid(customerGuid);
 
-            logger.debug("Order was inserted into DB: {}", savedOrder);
-        } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while inserting order into DB: " + actualOrder, ex);
+            final UUID tenantGuid = order.getTenant().getGuid();
+            final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
+
+            final Order actualOrder = transform(order, tenant);
+
+            final Order insertedOrder = orderRepository.saveAndFlush(actualOrder);
+
+            logger.debug("Order was inserted into DB: {}", insertedOrder);
+
+            createOrderEvent(insertedOrder, customer);
+
+            return insertedOrder;
+        } catch (Exception ex) {
+            logger.error("Error while inserting order into DB: " + order, ex);
             throw new OrderServiceException("An error occurred while inserting order", ex);
         }
-
-        final ActorRole actorRole = (ActorRole) actorRoleService.getByName(ActorRoleEnum.CUSTOMER.name());
-        final Actor savedActor = actorService.create(tenant, customer, actorRole);
-
-        OrderEvent orderEvent = createOrderEvent();
-
-        OrderEvent savedOrderEvent = (OrderEvent) orderEventService.createOrderEvent(savedOrder.getGuid(), savedActor.getUser().getGuid(), orderEvent);
-
-        return savedOrder;
     }
 
     @Transactional(readOnly = true)
@@ -106,7 +96,7 @@ public class OrderServiceImpl implements IOrderService {
             logger.debug("Orders were read from DB");
 
             return (List<IOrder>) orderList;
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while getting orders from DB", ex);
             throw new OrderServiceException("An error occurred while getting orders", ex);
         }
@@ -123,7 +113,7 @@ public class OrderServiceImpl implements IOrderService {
             logger.debug("Order was found in DB: {}", order);
 
             return order;
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while getting order from DB: " + guid, ex);
             throw new OrderServiceException("An error occurred while getting order", ex);
         }
@@ -140,7 +130,7 @@ public class OrderServiceImpl implements IOrderService {
             logger.debug("A list of orders for tenant was read from DB: tenantGuid = {}", guid);
 
             return (List<IOrder>) orders;
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while getting a list of orders for tenant from DB: tenantGuid = " + guid, ex);
             throw new OrderServiceException("An error occurred while getting orders", ex);
         }
@@ -149,34 +139,28 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional
     @Override
     public IOrder update(IOrder order, UUID guid) throws OrderServiceException {
-        logger.info("Update order in DB: guid = {}", guid);
+        logger.info("Update order in DB: guid = {}, order = {}", guid, order);
 
-        final Order actualOrder;
-        try {
-            actualOrder = orderRepository.findByGuid(guid);
-        } catch (DataAccessException e) {
-            logger.error("Order with guid: {}, wasn`t found", guid);
-            throw new OrderServiceException("Order with guid: " + guid + ", wasn`t found");
-        }
-
-        final IOrderDetails orderDetails = order.getOrderDetails();
-        final OrderDetails actualDetails = (OrderDetails) actualOrder.getOrderDetails();
-
-        actualDetails.setPayload(orderDetails.getPayload());
-        actualDetails.setImageUrl(orderDetails.getImageUrl());
-        actualDetails.setOrder(actualOrder);
-
-        actualOrder.setOrderDetails(actualDetails);
-        actualOrder.setSummary(order.getSummary());
+        final Order actualOrder = (Order) getByGuid(guid);
 
         try {
+            final IOrderDetails orderDetails = order.getOrderDetails();
+            final OrderDetails actualDetails = (OrderDetails) actualOrder.getOrderDetails();
+
+            actualDetails.setPayload(orderDetails.getPayload());
+            actualDetails.setImageUrl(orderDetails.getImageUrl());
+            actualDetails.setOrder(actualOrder);
+
+            actualOrder.setOrderDetails(actualDetails);
+            actualOrder.setSummary(order.getSummary());
+
             Order updatedOrder = orderRepository.saveAndFlush(actualOrder);
 
             logger.debug("Order was updated in DB: {}", updatedOrder);
 
             return updatedOrder;
-        } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while updating order in DB: " + actualOrder, ex);
+        } catch (Exception ex) {
+            logger.error("Error while updating order in DB: " + order, ex);
             throw new OrderServiceException("An error occurred while updating order", ex);
         }
     }
@@ -186,37 +170,45 @@ public class OrderServiceImpl implements IOrderService {
     public void deleteByGuid(UUID guid) throws OrderServiceException {
         logger.info("Delete order from DB: guid = {}", guid);
 
-        final Order actualOrder;
-
-        try {
-            actualOrder = orderRepository.findByGuid(guid);
-        } catch (DataAccessException ex) {
-            logger.error("Error while getting order from DB: " + guid, ex);
-            throw new OrderServiceException("An error occurred while getting order");
-        }
+        final Order actualOrder = (Order) getByGuid(guid);
 
         try {
             orderRepository.deleteById(actualOrder.getIdOrder());
             orderRepository.flush();
 
             logger.debug("Order was deleted from DB: {}", actualOrder);
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while deleting order from DB: " + actualOrder, ex);
             throw new OrderServiceException("An error occurred while deleting order", ex);
         }
     }
 
-    @Transactional
-    private OrderEvent createOrderEvent() {
-        OrderEvent orderEvent = new OrderEvent();
+    private OrderEvent createOrderEvent(Order order, User customer) {
+        logger.info("Insert order event into DB: order = {}, customer = {}", order, customer);
 
-        OrderEventType orderEventType = new OrderEventType();
-        orderEventType.setName(EventTypeEnum.CREATED.toString());
+        final UUID tenantGuid = order.getTenant().getGuid();
+        final UUID customerGuid = customer.getGuid();
 
+        Actor actor = actorRepository.findByTenantGuidAndUserGuidAndActorRolesName(
+                tenantGuid, customerGuid, ActorRoleEnum.CUSTOMER.toString()).orElse(null);
+
+        if (actor == null) {
+            actor = (Actor) actorService.create(order.getTenant(), customer, ActorRoleEnum.CUSTOMER);
+        }
+
+        final OrderEventType orderEventType = new OrderEventType();
+        orderEventType.setName(EventTypeEnum.CREATED.name());
+
+        final OrderEvent orderEvent = new OrderEvent();
         orderEvent.setOrderEventType(orderEventType);
-        orderEvent.setPayload("{lat: 0, lng: 0}");
+        orderEvent.setPayload("{}");
 
-        return orderEvent;
+        final OrderEvent insertedOrderEvent =
+                (OrderEvent) orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEvent);
+
+        logger.debug("Order event was inserted into DB: order = {}, user = {}", insertedOrderEvent, customer);
+
+        return insertedOrderEvent;
     }
 
     private Order transform(IOrder iOrder, Tenant tenant) {

@@ -1,27 +1,30 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.ActorServiceException;
 import com.softserve.itacademy.kek.models.IActor;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
+import com.softserve.itacademy.kek.services.IActorRoleService;
 import com.softserve.itacademy.kek.services.IActorService;
+import com.softserve.itacademy.kek.services.ITenantService;
+import com.softserve.itacademy.kek.services.IUserService;
 
 
 /**
@@ -33,75 +36,80 @@ public class ActorServiceImpl implements IActorService {
     private final static Logger logger = LoggerFactory.getLogger(ActorServiceImpl.class);
 
     private final ActorRepository actorRepository;
+    private final IActorRoleService actorRoleService;
+    private final ITenantService tenantService;
+    private final IUserService userService;
 
     @Autowired
-    public ActorServiceImpl(ActorRepository actorRepository) {
+    public ActorServiceImpl(ActorRepository actorRepository,
+                            IActorRoleService actorRoleService,
+                            ITenantService tenantService,
+                            IUserService userService) {
         this.actorRepository = actorRepository;
+        this.actorRoleService = actorRoleService;
+        this.tenantService = tenantService;
+        this.userService = userService;
     }
 
     @Transactional
     @Override
-    public Actor create(Tenant tenant, User user, ActorRole actorRole) throws ActorServiceException {
-        logger.info("Insert actor into DB: tenantGuid = {}, userGuid = {}, roleName = {}",
-                tenant.getGuid(), user.getGuid(), actorRole.getName());
-
-        final Actor actor = new Actor();
-
-        actor.setTenant(tenant);
-        actor.setUser(user);
-        actor.setActorRoles(Collections.singletonList(actorRole));
-        actor.setGuid(UUID.randomUUID());
-        actor.setAlias("Actor alias");
+    public IActor create(ITenant tenant, IUser user, ActorRoleEnum actorRole) throws ActorServiceException {
+        logger.info("Insert actor into DB: tenant = {}, user = {}, actorRole = {}", tenant, user, actorRole);
 
         try {
+            final Tenant actualTenant = (Tenant) tenantService.getByGuid(tenant.getGuid());
+            final User actualUser = (User) userService.getByGuid(user.getGuid());
+            final ActorRole role = (ActorRole) actorRoleService.getByName(actorRole.name());
+
+            final Actor actor = new Actor();
+            actor.setTenant(actualTenant);
+            actor.setUser(actualUser);
+            actor.setActorRoles(Collections.singletonList(role));
+            actor.setGuid(UUID.randomUUID());
+            actor.setAlias("Actor alias");
+
             final Actor insertedActor = actorRepository.saveAndFlush(actor);
 
-            logger.debug("Actor was inserted into DB: tenantGuid = {}, userGuid = {}, insertedActor = {}",
-                    tenant.getGuid(), user.getGuid(), insertedActor);
+            logger.debug("Actor was inserted into DB: {}", insertedActor);
 
             return insertedActor;
-        } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while inserting actor into DB: actor = " + actor, ex);
+        } catch (Exception ex) {
+            logger.error("Error while inserting actor into DB", ex);
             throw new ActorServiceException("An error occurred while inserting actor", ex);
         }
     }
 
+    @Transactional(readOnly = true)
+    @Override
     public IActor getByGuid(UUID guid) throws ActorServiceException {
         logger.info("Get actor from DB by guid: {}", guid);
 
-        final Optional<Actor> actor;
-
         try {
-            actor = actorRepository.findByGuid(guid);
+            final Actor actor = actorRepository.findByGuid(guid)
+                    .orElseThrow(() -> new NoSuchElementException("Actor was not found in DB"));
 
-            logger.debug("Actor was read from DB: {}", actor);
+            logger.debug("Actor was gotten from DB: {}", actor);
+
+            return actor;
         } catch (Exception ex) {
-            logger.error("Error while getting actor from DB", ex);
+            logger.error("Error while getting actor from DB by guid: " + guid, ex);
             throw new ActorServiceException("An error occurred while getting actor", ex);
         }
-
-        if (actor.isEmpty()) {
-            Exception ex = new NoSuchElementException();
-            logger.error("Actor was not found in DB", ex);
-            throw new ActorServiceException("Actor was not found", ex);
-        }
-
-        return actor.get();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<IActor> getAllByTenantGuid(UUID guid) throws ActorServiceException {
-        logger.info("Get a list of actors for tenant from DB: tenantGuid = {}", guid);
+        logger.info("Get all actors for tenant from DB: tenantGuid = {}", guid);
 
         try {
             final List<? extends IActor> actors = actorRepository.findAllByTenantGuid(guid);
 
-            logger.debug("A list of actors for tenant was gotten from DB: tenantGuid = {}", guid);
+            logger.debug("All actors for tenant was gotten from DB: tenantGuid = {}", guid);
 
             return (List<IActor>) actors;
-        } catch (DataAccessException ex) {
-            logger.error("Error while getting a list of actors for tenant from DB: tenantGuid = " + guid, ex);
+        } catch (Exception ex) {
+            logger.error("Error while getting all actors for tenant from DB: tenantGuid = " + guid, ex);
             throw new ActorServiceException("An error occurred while getting actors for tenant", ex);
         }
     }

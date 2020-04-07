@@ -88,7 +88,7 @@ public class ActorServiceTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void createSuccess() {
         //when
-        Actor createActor = actorService.create(tenant, user, actorRole1);
+        Actor createActor = (Actor) actorService.create(tenant, user, ActorRoleEnum.CUSTOMER);
 
         //then
         assertNotNull(createActor);

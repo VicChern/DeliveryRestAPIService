@@ -156,7 +156,7 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
 
         final OrderEvent orderEvent = getOrderEvent(orderRepository.findByGuid(order.getGuid()), orderEventTypeAssigned, createdCurrier);
 
-        final IOrderEvent createdOrderEvent = orderEventService.create(orderEvent, order.getGuid());
+        final IOrderEvent createdOrderEvent = orderEventService.create(order.getGuid(), user.getGuid(), orderEvent);
 
         //than
         final IOrderEvent foundOrderEvent = orderEventRepository.findByGuid(createdOrderEvent.getGuid()).orElse(null);
@@ -194,12 +194,12 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     public void createOrderEventSuccess() {
         //when
         // orderEvent1 with OrderEventType CREATED is created when order is saved, so we don`t need to save it
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
 
         //then
         assertEquals(orderEventRepository.findAll().size(), 7);
@@ -218,13 +218,13 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void getLastAddedEventSuccess() {
         //given
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
 
-        final IOrderEvent lastSavedEvent = orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
+        final IOrderEvent lastSavedEvent = orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
 
         //when
         final OrderEvent lastAddedEvent = (OrderEvent) orderEventService.getLastAddedEvent(order.getGuid());
@@ -236,12 +236,12 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void getAllEventsForOrder() {
         //given
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
 
         //when
         final List<IOrderEvent> orderEventList = orderEventService.getAllEventsForOrder(order.getGuid());
@@ -261,11 +261,11 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void ifOrderEventCanBeTrackedSuccess() {
         //given
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
 
         //when
         final boolean canBeTracked = orderEventService.ifOrderEventCanBeTracked(order.getGuid());
@@ -276,12 +276,12 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void ifOrderEventCanBeTrackedNotSuccess() {
         //given
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventDelivered);
 
         //when
         final boolean canBeTracked = orderEventService.ifOrderEventCanBeTracked(order.getGuid());
@@ -294,11 +294,11 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
     @Transactional
     public void findAllThatDeliveringNow() {
         //given
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventAssigned);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order.getGuid(), actor.getUser().getGuid(), orderEventStarted);
 
         final User customer2 = userRepository.save(createOrdinaryUser(3));
         final Order order2 = (Order) orderService.create(getOrder(tenant), customer2.getGuid());
@@ -307,11 +307,11 @@ public class OrderEventServiceIT extends AbstractTestNGSpringContextTests {
         orderEventAssigned = getOrderEvent(orderRepository.findByGuid(order2.getGuid()), orderEventTypeAssigned, actor2);
         orderEventStarted = getOrderEvent(orderRepository.findByGuid(order2.getGuid()), orderEventTypeStarted, actor2);
 
-        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventAssigned);
-        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
-        orderEventService.createOrderEvent(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order2.getGuid(), actor2.getUser().getGuid(), orderEventAssigned);
+        orderEventService.create(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
+        orderEventService.create(order2.getGuid(), actor2.getUser().getGuid(), orderEventStarted);
 
         //when
         final List<IOrderEvent> orderEvents = orderEventService.findAllThatDeliveringNow();

@@ -38,6 +38,16 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
     Optional<Actor> findByUserGuid(UUID guid);
 
     /**
+     * Retrieves an Actor by tenant, user, and role.
+     *
+     * @param tenantGuid tenant guid
+     * @param userGuid   user guid
+     * @param roleName   role name
+     * @return actor
+     */
+    Optional<Actor> findByTenantGuidAndUserGuidAndActorRolesName(UUID tenantGuid, UUID userGuid, String roleName);
+
+    /**
      * Retrieves an Actor by its tenant guid.
      *
      * @param guid

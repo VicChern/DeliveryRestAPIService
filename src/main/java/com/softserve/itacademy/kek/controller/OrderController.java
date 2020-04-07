@@ -207,7 +207,7 @@ public class OrderController extends DefaultController {
         final String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         final IUser user = userService.getByEmail(email);
 
-        IOrderEvent createdOrderEvent = orderEventService.createOrderEvent(UUID.fromString(guid),
+        IOrderEvent createdOrderEvent = orderEventService.create(UUID.fromString(guid),
                 user.getGuid(),
                 orderEventDto);
 
