@@ -13,8 +13,6 @@ import com.softserve.itacademy.kek.models.impl.UserDetails;
 @Mapper
 public interface IOrderDetailsMapper {
 
-    IOrderDetailsMapper INSTANCE = Mappers.getMapper(IOrderDetailsMapper.class);
-
     /**
      * Transform {@link IOrderDetails} to {@link OrderDetailsDto}
      *

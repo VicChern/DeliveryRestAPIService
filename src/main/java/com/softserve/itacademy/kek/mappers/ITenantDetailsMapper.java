@@ -13,8 +13,6 @@ import com.softserve.itacademy.kek.models.impl.TenantDetails;
 @Mapper
 public interface ITenantDetailsMapper {
 
-    ITenantDetailsMapper INSTANCE = Mappers.getMapper(ITenantDetailsMapper.class);
-
     /**
      * Transform {@link ITenantDetails} to {@link TenantDetailsDto}
      *
