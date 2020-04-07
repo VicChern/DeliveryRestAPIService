@@ -26,7 +26,7 @@ import com.softserve.itacademy.kek.services.IAuthenticationService;
 @PropertySource("classpath:server.properties")
 public class AuthenticationServiceImpl implements IAuthenticationService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
     @Value(value = "${redirect.from.auth0}")
     private String redirectAuth0URL;

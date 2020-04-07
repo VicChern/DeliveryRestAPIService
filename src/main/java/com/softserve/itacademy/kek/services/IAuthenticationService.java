@@ -7,34 +7,34 @@ import java.io.IOException;
 import com.softserve.itacademy.kek.models.IUser;
 
 /**
- * Service for Authentication
+ * Service interface for user authentication
  */
 public interface IAuthenticationService {
 
     /**
-     * Creates url for redirecting after request
+     * Creates redirect URL to Auth0
      *
      * @param request  request
-     * @param response request
-     * @return string with url
+     * @param response response
+     * @return redirect URL
      */
     String createRedirectUrl(HttpServletRequest request, HttpServletResponse response);
 
     /**
-     * Creates request and returns a string with user
+     * Called when user authenticated using Auth0
      *
      * @param request  request
      * @param response response
-     * @return returns string with user
-     * @throws IOException IOException
+     * @return success authentication URL
+     * @throws IOException if an error occurred
      */
     String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
-     * Creates request and returns a string with User
+     * Called when user authenticated using name/password
      *
-     * @param user user
-     * @return return response of user authentication
+     * @param user user data
+     * @return success authentication URL
      */
     String authenticateKekUser(IUser user);
 }

@@ -19,7 +19,7 @@ import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
 public class CreateUserServiceImpl implements ICreateUserService {
-    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(CreateUserServiceImpl.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
