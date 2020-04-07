@@ -10,9 +10,12 @@ import org.testng.annotations.Test;
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
+import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 import com.softserve.itacademy.kek.models.impl.ActorRole;
+import com.softserve.itacademy.kek.models.impl.IdentityType;
 import com.softserve.itacademy.kek.models.impl.OrderEventType;
 import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
+import com.softserve.itacademy.kek.repositories.IdentityTypeRepository;
 import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 
 
@@ -20,10 +23,15 @@ import com.softserve.itacademy.kek.repositories.OrderEventTypeRepository;
 public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
 
     @Autowired
+    private IdentityTypeRepository identityTypeRepository;
+
+    @Autowired
     private ActorRoleRepository actorRoleRepository;
 
     @Autowired
     private OrderEventTypeRepository orderEventTypeRepository;
+
+    private IdentityType identityType1;
 
     private ActorRole actorRole1;
     private ActorRole actorRole2;
@@ -36,6 +44,9 @@ public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
+
+        identityType1 = new IdentityType();
+        identityType1.setName(IdentityTypeEnum.KEY.toString());
 
         actorRole1 = new ActorRole();
         actorRole1.setName(ActorRoleEnum.CUSTOMER.toString());
@@ -57,12 +68,15 @@ public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
 
     @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
+        identityTypeRepository.deleteAll();
         actorRoleRepository.deleteAll();
         orderEventTypeRepository.deleteAll();
     }
 
     @Test(groups = {"integration-tests"})
     public void saveActorRolesAndOrderEventTypesToDb() {
+
+        identityTypeRepository.save(identityType1);
 
         actorRoleRepository.save(actorRole1);
         actorRoleRepository.save(actorRole2);
