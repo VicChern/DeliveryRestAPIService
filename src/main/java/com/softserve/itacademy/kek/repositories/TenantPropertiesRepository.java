@@ -16,16 +16,7 @@ public interface TenantPropertiesRepository extends JpaRepository<TenantProperti
      * Retrieves a tenant by its guid.
      *
      * @param guid
-     * @return the tenant properties with the given guid or {@literal Optional#empty()} if none found
-     */
-    Optional<TenantProperties> findByGuid(UUID guid);
-
-    /**
-     * Retrieves a tenant by its guid.
-     *
-     * @param guid
      * @return the tenant properties with the given guid and tenant guid or {@literal Optional#empty()} if none found
      */
     Optional<TenantProperties> findByGuidAndTenantGuid(UUID guid, UUID tenantGuid);
-
 }
