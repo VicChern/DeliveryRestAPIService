@@ -317,14 +317,14 @@ public class TenantControllerTest {
 
     @Test
     public void addTenantAddressesTest() throws Exception {
-        when(addressService.createForTenant(any(IAddress.class), any(UUID.class))).thenReturn(address);
+        when(addressService.createForTenant(any(UUID.class), any(IAddress.class))).thenReturn(address);
 
         mockMvc.perform(post("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/addresses")
-                .contentType(KekMediaType.ADDRESS)
-                .accept(KekMediaType.ADDRESS)
+                .contentType(KekMediaType.ADDRESS_LIST)
+                .accept(KekMediaType.ADDRESS_LIST)
                 .content(addressListJson))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(KekMediaType.ADDRESS))
+                .andExpect(content().contentType(KekMediaType.ADDRESS_LIST))
                 .andExpect(jsonPath("$.list[0].guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(jsonPath("$.list[0].alias").value("alias"))
                 .andExpect(jsonPath("$.list[0].address").value("address"))
@@ -346,7 +346,7 @@ public class TenantControllerTest {
 
     @Test
     public void modifyTenantAddressTest() throws Exception {
-        when(addressService.updateForTenant(any(IAddress.class), any(UUID.class), any(UUID.class))).thenReturn(address);
+        when(addressService.updateForTenant(any(UUID.class), any(UUID.class), any(IAddress.class))).thenReturn(address);
 
         mockMvc.perform(put("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/addresses/48c5db5c-af58-4350-874e-b99b33c6af86")
                 .contentType(KekMediaType.ADDRESS)

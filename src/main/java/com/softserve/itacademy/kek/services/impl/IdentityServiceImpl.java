@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -8,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.IdentityServiceException;
 import com.softserve.itacademy.kek.models.IIdentity;
@@ -101,7 +101,7 @@ public class IdentityServiceImpl implements IIdentityService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public IIdentity get(UUID userGuid, IdentityTypeEnum type) throws IdentityServiceException {
         logger.info("Get identity from DB: userGuid = {}, type = {}", userGuid, type);

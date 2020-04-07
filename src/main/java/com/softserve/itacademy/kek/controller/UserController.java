@@ -192,7 +192,7 @@ public class UserController extends DefaultController {
         ListWrapperDto<AddressDto> createdAddresses = new ListWrapperDto<>();
 
         for (AddressDto newAddress : newAddressesDto.getList()) {
-            IAddress createdAddress = addressService.createForUser(newAddress, UUID.fromString(guid));
+            IAddress createdAddress = addressService.createForUser(UUID.fromString(guid), newAddress);
             AddressDto addressDto = IAddressMapper.INSTANCE.toAddressDto(createdAddress);
 
             createdAddresses.addKekItem(addressDto);
@@ -243,7 +243,7 @@ public class UserController extends DefaultController {
                                                         @RequestBody @Valid AddressDto addressDto) {
         logger.info("Accepted modified address of the user {} from the client:\n{}", guid, addressDto);
 
-        IAddress modifiedAddress = addressService.updateForUser(addressDto, UUID.fromString(guid));
+        IAddress modifiedAddress = addressService.updateForUser(UUID.fromString(addrGuid), UUID.fromString(guid), addressDto);
         AddressDto modifiedAddressDto = IAddressMapper.INSTANCE.toAddressDto(modifiedAddress);
 
         logger.info("Sending the modified address of the user {} to the client:\n{}", guid, modifiedAddressDto);
