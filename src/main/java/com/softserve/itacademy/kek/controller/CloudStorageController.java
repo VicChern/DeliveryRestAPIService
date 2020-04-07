@@ -50,7 +50,7 @@ public class CloudStorageController {
 
         logger.info("Sending the url to uploaded data in Cloud Storage:\n{}", url);
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.CREATED)
                 .body(url);
     }
 
