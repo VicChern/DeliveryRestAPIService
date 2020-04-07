@@ -41,7 +41,7 @@ public interface IOrderEventMapper {
      */
 
     @Named("getOrderEventType")
-    default OrderEventTypesDto getOrderEventType(IOrderEventType orderEventType){
+    default OrderEventTypesDto getOrderEventType(IOrderEventType orderEventType) {
         return OrderEventTypesDto.valueOf(orderEventType.getName());
     }
 

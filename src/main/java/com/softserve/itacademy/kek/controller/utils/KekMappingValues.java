@@ -11,5 +11,5 @@ public class KekMappingValues {
     public final static String REGISTRATION = "/registration";
     public final static String SIGNIN = "/signin";
     public final static String PROFILE = "/profile";
-    public final static String  ORDERS_GUID_TRACKING = "/tracking/orders/{orderGuid}";
+    public final static String ORDERS_GUID_TRACKING = "/tracking/orders/{orderGuid}";
 }

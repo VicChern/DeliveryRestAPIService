@@ -1,7 +1,6 @@
 package com.softserve.itacademy.kek.mappers;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import com.softserve.itacademy.kek.dto.OrderDetailsDto;
 import com.softserve.itacademy.kek.models.IOrderDetails;
