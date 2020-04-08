@@ -233,7 +233,14 @@ public class UserServiceImpl implements IUserService {
 
             logger.debug("ACTOR role was checked");
 
+            final Optional<User> existUser = userRepository.findByGuid(user.get().getGuid());
+
+            if (existUser.isPresent() && existUser.get().getIdUser() == 1) {
+                authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            }
+
             return authorityList;
+
         } catch (Exception ex) {
             logger.error("Error while getting user authorities", ex);
             throw new UserServiceException("An error occurred while getting user data", ex);
