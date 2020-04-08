@@ -12,32 +12,32 @@ import com.softserve.itacademy.kek.exception.UserServiceException;
 import com.softserve.itacademy.kek.models.IUser;
 
 /**
- * Service for work with user
+ * Service interface for users
  */
 public interface IUserService {
     /**
      * Inserts new user to db
      *
-     * @param userData user data
+     * @param user user data
      * @return inserted user data
-     * @throws UserServiceException
+     * @throws UserServiceException if an error occurred
      */
-    IUser create(IUser userData) throws UserServiceException;
+    IUser create(IUser user) throws UserServiceException;
 
     /**
      * Updates user
      *
-     * @param userData user data
+     * @param user user data
      * @return updated user data
-     * @throws UserServiceException
+     * @throws UserServiceException if an error occurred
      */
-    IUser update(IUser userData) throws UserServiceException;
+    IUser update(IUser user) throws UserServiceException;
 
     /**
      * Deletes user in DB by user guid
      *
      * @param guid user guid
-     * @throws UserServiceException
+     * @throws UserServiceException if an error occurred
      */
     void deleteByGuid(UUID guid) throws UserServiceException;
 
@@ -46,7 +46,7 @@ public interface IUserService {
      *
      * @param guid user guid
      * @return user data
-     * @throws UserServiceException
+     * @throws UserServiceException if an error occurred
      */
     IUser getByGuid(UUID guid) throws UserServiceException;
 
@@ -55,6 +55,7 @@ public interface IUserService {
      *
      * @param email user guid
      * @return user data
+     * @throws UserServiceException if an error occurred
      */
     IUser getByEmail(String email) throws UserServiceException;
 
@@ -62,7 +63,7 @@ public interface IUserService {
      * Returns all users
      *
      * @return all users
-     * @throws UserServiceException
+     * @throws UserServiceException if an error occurred
      */
     List<IUser> getAll() throws UserServiceException;
 
@@ -71,16 +72,17 @@ public interface IUserService {
      *
      * @param pageable {@code Pageable} definition of page options, must not be {@literal null}.
      * @return a page of {@link IUser}
-     * @throws UserServiceException
+     * @throws UserServiceException if an error occurred
      */
     Page<IUser> getAll(Pageable pageable) throws UserServiceException;
 
     /**
      * Returns user roles
      *
+     * @param email user email
      * @return list of user roles
-     * @throws UserServiceException
+     * @throws UserServiceException if an error occurred
      */
-    Collection<? extends GrantedAuthority> getUserAuthorities(String email);
+    Collection<? extends GrantedAuthority> getUserAuthorities(String email) throws UserServiceException;
 
 }

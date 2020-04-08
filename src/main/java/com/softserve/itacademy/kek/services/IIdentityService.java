@@ -19,19 +19,19 @@ public interface IIdentityService {
      * @param type     identity type
      * @param payload  payload
      * @return inserted user identity
-     * @throws IdentityServiceException
+     * @throws IdentityServiceException if an error occurred
      */
     IIdentity create(UUID userGuid, IdentityTypeEnum type, String payload) throws IdentityServiceException;
 
     /**
-     * Get user identity from db
+     * Gets user identity from db
      *
      * @param userGuid user GUID
      * @param type     predefined identity type
      * @return user password
-     * @throws IdentityServiceException
+     * @throws IdentityServiceException if an error occurred
      */
-    IIdentity read(UUID userGuid, IdentityTypeEnum type) throws IdentityServiceException;
+    IIdentity get(UUID userGuid, IdentityTypeEnum type) throws IdentityServiceException;
 
     /**
      * Updates user identity
@@ -40,16 +40,16 @@ public interface IIdentityService {
      * @param type     identity type
      * @param payload  payload
      * @return Identity
-     * @throws IdentityServiceException
+     * @throws IdentityServiceException if an error occurred
      */
     IIdentity update(UUID userGuid, IdentityTypeEnum type, String payload) throws IdentityServiceException;
 
     /**
-     * Delete user indentity
+     * Deletes user indentity
      *
      * @param userGuid user GUID
      * @param type     identity type
-     * @throws IdentityServiceException
+     * @throws IdentityServiceException if an error occurred
      */
     void delete(UUID userGuid, IdentityTypeEnum type) throws IdentityServiceException;
 }

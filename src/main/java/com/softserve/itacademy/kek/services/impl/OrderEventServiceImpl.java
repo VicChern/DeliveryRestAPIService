@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -40,7 +39,7 @@ import com.softserve.itacademy.kek.services.IUserService;
 @Service
 public class OrderEventServiceImpl implements IOrderEventService {
 
-    private final static Logger logger = LoggerFactory.getLogger(IOrderEventService.class);
+    private final static Logger logger = LoggerFactory.getLogger(OrderEventServiceImpl.class);
 
     private final OrderEventRepository orderEventRepository;
     private final OrderEventTypeRepository orderEventTypeRepository;
@@ -73,96 +72,49 @@ public class OrderEventServiceImpl implements IOrderEventService {
 
     @Transactional
     @Override
-    public IOrderEvent create(IOrderEvent iOrderEvent, UUID orderGuid) throws OrderEventServiceException {
-        logger.info("Insert order event into DB: orderGuid = {}", orderGuid);
-
-        final OrderEvent orderEvent = new OrderEvent();
-
-        final Order order = orderRepository.findByGuid(orderGuid);
-        final Actor actor = (Actor) actorService.getByGuid(iOrderEvent.getActor().getGuid());
-
-        final OrderEventType orderEventType = orderEventTypeRepository.findByName(iOrderEvent.getOrderEventType().getName());
-
-        orderEvent.setOrder(order);
-        orderEvent.setGuid(iOrderEvent.getGuid());
-        orderEvent.setActor(actor);
-        orderEvent.setOrderEventType(orderEventType);
-        orderEvent.setPayload(iOrderEvent.getPayload());
+    public IOrderEvent create(UUID orderGuid, UUID userGuid, IOrderEvent iOrderEvent) throws OrderEventServiceException {
+        logger.info("Insert order event into DB: orderGuid = {}, userGuid = {}, orderEvent = {}",
+                orderGuid, userGuid, iOrderEvent);
 
         try {
+            final Order order = internalGetOrder(orderGuid);
+            final Tenant tenant = (Tenant) tenantService.getByGuid(order.getTenant().getGuid());
+            final Actor actor = getActor(tenant, userGuid, iOrderEvent.getOrderEventType().getName());
+
+            final OrderEventType orderEventType = getOrderEventType(iOrderEvent.getOrderEventType().getName());
+
+            final OrderEvent orderEvent = new OrderEvent();
+            orderEvent.setOrder(order);
+            orderEvent.setGuid(UUID.randomUUID());
+            orderEvent.setActor(actor);
+            orderEvent.setOrderEventType(orderEventType);
+            orderEvent.setPayload(iOrderEvent.getPayload());
+
             final OrderEvent insertedOrderEvent = orderEventRepository.saveAndFlush(orderEvent);
 
             logger.debug("Order event was inserted into DB: {}", insertedOrderEvent);
 
             return insertedOrderEvent;
-        } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while inserting order event in DB: " + orderEvent, ex);
+        } catch (Exception ex) {
+            logger.error("Error while inserting order event in DB", ex);
             throw new OrderEventServiceException("An error occurred while inserting order event", ex);
-        }
-    }
-
-    @Transactional
-    @Override
-    public IOrderEvent createOrderEvent(UUID orderGuid, UUID userGuid, IOrderEvent iOrderEvent) throws OrderEventServiceException {
-        logger.info("Insert order event into DB: orderGuid = {}, userGuid = {}", orderGuid, userGuid);
-
-        final Order order = getOrder(orderGuid);
-        final Tenant tenant = (Tenant) tenantService.getByGuid(order.getTenant().getGuid());
-        final Actor actor = getActor(tenant, userGuid, iOrderEvent.getOrderEventType().getName());
-
-        final OrderEventType orderEventType = getOrderEventType(iOrderEvent.getOrderEventType().getName());
-
-        final OrderEvent orderEvent = new OrderEvent();
-        orderEvent.setOrder(order);
-        orderEvent.setGuid(UUID.randomUUID());
-        orderEvent.setActor(actor);
-        orderEvent.setOrderEventType(orderEventType);
-        orderEvent.setPayload(iOrderEvent.getPayload());
-
-        try {
-            final OrderEvent insertedOrderEvent = orderEventRepository.saveAndFlush(orderEvent);
-
-            logger.debug("Order event was inserted into DB: {}", insertedOrderEvent);
-
-            return insertedOrderEvent;
-        } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while inserting order event in DB: " + orderEvent, ex);
-            throw new OrderEventServiceException("An error occurred while inserting order event", ex);
-        }
-    }
-
-    private Order getOrder(UUID orderGuid) {
-        logger.info("Get order from DB: orderGuid = {}", orderGuid);
-
-        try {
-            final Order order = orderRepository.findByGuid(orderGuid);
-
-            logger.debug("Order was read from DB: {}", order);
-
-            return order;
-        } catch (DataAccessException ex) {
-            logger.error("Error while getting order from DB: orderGuid = " + orderGuid, ex);
-            throw new OrderEventServiceException("An error occurred while getting order", ex);
         }
     }
 
     @Transactional(readOnly = true)
     @Override
     public IOrderEvent getByGuid(UUID guid) throws OrderEventServiceException {
-        logger.info("Get order event from DB: guid = {}", guid);
+        logger.info("Get order event from DB by guid: {}", guid);
 
         try {
-            final OrderEvent orderEvent = orderEventRepository.findByGuid(guid).orElseThrow(() -> {
-                logger.error("Order event was not found in the DB: {}", guid);
-                return new OrderEventServiceException("User was not found in database for guid: " + guid, new NoSuchElementException());
-            });
+            final OrderEvent orderEvent = orderEventRepository.findByGuid(guid).orElseThrow(
+                    () -> new NoSuchElementException("Order event was not found"));
 
             logger.debug("Order event was read from DB: {}", orderEvent);
 
             return orderEvent;
-
-        } catch (DataAccessException ex) {
-            logger.error("Error while getting order event from DB: guid = " + guid, ex);
+        } catch (Exception ex) {
+            logger.error("Error while getting order event from DB by guid: " + guid, ex);
             throw new OrderEventServiceException("An error occurred while getting order event", ex);
         }
     }
@@ -170,36 +122,39 @@ public class OrderEventServiceImpl implements IOrderEventService {
     @Transactional(readOnly = true)
     @Override
     public IOrderEvent getLastAddedEvent(UUID orderGuid) throws OrderEventServiceException {
-        logger.info("Get last added event: orderGuid = {}", orderGuid);
+        logger.info("Get last added order event: orderGuid = {}", orderGuid);
 
-        final OrderEvent orderEvent;
         try {
-            orderEvent = orderEventRepository
+            final OrderEvent orderEvent = orderEventRepository
                     .findDistinctTopByOrderGuidOrderByLastModifiedDateDesc(orderGuid)
-                    .orElseThrow();
-        } catch (NoSuchElementException | DataAccessException ex) {
+                    .orElseThrow(() -> new NoSuchElementException("Order event was not found"));
+
+            logger.debug("Order event was found: {}", orderEvent);
+
+            return orderEvent;
+        } catch (Exception ex) {
             logger.error("Error while getting last added event from DB: orderGuid = " + orderGuid, ex);
             throw new OrderEventServiceException("We can't provide information of this order", ex);
         }
-
-        return orderEvent;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Boolean ifOrderEventCanBeTracked(UUID orderGuid) throws OrderEventServiceException {
         logger.info("Check if order events can be tracked: orderGuid = {}", orderGuid);
 
         try {
             final Boolean started = orderEventRepository
-                    .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventTypeEnum.STARTED.toString());
+                    .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventTypeEnum.STARTED.name());
             final Boolean delivered = orderEventRepository
-                    .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventTypeEnum.DELIVERED.toString());
+                    .existsOrderEventsByOrderGuidAndOrderEventTypeName(orderGuid, EventTypeEnum.DELIVERED.name());
+
+            logger.debug("Order event types were gotten: started = {}, delivered = {}", started, delivered);
 
             Boolean canBeTracked = started && !delivered;
 
             return canBeTracked;
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while checking order events: orderGuid = " + orderGuid, ex);
             throw new OrderEventServiceException("An error occurred while checking order events", ex);
         }
@@ -211,13 +166,13 @@ public class OrderEventServiceImpl implements IOrderEventService {
         logger.info("Get order events from DB: orderGuid = {}", orderGuid);
 
         try {
-            final Order order = orderRepository.findByGuid(orderGuid);
+            final Order order = internalGetOrder(orderGuid);
             final List<? extends IOrderEvent> orderEventList = orderEventRepository.getOrderEventsByOrder(order);
 
-            logger.debug("Order events were read from DB: orderGuid = {}", orderGuid);
+            logger.debug("Order events were read from DB: orderGuid = {}", orderEventList);
 
             return (List<IOrderEvent>) orderEventList;
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while getting order event from DB: orderGuid = " + orderGuid, ex);
             throw new OrderEventServiceException("An error occurred while getting order event", ex);
         }
@@ -226,12 +181,12 @@ public class OrderEventServiceImpl implements IOrderEventService {
     @Transactional
     @Override
     public List<IOrderEvent> findAllThatDeliveringNow() throws OrderEventServiceException {
-        logger.info("Get all order events that delivering now");
+        logger.info("Get all order that delivering now");
 
         try {
             List<? extends IOrderEvent> orderEvents = orderEventRepository.findAllLastAddedOrderEventsForEventType(EventTypeEnum.STARTED.toString());
 
-            logger.info("Order events that delivering now were read from DB");
+            logger.debug("All orders that delivering now were read from DB");
 
             return (List<IOrderEvent>) orderEvents;
         } catch (DataAccessException ex) {
@@ -240,7 +195,21 @@ public class OrderEventServiceImpl implements IOrderEventService {
         }
     }
 
-    // ================================================== private ======================================================
+    private Order internalGetOrder(UUID orderGuid) {
+        logger.info("Get order from DB: orderGuid = {}", orderGuid);
+
+        try {
+            final Order order = orderRepository.findByGuid(orderGuid);
+
+            logger.debug("Order was read from DB: {}", order);
+
+            return order;
+        } catch (Exception ex) {
+            logger.error("Error while getting order from DB: orderGuid = " + orderGuid, ex);
+            throw new OrderEventServiceException("An error occurred while getting order", ex);
+        }
+    }
+
     private OrderEventType getOrderEventType(String name) {
         final OrderEventType orderEventType = orderEventTypeRepository.findByName(name);
 
@@ -252,13 +221,13 @@ public class OrderEventServiceImpl implements IOrderEventService {
         return orderEventType;
     }
 
-    private Actor getActor(Tenant tenant, UUID actorGuid, String eventTypeName) {
-        final Optional<Actor> actorByUserGuid = actorRepository.findByUserGuid(actorGuid);
+    private Actor getActor(Tenant tenant, UUID userGuid, String eventTypeName) {
+        final Optional<Actor> actorByUserGuid = actorRepository.findByUserGuid(userGuid);
 
         //if there isn`t actor for actorGuid or if its actor exist for another tenant
         if (actorByUserGuid.isEmpty() || !actorByUserGuid.get().getTenant().getGuid().equals(tenant.getGuid())) {
 
-            return saveActor(tenant, actorGuid);
+            return saveActor(tenant, userGuid);
 
             //if actor for eventType ASSIGNED does`t have role CURRIER than save it with CURRIER role
         } else if (
@@ -268,7 +237,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
                         actorByUserGuid.get()
                                 .getActorRoles()
                                 .stream()
-                                .noneMatch(actorRole -> actorRole.getName().equals(ActorRoleEnum.CURRIER.toString()))
+                                .noneMatch(actorRole -> actorRole.getName().equals(ActorRoleEnum.CURRIER.name()))
 
         ) {
 
@@ -280,10 +249,9 @@ public class OrderEventServiceImpl implements IOrderEventService {
     }
 
     private Actor saveActor(Tenant tenant, UUID userGuid) {
-        final ActorRole actorRole = (ActorRole) actorRoleService.getByName(ActorRoleEnum.CURRIER.name());
         final User user = (User) userService.getByGuid(userGuid);
 
-        return actorService.create(tenant, user, actorRole);
+        return (Actor) actorService.create(tenant, user, ActorRoleEnum.CURRIER);
     }
 
     private Actor updateActorWithNewRole(Actor actor, ActorRoleEnum actorRoleEnum) {
@@ -298,7 +266,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
             logger.debug("Actor was updated in DB: actor = {}", updatedActor);
 
             return updatedActor;
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while updating Actor in DB: " + actor, ex);
             throw new OrderEventServiceException("An error occurred while updating actor", ex);
         }

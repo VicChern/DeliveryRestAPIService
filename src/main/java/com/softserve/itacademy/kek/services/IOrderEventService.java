@@ -6,40 +6,28 @@ import java.util.UUID;
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.impl.Order;
-import com.softserve.itacademy.kek.models.impl.OrderEvent;
 
 /**
  * Service interface for {@link IOrderEvent}
  */
 public interface IOrderEventService {
-
     /**
-     * Saves order event
+     * Inserts new {@link IOrderEvent} for orderGuid and user guid
      *
-     * @param orderEvent {@link OrderEvent}
-     * @param orderGuid  {@link Order} guid
-     * @return saved {@link OrderEvent} orderEvent
-     * @throws OrderEventServiceException
-     */
-    IOrderEvent create(IOrderEvent orderEvent, UUID orderGuid) throws OrderEventServiceException;
-
-    /**
-     * Saves new {@link IOrderEvent} for orderGuid and customer guid
-     *
-     * @param orderGuid    orderGuid
-     * @param customerGuid customerGuid
-     * @param iOrderEvent  order event
+     * @param orderGuid   order guid
+     * @param userGuid    user guid
+     * @param iOrderEvent order event
      * @return saved order event
-     * @throws OrderEventServiceException
+     * @throws OrderEventServiceException if an error occurred
      */
-    IOrderEvent createOrderEvent(UUID orderGuid, UUID customerGuid, IOrderEvent iOrderEvent) throws OrderEventServiceException;
+    IOrderEvent create(UUID orderGuid, UUID userGuid, IOrderEvent iOrderEvent) throws OrderEventServiceException;
 
     /**
      * Gets order event by {@link IOrderEvent} guid
      *
      * @param guid {@link IOrderEvent} guid
      * @return guid
-     * @throws OrderEventServiceException
+     * @throws OrderEventServiceException if an error occurred
      */
     IOrderEvent getByGuid(UUID guid) throws OrderEventServiceException;
 
@@ -48,7 +36,7 @@ public interface IOrderEventService {
      *
      * @param orderGuid order guid
      * @return last added order event by order guid
-     * @throws OrderEventServiceException
+     * @throws OrderEventServiceException if an error occurred
      */
     IOrderEvent getLastAddedEvent(UUID orderGuid) throws OrderEventServiceException;
 
@@ -57,7 +45,7 @@ public interface IOrderEventService {
      *
      * @param orderGuid order guid
      * @return if {@link IOrderEvent} can be tracked
-     * @throws OrderEventServiceException
+     * @throws OrderEventServiceException if an error occurred
      */
     Boolean ifOrderEventCanBeTracked(UUID orderGuid) throws OrderEventServiceException;
 
@@ -66,7 +54,7 @@ public interface IOrderEventService {
      *
      * @param orderGuid {@link Order} guid
      * @return all OrderEvents for order
-     * @throws OrderEventServiceException
+     * @throws OrderEventServiceException if an error occurred
      */
     List<IOrderEvent> getAllEventsForOrder(UUID orderGuid) throws OrderEventServiceException;
 
@@ -74,7 +62,7 @@ public interface IOrderEventService {
      * Gets all {@link IOrderEvent} that is delivering now
      *
      * @return all {@link IOrderEvent} that is delivering now
-     * @throws OrderEventServiceException
+     * @throws OrderEventServiceException if an error occurred
      */
     List<IOrderEvent> findAllThatDeliveringNow() throws OrderEventServiceException;
 }

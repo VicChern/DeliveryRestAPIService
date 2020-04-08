@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -22,7 +21,7 @@ import com.softserve.itacademy.kek.services.IPropertyTypeService;
 @Service
 public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
-    private final static Logger logger = LoggerFactory.getLogger(IGlobalPropertiesService.class);
+    private final static Logger logger = LoggerFactory.getLogger(GlobalPropertiesServiceImpl.class);
 
     private final GlobalPropertiesRepository globalPropertiesRepository;
     private final IPropertyTypeService propertyTypeService;
@@ -39,20 +38,21 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
     public IGlobalProperty create(IGlobalProperty globalProperty) throws GlobalPropertiesServiceException {
         logger.info("Insert global property into DB: key = {}", globalProperty.getKey());
 
-        final GlobalProperty actualProperties = new GlobalProperty();
-        final PropertyType actualPropertyType = (PropertyType) propertyTypeService.produce(globalProperty.getPropertyType());
-
-        actualProperties.setPropertyType(actualPropertyType);
-        actualProperties.setKey(globalProperty.getKey());
-        actualProperties.setValue(globalProperty.getValue());
-
         try {
+            final String typeName = globalProperty.getPropertyType().getName();
+            final PropertyType actualPropertyType = (PropertyType) propertyTypeService.getByName(typeName);
+
+            final GlobalProperty actualProperties = new GlobalProperty();
+            actualProperties.setPropertyType(actualPropertyType);
+            actualProperties.setKey(globalProperty.getKey());
+            actualProperties.setValue(globalProperty.getValue());
+
             final GlobalProperty insertedGlobalProperty = globalPropertiesRepository.saveAndFlush(actualProperties);
 
             logger.debug("Global property was inserted into DB: {}", insertedGlobalProperty);
 
             return insertedGlobalProperty;
-        } catch (ConstraintViolationException | DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while inserting global property into DB: " + globalProperty, ex);
             throw new GlobalPropertiesServiceException("An error occurs while inserting global property", ex);
         }
@@ -64,19 +64,21 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
         logger.info("Update global property in DB: key = {}", globalProperty.getKey());
 
         final GlobalProperty actualProperties = (GlobalProperty) getByKey(globalProperty.getKey());
-        final PropertyType actualPropertyType = (PropertyType) propertyTypeService.produce(globalProperty.getPropertyType());
-
-        actualProperties.setPropertyType(actualPropertyType);
-        actualProperties.setKey(globalProperty.getKey());
-        actualProperties.setValue(globalProperty.getValue());
 
         try {
+            final String typeName = globalProperty.getPropertyType().getName();
+            final PropertyType actualPropertyType = (PropertyType) propertyTypeService.getByName(typeName);
+
+            actualProperties.setPropertyType(actualPropertyType);
+            actualProperties.setKey(globalProperty.getKey());
+            actualProperties.setValue(globalProperty.getValue());
+
             final GlobalProperty updatedGlobalProperty = globalPropertiesRepository.saveAndFlush(actualProperties);
 
             logger.debug("Global property was updated in DB: {}", updatedGlobalProperty);
 
             return updatedGlobalProperty;
-        } catch (ConstraintViolationException | DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while updating global property in DB: " + actualProperties, ex);
             throw new GlobalPropertiesServiceException("An error occurs while updating global property", ex);
         }
@@ -85,7 +87,7 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
     @Transactional(readOnly = true)
     @Override
     public IGlobalProperty getByKey(String key) throws GlobalPropertiesServiceException {
-        logger.info("Get global property from DB: key = {}", key);
+        logger.info("Get global property from DB by key: {}", key);
 
         try {
             final GlobalProperty globalProperty = globalPropertiesRepository.findByKey(key).orElseThrow(
@@ -112,10 +114,10 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
         try {
             final List<? extends IGlobalProperty> globalPropertiesList = globalPropertiesRepository.findAll();
 
-            logger.debug("Global properties was read from DB");
+            logger.debug("Global properties was gotten from DB");
 
             return (List<IGlobalProperty>) globalPropertiesList;
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while getting all global properties", ex);
             throw new GlobalPropertiesServiceException("An error occurred while getting global properties", ex);
         }
@@ -133,7 +135,7 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
             globalPropertiesRepository.flush();
 
             logger.debug("Global property was deleted from DB: key = {}", key);
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while deleting global property: key = " + key, ex);
             throw new GlobalPropertiesServiceException("An error occurred while deleting global property", ex);
         }

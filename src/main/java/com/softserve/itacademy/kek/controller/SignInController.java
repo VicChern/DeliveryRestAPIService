@@ -31,11 +31,11 @@ import com.softserve.itacademy.kek.services.IUserService;
 public class SignInController {
     private static final Logger logger = LoggerFactory.getLogger(SignInController.class);
 
-    private IUserService userService;
-    private IIdentityService iIdentityService;
-    private PasswordEncoder passwordEncoder;
-    private IAuthenticationService authenticationService;
-    private IGetTokenService getTokenService;
+    private final IUserService userService;
+    private final IIdentityService iIdentityService;
+    private final PasswordEncoder passwordEncoder;
+    private final IAuthenticationService authenticationService;
+    private final IGetTokenService getTokenService;
 
     @Autowired
     public SignInController(IUserService userService, IIdentityService iIdentityService,
@@ -57,12 +57,13 @@ public class SignInController {
         final Identity identity;
 
         user = (User) userService.getByEmail(dto.getEmail());
-        identity = (Identity) iIdentityService.read(user.getGuid(), IdentityTypeEnum.KEY);
+        identity = (Identity) iIdentityService.get(user.getGuid(), IdentityTypeEnum.KEY);
 
         boolean isCorrect = passwordEncoder.matches(dto.getPassword(), identity.getPayload());
 
         if (isCorrect) {
             logger.info("Password is correct. Starting user authentication: {}", user);
+
             authenticationService.authenticateKekUser(user);
 
             TokenDto token = new TokenDto(getTokenService.getToken(user.getEmail()));

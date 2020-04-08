@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -8,7 +7,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +27,7 @@ import com.softserve.itacademy.kek.services.ITenantService;
 @Service
 public class TenantServiceImpl implements ITenantService {
 
-    private final static Logger logger = LoggerFactory.getLogger(ITenantService.class);
+    private final static Logger logger = LoggerFactory.getLogger(TenantServiceImpl.class);
 
     private final TenantRepository tenantRepository;
     private final UserRepository userRepository;
@@ -43,33 +41,27 @@ public class TenantServiceImpl implements ITenantService {
 
     @Transactional
     @Override
-    public ITenant create(ITenant iTenant) throws TenantServiceException {
-        logger.info("Insert Tenant into DB: {}", iTenant);
-
-        final UUID ownerGuid = iTenant.getTenantOwner().getGuid();
-
-        final Tenant tenantForSaving = transform(iTenant);
-        tenantForSaving.setGuid(UUID.randomUUID());
+    public ITenant create(ITenant tenant) throws TenantServiceException {
+        logger.info("Insert tenant into DB: {}", tenant);
 
         try {
-            final User tenantOwner = userRepository.findByGuid(ownerGuid).orElse(null);
+            final Tenant tenantForSaving = transform(tenant);
+            tenantForSaving.setGuid(UUID.randomUUID());
 
-            if (tenantOwner == null) {
-                Exception noSuchElementException = new NoSuchElementException();
-                logger.error("User for Tenant was not found in DB: user.guid = " + ownerGuid, noSuchElementException);
-                throw new TenantServiceException("User for Tenant was not found", noSuchElementException);
-            }
+            final UUID ownerGuid = tenant.getTenantOwner().getGuid();
+            final User owner = userRepository.findByGuid(ownerGuid).orElseThrow(
+                    () -> new NoSuchElementException("User was not found"));
 
-            tenantOwner.setTenant(tenantForSaving);
-            tenantForSaving.setTenantOwner(tenantOwner);
+            owner.setTenant(tenantForSaving);
+            tenantForSaving.setTenantOwner(owner);
 
             final Tenant insertedTenant = tenantRepository.saveAndFlush(tenantForSaving);
 
             logger.debug("Tenant was inserted into DB: {}", insertedTenant);
 
             return insertedTenant;
-        } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while inserting Tenant into DB: " + tenantForSaving, ex);
+        } catch (Exception ex) {
+            logger.error("Error while inserting Tenant into DB: " + tenant, ex);
             throw new TenantServiceException("An error occurred while inserting tenant", ex);
         }
     }
@@ -77,13 +69,16 @@ public class TenantServiceImpl implements ITenantService {
     @Transactional(readOnly = true)
     @Override
     public List<ITenant> getAll() throws TenantServiceException {
-        logger.info("Get all Tenants from DB");
+        logger.info("Get all tenants from DB");
 
         try {
             final List<? extends ITenant> tenants = tenantRepository.findAll();
+
+            logger.debug("All tenants were gotten from DB");
+
             return (List<ITenant>) tenants;
-        } catch (DataAccessException ex) {
-            logger.error("Error while getting all Tenants from DB", ex);
+        } catch (Exception ex) {
+            logger.error("Error while getting all tenants from DB", ex);
             throw new TenantServiceException("An error occurs while getting tenants", ex);
         }
     }
@@ -91,17 +86,17 @@ public class TenantServiceImpl implements ITenantService {
     @Transactional(readOnly = true)
     @Override
     public ITenant getByGuid(UUID guid) throws TenantServiceException {
-        logger.info("Get Tenant from DB by guid: {}", guid);
+        logger.info("Get tenant from DB by guid: {}", guid);
 
         try {
-            final Tenant tenant = tenantRepository.findByGuid(guid).orElseThrow(() -> {
-                logger.error("Tenant wasn't found in the database");
-                return new TenantServiceException("Tenant was not found in database for guid: " + guid, new NoSuchElementException());
-            });
-            return tenant;
+            final Tenant tenant = tenantRepository.findByGuid(guid).orElseThrow(
+                    () -> new NoSuchElementException("Tenant was not found"));
 
-        } catch (DataAccessException ex) {
-            logger.error("Error while getting Tenant from DB by guid: " + guid, ex);
+            logger.debug("Tenant was gotten from DB: {}", tenant);
+
+            return tenant;
+        } catch (Exception ex) {
+            logger.error("Error while getting tenant from DB by guid: " + guid, ex);
             throw new TenantServiceException("An error occurs while getting tenant", ex);
         }
     }
@@ -109,12 +104,15 @@ public class TenantServiceImpl implements ITenantService {
     @Transactional(readOnly = true)
     @Override
     public Page<ITenant> getAllPageable(Pageable pageable) throws TenantServiceException {
-        logger.info("Get a page of Tenants from DB: {}", pageable);
+        logger.info("Get a page of tenants from DB: {}", pageable);
 
         try {
             final Page<? extends ITenant> tenants = tenantRepository.findAll(pageable);
+
+            logger.debug("A page of tenants was gotten from DB");
+
             return (Page<ITenant>) tenants;
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while getting a page of Tenants from DB: " + pageable, ex);
             throw new TenantServiceException("An error occurred while getting tenants", ex);
         }
@@ -122,25 +120,25 @@ public class TenantServiceImpl implements ITenantService {
 
     @Transactional
     @Override
-    public ITenant update(ITenant iTenant, UUID guid) throws TenantServiceException {
-        logger.info("Update Tenant in DB by guid: {}", guid);
+    public ITenant update(ITenant tenant, UUID guid) throws TenantServiceException {
+        logger.info("Update tenant in DB by guid: {}", guid);
 
         final Tenant tenantForUpdating = (Tenant) getByGuid(guid);
 
-        final TenantDetails tenantDetails = (TenantDetails) tenantForUpdating.getTenantDetails();
-        tenantDetails.setPayload(iTenant.getTenantDetails().getPayload());
-        tenantDetails.setImageUrl(iTenant.getTenantDetails().getImageUrl());
-
-        tenantForUpdating.setTenantDetails(tenantDetails);
-        tenantForUpdating.setName(iTenant.getName());
-
         try {
+            final TenantDetails tenantDetails = (TenantDetails) tenantForUpdating.getTenantDetails();
+            tenantDetails.setPayload(tenant.getTenantDetails().getPayload());
+            tenantDetails.setImageUrl(tenant.getTenantDetails().getImageUrl());
+
+            tenantForUpdating.setTenantDetails(tenantDetails);
+            tenantForUpdating.setName(tenant.getName());
+
             final Tenant updatedTenant = tenantRepository.saveAndFlush(tenantForUpdating);
 
             logger.debug("Tenant was updated in DB: {}", updatedTenant);
 
             return updatedTenant;
-        } catch (ConstraintViolationException | DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while updating Tenant in DB: " + tenantForUpdating, ex);
             throw new TenantServiceException("An error occurred while updating tenant", ex);
         }
@@ -149,17 +147,17 @@ public class TenantServiceImpl implements ITenantService {
     @Transactional
     @Override
     public void deleteByGuid(UUID guid) throws TenantServiceException {
-        logger.info("Delete Tenant by guid: {}", guid);
+        logger.info("Delete tenant by guid: {}", guid);
 
         final Tenant tenant = (Tenant) getByGuid(guid);
 
         try {
-            tenantRepository.delete(tenant);
+            tenantRepository.deleteById(tenant.getIdTenant());
             tenantRepository.flush();
 
             logger.debug("Tenant was deleted from DB: {}", tenant);
-        } catch (DataAccessException ex) {
-            logger.error("Error while deleting Tenant from DB: " + tenant, ex);
+        } catch (Exception ex) {
+            logger.error("Error while deleting tenant from DB: " + tenant, ex);
             throw new TenantServiceException("An error occurred while deleting tenant", ex);
         }
     }

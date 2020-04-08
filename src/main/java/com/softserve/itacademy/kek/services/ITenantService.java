@@ -17,11 +17,11 @@ public interface ITenantService {
     /**
      * Saved new {@link ITenant} to db
      *
-     * @param iTenant tenant
+     * @param tenant tenant
      * @return saved tenant
      * @throws TenantServiceException if tenant wasn't saved
      */
-    ITenant create(ITenant iTenant) throws TenantServiceException;
+    ITenant create(ITenant tenant) throws TenantServiceException;
 
     /**
      * Gets tenant by {@link ITenant} guid
@@ -36,7 +36,7 @@ public interface ITenantService {
      * Gets all tenants for principal user
      *
      * @return all tenants for principal user
-     * @throws TenantServiceException
+     * @throws TenantServiceException if an error occurred
      */
     List<ITenant> getAll() throws TenantServiceException;
 
@@ -46,19 +46,19 @@ public interface ITenantService {
      *
      * @param pageable {@code Pageable} object that defines page options, must not be {@literal null}.
      * @return a page of {@link ITenant}
-     * @throws TenantServiceException
+     * @throws TenantServiceException if an error occurred
      */
     Page<ITenant> getAllPageable(Pageable pageable) throws TenantServiceException;
 
     /**
      * Updates {@link ITenant}
      *
-     * @param iTenant iTenant
-     * @param guid    {@link ITenant} guid
+     * @param tenant iTenant
+     * @param guid   {@link ITenant} guid
      * @return updated tenant
-     * @throws TenantServiceException if if tenant wasn't updated
+     * @throws TenantServiceException if tenant wasn't updated
      */
-    ITenant update(ITenant iTenant, UUID guid) throws TenantServiceException;
+    ITenant update(ITenant tenant, UUID guid) throws TenantServiceException;
 
     /**
      * Deletes {@link ITenant} by guid

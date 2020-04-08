@@ -306,8 +306,8 @@ public class TenantController extends DefaultController {
      * @param newAddressesDto object with a list of {@link AddressDto} as a JSON
      * @return Response entity with a list of {@link AddressDto} objects as a JSON
      */
-    @PostMapping(value = KekMappingValues.ADDRESSES, consumes = KekMediaType.ADDRESS,
-            produces = KekMediaType.ADDRESS)
+    @PostMapping(value = KekMappingValues.ADDRESSES, consumes = KekMediaType.ADDRESS_LIST,
+            produces = KekMediaType.ADDRESS_LIST)
     @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<ListWrapperDto<AddressDto>> addTenantAddresses(@PathVariable String guid,
                                                                          @RequestBody @Valid ListWrapperDto<AddressDto> newAddressesDto) {
@@ -315,7 +315,7 @@ public class TenantController extends DefaultController {
         ListWrapperDto<AddressDto> createdAddresses = new ListWrapperDto<>();
 
         for (AddressDto newAddress : newAddressesDto.getList()) {
-            IAddress createdAddress = addressService.createForTenant(newAddress, UUID.fromString(guid));
+            IAddress createdAddress = addressService.createForTenant(UUID.fromString(guid), newAddress);
             AddressDto addressDto = IAddressMapper.INSTANCE.toAddressDto(createdAddress);
 
             createdAddresses.addKekItem(addressDto);
@@ -364,7 +364,7 @@ public class TenantController extends DefaultController {
                                                           @RequestBody @Valid AddressDto tenantAddressDto) {
         logger.info("Accepted modified address of the tenant {} from the client:\n{}", guid, tenantAddressDto);
 
-        IAddress modifiedAddress = addressService.updateForTenant(tenantAddressDto, UUID.fromString(guid), UUID.fromString(addrGuid));
+        IAddress modifiedAddress = addressService.updateForTenant(UUID.fromString(addrGuid), UUID.fromString(guid), tenantAddressDto);
         AddressDto modifiedAddressDto = IAddressMapper.INSTANCE.toAddressDto(modifiedAddress);
 
         logger.info("Sending the modified address of the tenant {} to the client:\n{}", guid, tenantAddressDto);

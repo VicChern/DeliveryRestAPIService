@@ -55,7 +55,10 @@ public class TenantServiceTest {
         tenantService = new TenantServiceImpl(tenantRepository, userRepository);
 
         user = createOrdinaryUser(1);
+        user.setIdUser(1L);
+
         tenant = createOrdinaryTenant(1);
+        tenant.setIdTenant(1L);
         tenant.setTenantOwner(user);
     }
 
@@ -186,12 +189,13 @@ public class TenantServiceTest {
     void deleteByGuidSuccess() {
         //given
         when(tenantRepository.findByGuid(any(UUID.class))).thenReturn(Optional.ofNullable(tenant));
-        doNothing().when(tenantRepository).delete(any(Tenant.class));
+        doNothing().when(tenantRepository).deleteById(any(Long.class));
+        doNothing().when(tenantRepository).flush();
 
         // when
         tenantService.deleteByGuid(tenant.getGuid());
 
-        verify(tenantRepository, times(1)).delete(any(Tenant.class));
+        verify(tenantRepository, times(1)).deleteById(any(Long.class));
     }
 
     @Test(expectedExceptions = ServiceException.class)

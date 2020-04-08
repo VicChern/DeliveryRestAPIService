@@ -191,7 +191,7 @@ public class UserControllerTest {
 
     @Test
     public void addUserAddressesTest() throws Exception {
-        when(addressService.createForUser(any(IAddress.class), any(UUID.class))).thenReturn(address);
+        when(addressService.createForUser(any(UUID.class), any(IAddress.class))).thenReturn(address);
 
         mockMvc.perform(post("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses")
                 .contentType(KekMediaType.ADDRESS_LIST)
@@ -220,7 +220,7 @@ public class UserControllerTest {
 
     @Test
     public void modifyUserAddressTest() throws Exception {
-        when(addressService.updateForUser(any(IAddress.class), any(UUID.class))).thenReturn(address);
+        when(addressService.updateForUser(any(UUID.class), any(UUID.class), any(IAddress.class))).thenReturn(address);
 
         mockMvc.perform(put("/users/820671c6-7e2c-4de3-aeb8-42e6f84e6371/addresses/820671c6-7e2c-4de3-aeb8-42e6f84e6371")
                 .contentType(KekMediaType.ADDRESS)

@@ -19,7 +19,7 @@ public interface IOrderService {
      * @param order        order
      * @param customerGuid customerGuid
      * @return saved order
-     * @throws OrderServiceException
+     * @throws OrderServiceException if an error occurred
      */
     IOrder create(IOrder order, UUID customerGuid) throws OrderServiceException;
 
@@ -27,7 +27,7 @@ public interface IOrderService {
      * Gets all orders
      *
      * @return a list of all orders
-     * @throws OrderServiceException
+     * @throws OrderServiceException if an error occurred
      */
     List<IOrder> getAll() throws OrderServiceException;
 
@@ -36,7 +36,7 @@ public interface IOrderService {
      *
      * @param guid {@link Order} guid
      * @return guid
-     * @throws OrderServiceException
+     * @throws OrderServiceException if an error occurred
      */
     IOrder getByGuid(UUID guid) throws OrderServiceException;
 
@@ -45,7 +45,7 @@ public interface IOrderService {
      *
      * @param guid {@link Tenant} guid
      * @return list of Orders
-     * @throws OrderServiceException
+     * @throws OrderServiceException if an error occurred
      */
 
     List<IOrder> getAllByTenantGuid(UUID guid) throws OrderServiceException;
@@ -56,7 +56,7 @@ public interface IOrderService {
      * @param order
      * @param guid  {@link Order} guid
      * @return updated order
-     * @throws OrderServiceException
+     * @throws OrderServiceException if an error occurred
      */
     IOrder update(IOrder order, UUID guid) throws OrderServiceException;
 
@@ -64,7 +64,7 @@ public interface IOrderService {
      * Deletes order by {@link Order} guid
      *
      * @param guid
-     * @throws OrderServiceException
+     * @throws OrderServiceException if an error occurred
      */
     void deleteByGuid(UUID guid) throws OrderServiceException;
 }
