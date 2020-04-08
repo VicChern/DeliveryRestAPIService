@@ -25,9 +25,9 @@ public class IdentityServiceImpl implements IIdentityService {
 
     private final static Logger logger = LoggerFactory.getLogger(IdentityServiceImpl.class);
 
-    private IdentityRepository identityRepository;
-    private IdentityTypeRepository identityTypeRepository;
-    private IUserService userService;
+    private final IdentityRepository identityRepository;
+    private final IdentityTypeRepository identityTypeRepository;
+    private final IUserService userService;
 
     @Autowired
     public IdentityServiceImpl(IdentityRepository identityRepository,

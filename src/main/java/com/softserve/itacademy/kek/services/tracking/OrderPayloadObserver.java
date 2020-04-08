@@ -24,7 +24,7 @@ public class OrderPayloadObserver {
 
     public final ApplicationEventPublisher eventPublisher;
 
-    private IOrderEventService orderEventService;
+    private final IOrderEventService orderEventService;
 
     @Autowired
     public OrderPayloadObserver(IOrderEventService orderEventService,
