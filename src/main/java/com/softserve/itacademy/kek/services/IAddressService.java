@@ -14,29 +14,30 @@ public interface IAddressService {
     /**
      * Creates tenant address
      *
-     * @param address    address data
      * @param tenantGuid tenant guid
+     * @param address    address data
      * @return created tenant address
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
-    IAddress createForTenant(IAddress address, UUID tenantGuid) throws AddressServiceException;
+    IAddress createForTenant(UUID tenantGuid, IAddress address) throws AddressServiceException;
 
     /**
      * Updates tenant address
      *
-     * @param address    address data
-     * @param tenantGuid tenant guid
+     * @param addressGuid address guid
+     * @param tenantGuid  tenant guid
+     * @param address     address data
      * @return updated tenant address
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
-    IAddress updateForTenant(IAddress address, UUID tenantGuid, UUID addressGuid) throws AddressServiceException;
+    IAddress updateForTenant(UUID addressGuid, UUID tenantGuid, IAddress address) throws AddressServiceException;
 
     /**
      * Deletes tenant address
      *
      * @param addressGuid address guid
      * @param tenantGuid  tenant guid
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
     void deleteForTenant(UUID addressGuid, UUID tenantGuid) throws AddressServiceException;
 
@@ -46,7 +47,7 @@ public interface IAddressService {
      * @param addressGuid address guid
      * @param tenantGuid  tenant guid
      * @return tenant address
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
     IAddress getForTenant(UUID addressGuid, UUID tenantGuid) throws AddressServiceException;
 
@@ -55,36 +56,37 @@ public interface IAddressService {
      *
      * @param tenantGuid tenant guid
      * @return tenant addresses
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
     List<IAddress> getAllForTenant(UUID tenantGuid) throws AddressServiceException;
 
     /**
      * Creates user address
      *
-     * @param address  address data
      * @param userGuid user guid
+     * @param address  address data
      * @return created user address
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
-    IAddress createForUser(IAddress address, UUID userGuid) throws AddressServiceException;
+    IAddress createForUser(UUID userGuid, IAddress address) throws AddressServiceException;
 
     /**
      * Updates user address
      *
-     * @param address  address data
-     * @param userGuid user guid
+     * @param addressGuid user guid
+     * @param userGuid    user guid
+     * @param address     address data
      * @return updated user address
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
-    IAddress updateForUser(IAddress address, UUID userGuid) throws AddressServiceException;
+    IAddress updateForUser(UUID addressGuid, UUID userGuid, IAddress address) throws AddressServiceException;
 
     /**
      * Deletes user address
      *
      * @param addressGuid address guid
      * @param userGuid    user guid
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
     void deleteForUser(UUID addressGuid, UUID userGuid) throws AddressServiceException;
 
@@ -94,7 +96,7 @@ public interface IAddressService {
      * @param addressGuid address guid
      * @param userGuid    user guid
      * @return user address
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
     IAddress getForUser(UUID addressGuid, UUID userGuid) throws AddressServiceException;
 
@@ -103,7 +105,7 @@ public interface IAddressService {
      *
      * @param userGuid user guid
      * @return user addresses
-     * @throws AddressServiceException
+     * @throws AddressServiceException if an error occurred
      */
     List<IAddress> getAllForUser(UUID userGuid) throws AddressServiceException;
 }

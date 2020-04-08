@@ -235,7 +235,7 @@ public class OrderControllerTest {
     public void addEventTest() throws Exception {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(user.getEmail());
-        when(orderEventService.createOrderEvent(any(UUID.class), any(UUID.class), any(IOrderEvent.class)))
+        when(orderEventService.create(any(UUID.class), any(UUID.class), any(IOrderEvent.class)))
                 .thenReturn(orderEvent);
         when(userService.getByEmail(any(String.class))).thenReturn(user);
 

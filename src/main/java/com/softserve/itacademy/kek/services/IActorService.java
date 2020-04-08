@@ -5,10 +5,9 @@ import java.util.UUID;
 
 import com.softserve.itacademy.kek.exception.ActorServiceException;
 import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.impl.Actor;
-import com.softserve.itacademy.kek.models.impl.ActorRole;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.User;
+import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 
 /**
  * Service interface for {@link IActor}
@@ -22,16 +21,16 @@ public interface IActorService {
      * @param user      user
      * @param actorRole role
      * @return created actor
-     * @throws ActorServiceException
+     * @throws ActorServiceException if an error occurred
      */
-    Actor create(Tenant tenant, User user, ActorRole actorRole) throws ActorServiceException;
+    IActor create(ITenant tenant, IUser user, ActorRoleEnum actorRole) throws ActorServiceException;
 
     /**
-     * Gets an actor by guid
+     * Gets actor by guid
      *
      * @param guid guid
      * @return actor
-     * @throws ActorServiceException
+     * @throws ActorServiceException if an error occurred
      */
     IActor getByGuid(UUID guid) throws ActorServiceException;
 
@@ -40,7 +39,7 @@ public interface IActorService {
      *
      * @param guid tenant guid
      * @return a list of actors for tenant
-     * @throws ActorServiceException
+     * @throws ActorServiceException if an error occurred
      */
     List<IActor> getAllByTenantGuid(UUID guid) throws ActorServiceException;
 }

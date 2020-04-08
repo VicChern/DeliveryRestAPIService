@@ -20,7 +20,7 @@ public class IdentityType extends AbstractEntity implements Serializable {
     }
 
     public IdentityType(IdentityTypeEnum identityTypeEnum) {
-        this.name = identityTypeEnum.name();
+        this.name = identityTypeEnum.toString();
     }
 
     @Id

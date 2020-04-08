@@ -14,7 +14,7 @@ public interface ITenantPropertiesService {
     /**
      * Saved tenantProperty for tenant by tenant guid to db
      *
-     * @param tenantProperties tenantProperties for creating
+     * @param tenantProperties tenant properties
      * @param tenantGuid       tenant guid
      * @return created tenantProperties
      * @throws TenantPropertiesServiceException if tenant properties wasn't saved
@@ -36,7 +36,7 @@ public interface ITenantPropertiesService {
      *
      * @param tenantGuid tenant guid
      * @return tenantProperties by tenant guid
-     * @throws TenantPropertiesServiceException
+     * @throws TenantPropertiesServiceException if an error occurred
      */
     List<ITenantProperties> getAllForTenant(UUID tenantGuid) throws TenantPropertiesServiceException;
 
