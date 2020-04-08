@@ -52,6 +52,21 @@ public class TenantDto implements ITenant {
         return tenantDetails;
     }
 
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTenantDetails(TenantDetailsDto tenantDetails) {
+        this.tenantDetails = tenantDetails;
+    }
 
     @Override
     public String toString() {

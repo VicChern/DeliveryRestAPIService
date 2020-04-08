@@ -29,6 +29,14 @@ public class OrderDetailsDto implements IOrderDetails {
         return imageUrl;
     }
 
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -4,14 +4,14 @@ import com.softserve.itacademy.kek.dto.RegistrationDto;
 import com.softserve.itacademy.kek.models.IUser;
 
 /**
- * Service for user creation
+ * Service interface to register user
  */
 public interface ICreateUserService {
 
     /**
-     * Creates a new User
+     * Registers user in system
      *
-     * @param userData userData
+     * @param userData user data
      * @return created user
      */
     IUser createNewUser(RegistrationDto userData);

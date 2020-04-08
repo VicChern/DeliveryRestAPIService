@@ -28,6 +28,14 @@ public class PropertyTypeDto implements IPropertyType {
         return schema;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

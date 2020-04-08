@@ -1,6 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -44,54 +43,50 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public IAddress createForTenant(IAddress address, UUID tenantGuid) throws AddressServiceException {
-        logger.info("Insert tenant address into DB: tenantGuid = {}, address = {}", tenantGuid, address.getAddress());
-
-        final Address actualAddress = new Address();
-        final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
-
-        actualAddress.setGuid(UUID.randomUUID());
-        actualAddress.setAddress(address.getAddress());
-        actualAddress.setAlias(address.getAlias());
-        actualAddress.setNotes(address.getNotes());
-        actualAddress.setTenant(tenant);
+    public IAddress createForTenant(UUID tenantGuid, IAddress address) throws AddressServiceException {
+        logger.info("Insert tenant address into DB: tenantGuid = {}, address = {}", tenantGuid, address);
 
         try {
+            final Address actualAddress = new Address();
+            actualAddress.setGuid(UUID.randomUUID());
+            actualAddress.setAddress(address.getAddress());
+            actualAddress.setAlias(address.getAlias());
+            actualAddress.setNotes(address.getNotes());
+
+            final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
+            actualAddress.setTenant(tenant);
+
             final Address insertedAddress = addressRepository.saveAndFlush(actualAddress);
 
             logger.debug("Tenant address was inserted into DB: tenantGuid = {}, insertedAddress = {}",
                     tenantGuid, insertedAddress);
 
             return insertedAddress;
-        } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while inserting tenant address into DB: " + actualAddress, ex);
+        } catch (Exception ex) {
+            logger.error("Error while inserting tenant address into DB: " + address, ex);
             throw new AddressServiceException("An error occurred while inserting tenant address", ex);
         }
     }
 
     @Transactional
     @Override
-    public IAddress updateForTenant(IAddress address, UUID tenantGuid, UUID addressGuid) throws AddressServiceException {
-        logger.info("Update tenant address in DB: tenantGuid = {}, addressGuid = {}, address = {}",
-                tenantGuid, addressGuid, address.getAddress());
+    public IAddress updateForTenant(UUID addressGuid, UUID tenantGuid, IAddress address) throws AddressServiceException {
+        logger.info("Update tenant address in DB: addressGuid = {}, tenantGuid = {}, address = {}",
+                addressGuid, tenantGuid, address);
 
-        final Address actualAddress = findAddressByGuid(address.getGuid());
-        final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
-
-        checkAddressBelongsTenant(actualAddress, tenant);
-
-        actualAddress.setAddress(address.getAddress());
-        actualAddress.setAlias(address.getAlias());
-        actualAddress.setNotes(address.getNotes());
+        final Address actualAddress = (Address) getForTenant(addressGuid, tenantGuid);
 
         try {
+            actualAddress.setAddress(address.getAddress());
+            actualAddress.setAlias(address.getAlias());
+            actualAddress.setNotes(address.getNotes());
+
             final Address updatedAddress = addressRepository.saveAndFlush(actualAddress);
 
-            logger.debug("Tenant address was updated in DB: tenantGuid = {}, updatedAddress = {}",
-                    tenantGuid, updatedAddress);
+            logger.debug("Tenant address was updated in DB: {}", updatedAddress);
 
             return updatedAddress;
-        } catch (ConstraintViolationException | DataAccessException ex) {
+        } catch (Exception ex) {
             logger.error("Error while updating tenant address in DB: " + actualAddress, ex);
             throw new AddressServiceException("An error occurred while updating tenant address", ex);
         }
@@ -102,19 +97,15 @@ public class AddressServiceImpl implements IAddressService {
     public void deleteForTenant(UUID addressGuid, UUID tenantGuid) throws AddressServiceException {
         logger.info("Delete tenant address from DB: tenantGuid = {}, addressGuid = {}", tenantGuid, addressGuid);
 
-        final Address address = findAddressByGuid(addressGuid);
-        final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
-
-        checkAddressBelongsTenant(address, tenant);
+        final Address address = (Address) getForTenant(addressGuid, tenantGuid);
 
         try {
             addressRepository.deleteById(address.getIdAddress());
             addressRepository.flush();
 
             logger.debug("Tenant address was deleted from DB: tenantGuid = {}, deletedAddress = {}", tenantGuid, address);
-        } catch (DataAccessException ex) {
-            logger.error(String.format("Error while deleting tenant address from DB: tenantGuid = %s, address = %s",
-                    tenantGuid, address), ex);
+        } catch (Exception ex) {
+            logger.error("Error while deleting tenant address from DB", ex);
             throw new AddressServiceException("An error occurred while deleting tenant address", ex);
         }
     }
@@ -124,12 +115,17 @@ public class AddressServiceImpl implements IAddressService {
     public IAddress getForTenant(UUID addressGuid, UUID tenantGuid) throws AddressServiceException {
         logger.info("Get tenant address from DB: tenantGuid = {}, addressGuid = {}", tenantGuid, addressGuid);
 
-        final Address address = findAddressByGuid(addressGuid);
-        final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
+        try {
+            final Address address = addressRepository.findByGuidAndTenantGuid(addressGuid, tenantGuid)
+                    .orElseThrow(() -> new NoSuchElementException("Tenant address was not found"));
 
-        checkAddressBelongsTenant(address, tenant);
+            logger.debug("Tenant address was read from DB: {}", address);
 
-        return address;
+            return address;
+        } catch (Exception ex) {
+            logger.error("Error while getting tenant address from DB", ex);
+            throw new AddressServiceException("An error occurred while getting tenant address", ex);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -140,64 +136,61 @@ public class AddressServiceImpl implements IAddressService {
         try {
             final List<? extends IAddress> addresses = addressRepository.findAllByTenantGuid(tenantGuid);
 
-            logger.debug("Tenant addresses was gotten from DB: tenantGuid = {}", tenantGuid);
+            logger.debug("Tenant addresses were read from DB: tenantGuid = {}", tenantGuid);
 
             return (List<IAddress>) addresses;
-        } catch (DataAccessException ex) {
-            logger.error("Error while getting tenant addresses from DB: tenantGuid = " + tenantGuid, ex);
+        } catch (Exception ex) {
+            logger.error("Error while getting tenant addresses from DB", ex);
             throw new AddressServiceException("An error occurred while getting tenant addresses", ex);
         }
     }
 
     @Transactional
     @Override
-    public IAddress createForUser(IAddress address, UUID userGuid) throws AddressServiceException {
-        logger.info("Insert user address into DB: userGuid = {}, address = {}", userGuid, address.getAddress());
-
-        final Address actualAddress = new Address();
-        final User user = (User) userService.getByGuid(userGuid);
-
-        actualAddress.setGuid(UUID.randomUUID());
-        actualAddress.setAddress(address.getAddress());
-        actualAddress.setAlias(address.getAlias());
-        actualAddress.setNotes(address.getNotes());
-        actualAddress.setUser(user);
+    public IAddress createForUser(UUID userGuid, IAddress address) throws AddressServiceException {
+        logger.info("Insert user address into DB: userGuid = {}, address = {}", userGuid, address);
 
         try {
+            final Address actualAddress = new Address();
+            actualAddress.setGuid(UUID.randomUUID());
+            actualAddress.setAddress(address.getAddress());
+            actualAddress.setAlias(address.getAlias());
+            actualAddress.setNotes(address.getNotes());
+
+            final User user = (User) userService.getByGuid(userGuid);
+            actualAddress.setUser(user);
+
             final Address insertedAddress = addressRepository.saveAndFlush(actualAddress);
 
-            logger.debug("User address was inserted into DB: userGuid = {}, insertedAddress = {}",
-                    userGuid, insertedAddress);
+            logger.debug("User address was inserted into DB: insertedAddress = {}", insertedAddress);
 
             return insertedAddress;
-        } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while inserting user address into DB: " + actualAddress, ex);
+        } catch (Exception ex) {
+            logger.error("Error while inserting user address into DB", ex);
             throw new AddressServiceException("An error occurred while inserting user address", ex);
         }
     }
 
     @Transactional
     @Override
-    public IAddress updateForUser(IAddress address, UUID userGuid) throws AddressServiceException {
-        logger.info("Update user address in DB: userGuid = {}, addressGuid = {}", userGuid, address.getGuid());
+    public IAddress updateForUser(UUID addressGuid, UUID userGuid, IAddress address) throws AddressServiceException {
+        logger.info("Update user address in DB: addressGuid = {}, userGuid = {}, address = {}",
+                addressGuid, userGuid, address);
 
-        final Address actualAddress = findAddressByGuid(address.getGuid());
-        final User user = (User) userService.getByGuid(userGuid);
-
-        checkAddressBelongsUser(actualAddress, user);
-
-        actualAddress.setAddress(address.getAddress());
-        actualAddress.setAlias(address.getAlias());
-        actualAddress.setNotes(address.getNotes());
+        final Address actualAddress = (Address) getForUser(addressGuid, userGuid);
 
         try {
+            actualAddress.setAddress(address.getAddress());
+            actualAddress.setAlias(address.getAlias());
+            actualAddress.setNotes(address.getNotes());
+
             final Address updatedAddress = addressRepository.saveAndFlush(actualAddress);
 
-            logger.debug("User address was updated in DB: userGuid = {}, address = {}", userGuid, updatedAddress);
+            logger.debug("User address was updated in DB: {}", updatedAddress);
 
             return updatedAddress;
-        } catch (ConstraintViolationException | DataAccessException ex) {
-            logger.error("Error while updating user address in DB: " + actualAddress, ex);
+        } catch (Exception ex) {
+            logger.error("Error while updating user address in DB: userGuid = " + userGuid, ex);
             throw new AddressServiceException("An error occurred while updating user address", ex);
         }
     }
@@ -207,18 +200,15 @@ public class AddressServiceImpl implements IAddressService {
     public void deleteForUser(UUID addressGuid, UUID userGuid) throws AddressServiceException {
         logger.info("Delete user address from DB: userGuid = {}, addressGuid = {}", userGuid, addressGuid);
 
-        final Address address = findAddressByGuid(addressGuid);
-        final User user = (User) userService.getByGuid(userGuid);
-
-        checkAddressBelongsUser(address, user);
+        final Address address = (Address) getForUser(addressGuid, userGuid);
 
         try {
             addressRepository.deleteById(address.getIdAddress());
             addressRepository.flush();
 
-            logger.debug("User address was deleted from DB: userGuid = {}, addressGuid = {}", userGuid, addressGuid);
-        } catch (DataAccessException ex) {
-            logger.error("Error while deleting user address from DB: " + address, ex);
+            logger.debug("User address was deleted from DB: {}", address);
+        } catch (Exception ex) {
+            logger.error("Error while deleting user address from DB: addressGuid = " + addressGuid, ex);
             throw new AddressServiceException("An error occurred while deleting user address", ex);
         }
     }
@@ -228,12 +218,17 @@ public class AddressServiceImpl implements IAddressService {
     public IAddress getForUser(UUID addressGuid, UUID userGuid) throws AddressServiceException {
         logger.info("Get user address from DB: userGuid = {}, addressGuid = {}", userGuid, addressGuid);
 
-        Address address = findAddressByGuid(addressGuid);
-        User user = (User) userService.getByGuid(userGuid);
+        try {
+            final Address address = addressRepository.findByGuidAndUserGuid(addressGuid, userGuid)
+                    .orElseThrow(() -> new NoSuchElementException("User address was not found"));
 
-        checkAddressBelongsUser(address, user);
+            logger.debug("User address was gotten from DB: {}", address);
 
-        return address;
+            return address;
+        } catch (Exception ex) {
+            logger.error("Error while getting user address from DB", ex);
+            throw new AddressServiceException("An error occurred while getting user address", ex);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -250,40 +245,6 @@ public class AddressServiceImpl implements IAddressService {
         } catch (DataAccessException ex) {
             logger.error("Error while getting user addresses from DB: userGuid = " + userGuid, ex);
             throw new AddressServiceException("An error occurred while getting user addresses", ex);
-        }
-    }
-
-    private Address findAddressByGuid(UUID guid) {
-        logger.info("Find address in DB: guid = {}", guid);
-
-        try {
-            Address address = addressRepository.findByGuid(guid).orElseThrow(() -> {
-                logger.error("Address wasn't found in DB: guid = {}", guid);
-                return new AddressServiceException("Address was not found in database for guid: " + guid, new NoSuchElementException());
-            });
-            return address;
-
-        } catch (DataAccessException ex) {
-            logger.error("Error while getting address from DB: guid = " + guid, ex);
-            throw new AddressServiceException("An error occurred while getting address", ex);
-        }
-    }
-
-    private void checkAddressBelongsTenant(Address address, Tenant tenant) {
-        Tenant addressTenant = address.getTenant();
-
-        if ((addressTenant == null) || (!addressTenant.getGuid().equals(tenant.getGuid()))) {
-            logger.error("Address does not belong to Tenant: tenant.guid = {}, address = {}", tenant.getGuid(), address);
-            throw new AddressServiceException("Address does not belong to tenant");
-        }
-    }
-
-    private void checkAddressBelongsUser(Address address, User user) {
-        User addressUser = address.getUser();
-
-        if ((addressUser == null) || (!addressUser.getGuid().equals(user.getGuid()))) {
-            logger.error("Address does not belong to User: user.guid = {}, address = {}", user.getGuid(), address);
-            throw new AddressServiceException("Address does not belong to user");
         }
     }
 }

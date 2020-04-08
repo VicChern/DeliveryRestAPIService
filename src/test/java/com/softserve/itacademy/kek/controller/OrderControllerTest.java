@@ -215,7 +215,7 @@ public class OrderControllerTest {
     @Test
     public void deleteOrderTest() throws Exception {
         mockMvc.perform(delete("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isAccepted());
     }
 
     @Test
@@ -235,7 +235,7 @@ public class OrderControllerTest {
     public void addEventTest() throws Exception {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(user.getEmail());
-        when(orderEventService.createOrderEvent(any(UUID.class), any(UUID.class), any(IOrderEvent.class)))
+        when(orderEventService.create(any(UUID.class), any(UUID.class), any(IOrderEvent.class)))
                 .thenReturn(orderEvent);
         when(userService.getByEmail(any(String.class))).thenReturn(user);
 

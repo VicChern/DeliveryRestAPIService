@@ -26,7 +26,7 @@ import com.softserve.itacademy.kek.services.IAuthenticationService;
 @PropertySource("classpath:server.properties")
 public class AuthenticationServiceImpl implements IAuthenticationService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
     @Value(value = "${redirect.from.auth0}")
     private String redirectAuth0URL;
@@ -37,8 +37,8 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     @Value(value = "${redirect.on.success}")
     private String redirectOnSuccess;
 
-    private AuthenticationController controller;
-    private UserDetailsService userDetailsService;
+    private final AuthenticationController controller;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
     public AuthenticationServiceImpl(AuthenticationController controller, UserDetailsService userDetailsService) {
@@ -62,8 +62,6 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
     @Override
     public String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.info("User authentication");
-
         try {
             final Tokens tokens = controller.handle(request, response);
             final TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
@@ -84,8 +82,6 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
     @Override
     public String authenticateKekUser(IUser user) {
-        logger.info("User authentication");
-
         setUsernamePasswordAuthentication(user.getEmail());
 
         logger.info("User was authenticated successfully, redirectUrl - {}", redirectOnSuccess);

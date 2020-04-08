@@ -18,16 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.UserDto;
+import com.softserve.itacademy.kek.mappers.IUserMapper;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
 import com.softserve.itacademy.kek.services.IUserService;
 
-import static com.softserve.itacademy.kek.mapper.UserMapper.toUserDto;
-
 @RestController
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AuthController extends DefaultController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private IAuthenticationService authenticationService;
@@ -63,7 +62,7 @@ public class AuthController extends DefaultController {
 
         final IUser user = userService.getByEmail(email);
 
-        UserDto userDto = toUserDto(user);
+        UserDto userDto = IUserMapper.INSTANCE.toUserDto(user);
 
         logger.debug("Performed profile request : {}", userDto);
         return ResponseEntity.ok(userDto);

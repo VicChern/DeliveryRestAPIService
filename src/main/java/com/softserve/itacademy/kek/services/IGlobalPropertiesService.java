@@ -16,7 +16,7 @@ public interface IGlobalPropertiesService {
      *
      * @param globalProperty globalProperties
      * @return saved globalProperties
-     * @throws GlobalPropertiesServiceException
+     * @throws GlobalPropertiesServiceException if an error occurred
      */
     IGlobalProperty create(IGlobalProperty globalProperty) throws GlobalPropertiesServiceException;
 
@@ -25,7 +25,7 @@ public interface IGlobalPropertiesService {
      *
      * @param globalProperty globalProperties
      * @return updated globalProperties
-     * @throws GlobalPropertiesServiceException
+     * @throws GlobalPropertiesServiceException if an error occurred
      */
     IGlobalProperty update(IGlobalProperty globalProperty) throws GlobalPropertiesServiceException;
 
@@ -34,7 +34,7 @@ public interface IGlobalPropertiesService {
      *
      * @param key key
      * @return globalProperties by key
-     * @throws GlobalPropertiesServiceException
+     * @throws GlobalPropertiesServiceException if an error occurred
      */
     IGlobalProperty getByKey(String key) throws GlobalPropertiesServiceException;
 
@@ -42,7 +42,7 @@ public interface IGlobalPropertiesService {
      * Gets all globalProperties
      *
      * @return a list of all globalProperties
-     * @throws GlobalPropertiesServiceException
+     * @throws GlobalPropertiesServiceException if an error occurred
      */
     List<IGlobalProperty> getAll() throws GlobalPropertiesServiceException;
 
@@ -50,7 +50,7 @@ public interface IGlobalPropertiesService {
      * Deletes globalProperties by {@link GlobalProperty} key
      *
      * @param key key
-     * @throws GlobalPropertiesServiceException
+     * @throws GlobalPropertiesServiceException if an error occurred
      */
     void deleteByKey(String key) throws GlobalPropertiesServiceException;
 }

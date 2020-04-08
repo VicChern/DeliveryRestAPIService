@@ -62,6 +62,22 @@ public class OrderDto implements IOrder {
         return guid;
     }
 
+    public void setTenantGuid(UUID tenantGuid) {
+        this.tenantGuid = tenantGuid;
+    }
+
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public void setOrderDetails(OrderDetailsDto orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

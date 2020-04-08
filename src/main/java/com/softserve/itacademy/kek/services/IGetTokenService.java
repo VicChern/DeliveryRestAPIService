@@ -1,11 +1,15 @@
 package com.softserve.itacademy.kek.services;
 
-
+/**
+ * Service interface for tokens
+ */
 public interface IGetTokenService {
 
     /**
-     * @param email email
-     * @return A token
+     * Returns token
+     *
+     * @param email user email
+     * @return token
      */
     String getToken(String email);
 }
