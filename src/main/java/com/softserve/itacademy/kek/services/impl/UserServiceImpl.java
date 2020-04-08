@@ -35,9 +35,9 @@ public class UserServiceImpl implements IUserService {
 
     private final static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private UserRepository userRepository;
-    private TenantRepository tenantRepository;
-    private ActorRepository actorRepository;
+    private final UserRepository userRepository;
+    private final TenantRepository tenantRepository;
+    private final ActorRepository actorRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, TenantRepository tenantRepository, ActorRepository actorRepository) {

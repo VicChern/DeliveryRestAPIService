@@ -31,11 +31,11 @@ import com.softserve.itacademy.kek.services.IUserService;
 public class SignInController {
     private static final Logger logger = LoggerFactory.getLogger(SignInController.class);
 
-    private IUserService userService;
-    private IIdentityService iIdentityService;
-    private PasswordEncoder passwordEncoder;
-    private IAuthenticationService authenticationService;
-    private IGetTokenService getTokenService;
+    private final IUserService userService;
+    private final IIdentityService iIdentityService;
+    private final PasswordEncoder passwordEncoder;
+    private final IAuthenticationService authenticationService;
+    private final IGetTokenService getTokenService;
 
     @Autowired
     public SignInController(IUserService userService, IIdentityService iIdentityService,

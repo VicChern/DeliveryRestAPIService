@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class ListWrapperDto<T> {
     @Valid
-    private List<T> list;
+    private final List<T> list;
 
     public ListWrapperDto() {
         this(new LinkedList<T>());
