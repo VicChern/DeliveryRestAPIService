@@ -46,6 +46,22 @@ public class TenantPropertiesDto implements ITenantProperties {
         return value;
     }
 
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
+    public void setPropertyType(PropertyTypeDto propertyType) {
+        this.propertyType = propertyType;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     @Override
     public String toString() {
         return "TenantPropertiesDTO{" +

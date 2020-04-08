@@ -48,6 +48,22 @@ public class AddressDto implements IAddress {
         return notes;
     }
 
+    public void setGuid(UUID guid) {
+        this.guid = guid;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

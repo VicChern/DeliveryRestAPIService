@@ -215,7 +215,7 @@ public class OrderControllerTest {
     @Test
     public void deleteOrderTest() throws Exception {
         mockMvc.perform(delete("/orders/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isAccepted());
     }
 
     @Test

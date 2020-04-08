@@ -186,7 +186,7 @@ public class TenantControllerTest {
                 .contentType(KekMediaType.TENANT)
                 .accept(KekMediaType.TENANT)
                 .content(tenantJson))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(jsonPath("$.owner").value("10241624-9ea7-4777-99b5-54ab6d591c44"))
                 .andExpect(jsonPath("$.name").value("Kek"))
@@ -228,7 +228,7 @@ public class TenantControllerTest {
     @Test
     public void deleteTenantTest() throws Exception {
         mockMvc.perform(delete("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isAccepted());
     }
 
     @Test
@@ -299,7 +299,7 @@ public class TenantControllerTest {
     @Test
     public void deleteTenantPropertyTest() throws Exception {
         mockMvc.perform(delete("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/properties/48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(status().isOk());
+                .andExpect(status().isAccepted());
     }
 
     @Test
@@ -352,7 +352,7 @@ public class TenantControllerTest {
                 .contentType(KekMediaType.ADDRESS)
                 .accept(KekMediaType.ADDRESS)
                 .content(addressJson))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(KekMediaType.ADDRESS))
                 .andExpect(jsonPath("$.guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(jsonPath("$.alias").value("alias"))
@@ -363,7 +363,7 @@ public class TenantControllerTest {
     @Test
     public void deleteTenantAddressTest() throws Exception {
         mockMvc.perform(delete("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86/addresses/48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(status().isOk());
+                .andExpect(status().isAccepted());
     }
 
 }

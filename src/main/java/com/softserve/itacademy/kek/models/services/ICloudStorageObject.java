@@ -1,7 +1,7 @@
-package com.softserve.itacademy.kek.models;
+package com.softserve.itacademy.kek.models.services;
 
 /**
- * Interface for CloudStorageObject data exchange with service and public api layers
+ * Interface for CloudStorageObject data exchange with Service Layer
  */
 public interface ICloudStorageObject {
 
