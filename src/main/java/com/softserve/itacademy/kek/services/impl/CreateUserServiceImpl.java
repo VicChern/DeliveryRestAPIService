@@ -1,24 +1,28 @@
 package com.softserve.itacademy.kek.services.impl;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.dto.RegistrationDto;
-import com.softserve.itacademy.kek.exception.UserAlreadyExistException;
+import com.softserve.itacademy.kek.exception.CreateUserServiceException;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.UserRepository;
+import com.softserve.itacademy.kek.services.AbstractService;
 import com.softserve.itacademy.kek.services.ICreateUserService;
 import com.softserve.itacademy.kek.services.IIdentityService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
-public class CreateUserServiceImpl implements ICreateUserService {
+public class CreateUserServiceImpl extends AbstractService implements ICreateUserService {
     private static final Logger logger = LoggerFactory.getLogger(CreateUserServiceImpl.class);
 
     private final UserRepository userRepository;
@@ -36,28 +40,39 @@ public class CreateUserServiceImpl implements ICreateUserService {
 
     @Transactional
     @Override
-    public IUser createNewUser(RegistrationDto userData) {
+    public IUser createNewUser(RegistrationDto userData) throws CreateUserServiceException {
         logger.info("User registration: email = {}", userData.getEmail());
 
-        final boolean isAlreadyRegistered = userRepository.findByEmail(userData.getEmail()).isPresent();
-        if (isAlreadyRegistered) {
-            logger.info("User already exists in DB: email = {}", userData.getEmail());
-            throw new UserAlreadyExistException(userData.toString());
+        final Optional<User> userFromDb;
+        IUser createdUser = null;
+
+        try {
+            userFromDb = userRepository.findByEmail(userData.getEmail());
+
+            logger.debug("User was read from DB by email: {}", userData.getEmail());
+
+            if (userFromDb.isEmpty()) {
+                createdUser = userService.create(userData);
+
+                logger.debug("User was inserted into DB: {}", createdUser);
+
+                identityService.create(createdUser.getGuid(), IdentityTypeEnum.KEY,
+                        passwordEncoder.encode(userData.getPassword()));
+
+                logger.debug("Identity was inserted into DB for user: {}", createdUser.getEmail());
+            }
+        } catch (Exception ex) {
+            logger.error("Error while register user", ex);
+            throw new CreateUserServiceException("An error occurred while register user", ex);
         }
 
-        final User user = new User();
+        if (userFromDb.isPresent()) {
+            logger.error("User already exists in DB: email = {}", userData.getEmail());
+            throw new CreateUserServiceException("User already exists", HttpStatus.FORBIDDEN.value());
+        }
 
-        user.setName(userData.getName());
-        user.setNickname(userData.getNickname());
-        user.setEmail(userData.getEmail());
-        user.setPhoneNumber(userData.getPhoneNumber());
+        logger.info("User was added into DB: {}", userData);
 
-        final IUser dbUser = userService.create(user);
-
-        identityService.create(dbUser.getGuid(), IdentityTypeEnum.KEY, passwordEncoder.encode(userData.getPassword()));
-
-        logger.info("User has been added to DB {}", userData);
-
-        return dbUser;
+        return createdUser;
     }
 }
