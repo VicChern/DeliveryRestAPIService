@@ -21,7 +21,7 @@ public interface IAuthenticationService {
     String createRedirectUrl(HttpServletRequest request, HttpServletResponse response);
 
     /**
-     * Called when user authenticated using Auth0
+     * Sets authentication information for a user authenticated using Auth0
      *
      * @param request  request
      * @param response response
@@ -31,7 +31,7 @@ public interface IAuthenticationService {
     String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
-     * Called when user authenticated using name/password
+     * Sets authentication information for a user authenticated using name/password
      *
      * @param user user data
      * @return success authentication URL
