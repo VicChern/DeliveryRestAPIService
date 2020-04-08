@@ -529,8 +529,12 @@
                         <version>${version.checkstyle.plugin}</version>
                         <configuration>
                             <configLocation>checkstyle.xml</configLocation>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                            <maxAllowedViolations>30</maxAllowedViolations>
+                            <maxAllowedViolations>15</maxAllowedViolations>
+                            <sourceDirectories>
+                                <sourceDirectory>src/main/java</sourceDirectory>
+                                <sourceDirectory>src/test/java</sourceDirectory>
+                                <sourceDirectory>src/it/java</sourceDirectory>
+                            </sourceDirectories>
                         </configuration>
                         <executions>
                             <execution>
