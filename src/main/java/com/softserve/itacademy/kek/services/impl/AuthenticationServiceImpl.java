@@ -62,8 +62,6 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
     @Override
     public String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.info("User authentication");
-
         try {
             final Tokens tokens = controller.handle(request, response);
             final TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
@@ -84,8 +82,6 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
     @Override
     public String authenticateKekUser(IUser user) {
-        logger.info("User authentication");
-
         setUsernamePasswordAuthentication(user.getEmail());
 
         logger.info("User was authenticated successfully, redirectUrl - {}", redirectOnSuccess);

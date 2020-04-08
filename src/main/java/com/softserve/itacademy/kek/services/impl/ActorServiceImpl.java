@@ -66,7 +66,7 @@ public class ActorServiceImpl implements IActorService {
             actor.setUser(actualUser);
             actor.setActorRoles(Collections.singletonList(role));
             actor.setGuid(UUID.randomUUID());
-            actor.setAlias("Actor alias");
+            actor.setAlias(actorRole.name());
 
             final Actor insertedActor = actorRepository.saveAndFlush(actor);
 
