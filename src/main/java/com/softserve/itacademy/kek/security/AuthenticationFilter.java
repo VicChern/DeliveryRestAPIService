@@ -55,6 +55,10 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
             roles.add(new SimpleGrantedAuthority("ROLE_ACTOR"));
         }
 
+        if (authorities.contains("ROLE_ADMIN")){
+            roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
         Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(claims.get("email"), null, roles);
 
         return getAuthenticationManager().authenticate(requestAuthentication);

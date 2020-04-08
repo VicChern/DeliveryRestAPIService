@@ -229,9 +229,17 @@ public class UserServiceImpl implements IUserService {
         }
 
         final boolean existActor = actorRepository.findByUser(user).isPresent();
+
         if (existActor) {
             authorityList.add(new SimpleGrantedAuthority("ROLE_ACTOR"));
         }
+
+        final User existUser = userRepository.findByGuid(user.getGuid()).get();
+
+        if (userRepository.findByGuid(user.getGuid()).isPresent() && existUser.getIdUser() == 5) {
+            authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
         return authorityList;
     }
 

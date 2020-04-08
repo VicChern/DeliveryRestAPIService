@@ -31,7 +31,7 @@ public class GetTokenServiceImpl implements IGetTokenService {
     public String getToken(String email) {
 
         final UserDetails user = userDetailsService.loadUserByUsername(email);
-        logger.info("Loading user for token creation: {}" + user);
+        logger.info("Loading user for token creation: {}", user);
 
         final Map<String, Object> tokenData = new HashMap<>();
 
@@ -50,7 +50,7 @@ public class GetTokenServiceImpl implements IGetTokenService {
         jwtBuilder.setExpiration(calendar.getTime());
         jwtBuilder.setClaims(tokenData);
 
-        logger.info("Building token for user: {}" + user);
+        logger.info("Building token for user: {}", user);
 
         return jwtBuilder.signWith(SignatureAlgorithm.HS512, System.getenv("KekSecurityKey")).compact();
     }

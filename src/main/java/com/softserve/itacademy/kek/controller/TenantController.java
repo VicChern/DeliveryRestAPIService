@@ -62,7 +62,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.TENANT_LIST)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ListWrapperDto<TenantDto>> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
@@ -85,7 +85,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PostMapping(consumes = KekMediaType.TENANT, produces = KekMediaType.TENANT)
-//    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize("hasRole('TENANT')")
     public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto tenantDto) {
         logger.info("Accepted requested to create a new tenant:\n{}", tenantDto);
 
