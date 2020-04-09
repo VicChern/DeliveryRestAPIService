@@ -125,39 +125,15 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     }
 
     private void validateUser(String email, String key) {
-        final Optional<User> user;
-        String payload = "";
-
-        try {
-            user = userRepository.findByEmail(email);
-
-            logger.debug("User was read from DB by email: {}", email);
-
-            if (user.isPresent()) {
-                final UUID guid = user.get().getGuid();
-                final String type = IdentityTypeEnum.KEY.toString();
-
-                final Identity identity = identityRepository.findByUserGuidAndIdentityTypeName(guid, type).orElseThrow();
-
-                logger.debug("User identity was read from DB");
-
-                payload = identity.getPayload();
-
-                if (payload == null || payload.isEmpty()) {
-                    logger.error("User identity is not valid");
-                    throw new NoSuchElementException("User identity is empty");
-                }
-            }
-        } catch (Exception ex) {
-            logger.error("Error while authenticate user", ex);
-            throw new AuthenticationServiceException("An error occurred while authenticate user", ex);
-        }
+        final Optional<User> user = getUserByEmail(email);
 
         boolean valid = user.isPresent();
         if (valid) {
             logger.debug("User was found: {}", email);
 
-            valid = passwordEncoder.matches(key, payload);
+            final String userKey = getUserKey(user.get().getGuid());
+
+            valid = passwordEncoder.matches(key, userKey);
 
             if (valid) {
                 logger.debug("Password is valid for user {}", email);
@@ -190,5 +166,44 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         returnTo += redirectAuth0URL;
 
         return returnTo;
+    }
+
+    private Optional<User> getUserByEmail(String email) {
+        logger.info("Get user from DB by email: {}", email);
+
+        try {
+            final Optional<User> user = userRepository.findByEmail(email);
+
+            logger.debug("User was read from DB by email: {}", email);
+
+            return user;
+        } catch (Exception ex) {
+            logger.error("Error while authenticate user", ex);
+            throw new AuthenticationServiceException("An error occurred while authenticate user", ex);
+        }
+    }
+
+    private String getUserKey(UUID userGuid) {
+        logger.info("Get user identity: userGuid = {}", userGuid);
+
+        try {
+            final String type = IdentityTypeEnum.KEY.toString();
+
+            final Identity identity = identityRepository.findByUserGuidAndIdentityTypeName(userGuid, type).orElseThrow();
+
+            logger.debug("User identity was read from DB");
+
+            final String payload = identity.getPayload();
+
+            if (payload == null || payload.isEmpty()) {
+                logger.error("User identity is not valid");
+                throw new NoSuchElementException("User identity is empty");
+            }
+
+            return payload;
+        } catch (Exception ex) {
+            logger.error("Error while authenticate user", ex);
+            throw new AuthenticationServiceException("An error occurred while authenticate user", ex);
+        }
     }
 }
