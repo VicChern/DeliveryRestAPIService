@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.AddressServiceException;
+import com.softserve.itacademy.kek.mappers.IAddressMapper;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.impl.Address;
 import com.softserve.itacademy.kek.models.impl.Tenant;
@@ -47,11 +48,8 @@ public class AddressServiceImpl implements IAddressService {
         logger.info("Insert tenant address into DB: tenantGuid = {}, address = {}", tenantGuid, address);
 
         try {
-            final Address actualAddress = new Address();
+            Address actualAddress = IAddressMapper.INSTANCE.toAddress(address);
             actualAddress.setGuid(UUID.randomUUID());
-            actualAddress.setAddress(address.getAddress());
-            actualAddress.setAlias(address.getAlias());
-            actualAddress.setNotes(address.getNotes());
 
             final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
             actualAddress.setTenant(tenant);
