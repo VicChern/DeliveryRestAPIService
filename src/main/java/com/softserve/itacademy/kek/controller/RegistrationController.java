@@ -19,7 +19,7 @@ import com.softserve.itacademy.kek.services.IAuthenticationService;
 import com.softserve.itacademy.kek.services.ICreateUserService;
 
 @RestController
-public class RegistrationController {
+public class RegistrationController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
     private final IAuthenticationService authenticationService;

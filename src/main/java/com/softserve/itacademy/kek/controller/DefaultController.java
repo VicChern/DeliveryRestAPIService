@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +35,13 @@ public class DefaultController {
         ListWrapperDto<ErrorDto> errorListDto = new ListWrapperDto<>();
         errorListDto.addKekItem(new ErrorDto("Service error", ex.getMessage()));
 
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (ex.getErrorCode() > 0)
+            status = Optional.of(HttpStatus.resolve(ex.getErrorCode())).orElse(status);
+
         logger.warn("Sending the error message to the client");
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .status(status)
                 .body(errorListDto);
     }
 

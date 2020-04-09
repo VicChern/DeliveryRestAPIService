@@ -25,6 +25,11 @@ public abstract class ServiceException extends KekException {
         super(cause);
     }
 
+    public ServiceException(String message, int errorCode) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
     public ServiceException(@NotNull Exception ex, @NotNull String error, @NotNull int errorCode, @NotNull String message) {
         super(message, ex);
         this.error = error;
