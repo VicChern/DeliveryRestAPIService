@@ -17,12 +17,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import com.softserve.itacademy.kek.services.IGetTokenService;
+import com.softserve.itacademy.kek.services.ITokenService;
 
 @Service
-public class GetTokenServiceImpl implements IGetTokenService {
+public class TokenServiceImpl implements ITokenService {
 
-    private static final Logger logger = LoggerFactory.getLogger(GetTokenServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenServiceImpl.class);
 
     @Autowired
     private UserDetailsService userDetailsService;
