@@ -19,18 +19,18 @@ public interface ITenantPropertiesMapper {
     /**
      * Transform {@link ITenantProperties} to {@link TenantPropertiesDto}
      *
-     * @param tenantProperties
+     * @param iTenantProperties
      * @return tenantPropertiesDto
      */
     @Mapping(target = "propertyType", qualifiedByName = "toDto")
-    TenantPropertiesDto toTenantPropertiesDto(ITenantProperties tenantProperties);
+    TenantPropertiesDto toTenantPropertiesDto(ITenantProperties iTenantProperties);
 
     /**
      * Transform {@link ITenantProperties} to {@link TenantProperties}
      *
-     * @param tenantProperties
+     * @param iTenantProperties
      * @return tenantProperties
      */
     @Mapping(target = "propertyType", ignore = true)
-    TenantProperties toTenantProperties(ITenantProperties tenantProperties);
+    TenantProperties toTenantProperties(ITenantProperties iTenantProperties);
 }

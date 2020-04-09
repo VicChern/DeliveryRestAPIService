@@ -19,9 +19,9 @@ public interface IPropertyTypeMapper {
     /**
      * Transform {@link IPropertyType} to {@link PropertyTypeDto}
      *
-     * @param propertyType
+     * @param iPropertyType
      * @return propertyTypeDto
      */
     @Named("toDto")
-    PropertyTypeDto toPropertyTypeDto(IPropertyType propertyType);
+    PropertyTypeDto toPropertyTypeDto(IPropertyType iPropertyType);
 }

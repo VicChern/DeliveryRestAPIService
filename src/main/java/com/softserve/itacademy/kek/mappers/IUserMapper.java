@@ -19,18 +19,18 @@ public interface IUserMapper {
     /**
      * Transform {@link IUser} to {@link UserDto}
      *
-     * @param user
+     * @param iUser
      * @return userDto
      */
     @Mapping(target = "userDetails", qualifiedByName = "toDto")
-    UserDto toUserDto(IUser user);
+    UserDto toUserDto(IUser iUser);
 
     /**
      * Transform {@link IUser} to {@link User}
      *
-     * @param user
+     * @param iUser
      * @return user
      */
     @Mapping(target = "userDetails", qualifiedByName = "toEntity")
-    User toUser(IUser user);
+    User toUser(IUser iUser);
 }

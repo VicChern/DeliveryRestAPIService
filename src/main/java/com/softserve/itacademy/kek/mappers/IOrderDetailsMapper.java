@@ -20,18 +20,18 @@ public interface IOrderDetailsMapper {
     /**
      * Transform {@link IOrderDetails} to {@link OrderDetailsDto}
      *
-     * @param orderDetails
+     * @param iOrderDetails
      * @return orderDetailsDto
      */
     @Named("toDto")
-    OrderDetailsDto toOrderDetailsDto(IOrderDetails orderDetails);
+    OrderDetailsDto toOrderDetailsDto(IOrderDetails iOrderDetails);
 
     /**
      * Transform {@link IOrderDetails} to {@link OrderDetails}
      *
-     * @param orderDetails
+     * @param iOrderDetails
      * @return orderDetails
      */
     @Named("toEntity")
-    OrderDetails toOrderDetails(IOrderDetails orderDetails);
+    OrderDetails toOrderDetails(IOrderDetails iOrderDetails);
 }

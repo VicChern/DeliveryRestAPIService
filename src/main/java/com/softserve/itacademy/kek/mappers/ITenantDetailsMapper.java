@@ -16,18 +16,18 @@ public interface ITenantDetailsMapper {
     /**
      * Transform {@link ITenantDetails} to {@link TenantDetailsDto}
      *
-     * @param tenantDetails
+     * @param iTenantDetails
      * @return tenantDetailsDto
      */
     @Named("toDto")
-    TenantDetailsDto toTenantDetailsDto(ITenantDetails tenantDetails);
+    TenantDetailsDto toTenantDetailsDto(ITenantDetails iTenantDetails);
 
     /**
      * Transform {@link ITenantDetails} to {@link TenantDetails}
      *
-     * @param tenantDetails
+     * @param iTenantDetails
      * @return tenantDetails
      */
     @Named("toEntity")
-    TenantDetails toTenantDetails(ITenantDetails tenantDetails);
+    TenantDetails toTenantDetails(ITenantDetails iTenantDetails);
 }

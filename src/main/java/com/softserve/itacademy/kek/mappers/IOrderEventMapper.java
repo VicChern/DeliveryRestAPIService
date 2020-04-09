@@ -49,10 +49,10 @@ public interface IOrderEventMapper {
     /**
      * Transform {@link IOrderEvent} to {@link OrderEventDto}
      *
-     * @param orderEvent
+     * @param iOrderEvent
      * @return orderEventDto
      */
     @Mapping(source = "order", target = "orderId", qualifiedByName = "getOrderGuid")
     @Mapping(source = "orderEventType", target = "type", qualifiedByName = "getOrderEventTypeDto")
-    OrderEventDto toOrderEventDto(IOrderEvent orderEvent);
+    OrderEventDto toOrderEventDto(IOrderEvent iOrderEvent);
 }

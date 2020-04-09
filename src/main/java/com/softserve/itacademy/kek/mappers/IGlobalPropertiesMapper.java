@@ -11,16 +11,16 @@ import com.softserve.itacademy.kek.models.impl.GlobalProperty;
  * Interface for {@link GlobalProperty} mapping
  */
 @Mapper
-public interface IGlobalPropertyMapper {
+public interface IGlobalPropertiesMapper {
 
-    IGlobalPropertyMapper INSTANCE = Mappers.getMapper(IGlobalPropertyMapper.class);
+    IGlobalPropertiesMapper INSTANCE = Mappers.getMapper(IGlobalPropertiesMapper.class);
 
     /**
      * Transform {@link IGlobalProperty} to {@link GlobalProperty}
      *
-     * @param globalProperty
+     * @param iGlobalProperty
      * @return GlobalProperty
      */
     @Mapping(target = "propertyType", ignore = true)
-    GlobalProperty toGlobalProperty(IGlobalProperty globalProperty);
+    GlobalProperty toGlobalProperty(IGlobalProperty iGlobalProperty);
 }

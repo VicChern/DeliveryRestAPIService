@@ -16,18 +16,18 @@ public interface IUserDetailsMapper {
     /**
      * Transform {@link IUserDetails} to {@link DetailsDto}
      *
-     * @param userDetails
+     * @param iUserDetails
      * @return detailsDto
      */
     @Named("toDto")
-    DetailsDto toUserDetailsDto(IUserDetails userDetails);
+    DetailsDto toUserDetailsDto(IUserDetails iUserDetails);
 
     /**
      * Transform {@link IUserDetails} to {@link UserDetails}
      *
-     * @param userDetails
+     * @param iUserDetails
      * @return detailsDto
      */
     @Named("toEntity")
-    UserDetails toUserDetails(IUserDetails userDetails);
+    UserDetails toUserDetails(IUserDetails iUserDetails);
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.GlobalPropertiesServiceException;
-import com.softserve.itacademy.kek.mappers.IGlobalPropertyMapper;
+import com.softserve.itacademy.kek.mappers.IGlobalPropertiesMapper;
 import com.softserve.itacademy.kek.models.IGlobalProperty;
 import com.softserve.itacademy.kek.models.impl.GlobalProperty;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
@@ -43,7 +43,7 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
             final String typeName = globalProperty.getPropertyType().getName();
             final PropertyType actualPropertyType = (PropertyType) propertyTypeService.getByName(typeName);
 
-            GlobalProperty actualProperties = IGlobalPropertyMapper.INSTANCE.toGlobalProperty(globalProperty);
+            GlobalProperty actualProperties = IGlobalPropertiesMapper.INSTANCE.toGlobalProperty(globalProperty);
             actualProperties.setPropertyType(actualPropertyType);
 
             final GlobalProperty insertedGlobalProperty = globalPropertiesRepository.saveAndFlush(actualProperties);
