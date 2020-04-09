@@ -35,4 +35,22 @@ public interface ICloudStorageService {
      * @throws CloudStorageServiceException
      */
     List<ICloudStorageObject> getCloudStorageObjects(String filter) throws CloudStorageServiceException;
+
+    /**
+     * Updates data in Cloud Storage by guid
+     *
+     * @param guid unique name of object in Cloud Storage bucket
+     * @param data array for updating
+     * @return
+     */
+    ICloudStorageObject updateBinaryData(final String guid, final byte[] data);
+
+    /**
+     * Deletes data from Cloud Storage by guid
+     *
+     * @param guid unique name of object in Google Cloud Storage bucket
+     * @throws CloudStorageServiceException
+     */
+    void deleteByGuid(final String guid) throws CloudStorageServiceException;
+
 }
