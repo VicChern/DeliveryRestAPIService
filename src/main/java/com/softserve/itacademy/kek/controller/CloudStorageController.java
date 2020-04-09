@@ -32,19 +32,19 @@ public class CloudStorageController {
     }
 
     @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.USER)
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity getData(@PathVariable String guid) {
         return null;
     }
 
     @GetMapping(produces = KekMediaType.USER_LIST)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize("hasRole('TENANT') or hasRole('ADMIN')")
     public ResponseEntity getDataList() {
         return null;
     }
 
     @PostMapping(consumes = KekMediaType.USER, produces = KekMediaType.USER)
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity uploadData(@RequestBody @Valid UserDto newUserDto) {
         return null;
     }
