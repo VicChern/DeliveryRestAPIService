@@ -18,17 +18,17 @@ import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.SignInDto;
 import com.softserve.itacademy.kek.dto.TokenDto;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
-import com.softserve.itacademy.kek.services.IGetTokenService;
+import com.softserve.itacademy.kek.services.ITokenService;
 
 @RestController
 public class SignInController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(SignInController.class);
 
     private final IAuthenticationService authenticationService;
-    private final IGetTokenService getTokenService;
+    private final ITokenService getTokenService;
 
     @Autowired
-    public SignInController(IAuthenticationService authenticationService, IGetTokenService getTokenService) {
+    public SignInController(IAuthenticationService authenticationService, ITokenService getTokenService) {
         this.authenticationService = authenticationService;
         this.getTokenService = getTokenService;
     }

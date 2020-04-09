@@ -61,25 +61,24 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
     @Transactional
     @Override
     public IGlobalProperty update(IGlobalProperty globalProperty) throws GlobalPropertiesServiceException {
-        logger.info("Update global property in DB: key = {}", globalProperty.getKey());
+        logger.info("Updating global property in DB: key = {}", globalProperty.getKey());
 
-        final GlobalProperty actualProperties = (GlobalProperty) getByKey(globalProperty.getKey());
+        final GlobalProperty globalPropertyForUpdate = (GlobalProperty) getByKey(globalProperty.getKey());
 
         try {
-            final String typeName = globalProperty.getPropertyType().getName();
-            final PropertyType actualPropertyType = (PropertyType) propertyTypeService.getByName(typeName);
+            if (globalProperty.getPropertyType() != null) {
+                globalPropertyForUpdate.setPropertyType((PropertyType) globalProperty.getPropertyType());
+            }
 
-            actualProperties.setPropertyType(actualPropertyType);
-            actualProperties.setKey(globalProperty.getKey());
-            actualProperties.setValue(globalProperty.getValue());
+            globalPropertyForUpdate.setValue(globalProperty.getValue());
 
-            final GlobalProperty updatedGlobalProperty = globalPropertiesRepository.saveAndFlush(actualProperties);
+            final GlobalProperty updatedGlobalProperty = globalPropertiesRepository.saveAndFlush(globalPropertyForUpdate);
 
             logger.debug("Global property was updated in DB: {}", updatedGlobalProperty);
 
             return updatedGlobalProperty;
         } catch (Exception ex) {
-            logger.error("Error while updating global property in DB: " + actualProperties, ex);
+            logger.error("Error while updating global property in DB: " + globalPropertyForUpdate, ex);
             throw new GlobalPropertiesServiceException("An error occurs while updating global property", ex);
         }
     }
@@ -87,13 +86,13 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
     @Transactional(readOnly = true)
     @Override
     public IGlobalProperty getByKey(String key) throws GlobalPropertiesServiceException {
-        logger.info("Get global property from DB by key: {}", key);
+        logger.info("Getting global property from DB by key: {}", key);
 
         try {
             final GlobalProperty globalProperty = globalPropertiesRepository.findByKey(key).orElseThrow(
                     () -> {
-                        logger.error("Global property wasn't found in the database");
-                        return new GlobalPropertiesServiceException("User was not found in database for guid: " + key, new NoSuchElementException());
+                        logger.error("Global property with key: {}, wasn't found in the database", key);
+                        return new GlobalPropertiesServiceException("Global property wasn't found in the database, key: " + key, new NoSuchElementException());
                     });
 
             logger.debug("Global property was gotten from DB: globalProperty = {}", globalProperty);
@@ -109,7 +108,7 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
     @Transactional(readOnly = true)
     @Override
     public List<IGlobalProperty> getAll() throws GlobalPropertiesServiceException {
-        logger.info("Get all global properties");
+        logger.info("Getting all global properties");
 
         try {
             final List<? extends IGlobalProperty> globalPropertiesList = globalPropertiesRepository.findAll();
@@ -132,7 +131,6 @@ public class GlobalPropertiesServiceImpl implements IGlobalPropertiesService {
 
         try {
             globalPropertiesRepository.deleteById(globalProperty.getIdProperty());
-            globalPropertiesRepository.flush();
 
             logger.debug("Global property was deleted from DB: key = {}", key);
         } catch (Exception ex) {
