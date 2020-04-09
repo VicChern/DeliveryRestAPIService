@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -184,7 +185,8 @@ public class OrderEventServiceImpl implements IOrderEventService {
         logger.info("Get all order that delivering now");
 
         try {
-            List<? extends IOrderEvent> orderEvents = orderEventRepository.findAllLastAddedOrderEventsForEventType(EventTypeEnum.STARTED.toString());
+            List<? extends IOrderEvent> orderEvents = orderEventRepository
+                    .findAllLastAddedOrderEventsForEventType(EventTypeEnum.STARTED.toString(), PageRequest.of(0, 1));
 
             logger.debug("All orders that delivering now were read from DB");
 
