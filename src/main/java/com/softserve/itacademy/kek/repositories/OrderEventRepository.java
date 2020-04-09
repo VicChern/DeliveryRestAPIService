@@ -38,10 +38,14 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
             "OrderEvent OOE, " +
             "OrderEventType ET " +
             "WHERE " +
-            "ET.idOrderEventType = OOE.orderEventType " +
-            "AND ET.name = :eventTypeName " +
-            "ORDER BY OOE.lastModifiedDate desc ")
-    List<OrderEvent> findAllLastAddedOrderEventsForEventType(@Param("eventTypeName") String eventTypeName, Pageable pageable);
+            "OOE.lastModifiedDate in (" +
+                "SELECT " +
+                "MAX(OE.lastModifiedDate) " +
+                "FROM OrderEvent OE " +
+                "GROUP BY OE.order) " +
+            "AND ET.idOrderEventType = OOE.orderEventType " +
+            "AND ET.name = :eventTypeName")
+    List<OrderEvent> findAllLastAddedOrderEventsForEventType(@Param("eventTypeName") String eventTypeName);
 
     Boolean existsOrderEventsByOrderGuidAndOrderEventTypeName(UUID orderGuid, String eventTypeName);
 

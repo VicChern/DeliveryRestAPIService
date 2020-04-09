@@ -185,8 +185,7 @@ public class OrderEventServiceImpl implements IOrderEventService {
         logger.info("Get all order that delivering now");
 
         try {
-            List<? extends IOrderEvent> orderEvents = orderEventRepository
-                    .findAllLastAddedOrderEventsForEventType(EventTypeEnum.STARTED.toString(), PageRequest.of(0, 1));
+            List<? extends IOrderEvent> orderEvents = orderEventRepository.findAllLastAddedOrderEventsForEventType(EventTypeEnum.STARTED.toString());
 
             logger.debug("All orders that delivering now were read from DB");
 
