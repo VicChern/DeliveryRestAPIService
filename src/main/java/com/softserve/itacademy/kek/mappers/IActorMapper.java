@@ -18,5 +18,5 @@ public interface IActorMapper {
      * @param actor actor
      * @return actorDto
      */
-    ActorDto toActorDto (IActor actor);
+    ActorDto toActorDto(IActor actor);
 }

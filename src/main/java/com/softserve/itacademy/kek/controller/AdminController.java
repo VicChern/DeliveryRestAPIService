@@ -116,7 +116,7 @@ public class AdminController extends DefaultController {
      */
     @DeleteMapping(value = KekMappingValues.TENANTS)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity <ListWrapperDto<TenantDto>> deleteAllTenants(){
+    public ResponseEntity<ListWrapperDto<TenantDto>> deleteAllTenants() {
         logger.info("Admin requested the delete all orders");
         tenantService.deleteAll();
 

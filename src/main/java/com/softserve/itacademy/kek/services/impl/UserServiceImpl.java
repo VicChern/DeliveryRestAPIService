@@ -117,13 +117,13 @@ public class UserServiceImpl implements IUserService {
     public void deleteAll() throws UserServiceException {
         logger.info("Delete all users except admin");
         try {
-                userRepository.deleteAll();
-                userRepository.flush();
+            userRepository.deleteAll();
+            userRepository.flush();
 
-                logger.debug("All users was deleted from DB");
+            logger.debug("All users was deleted from DB");
         } catch (Exception ex) {
             logger.error("Error while deleting all users from DB:");
-            throw new UserServiceException("An error occured while deleting all users",ex);
+            throw new UserServiceException("An error occured while deleting all users", ex);
         }
     }
 

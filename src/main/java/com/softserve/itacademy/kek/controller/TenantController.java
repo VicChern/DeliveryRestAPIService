@@ -30,7 +30,6 @@ import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
-import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.mappers.IActorMapper;
 import com.softserve.itacademy.kek.mappers.IAddressMapper;
 import com.softserve.itacademy.kek.mappers.IOrderMapper;

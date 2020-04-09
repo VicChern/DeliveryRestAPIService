@@ -63,7 +63,7 @@ public class Tenant extends AbstractEntity implements ITenant, Serializable {
     private List<Order> orderList = new ArrayList<>();
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Actor> actors = new ArrayList<>();
+    private final List<Actor> actors = new ArrayList<>();
 
     public Long getIdTenant() {
         return idTenant;
