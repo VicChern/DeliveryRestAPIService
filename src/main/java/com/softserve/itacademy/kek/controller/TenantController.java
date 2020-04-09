@@ -100,7 +100,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PostMapping(consumes = KekMediaType.TENANT, produces = KekMediaType.TENANT)
-    @PreAuthorize("hasRole('TENANT') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('TENANT') or hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto tenantDto) {
         logger.info("Accepted requested to create a new tenant:\n{}", tenantDto);
 
@@ -158,6 +158,7 @@ public class TenantController extends DefaultController {
      * Removes the specified tenant
      *
      * @param guid tenant ID from the URL
+     * @return HTTP.STATUS 202
      */
     @DeleteMapping(KekMappingValues.GUID)
     @PreAuthorize("hasRole('TENANT') or hasRole('ADMIN')")
@@ -319,6 +320,7 @@ public class TenantController extends DefaultController {
      *
      * @param guid     tenant ID from the URN
      * @param propGuid address ID from the URN
+     * @return HTTP.STATUS 202
      */
     @DeleteMapping(KekMappingValues.PROP_GUID)
     @PreAuthorize("hasRole('TENANT') or hasRole('ADMIN')")
@@ -436,6 +438,7 @@ public class TenantController extends DefaultController {
      *
      * @param guid     tenant ID from the URN
      * @param addrGuid specific address ID from the URN
+     * @return HTTP.STATUS 202
      */
     @DeleteMapping(KekMappingValues.ADDR_GUID)
     @PreAuthorize("hasRole('TENANT') or hasRole('ADMIN')")

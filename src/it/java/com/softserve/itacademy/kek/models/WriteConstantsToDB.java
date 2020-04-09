@@ -68,9 +68,9 @@ public class WriteConstantsToDB extends AbstractTestNGSpringContextTests {
 
     @AfterMethod(groups = {"integration-tests"})
     public void tearDown() {
-        identityTypeRepository.deleteAll();
-        actorRoleRepository.deleteAll();
-        orderEventTypeRepository.deleteAll();
+//        identityTypeRepository.deleteAll();
+//        actorRoleRepository.deleteAll();
+//        orderEventTypeRepository.deleteAll();
     }
 
     @Test(groups = {"integration-tests"})

@@ -46,7 +46,6 @@ public interface IUserService {
      *
      * @throws UserServiceException if an error occurred
      */
-    // TODO: 09.04.2020 not working
     void deleteAll() throws UserServiceException;
 
     /**

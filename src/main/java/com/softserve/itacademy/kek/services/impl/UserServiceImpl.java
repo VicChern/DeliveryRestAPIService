@@ -114,7 +114,6 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional
     @Override
-    // TODO: 09.04.2020 not working
     public void deleteAll() throws UserServiceException {
         logger.info("Delete all users except admin");
         try {

@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantDetails;
 import com.softserve.itacademy.kek.models.IUser;
@@ -34,6 +37,7 @@ public class Tenant extends AbstractEntity implements ITenant, Serializable {
     private Long idTenant;
 
     @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_tenant_owner")
     private User tenantOwner;
 
@@ -57,6 +61,9 @@ public class Tenant extends AbstractEntity implements ITenant, Serializable {
 
     @OneToMany(mappedBy = "tenant", fetch = FetchType.LAZY)
     private List<Order> orderList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Actor> actors = new ArrayList<>();
 
     public Long getIdTenant() {
         return idTenant;
@@ -151,6 +158,16 @@ public class Tenant extends AbstractEntity implements ITenant, Serializable {
     public void removeTenantProperty(Order order) {
         orderList.remove(order);
         order.setTenant(null);
+    }
+
+    public void addActor(Actor actor) {
+        actors.add(actor);
+        actor.setTenant(this);
+    }
+
+    public void removeActor(Actor actor) {
+        actors.remove(actor);
+        actor.setTenant(null);
     }
 
     @Override

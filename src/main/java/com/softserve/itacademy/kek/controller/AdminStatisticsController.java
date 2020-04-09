@@ -90,7 +90,11 @@ public class AdminStatisticsController extends DefaultController {
                 .body(userListDto);
     }
 
-    //todo not working
+    /**
+     * Deletes data about users from the DB
+     *
+     * @return Response HTTP.STATUS 202
+     */
     @DeleteMapping(value = KekMappingValues.USERS)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ListWrapperDto<UserDto>> deleteAllUsers() {
@@ -105,6 +109,29 @@ public class AdminStatisticsController extends DefaultController {
                 .build();
     }
 
+    /**
+     * Deletes data about tenants from the DB
+     *
+     * @return Response HTTP.STATUS 202
+     */
+    @DeleteMapping(value = KekMappingValues.TENANTS)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity <ListWrapperDto<TenantDto>> deleteAllTenants(){
+        logger.info("Admin requested the delete all orders");
+        tenantService.deleteAll();
+
+        logger.info("All tenants was successfully deleted");
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .build();
+    }
+
+    /**
+     * Deletes data about orders from the DB
+     *
+     * @return Response HTTP.STATUS 202
+     */
     @DeleteMapping(value = KekMappingValues.ORDERS)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ListWrapperDto<OrderDto>> deleteAllOrders() {
@@ -118,4 +145,6 @@ public class AdminStatisticsController extends DefaultController {
                 .status(HttpStatus.ACCEPTED)
                 .build();
     }
+
+
 }
