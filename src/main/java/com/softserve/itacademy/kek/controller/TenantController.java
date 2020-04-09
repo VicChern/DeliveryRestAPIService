@@ -26,15 +26,19 @@ import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
+import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
 import com.softserve.itacademy.kek.mappers.IAddressMapper;
+import com.softserve.itacademy.kek.mappers.IOrderMapper;
 import com.softserve.itacademy.kek.mappers.ITenantMapper;
 import com.softserve.itacademy.kek.mappers.ITenantPropertiesMapper;
 import com.softserve.itacademy.kek.models.IAddress;
+import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.services.IAddressService;
+import com.softserve.itacademy.kek.services.IOrderService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
 
@@ -48,12 +52,15 @@ public class TenantController extends DefaultController {
     private final ITenantService tenantService;
     private final ITenantPropertiesService tenantPropertiesService;
     private final IAddressService addressService;
+    private final IOrderService orderService;
 
     @Autowired
-    public TenantController(ITenantService tenantService, ITenantPropertiesService tenantPropertiesService, IAddressService addressService) {
+    public TenantController(ITenantService tenantService, ITenantPropertiesService tenantPropertiesService,
+                            IAddressService addressService, IOrderService orderService) {
         this.tenantService = tenantService;
         this.tenantPropertiesService = tenantPropertiesService;
         this.addressService = addressService;
+        this.orderService = orderService;
     }
 
     /**
@@ -155,6 +162,24 @@ public class TenantController extends DefaultController {
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .build();
+    }
+
+    @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.ORDER_LIST)
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
+    public ResponseEntity<ListWrapperDto<OrderDto>> getListOfOrdersForCurrentTenant(@PathVariable String guid) {
+        logger.debug("Client requested the list of all orders");
+
+        List<IOrder> orderList = orderService.getAllByTenantGuid(UUID.fromString(guid));
+        ListWrapperDto<OrderDto> orderListDto = new ListWrapperDto<>(orderList
+                .stream()
+                .map(IOrderMapper.INSTANCE::toOrderDto)
+                .collect(Collectors.toList()));
+
+        logger.info("Sending list of all orders to the client:\n{}", orderListDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(orderListDto);
+
     }
 
     /**

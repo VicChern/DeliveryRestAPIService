@@ -43,14 +43,12 @@ import com.softserve.itacademy.kek.services.IUserService;
 public class AdminStatisticsController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(AdminStatisticsController.class);
 
-    private final IOrderService orderService;
     private final IActorService actorService;
     private final ITenantService tenantService;
     private final IUserService userService;
 
     @Autowired
-    public AdminStatisticsController(IOrderService orderService, IActorService actorService, ITenantService tenantService, IUserService userService) {
-        this.orderService = orderService;
+    public AdminStatisticsController(IActorService actorService, ITenantService tenantService, IUserService userService) {
         this.actorService = actorService;
         this.tenantService = tenantService;
         this.userService = userService;
@@ -100,23 +98,6 @@ public class AdminStatisticsController extends DefaultController {
                 .body(userListDto);
     }
 
-    @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.ORDER_LIST)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
-    public ResponseEntity<ListWrapperDto<OrderDto>> getListOfOrdersForCurrentTenant(@PathVariable String guid) {
-        logger.debug("Client requested the list of all orders");
-
-        List<IOrder> orderList = orderService.getAllByTenantGuid(UUID.fromString(guid));
-        ListWrapperDto<OrderDto> orderListDto = new ListWrapperDto<>(orderList
-                .stream()
-                .map(IOrderMapper.INSTANCE::toOrderDto)
-                .collect(Collectors.toList()));
-
-        logger.info("Sending list of all orders to the client:\n{}", orderListDto);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(orderListDto);
-
-    }
 
     @GetMapping(value = KekMappingValues.ACTORS, produces = KekMediaType.ACTOR_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
