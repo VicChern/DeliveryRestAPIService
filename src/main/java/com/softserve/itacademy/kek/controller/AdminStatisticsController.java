@@ -24,6 +24,8 @@ import com.softserve.itacademy.kek.dto.OrderDetailsDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.UserDto;
+import com.softserve.itacademy.kek.mappers.IActorMapper;
+import com.softserve.itacademy.kek.mappers.IOrderMapper;
 import com.softserve.itacademy.kek.mappers.ITenantMapper;
 import com.softserve.itacademy.kek.mappers.IUserMapper;
 import com.softserve.itacademy.kek.models.IActor;
@@ -118,7 +120,7 @@ public class AdminStatisticsController extends DefaultController {
         List<IOrder> orderList = orderService.getAllByTenantGuid(UUID.fromString(guid));
         ListWrapperDto<OrderDto> orderListDto = new ListWrapperDto<>(orderList
                 .stream()
-                .map(this::transformOrder)
+                .map(IOrderMapper.INSTANCE::toOrderDto)
                 .collect(Collectors.toList()));
 
         logger.info("Sending list of all orders to the client:\n{}", orderListDto);
@@ -136,7 +138,7 @@ public class AdminStatisticsController extends DefaultController {
         List<IActor> actorList = actorService.getAllByTenantGuid(UUID.fromString(guid));
         ListWrapperDto<ActorDto> actorListDto = new ListWrapperDto<>(actorList
                 .stream()
-                .map(this::transformActor)
+                .map(IActorMapper.INSTANCE::toActorDto)
                 .collect(Collectors.toList()));
         logger.debug("Sending the actorsList {} to the client", actorListDto);
         return ResponseEntity.status(HttpStatus.OK).body(actorListDto);
