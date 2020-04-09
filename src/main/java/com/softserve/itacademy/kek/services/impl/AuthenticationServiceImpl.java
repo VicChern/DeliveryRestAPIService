@@ -30,12 +30,11 @@ import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.IdentityRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.security.TokenAuthentication;
-import com.softserve.itacademy.kek.services.AbstractService;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
 
 @Service
 @PropertySource("classpath:server.properties")
-public class AuthenticationServiceImpl extends AbstractService implements IAuthenticationService {
+public class AuthenticationServiceImpl implements IAuthenticationService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
@@ -91,13 +90,13 @@ public class AuthenticationServiceImpl extends AbstractService implements IAuthe
 
             final String email = tokenAuth.getClaims().get("email").asString();
 
-            setUsernamePasswordAuthentication(email);
+            setAuthentication(email);
 
             logger.info("User was authenticated successfully, redirectUrl - {}", redirectOnSuccess);
 
             return redirectOnSuccess;
-        } catch (Exception e) {
-            logger.error("Error while authentication, redirectUrl - " + redirectOnFail + ", error - " + e);
+        } catch (Exception ex) {
+            logger.error("Error while authentication, redirect URL " + redirectOnFail, ex);
 
             SecurityContextHolder.clearContext();
             return redirectOnFail;
@@ -113,7 +112,14 @@ public class AuthenticationServiceImpl extends AbstractService implements IAuthe
 
         logger.debug("User is valid: {}", email);
 
-        setUsernamePasswordAuthentication(email);
+        try {
+            setAuthentication(email);
+        } catch (Exception ex) {
+            SecurityContextHolder.clearContext();
+
+            logger.error("Error while authentication: " + email, ex);
+            throw new AuthenticationServiceException("An error occurred while authentication", ex);
+        }
 
         logger.info("User was authenticated successfully: {}", email);
     }
@@ -164,7 +170,7 @@ public class AuthenticationServiceImpl extends AbstractService implements IAuthe
         }
     }
 
-    private void setUsernamePasswordAuthentication(String email) {
+    private void setAuthentication(String email) {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
         final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(

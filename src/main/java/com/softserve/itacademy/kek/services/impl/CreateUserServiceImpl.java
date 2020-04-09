@@ -16,13 +16,12 @@ import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.services.AbstractService;
 import com.softserve.itacademy.kek.services.ICreateUserService;
 import com.softserve.itacademy.kek.services.IIdentityService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
-public class CreateUserServiceImpl extends AbstractService implements ICreateUserService {
+public class CreateUserServiceImpl implements ICreateUserService {
     private static final Logger logger = LoggerFactory.getLogger(CreateUserServiceImpl.class);
 
     private final UserRepository userRepository;
