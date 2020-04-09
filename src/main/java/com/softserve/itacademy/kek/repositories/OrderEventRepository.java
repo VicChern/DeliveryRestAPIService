@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,10 +38,10 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
             "OrderEventType ET " +
             "WHERE " +
             "OOE.lastModifiedDate in (" +
-                "SELECT " +
-                "MAX(OE.lastModifiedDate) " +
-                "FROM OrderEvent OE " +
-                "GROUP BY OE.order) " +
+            "SELECT " +
+            "MAX(OE.lastModifiedDate) " +
+            "FROM OrderEvent OE " +
+            "GROUP BY OE.order) " +
             "AND ET.idOrderEventType = OOE.orderEventType " +
             "AND ET.name = :eventTypeName")
     List<OrderEvent> findAllLastAddedOrderEventsForEventType(@Param("eventTypeName") String eventTypeName);
