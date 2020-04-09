@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.controller.utils.KekPaths;
+import com.softserve.itacademy.kek.controller.utils.KekRoles;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.UserDto;
@@ -34,7 +36,7 @@ import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping(path = KekPaths.USERS)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class UserController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -54,7 +56,7 @@ public class UserController extends DefaultController {
      * @return Response entity with list of {@link UserDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.USER_LIST)
-    @PreAuthorize("hasRole('TENANT') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<UserDto>> getUserList() {
         logger.info("Client requested the list of all users");
 
@@ -78,7 +80,7 @@ public class UserController extends DefaultController {
      */
     @PostMapping(consumes = KekMediaType.USER,
             produces = KekMediaType.USER)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
     public ResponseEntity<UserDto> addUser(@RequestBody @Valid UserDto newUserDto) {
         logger.info("Accepted requested to create a new user:\n{}", newUserDto);
 
@@ -98,7 +100,7 @@ public class UserController extends DefaultController {
      * @return Response entity with {@link UserDto} object as a JSON
      */
     @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.USER)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
     public ResponseEntity<UserDto> getUser(@PathVariable String guid) {
         logger.info("Client requested the user {}", guid);
 
@@ -121,7 +123,7 @@ public class UserController extends DefaultController {
     @PutMapping(value = KekMappingValues.GUID,
             consumes = KekMediaType.USER,
             produces = KekMediaType.USER)
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.USER_ADMIN)
     public ResponseEntity<UserDto> modifyUser(@PathVariable String guid, @RequestBody @Valid UserDto user) {
         logger.info("Accepted modified user from the client:\n{}", user);
 
@@ -140,7 +142,7 @@ public class UserController extends DefaultController {
      * @param guid user guid from the URN
      */
     @DeleteMapping(KekMappingValues.GUID)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
     public ResponseEntity deleteUser(@PathVariable String guid) {
         logger.info("Accepted request to delete the user {}", guid);
 
@@ -159,7 +161,7 @@ public class UserController extends DefaultController {
      * @return Response Entity with list of the {@link AddressDto} objects as a JSON
      */
     @GetMapping(value = KekMappingValues.ADDRESSES, produces = KekMediaType.ADDRESS_LIST)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
     public ResponseEntity<ListWrapperDto<AddressDto>> getUserAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses of the employee {}", guid);
 
@@ -185,7 +187,7 @@ public class UserController extends DefaultController {
     @PostMapping(value = KekMappingValues.ADDRESSES,
             consumes = KekMediaType.ADDRESS_LIST,
             produces = KekMediaType.ADDRESS_LIST)
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.USER_ADMIN)
     public ResponseEntity<ListWrapperDto<AddressDto>> addUserAddresses(@PathVariable String guid,
                                                                        @RequestBody @Valid ListWrapperDto<AddressDto> newAddressesDto) {
         logger.info("Accepted requested to create a new addresses for user:{}:\n", newAddressesDto);
@@ -212,7 +214,7 @@ public class UserController extends DefaultController {
      * @return Response entity with {@link AddressDto} object as a JSON
      */
     @GetMapping(value = KekMappingValues.ADDR_GUID, produces = KekMediaType.ADDRESS)
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.USER_ADMIN)
     public ResponseEntity<AddressDto> getUserAddress(@PathVariable("guid") String guid,
                                                      @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address {} of the employee {}", addrGuid, guid);
@@ -237,7 +239,7 @@ public class UserController extends DefaultController {
     @PutMapping(value = KekMappingValues.ADDR_GUID,
             consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.USER_ADMIN)
     public ResponseEntity<AddressDto> modifyUserAddress(@PathVariable("guid") String guid,
                                                         @PathVariable("addrguid") String addrGuid,
                                                         @RequestBody @Valid AddressDto addressDto) {
@@ -259,7 +261,7 @@ public class UserController extends DefaultController {
      * @param addrGuid address ID from the URN
      */
     @DeleteMapping(KekMappingValues.ADDR_GUID)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
     public ResponseEntity deleteUserAddress(@PathVariable("guid") String guid,
                                             @PathVariable("addrguid") String addrGuid) {
         logger.info("Accepted request to delete the address {} ot the user {}", addrGuid, guid);

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.controller.utils.KekPaths;
+import com.softserve.itacademy.kek.controller.utils.KekRoles;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
@@ -30,7 +32,7 @@ import com.softserve.itacademy.kek.services.ITenantService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
-@RequestMapping(path = "/admin")
+@RequestMapping(path = KekPaths.ADMIN)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AdminController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
@@ -52,7 +54,7 @@ public class AdminController extends DefaultController {
      * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.TENANT_LIST)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<TenantDto>> getTenantList() {
         logger.info("Admin requested the list of all tenants");
 
@@ -74,7 +76,7 @@ public class AdminController extends DefaultController {
      * @return Response entity with list of {@link UserDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.USER_LIST)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<UserDto>> getUserList() {
         logger.info("Admin requested the list of all users");
 
@@ -96,7 +98,7 @@ public class AdminController extends DefaultController {
      * @return Response HTTP.STATUS 202
      */
     @DeleteMapping(value = KekMappingValues.USERS)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<UserDto>> deleteAllUsers() {
         logger.info("Admin requested the delete all users");
 
@@ -115,7 +117,7 @@ public class AdminController extends DefaultController {
      * @return Response HTTP.STATUS 202
      */
     @DeleteMapping(value = KekMappingValues.TENANTS)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<TenantDto>> deleteAllTenants() {
         logger.info("Admin requested the delete all orders");
         tenantService.deleteAll();
@@ -133,7 +135,7 @@ public class AdminController extends DefaultController {
      * @return Response HTTP.STATUS 202
      */
     @DeleteMapping(value = KekMappingValues.ORDERS)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<OrderDto>> deleteAllOrders() {
         logger.info("Admin requested the delete all orders");
 

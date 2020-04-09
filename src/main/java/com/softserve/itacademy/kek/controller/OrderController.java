@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.controller.utils.KekPaths;
+import com.softserve.itacademy.kek.controller.utils.KekRoles;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.OrderEventDto;
@@ -38,7 +40,7 @@ import com.softserve.itacademy.kek.services.IUserService;
 
 
 @RestController
-@RequestMapping(path = "/orders")
+@RequestMapping(path = KekPaths.ORDERS)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class OrderController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
@@ -61,8 +63,7 @@ public class OrderController extends DefaultController {
      * @return Response entity with list of {@link OrderDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.ORDER_LIST)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or " +
-            "hasRole('ACTOR') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ANY_ROLE)
     public ResponseEntity<ListWrapperDto<OrderDto>> getOrderList() {
         logger.info("Client requested the list of all orders");
 
@@ -85,7 +86,7 @@ public class OrderController extends DefaultController {
      * @return Response entity with list of {@link OrderDto} objects as a JSON
      */
     @PostMapping(consumes = KekMediaType.ORDER_LIST, produces = KekMediaType.ORDER_LIST)
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.USER_ADMIN)
     public ResponseEntity<ListWrapperDto<OrderDto>> addOrder(@RequestBody @Valid ListWrapperDto<OrderDto> newOrderListDto) {
         logger.info("Accepted requested to create a new order:\n{}", newOrderListDto);
 
@@ -115,8 +116,7 @@ public class OrderController extends DefaultController {
      * @return Response Entity with {@link OrderDto} object as a JSON
      */
     @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.ORDER)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or " +
-            "hasRole('ACTOR') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ANY_ROLE)
     public ResponseEntity<OrderDto> getOrder(@PathVariable String guid) {
         logger.info("Client requested the order {}", guid);
 
@@ -139,7 +139,7 @@ public class OrderController extends DefaultController {
     @PutMapping(value = KekMappingValues.GUID,
             consumes = KekMediaType.ORDER,
             produces = KekMediaType.ORDER)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
     public ResponseEntity<OrderDto> modifyOrder(@PathVariable String guid, @RequestBody @Valid OrderDto orderDto) {
         logger.info("Accepted modified order {} from the client", orderDto);
 
@@ -158,7 +158,7 @@ public class OrderController extends DefaultController {
      * @param guid order guid from the URN
      */
     @DeleteMapping(KekMappingValues.GUID)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
     public ResponseEntity deleteOrder(@PathVariable String guid) {
         logger.info("Accepted request to delete the order {}", guid);
 
@@ -177,8 +177,7 @@ public class OrderController extends DefaultController {
      * @return Response entity with list of the {@link OrderEventDto} objects as a JSON
      */
     @GetMapping(value = KekMappingValues.GUID_EVENTS, produces = KekMediaType.EVENT_LIST)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or " +
-            "hasRole('ACTOR') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ANY_ROLE)
     public ResponseEntity<ListWrapperDto<OrderEventDto>> getEvents(@PathVariable String guid) {
         logger.info("Client requested all the events of the order {}", guid);
 
@@ -202,8 +201,7 @@ public class OrderController extends DefaultController {
     @PostMapping(value = KekMappingValues.GUID_EVENTS,
             consumes = KekMediaType.EVENT,
             produces = KekMediaType.EVENT)
-    @PreAuthorize("hasRole('TENANT') or hasRole('ACTOR') " +
-            "or hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize(KekRoles.ANY_ROLE)
     public ResponseEntity<OrderEventDto> addEvent(@RequestBody @Valid OrderEventDto orderEventDto,
                                                   @PathVariable String guid) {
         logger.info("Accepted request to create a new event for the order {} created by actor",
