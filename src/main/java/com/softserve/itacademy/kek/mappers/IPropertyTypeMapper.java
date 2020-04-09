@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.mappers;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import com.softserve.itacademy.kek.dto.PropertyTypeDto;
@@ -21,5 +22,6 @@ public interface IPropertyTypeMapper {
      * @param propertyType
      * @return propertyTypeDto
      */
+    @Named("toDto")
     PropertyTypeDto toPropertyTypeDto(IPropertyType propertyType);
 }

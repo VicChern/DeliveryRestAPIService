@@ -40,13 +40,19 @@ public interface IOrderEventMapper {
      * @return OrderEventTypesDto
      */
 
-    @Named("getOrderEventType")
-    default OrderEventTypesDto getOrderEventType(IOrderEventType orderEventType) {
+    @Named("getOrderEventTypeDto")
+    default OrderEventTypesDto getOrderEventTypeDto(IOrderEventType orderEventType) {
         return OrderEventTypesDto.valueOf(orderEventType.getName());
     }
 
-    @Mapping(source = "order", target = "orderId", qualifiedByName = "getOrderGuid")
-    @Mapping(source = "orderEventType", target = "type", qualifiedByName = "getOrderEventType")
-    OrderEventDto toOrderEventDto(IOrderEvent orderEvent);
 
+    /**
+     * Transform {@link IOrderEvent} to {@link OrderEventDto}
+     *
+     * @param orderEvent
+     * @return orderEventDto
+     */
+    @Mapping(source = "order", target = "orderId", qualifiedByName = "getOrderGuid")
+    @Mapping(source = "orderEventType", target = "type", qualifiedByName = "getOrderEventTypeDto")
+    OrderEventDto toOrderEventDto(IOrderEvent orderEvent);
 }
