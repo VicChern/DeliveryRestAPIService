@@ -38,8 +38,8 @@ import com.softserve.itacademy.kek.services.IUserService;
 @RestController
 @RequestMapping(path = "/statistics")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class StatisticsController extends DefaultController {
-    private static final Logger logger = LoggerFactory.getLogger(StatisticsController.class);
+public class AdminStatisticsController extends DefaultController {
+    private static final Logger logger = LoggerFactory.getLogger(AdminStatisticsController.class);
 
     private final IOrderService orderService;
     private final IActorService actorService;
@@ -47,7 +47,7 @@ public class StatisticsController extends DefaultController {
     private final IUserService userService;
 
     @Autowired
-    public StatisticsController(IOrderService orderService, IActorService actorService, ITenantService tenantService, IUserService userService) {
+    public AdminStatisticsController(IOrderService orderService, IActorService actorService, ITenantService tenantService, IUserService userService) {
         this.orderService = orderService;
         this.actorService = actorService;
         this.tenantService = tenantService;

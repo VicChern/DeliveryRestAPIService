@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class StatisticsControllerTest {
+public class AdminStatisticsControllerTest {
 
     private final String orderListJson = "{\n" +
             "  \"list\": [\n" +
@@ -47,7 +47,7 @@ public class StatisticsControllerTest {
             "}";
 
     @InjectMocks
-    private StatisticsController controller;
+    private AdminStatisticsController controller;
     @Spy
     private IOrderService orderService;
     @Spy
