@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.service;
 
 import java.io.FileInputStream;
 import java.util.List;
+import java.util.UUID;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
@@ -16,18 +17,18 @@ import org.testng.annotations.Test;
 
 import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
 import com.softserve.itacademy.kek.models.services.ICloudStorageObject;
-import com.softserve.itacademy.kek.services.impl.CloudStorageService;
+import com.softserve.itacademy.kek.services.impl.CloudStorageServiceImpl;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 /**
- * Integration tests for {@link CloudStorageService}
+ * Integration tests for {@link CloudStorageServiceImpl}
  */
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
 public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
     @Autowired
-    private CloudStorageService cloudStorageService;
+    private CloudStorageServiceImpl cloudStorageService;
 
     private RemoteStorageHelper helper;
 
@@ -39,10 +40,11 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
     private Blob blob;
 
     private byte[] data;
+    private UUID guid;
 
     @BeforeMethod(groups = {"integration-tests"})
     public void setUp() throws Exception {
-        cloudStorageService = new CloudStorageService();
+        cloudStorageService = new CloudStorageServiceImpl();
 
         helper = RemoteStorageHelper.create("kinda-express-king-266805", new FileInputStream(System.getenv("GOOGLE_CLOUD_STORAGE_KEY")));
         storage = helper.getOptions().getService();
@@ -51,6 +53,8 @@ public class CloudStorageServiceIT extends AbstractTestNGSpringContextTests {
         bucket = storage.get(bucketName);
 
         data = new byte[]{1, 2, 4, 5};
+        guid = UUID.randomUUID();
+
     }
 
     @AfterMethod(groups = {"integration-tests"})

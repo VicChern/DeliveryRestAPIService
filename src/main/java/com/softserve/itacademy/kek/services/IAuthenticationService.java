@@ -2,9 +2,8 @@ package com.softserve.itacademy.kek.services;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
-import com.softserve.itacademy.kek.models.IUser;
+import com.softserve.itacademy.kek.exception.AuthenticationServiceException;
 
 /**
  * Service interface for user authentication
@@ -26,15 +25,15 @@ public interface IAuthenticationService {
      * @param request  request
      * @param response response
      * @return success authentication URL
-     * @throws IOException if an error occurred
      */
-    String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * Sets authentication information for a user authenticated using name/password
      *
-     * @param user user data
-     * @return success authentication URL
+     * @param email user email
+     * @param key   user key
+     * @throws AuthenticationServiceException if an error occurred
      */
-    String authenticateKekUser(IUser user);
+    void authenticateKekUser(String email, String key) throws AuthenticationServiceException;
 }
