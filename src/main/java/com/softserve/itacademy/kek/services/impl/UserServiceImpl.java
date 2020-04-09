@@ -237,6 +237,8 @@ public class UserServiceImpl implements IUserService {
 
             if (existUser.isPresent() && existUser.get().getIdUser() == 1) {
                 authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+                logger.debug("ADMIN role was checked");
             }
 
             return authorityList;

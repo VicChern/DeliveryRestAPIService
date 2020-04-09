@@ -88,7 +88,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         new AntPathRequestMatcher("/api/v1/orders/**"),
                         new AntPathRequestMatcher("/api/v1/tenants/**"),
                         new AntPathRequestMatcher("/api/v1/users/**"),
-                        new AntPathRequestMatcher("/api/v1/profile")
+                        new AntPathRequestMatcher("/api/v1/profile"),
+                        new AntPathRequestMatcher("/api/v1/statistics/**")
                 )
         );
         filter.setAuthenticationManager(authenticationManager());
