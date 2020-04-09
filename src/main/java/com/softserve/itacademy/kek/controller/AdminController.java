@@ -30,7 +30,7 @@ import com.softserve.itacademy.kek.services.ITenantService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
-@RequestMapping(path = "/statistics")
+@RequestMapping(path = "/admin")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AdminController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
