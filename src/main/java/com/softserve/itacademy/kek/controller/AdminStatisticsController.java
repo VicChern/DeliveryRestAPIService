@@ -56,18 +56,6 @@ public class AdminStatisticsController extends DefaultController {
         this.userService = userService;
     }
 
-    private OrderDto transformOrder(IOrder order) {
-        OrderDetailsDto orderDetailsDto = new OrderDetailsDto(order.getOrderDetails().getPayload(), order.getOrderDetails().getImageUrl());
-        OrderDto orderDto = new OrderDto(order.getGuid(), order.getTenant().getGuid(), order.getSummary(), orderDetailsDto);
-
-        return orderDto;
-    }
-
-    private ActorDto transformActor(IActor actor) {
-        ActorDto actorDto = new ActorDto(actor.getGuid(), actor.getTenant().getGuid(), actor.getUser().getGuid(), actor.getAlias());
-        return actorDto;
-    }
-
     /**
      * Get information about tenants
      *
