@@ -1,7 +1,9 @@
 package com.softserve.itacademy.kek.models.impl;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,6 +33,7 @@ public class Actor extends AbstractEntity implements IActor, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idActor;
 
+    // TODO: 09.04.2020 ??? cascade deleting
     @ManyToOne
     @JoinColumn(name = "id_tenant")
     private Tenant tenant;

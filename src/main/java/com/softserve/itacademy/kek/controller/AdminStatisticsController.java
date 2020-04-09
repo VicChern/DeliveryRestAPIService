@@ -1,7 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -11,28 +10,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
-import com.softserve.itacademy.kek.dto.ActorDto;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
-import com.softserve.itacademy.kek.dto.OrderDetailsDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.UserDto;
-import com.softserve.itacademy.kek.mappers.IActorMapper;
-import com.softserve.itacademy.kek.mappers.IOrderMapper;
 import com.softserve.itacademy.kek.mappers.ITenantMapper;
 import com.softserve.itacademy.kek.mappers.IUserMapper;
-import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.services.IActorService;
 import com.softserve.itacademy.kek.services.IOrderService;
 import com.softserve.itacademy.kek.services.ITenantService;
 import com.softserve.itacademy.kek.services.IUserService;
@@ -45,11 +37,13 @@ public class AdminStatisticsController extends DefaultController {
 
     private final ITenantService tenantService;
     private final IUserService userService;
+    private final IOrderService orderService;
 
     @Autowired
-    public AdminStatisticsController(ITenantService tenantService, IUserService userService) {
+    public AdminStatisticsController(ITenantService tenantService, IUserService userService, IOrderService orderService) {
         this.tenantService = tenantService;
         this.userService = userService;
+        this.orderService = orderService;
     }
 
     /**
@@ -60,7 +54,7 @@ public class AdminStatisticsController extends DefaultController {
     @GetMapping(produces = KekMediaType.TENANT_LIST)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ListWrapperDto<TenantDto>> getTenantList() {
-        logger.info("Client requested the list of all tenants");
+        logger.info("Admin requested the list of all tenants");
 
         List<ITenant> tenantList = tenantService.getAll();
         ListWrapperDto<TenantDto> tenantListDto = new ListWrapperDto<>(tenantList
@@ -82,7 +76,7 @@ public class AdminStatisticsController extends DefaultController {
     @GetMapping(produces = KekMediaType.USER_LIST)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ListWrapperDto<UserDto>> getUserList() {
-        logger.info("Client requested the list of all users");
+        logger.info("Admin requested the list of all users");
 
         List<IUser> userList = userService.getAll();
         ListWrapperDto<UserDto> userListDto = new ListWrapperDto<>(userList
@@ -94,5 +88,34 @@ public class AdminStatisticsController extends DefaultController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userListDto);
+    }
+
+    //todo not working
+    @DeleteMapping(value = KekMappingValues.USERS)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ListWrapperDto<UserDto>> deleteAllUsers() {
+        logger.info("Admin requested the delete all users");
+
+        userService.deleteAll();
+
+        logger.info("All users was successfully deleted");
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .build();
+    }
+
+    @DeleteMapping(value = KekMappingValues.ORDERS)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ListWrapperDto<OrderDto>> deleteAllOrders() {
+        logger.info("Admin requested the delete all orders");
+
+        orderService.deleteAll();
+
+        logger.info("All orders was successfully deleted");
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .build();
     }
 }

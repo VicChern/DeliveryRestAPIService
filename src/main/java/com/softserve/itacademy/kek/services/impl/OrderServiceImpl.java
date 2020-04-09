@@ -183,6 +183,20 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
+    @Override
+    public void deleteAll() throws OrderServiceException {
+        logger.info("Delete all orders from DB");
+        try{
+            orderRepository.deleteAll();
+            orderRepository.flush();
+
+            logger.debug("All orders was deleted from DB");
+        }catch (Exception ex) {
+            logger.error("Error while deleting orders from DB: " , ex);
+            throw new OrderServiceException("An error occurred while deleting orders", ex);
+        }
+    }
+
     private OrderEvent createOrderEvent(Order order, User customer) {
         logger.info("Insert order event into DB: order = {}, customer = {}", order, customer);
 
