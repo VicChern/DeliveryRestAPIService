@@ -32,7 +32,7 @@ public class AdminStatisticsControllerTest {
             "}";
 
     @InjectMocks
-    private AdminStatisticsController controller;
+    private AdminController controller;
     @Spy
     private SecurityContext securityContext;
     private MockMvc mockMvc;

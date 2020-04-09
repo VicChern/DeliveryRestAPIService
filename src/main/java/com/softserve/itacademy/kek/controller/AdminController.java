@@ -32,15 +32,15 @@ import com.softserve.itacademy.kek.services.IUserService;
 @RestController
 @RequestMapping(path = "/statistics")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AdminStatisticsController extends DefaultController {
-    private static final Logger logger = LoggerFactory.getLogger(AdminStatisticsController.class);
+public class AdminController extends DefaultController {
+    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     private final ITenantService tenantService;
     private final IUserService userService;
     private final IOrderService orderService;
 
     @Autowired
-    public AdminStatisticsController(ITenantService tenantService, IUserService userService, IOrderService orderService) {
+    public AdminController(ITenantService tenantService, IUserService userService, IOrderService orderService) {
         this.tenantService = tenantService;
         this.userService = userService;
         this.orderService = orderService;
