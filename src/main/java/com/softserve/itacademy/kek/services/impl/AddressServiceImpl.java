@@ -149,11 +149,8 @@ public class AddressServiceImpl implements IAddressService {
         logger.info("Insert user address into DB: userGuid = {}, address = {}", userGuid, address);
 
         try {
-            final Address actualAddress = new Address();
+            final Address actualAddress = IAddressMapper.INSTANCE.toAddress(address);
             actualAddress.setGuid(UUID.randomUUID());
-            actualAddress.setAddress(address.getAddress());
-            actualAddress.setAlias(address.getAlias());
-            actualAddress.setNotes(address.getNotes());
 
             final User user = (User) userService.getByGuid(userGuid);
             actualAddress.setUser(user);
