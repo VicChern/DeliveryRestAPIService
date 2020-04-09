@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.UserServiceException;
+import com.softserve.itacademy.kek.mappers.IUserMapper;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
 import com.softserve.itacademy.kek.models.impl.Actor;
@@ -51,24 +52,10 @@ public class UserServiceImpl implements IUserService {
     public IUser create(IUser user) throws UserServiceException {
         logger.info("Insert user into DB: {}", user);
 
-        final User actualUser = new User();
-
         try {
+            final User actualUser = IUserMapper.INSTANCE.toUser(user);
+
             actualUser.setGuid(UUID.randomUUID());
-            actualUser.setName(user.getName());
-            actualUser.setNickname(user.getNickname());
-            actualUser.setEmail(user.getEmail());
-            actualUser.setPhoneNumber(user.getPhoneNumber());
-
-            final UserDetails actualDetails = new UserDetails();
-
-            final IUserDetails details = user.getUserDetails();
-            if (details != null) {
-                actualDetails.setImageUrl(details.getImageUrl());
-                actualDetails.setPayload(details.getPayload());
-            }
-
-            actualUser.setUserDetails(actualDetails);
 
             final User insertedUser = userRepository.saveAndFlush(actualUser);
 

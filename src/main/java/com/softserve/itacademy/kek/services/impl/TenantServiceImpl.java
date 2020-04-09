@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.TenantServiceException;
+import com.softserve.itacademy.kek.mappers.ITenantMapper;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.TenantDetails;
@@ -45,7 +46,7 @@ public class TenantServiceImpl implements ITenantService {
         logger.info("Insert tenant into DB: {}", tenant);
 
         try {
-            final Tenant tenantForSaving = transform(tenant);
+            final Tenant tenantForSaving = ITenantMapper.INSTANCE.toTenant(tenant);
             tenantForSaving.setGuid(UUID.randomUUID());
 
             final UUID ownerGuid = tenant.getTenantOwner().getGuid();
@@ -160,25 +161,5 @@ public class TenantServiceImpl implements ITenantService {
             logger.error("Error while deleting tenant from DB: " + tenant, ex);
             throw new TenantServiceException("An error occurred while deleting tenant", ex);
         }
-    }
-
-    /**
-     * Transform {@link ITenant} to {@link Tenant}
-     *
-     * @param iTenant iTenant
-     * @return transformed tenant
-     */
-    private Tenant transform(ITenant iTenant) {
-        TenantDetails tenantDetails = new TenantDetails();
-        tenantDetails.setPayload(iTenant.getTenantDetails().getPayload());
-        tenantDetails.setImageUrl(iTenant.getTenantDetails().getImageUrl());
-
-        Tenant tenant = new Tenant();
-        tenant.setName(iTenant.getName());
-
-        tenant.setTenantDetails(tenantDetails);
-        tenantDetails.setTenant(tenant);
-
-        return tenant;
     }
 }
