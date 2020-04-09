@@ -1,7 +1,5 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.dto.AuthenticatedUserDto;
 import com.softserve.itacademy.kek.models.impl.User;
@@ -29,22 +28,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.authenticatedUserDto = authenticatedUserDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         logger.info("Load user data by email: {}", email);
 
-        final Optional<User> userFromDb = userRepository.findByEmail(email);
+        final User user;
+        try {
+            user = userRepository.findByEmail(email).orElseThrow();
 
-        if (userFromDb.isEmpty()) {
-            logger.debug("User was not found in DB by email: {}", email);
-
-            authenticatedUserDto.setEmail(email);
-            return authenticatedUserDto;
+            logger.debug("User was found in DB by email: {}", email);
+        } catch (Exception ex) {
+            logger.error("Error while getting user from DB by email: " + email, ex);
+            throw new UsernameNotFoundException("An error occurred while getting user", ex);
         }
-
-        logger.debug("User was found in DB by email: {}", email);
-
-        final User user = userFromDb.get();
 
         authenticatedUserDto.setGuid(user.getGuid());
         authenticatedUserDto.setName(user.getName());
@@ -52,6 +49,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         authenticatedUserDto.setEmail(user.getEmail());
         authenticatedUserDto.setPhoneNumber(user.getPhoneNumber());
         authenticatedUserDto.setUserDetails(user.getUserDetails());
+
         return authenticatedUserDto;
     }
 }
