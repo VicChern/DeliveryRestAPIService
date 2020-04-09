@@ -24,19 +24,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.dto.ActorDto;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
 import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
+import com.softserve.itacademy.kek.dto.UserDto;
+import com.softserve.itacademy.kek.mappers.IActorMapper;
 import com.softserve.itacademy.kek.mappers.IAddressMapper;
 import com.softserve.itacademy.kek.mappers.IOrderMapper;
 import com.softserve.itacademy.kek.mappers.ITenantMapper;
 import com.softserve.itacademy.kek.mappers.ITenantPropertiesMapper;
+import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.IAddress;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantProperties;
+import com.softserve.itacademy.kek.services.IActorService;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.IOrderService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
@@ -53,14 +58,17 @@ public class TenantController extends DefaultController {
     private final ITenantPropertiesService tenantPropertiesService;
     private final IAddressService addressService;
     private final IOrderService orderService;
+    private final IActorService actorService;
 
     @Autowired
     public TenantController(ITenantService tenantService, ITenantPropertiesService tenantPropertiesService,
-                            IAddressService addressService, IOrderService orderService) {
+                            IAddressService addressService, IOrderService orderService,
+                            IActorService actorService) {
         this.tenantService = tenantService;
         this.tenantPropertiesService = tenantPropertiesService;
         this.addressService = addressService;
         this.orderService = orderService;
+        this.actorService = actorService;
     }
 
     /**
@@ -164,6 +172,11 @@ public class TenantController extends DefaultController {
                 .build();
     }
 
+    /**
+     * Get list of orders for current Tenant
+     *
+     * @return Response entity with list of {@link OrderDto} objects as a JSON
+     */
     @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.ORDER_LIST)
     @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
     public ResponseEntity<ListWrapperDto<OrderDto>> getListOfOrdersForCurrentTenant(@PathVariable String guid) {
@@ -181,6 +194,26 @@ public class TenantController extends DefaultController {
                 .body(orderListDto);
 
     }
+
+    /**
+     * Get list of Actors for current Tenant
+     *
+     * @return Response entity with list of {@link ActorDto} objects as a JSON
+     */
+    @GetMapping(value = KekMappingValues.ACTORS, produces = KekMediaType.ACTOR_LIST)
+    @PreAuthorize("hasRole('TENANT') or hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<ListWrapperDto<ActorDto>> getListOfActorsForCurrentTenant(@PathVariable String guid) {
+        logger.debug("Client requested the actorsList {}", guid);
+
+        List<IActor> actorList = actorService.getAllByTenantGuid(UUID.fromString(guid));
+        ListWrapperDto<ActorDto> actorListDto = new ListWrapperDto<>(actorList
+                .stream()
+                .map(IActorMapper.INSTANCE::toActorDto)
+                .collect(Collectors.toList()));
+        logger.debug("Sending the actorsList {} to the client", actorListDto);
+        return ResponseEntity.status(HttpStatus.OK).body(actorListDto);
+    }
+
 
     /**
      * Find properties of the specific tenant

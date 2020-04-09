@@ -43,13 +43,11 @@ import com.softserve.itacademy.kek.services.IUserService;
 public class AdminStatisticsController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(AdminStatisticsController.class);
 
-    private final IActorService actorService;
     private final ITenantService tenantService;
     private final IUserService userService;
 
     @Autowired
-    public AdminStatisticsController(IActorService actorService, ITenantService tenantService, IUserService userService) {
-        this.actorService = actorService;
+    public AdminStatisticsController(ITenantService tenantService, IUserService userService) {
         this.tenantService = tenantService;
         this.userService = userService;
     }
@@ -97,20 +95,4 @@ public class AdminStatisticsController extends DefaultController {
                 .status(HttpStatus.OK)
                 .body(userListDto);
     }
-
-
-    @GetMapping(value = KekMappingValues.ACTORS, produces = KekMediaType.ACTOR_LIST)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
-    public ResponseEntity<ListWrapperDto<ActorDto>> getListOfActorsForCurrentTenant(@PathVariable String guid) {
-        logger.debug("Client requested the actorsList {}", guid);
-
-        List<IActor> actorList = actorService.getAllByTenantGuid(UUID.fromString(guid));
-        ListWrapperDto<ActorDto> actorListDto = new ListWrapperDto<>(actorList
-                .stream()
-                .map(IActorMapper.INSTANCE::toActorDto)
-                .collect(Collectors.toList()));
-        logger.debug("Sending the actorsList {} to the client", actorListDto);
-        return ResponseEntity.status(HttpStatus.OK).body(actorListDto);
-    }
-
 }
