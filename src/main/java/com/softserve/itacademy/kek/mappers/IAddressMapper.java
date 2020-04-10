@@ -18,8 +18,16 @@ public interface IAddressMapper {
     /**
      * Transform {@link IAddress} to {@link AddressDto}
      *
-     * @param address
+     * @param iAddress
      * @return addressDto
      */
-    AddressDto toAddressDto(IAddress address);
+    AddressDto toAddressDto(IAddress iAddress);
+
+    /**
+     * Transform {@link IAddress} to {@link Address}
+     *
+     * @param iAddress
+     * @return address
+     */
+    Address toAddress(IAddress iAddress);
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.TenantPropertiesServiceException;
+import com.softserve.itacademy.kek.mappers.ITenantPropertiesMapperImpl;
 import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
@@ -78,7 +79,13 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
         try {
             for (ITenantProperties p : tenantProperties) {
-                TenantProperties property = transform(p);
+                TenantProperties property = ITenantPropertiesMapperImpl.INSTANCE.toTenantProperties(p);
+
+                String typeName = p.getPropertyType().getName();
+                PropertyType propertyType = (PropertyType) propertyTypeService.getByName(typeName);
+                property.setPropertyType(propertyType);
+
+
                 property.setGuid(UUID.randomUUID());
                 actualTenantProperties.add(property);
             }
@@ -178,25 +185,5 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
             logger.error("Error while deleting tenant property from DB: " + tenantProperty, ex);
             throw new TenantPropertiesServiceException("An error occurred while deleting tenant property", ex);
         }
-    }
-
-    /**
-     * Transform {@link ITenantProperties} to {@link TenantProperties}
-     *
-     * @param iTenantProperties iTenantProperties
-     * @return transformed tenant properties
-     */
-    private TenantProperties transform(ITenantProperties iTenantProperties) {
-
-        final TenantProperties tenantProperties = new TenantProperties();
-        tenantProperties.setGuid(iTenantProperties.getGuid());
-        tenantProperties.setKey(iTenantProperties.getKey());
-        tenantProperties.setValue(iTenantProperties.getValue());
-
-        final String typeName = iTenantProperties.getPropertyType().getName();
-        final PropertyType propertyType = (PropertyType) propertyTypeService.getByName(typeName);
-        tenantProperties.setPropertyType(propertyType);
-
-        return tenantProperties;
     }
 }

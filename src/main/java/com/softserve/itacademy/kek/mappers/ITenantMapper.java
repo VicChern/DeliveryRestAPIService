@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.mappers;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.softserve.itacademy.kek.dto.TenantDto;
@@ -18,9 +19,19 @@ public interface ITenantMapper {
     /**
      * Transform {@link ITenant} to {@link TenantDto}
      *
-     * @param tenant
+     * @param iTenant
      * @return tenantDto
      */
-    TenantDto toTenantDto(ITenant tenant);
+    @Mapping(target = "tenantDetails", qualifiedByName = "toDto")
+    TenantDto toTenantDto(ITenant iTenant);
+
+    /**
+     * Transform {@link ITenant} to {@link Tenant}
+     *
+     * @param iTenant
+     * @return tenant
+     */
+    @Mapping(target = "tenantDetails", qualifiedByName = "toEntity")
+    Tenant toTenant(ITenant iTenant);
 
 }

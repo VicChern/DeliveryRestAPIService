@@ -35,7 +35,7 @@ public class Actor extends AbstractEntity implements IActor, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idActor;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tenant")
     private Tenant tenant;
 
