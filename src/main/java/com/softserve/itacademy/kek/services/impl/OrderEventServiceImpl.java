@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.OrderEventServiceException;
+import com.softserve.itacademy.kek.models.IActorRole;
 import com.softserve.itacademy.kek.models.IOrderEvent;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
 import com.softserve.itacademy.kek.models.enums.EventTypeEnum;
@@ -238,7 +239,8 @@ public class OrderEventServiceImpl implements IOrderEventService {
                         actorByUserGuid.get()
                                 .getActorRoles()
                                 .stream()
-                                .noneMatch(actorRole -> actorRole.getName().equals(ActorRoleEnum.CURRIER.name()));
+                                .map(IActorRole::getName)
+                                .noneMatch(ActorRoleEnum.CURRIER.name()::equals);
 
         if (eventTypeNameIsAssignedAndActorRoleIsCurrier) {
             return updateActorWithNewRole(actorByUserGuid.get(), ActorRoleEnum.CURRIER);

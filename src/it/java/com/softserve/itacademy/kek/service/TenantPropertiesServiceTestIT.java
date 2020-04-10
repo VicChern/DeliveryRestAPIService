@@ -214,6 +214,6 @@ public class TenantPropertiesServiceTestIT extends AbstractTestNGSpringContextTe
         tenantPropertiesService.delete(tenant.getGuid(), savedTenantProperties.get(0).getGuid());
 
         //then
-        assertFalse(tenantPropertiesRepository.findByGuidAndTenantGuid(savedTenantProperties.get(0).getGuid(), tenant.getGuid()).isPresent());
+        assertFalse(tenantPropertiesRepository.findByGuid(savedTenantProperties.get(0).getGuid()).isPresent());
     }
 }

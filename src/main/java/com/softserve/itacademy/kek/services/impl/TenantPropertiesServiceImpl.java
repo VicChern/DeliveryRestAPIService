@@ -117,8 +117,16 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
 
         try {
             final TenantProperties tenantProperties =
-                    tenantPropertiesRepository.findByGuidAndTenantGuid(tenantPropertyGuid, tenantGuid)
+                    tenantPropertiesRepository.findByGuid(tenantPropertyGuid)
                             .orElseThrow(() -> new NoSuchElementException("Tenant property was not found"));
+
+            final boolean tenantPropertyHasTenant = tenantProperties.getTenant()
+                    .getGuid()
+                    .equals(tenantGuid);
+
+            if (!tenantPropertyHasTenant) {
+                throw new Exception("Tenant property doesn't belong to the tenant");
+            }
 
             logger.debug("Tenant property was read from DB: {}", tenantProperties);
 
@@ -171,7 +179,6 @@ public class TenantPropertiesServiceImpl implements ITenantPropertiesService {
         final TenantProperties tenantProperty = (TenantProperties) getPropertyByTenantGuid(tenantGuid, tenantPropertyGuid);
         try {
             tenantPropertiesRepository.delete(tenantProperty);
-            tenantPropertiesRepository.flush();
 
             logger.debug("Tenant property was deleted from DB: tenantProperty = {}", tenantProperty);
         } catch (Exception ex) {
