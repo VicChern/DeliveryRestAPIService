@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.services.impl;
 
-import java.util.Calendar;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,17 +38,18 @@ public class TokenServiceImpl implements ITokenService {
 
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
 
-        tokenData.put("token_create_date", new Date().getTime());
+        final Instant createdDate = Instant.now();
+        final Instant expirationDate = createdDate.plus(1, ChronoUnit.MONTHS);
+
+        tokenData.put("token_create_date", createdDate);
         tokenData.put("authorities", authorities);
         tokenData.put("email", email);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 1);
-        tokenData.put("token_expiration_date", calendar.getTime());
+        tokenData.put("token_expiration_date", expirationDate);
 
         final JwtBuilder jwtBuilder = Jwts.builder();
 
-        jwtBuilder.setExpiration(calendar.getTime());
+        jwtBuilder.setExpiration(Date.from(expirationDate));
         jwtBuilder.setClaims(tokenData);
 
         logger.info("Building token for user: {}", user);
