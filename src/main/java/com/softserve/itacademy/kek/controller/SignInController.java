@@ -25,23 +25,23 @@ public class SignInController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(SignInController.class);
 
     private final IAuthenticationService authenticationService;
-    private final ITokenService getTokenService;
+    private final ITokenService tokenService;
 
     @Autowired
     public SignInController(IAuthenticationService authenticationService, ITokenService getTokenService) {
         this.authenticationService = authenticationService;
-        this.getTokenService = getTokenService;
+        this.tokenService = getTokenService;
     }
 
     @PostMapping(path = KekMappingValues.SIGNIN, consumes = KekMediaType.SIGNIN,
             produces = KekMediaType.TOKEN)
     public ResponseEntity<TokenDto> signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
                                            HttpServletResponse response) throws Exception {
-        logger.info("{} trying to sign in", dto.getEmail());
+        logger.info("Try to sign in: {}", dto.getEmail());
 
         authenticationService.authenticateKekUser(dto.getEmail(), dto.getPassword());
 
-        TokenDto token = new TokenDto(getTokenService.getToken(dto.getEmail()));
+        TokenDto token = new TokenDto(tokenService.getToken(dto.getEmail()));
 
         return ResponseEntity
                 .status(HttpStatus.OK)

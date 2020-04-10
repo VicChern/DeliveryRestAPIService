@@ -41,13 +41,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     @Value(value = "${redirect.from.auth0}")
     private String redirectAuth0URL;
 
-    @Value(value = "${redirect.on.fail}")
-    private String redirectOnFail;
-
-    @Value(value = "${redirect.on.success}")
-    private String redirectOnSuccess;
-
-    private AuthenticationController controller;
+    private AuthenticationController authController;
     private UserDetailsService userDetailsService;
     private UserRepository userRepository;
     private IdentityRepository identityRepository;
@@ -59,7 +53,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
                                      UserRepository userRepository,
                                      IdentityRepository identityRepository,
                                      PasswordEncoder passwordEncoder) {
-        this.controller = controller;
+        this.authController = controller;
         this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
         this.identityRepository = identityRepository;
@@ -73,7 +67,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         final String returnTo = createRedirectUrl(request.getScheme(), request.getServerName(),
                 request.getServerPort());
 
-        final String authorizeUrl = controller.buildAuthorizeUrl(request, response, returnTo)
+        final String authorizeUrl = authController.buildAuthorizeUrl(request, response, returnTo)
                 .withScope("openid profile email")
                 .build();
 
@@ -81,32 +75,33 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     }
 
     @Override
-    public String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response) {
-        logger.info("Set authentication info (Auth0)");
+    public String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationServiceException {
+        logger.info("Set authentication for Auth0 flow");
 
         try {
-            final Tokens tokens = controller.handle(request, response);
+            final Tokens tokens = authController.handle(request, response);
             final TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
 
             final String email = tokenAuth.getClaims().get("email").asString();
 
             setAuthentication(email);
 
-            logger.info("User was authenticated successfully, redirectUrl - {}", redirectOnSuccess);
+            logger.debug("Authentication was set: {}", email);
 
-            return redirectOnSuccess;
+            return email;
         } catch (Exception ex) {
-            logger.error("Error while authentication, redirect URL " + redirectOnFail, ex);
-
             SecurityContextHolder.clearContext();
-            return redirectOnFail;
+
+            logger.error("Error while setting authentication", ex);
+            throw new AuthenticationServiceException("An error occurred while authentication", ex);
         }
     }
 
     @Transactional(readOnly = true)
     @Override
     public void authenticateKekUser(String email, String key) throws AuthenticationServiceException {
-        logger.info("Set authentication info: {}", email);
+        logger.info("Set authentication: {}", email);
 
         validateUser(email, key);
 
