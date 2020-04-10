@@ -24,9 +24,10 @@ public interface IAuthenticationService {
      *
      * @param request  request
      * @param response response
-     * @return success authentication URL
+     * @return user email
+     * @throws AuthenticationServiceException if an error occurred
      */
-    String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response);
+    String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response) throws AuthenticationServiceException;
 
     /**
      * Sets authentication information for a user authenticated using name/password

@@ -45,9 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * This is url path to user info page
      */
 
-    @Value(value = "${secured.profile.url}")
+    @Value(value = "${profile.url}")
     private String profileURL;
-
 
     @Value(value = "${login.url}")
     private String loginURL;

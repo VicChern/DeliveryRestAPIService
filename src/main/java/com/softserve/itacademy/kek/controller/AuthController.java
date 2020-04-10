@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -17,11 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.controller.utils.KekPaths;
+import com.softserve.itacademy.kek.dto.TokenDto;
+import com.softserve.itacademy.kek.controller.utils.KekPaths;
 import com.softserve.itacademy.kek.controller.utils.KekRoles;
 import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.mappers.IUserMapper;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
+import com.softserve.itacademy.kek.services.ITokenService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
@@ -35,24 +39,35 @@ public class AuthController extends DefaultController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private ITokenService tokenService;
+
     @GetMapping(path = KekPaths.LOGIN)
     protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.info("Performing login, request = {}", request);
+        logger.info("Performing login: request = {}", request);
 
         final String authorizeUrl = authenticationService.createRedirectUrl(request, response);
 
-        logger.debug("trying to redirect to authorizeUrl = {}", authorizeUrl);
+        logger.debug("Redirect to authorize URL: {}", authorizeUrl);
         response.sendRedirect(authorizeUrl);
     }
 
     @RequestMapping(path = KekPaths.CALLBACK)
-    protected void getCallback(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.info("Entered to getCallBack method req = {}", request);
+    protected ResponseEntity<TokenDto> getCallback(HttpServletRequest request, HttpServletResponse response) {
+        logger.info("Entered to callback for Auth0: request = {}", request);
 
-        final String redirectUrl = authenticationService.authenticateAuth0User(request, response);
+        final String email = authenticationService.authenticateAuth0User(request, response);
 
-        logger.debug("redirecting after authentication = {}", redirectUrl);
-        response.sendRedirect(redirectUrl);
+        logger.debug("User was authenticated successfully: {}", email);
+
+        final String token = tokenService.getToken(email);
+        final TokenDto tokenDto = new TokenDto(token);
+
+        logger.info("Sending response to the client after successful authentication: {}", email);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(tokenDto);
     }
 
     @GetMapping(path = KekPaths.PROFILE, produces = KekMediaType.USER)
