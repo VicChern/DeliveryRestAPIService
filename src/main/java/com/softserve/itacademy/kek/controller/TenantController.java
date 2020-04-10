@@ -1,5 +1,6 @@
 package com.softserve.itacademy.kek.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +39,7 @@ import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.services.IAddressService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
+import com.softserve.itacademy.kek.services.IUserService;
 
 
 @RestController
@@ -48,12 +51,14 @@ public class TenantController extends DefaultController {
     private final ITenantService tenantService;
     private final ITenantPropertiesService tenantPropertiesService;
     private final IAddressService addressService;
+    private final IUserService userService;
 
     @Autowired
-    public TenantController(ITenantService tenantService, ITenantPropertiesService tenantPropertiesService, IAddressService addressService) {
+    public TenantController(ITenantService tenantService, ITenantPropertiesService tenantPropertiesService, IAddressService addressService, IUserService userService) {
         this.tenantService = tenantService;
         this.tenantPropertiesService = tenantPropertiesService;
         this.addressService = addressService;
+        this.userService = userService;
     }
 
     /**
@@ -127,11 +132,19 @@ public class TenantController extends DefaultController {
     @PutMapping(value = KekMappingValues.GUID, consumes = KekMediaType.TENANT,
             produces = KekMediaType.TENANT)
     @PreAuthorize("hasRole('TENANT')")
-    public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
+    public ResponseEntity<TenantDto> modifyTenant(HttpServletRequest httpServletRequest, @PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
         logger.info("Accepted current tenant from the client:\n{}", tenant);
 
         ITenant modifiedTenant = tenantService.update(tenant, UUID.fromString(guid));
         TenantDto modifiedTenantDto = ITenantMapper.INSTANCE.toTenantDto(modifiedTenant);
+
+        final String userEmail = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal()
+                .toString();
+
+        userService.validateTenant(userEmail, guid);
 
         logger.info("Sending the modified tenant to the client:\n{}", tenant);
         return ResponseEntity

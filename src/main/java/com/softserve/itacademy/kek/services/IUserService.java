@@ -85,4 +85,12 @@ public interface IUserService {
      */
     Collection<? extends GrantedAuthority> getUserAuthorities(String email) throws UserServiceException;
 
+    /**
+     * Checks if user belongs to tenant with current guid
+     *
+     * @param userEmail  email of user
+     * @param tenantGuid guid of current tenant
+     * @throws UserServiceException if user is not current tenant
+     */
+    void validateTenant(String userEmail, String tenantGuid) throws UserServiceException;
 }

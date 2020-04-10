@@ -11,4 +11,7 @@ public class UserServiceException extends ServiceException {
         super(message, ex);
     }
 
+    public UserServiceException(String message, int errorCode) {
+        super(message, errorCode);
+    }
 }

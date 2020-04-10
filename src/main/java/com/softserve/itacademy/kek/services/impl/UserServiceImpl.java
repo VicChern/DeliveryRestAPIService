@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -237,6 +238,36 @@ public class UserServiceImpl implements IUserService {
         } catch (Exception ex) {
             logger.error("Error while getting user authorities", ex);
             throw new UserServiceException("An error occurred while getting user data", ex);
+        }
+    }
+
+    @Override
+    public void validateTenant(String userEmail, String tenantGuid) throws UserServiceException {
+        logger.info("Validating tenant");
+
+        final Optional<User> user = userRepository.findByEmail(userEmail);
+
+        final boolean valid = user.isPresent();
+
+        if (valid) {
+            logger.debug("User was found: {}", user.get());
+
+            final boolean userIsCurrentTenant = user
+                    .get()
+                    .getTenant()
+                    .getGuid()
+                    .toString()
+                    .equals(tenantGuid);
+
+            if (userIsCurrentTenant) {
+                logger.debug("Current user: {}, is current tenant with guid: {}", user.get(), tenantGuid);
+            } else {
+                logger.error("Current user: {}, is not current tenant with guid: {}", user, tenantGuid);
+                throw new UserServiceException("Current user is not current tenant", HttpStatus.FORBIDDEN.value());
+            }
+        } else {
+            logger.error("User with email: {}, is not valid", userEmail);
+            throw new UserServiceException("Invalid email", HttpStatus.FORBIDDEN.value());
         }
     }
 }
