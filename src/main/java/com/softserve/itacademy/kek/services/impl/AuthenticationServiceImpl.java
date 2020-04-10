@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,9 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +31,7 @@ import com.softserve.itacademy.kek.repositories.IdentityRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.security.TokenAuthentication;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
+import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
 @PropertySource("classpath:server.properties")
@@ -42,19 +43,19 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     private String redirectAuth0URL;
 
     private AuthenticationController authController;
-    private UserDetailsService userDetailsService;
+    private IUserService userService;
     private UserRepository userRepository;
     private IdentityRepository identityRepository;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthenticationServiceImpl(AuthenticationController controller,
-                                     UserDetailsService userDetailsService,
+                                     IUserService userService,
                                      UserRepository userRepository,
                                      IdentityRepository identityRepository,
                                      PasswordEncoder passwordEncoder) {
         this.authController = controller;
-        this.userDetailsService = userDetailsService;
+        this.userService = userService;
         this.userRepository = userRepository;
         this.identityRepository = identityRepository;
         this.passwordEncoder = passwordEncoder;
@@ -142,10 +143,10 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     }
 
     private void setAuthentication(String email) {
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        Collection<? extends GrantedAuthority> authorities = userService.getAuthorities(email);
 
         final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                email, null, userDetails.getAuthorities());
+                email, null, authorities);
 
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }

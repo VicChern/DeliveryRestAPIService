@@ -14,11 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.softserve.itacademy.kek.services.ITokenService;
+import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
 public class TokenServiceImpl implements ITokenService {
@@ -26,20 +25,18 @@ public class TokenServiceImpl implements ITokenService {
     private static final Logger logger = LoggerFactory.getLogger(TokenServiceImpl.class);
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private IUserService userService;
 
     @Override
     public String getToken(String email) {
+        logger.info("Get token for user: {}", email);
 
-        final UserDetails user = userDetailsService.loadUserByUsername(email);
-        logger.info("Loading user for token creation: {}", user);
+        final Collection<? extends GrantedAuthority> authorities = userService.getAuthorities(email);
 
         final Map<String, Object> tokenData = new HashMap<>();
 
-        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-
         final Instant createdDate = Instant.now();
-        final Instant expirationDate = createdDate.plus(1, ChronoUnit.MONTHS);
+        final Instant expirationDate = createdDate.plus(30, ChronoUnit.DAYS);
 
         tokenData.put("token_create_date", createdDate);
         tokenData.put("authorities", authorities);
@@ -52,7 +49,7 @@ public class TokenServiceImpl implements ITokenService {
         jwtBuilder.setExpiration(Date.from(expirationDate));
         jwtBuilder.setClaims(tokenData);
 
-        logger.info("Building token for user: {}", user);
+        logger.debug("Building token for user: {}", email);
 
         return jwtBuilder.signWith(SignatureAlgorithm.HS512, System.getenv("KekSecurityKey")).compact();
     }

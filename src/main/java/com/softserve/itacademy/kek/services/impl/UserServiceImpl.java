@@ -210,31 +210,26 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional(readOnly = true)
     @Override
-    public Collection<? extends GrantedAuthority> getUserAuthorities(String email) throws UserServiceException {
-        logger.info("Get user authorities: email = {}", email);
+    public Collection<? extends GrantedAuthority> getAuthorities(String email) throws UserServiceException {
+        logger.info("Get user authorities by email: {}", email);
 
-        final List<GrantedAuthority> authorityList = new ArrayList<>();
+        final IUser user = getByEmail(email);
 
         try {
-            final Optional<User> user = userRepository.findByEmail(email);
+            final List<GrantedAuthority> authorityList = new ArrayList<>();
 
-            if (user.isEmpty()) {
-                logger.warn("User was not found in DB: email = {}", email);
-                return authorityList;
-            } else {
-                authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
-            }
+            authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
 
             logger.debug("USER role was checked");
 
-            final Optional<Tenant> tenant = tenantRepository.findByTenantOwner(user.get());
+            final Optional<Tenant> tenant = tenantRepository.findByTenantOwner(user);
             if (tenant.isPresent()) {
                 authorityList.add(new SimpleGrantedAuthority("ROLE_TENANT"));
             }
 
             logger.debug("TENANT role was checked");
 
-            final Optional<Actor> actor = actorRepository.findByUser(user.get());
+            final Optional<Actor> actor = actorRepository.findByUser(user);
             if (actor.isPresent()) {
                 authorityList.add(new SimpleGrantedAuthority("ROLE_ACTOR"));
             }

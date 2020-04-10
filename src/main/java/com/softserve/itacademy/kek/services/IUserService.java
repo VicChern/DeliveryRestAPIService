@@ -90,6 +90,6 @@ public interface IUserService {
      * @return list of user roles
      * @throws UserServiceException if an error occurred
      */
-    Collection<? extends GrantedAuthority> getUserAuthorities(String email) throws UserServiceException;
+    Collection<? extends GrantedAuthority> getAuthorities(String email) throws UserServiceException;
 
 }
