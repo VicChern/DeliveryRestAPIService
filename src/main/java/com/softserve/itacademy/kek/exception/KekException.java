@@ -1,5 +1,8 @@
 package com.softserve.itacademy.kek.exception;
 
+/**
+ * Father of all Exceptions in the project
+ */
 public class KekException extends RuntimeException {
     public KekException() {
     }
