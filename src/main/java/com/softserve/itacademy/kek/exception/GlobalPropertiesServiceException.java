@@ -2,10 +2,10 @@ package com.softserve.itacademy.kek.exception;
 
 import javax.validation.constraints.NotNull;
 
-import com.softserve.itacademy.kek.services.IGlobalPropertiesService;
+import com.softserve.itacademy.kek.services.impl.GlobalPropertiesServiceImpl;
 
 /**
- * Exception for {@link IGlobalPropertiesService}
+ * Exception for {@link GlobalPropertiesServiceImpl}
  */
 public class GlobalPropertiesServiceException extends ServiceException {
 

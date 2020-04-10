@@ -1,7 +1,9 @@
 package com.softserve.itacademy.kek.exception;
 
+import com.softserve.itacademy.kek.services.IOrderService;
+
 /**
- * Exception for {@link com.softserve.itacademy.kek.services.IOrderService}
+ * Exception for {@link IOrderService}
  */
 public class OrderServiceException extends ServiceException {
 
