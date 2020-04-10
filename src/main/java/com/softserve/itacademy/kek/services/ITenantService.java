@@ -68,4 +68,11 @@ public interface ITenantService {
      */
     void deleteByGuid(UUID guid) throws TenantServiceException;
 
+    /**
+     * Deletes all tenants {@link ITenant}
+     *
+     * @throws TenantServiceException if there is no one tenant
+     */
+    void deleteAll() throws TenantServiceException;
+
 }

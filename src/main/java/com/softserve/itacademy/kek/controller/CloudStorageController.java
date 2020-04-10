@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
+import com.softserve.itacademy.kek.controller.utils.KekPaths;
+import com.softserve.itacademy.kek.controller.utils.KekRoles;
 import com.softserve.itacademy.kek.models.services.ICloudStorageObject;
 import com.softserve.itacademy.kek.services.ICloudStorageService;
 
 @RestController
-@RequestMapping(path = "/users/cloud")
+@RequestMapping(path = KekPaths.USER_CLOUD)
 public class CloudStorageController {
     private final static Logger logger = LoggerFactory.getLogger(CloudStorageController.class);
 
@@ -38,7 +40,7 @@ public class CloudStorageController {
      * @return url to uploaded data in Cloud Storage
      */
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize(KekRoles.USER_ADMIN)
     public ResponseEntity<String> addData(@RequestBody String image) {
         logger.info("Accepted requested to upload data to Cloud Storage for user");
 
@@ -62,7 +64,7 @@ public class CloudStorageController {
      * @return url to modified data in Cloud Storage
      */
     @PutMapping(value = KekMappingValues.GUID)
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize(KekRoles.USER_ADMIN)
     public ResponseEntity<String> modifyData(@PathVariable String guid, @RequestBody String image) {
         logger.info("Accepted modified data from the client ");
 
@@ -84,7 +86,7 @@ public class CloudStorageController {
      * @param guid blob guid from the URN
      */
     @DeleteMapping(KekMappingValues.GUID)
-    @PreAuthorize("hasRole('TENANT') or hasRole('USER')")
+    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
     public ResponseEntity deleteData(@PathVariable String guid) {
         logger.info("Accepted request to delete the data from Google Cloud Storage bucket by guid {}", guid);
 

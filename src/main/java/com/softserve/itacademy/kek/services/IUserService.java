@@ -42,6 +42,13 @@ public interface IUserService {
     void deleteByGuid(UUID guid) throws UserServiceException;
 
     /**
+     * Deletes all users except admin in DB
+     *
+     * @throws UserServiceException if an error occurred
+     */
+    void deleteAll() throws UserServiceException;
+
+    /**
      * Returns user data by user guid
      *
      * @param guid user guid

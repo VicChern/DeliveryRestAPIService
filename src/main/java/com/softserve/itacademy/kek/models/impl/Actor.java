@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.IUser;
@@ -31,11 +35,12 @@ public class Actor extends AbstractEntity implements IActor, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idActor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tenant")
     private Tenant tenant;
 
     @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_user")
     private User user;
 
