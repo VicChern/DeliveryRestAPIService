@@ -32,22 +32,18 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
      */
     Optional<OrderEvent> findDistinctTopByOrderGuidOrderByLastModifiedDateDesc(UUID orderGuid);
 
-    @Query(value =
-            "SELECT OOE.* " +
-                    "FROM " +
-                    "obj_order_event OOE, " +
-                    "def_order_event_type ET, " +
-                    "(SELECT " +
-                    "OE.id_order, " +
-                    "MAX(OE.last_modified_date) lastDate " +
-                    "FROM obj_order_event OE " +
-                    "GROUP BY  OE.id_order" +
-                    ") temporaryTable " +
-                    "WHERE " +
-                    "    OOE.last_modified_date = temporaryTable.lastDate " +
-                    "AND ET.id_order_event_type = OOE.id_order_event_type " +
-                    "AND ET.name = :eventTypeName"
-            , nativeQuery = true)
+    @Query("SELECT OOE " +
+            "FROM " +
+            "OrderEvent OOE, " +
+            "OrderEventType ET " +
+            "WHERE " +
+            "OOE.lastModifiedDate in (" +
+            "SELECT " +
+            "MAX(OE.lastModifiedDate) " +
+            "FROM OrderEvent OE " +
+            "GROUP BY OE.order) " +
+            "AND ET.idOrderEventType = OOE.orderEventType " +
+            "AND ET.name = :eventTypeName")
     List<OrderEvent> findAllLastAddedOrderEventsForEventType(@Param("eventTypeName") String eventTypeName);
 
     Boolean existsOrderEventsByOrderGuidAndOrderEventTypeName(UUID orderGuid, String eventTypeName);
