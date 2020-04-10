@@ -13,10 +13,10 @@ import com.softserve.itacademy.kek.models.impl.TenantProperties;
 public interface TenantPropertiesRepository extends JpaRepository<TenantProperties, Long> {
 
     /**
-     * Retrieves a tenant by its guid.
+     * Retrieves a tenant property by its guid.
      *
-     * @param guid
-     * @return the tenant properties with the given guid and tenant guid or {@literal Optional#empty()} if none found
+     * @param guid tenant property guid
+     * @return the tenant properties with the given guid or {@literal Optional#empty()} if none found
      */
-    Optional<TenantProperties> findByGuidAndTenantGuid(UUID guid, UUID tenantGuid);
+    Optional<TenantProperties> findByGuid(UUID guid);
 }
