@@ -187,9 +187,12 @@ public class OrderServiceImpl implements IOrderService {
     public void deleteAll() throws OrderServiceException {
         logger.info("Delete all orders from DB");
         try {
-            orderRepository.deleteAll();
-            orderRepository.flush();
+            if (!(orderRepository.findAll().isEmpty())) {
+                orderRepository.deleteAll();
+                orderRepository.flush();
 
+                logger.debug("All orders was deleted from DB");
+            }
             logger.debug("All orders was deleted from DB");
         } catch (Exception ex) {
             logger.error("Error while deleting orders from DB: ", ex);

@@ -16,7 +16,7 @@ import com.softserve.itacademy.kek.models.impl.TenantDetails;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.models.impl.UserDetails;
 
-public class AdminStatisticsControllerTest {
+public class AdminControllerTest {
 
     private final String orderListJson = "{\n" +
             "  \"list\": [\n" +
