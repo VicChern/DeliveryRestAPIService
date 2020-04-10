@@ -31,7 +31,8 @@ public interface ITenantMapper {
      * @param iTenant
      * @return tenant
      */
-    @Mapping(target = "tenantDetails", qualifiedByName = "toEntity")
+    @Mapping(target = "tenantDetails", ignore = true)
+    @Mapping(target = "tenantOwner", ignore = true)
     Tenant toTenant(ITenant iTenant);
 
 }

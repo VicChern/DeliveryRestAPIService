@@ -49,9 +49,6 @@ public class PersistenceJPAConfig {
         dataSource.setUrl(System.getenv("KEK_DB_URL"));
         dataSource.setUsername(System.getenv("KEK_DB_USER"));
         dataSource.setPassword(System.getenv("KEK_DB_PASS"));
-        dataSource.setUrl(env.getProperty("jdbc.url"));
-      dataSource.setUsername(env.getProperty("jdbc.user"));
-      dataSource.setPassword(env.getProperty("jdbc.pass"));
 
         return dataSource;
     }

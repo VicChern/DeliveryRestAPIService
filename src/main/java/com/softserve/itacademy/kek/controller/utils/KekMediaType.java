@@ -20,7 +20,6 @@ public class KekMediaType {
     public static final String ADDRESS = SOFTSERVE + ".address+json";
     public static final String ADDRESS_LIST = SOFTSERVE + ".addressList+json";
     public static final String USER = SOFTSERVE + ".user+json";
-    public static final String USER_WITH_IMAGE = SOFTSERVE + ".userWithImage+json";
     public static final String USER_LIST = SOFTSERVE + ".userList+json";
     public static final String ORDER = SOFTSERVE + ".order+json";
     public static final String ORDER_LIST = SOFTSERVE + ".orderList+json";
