@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.OrderServiceException;
+import com.softserve.itacademy.kek.mappers.IOrderDetailsMapper;
+import com.softserve.itacademy.kek.mappers.IOrderMapper;
 import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.IOrderDetails;
 import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
@@ -70,7 +72,14 @@ public class OrderServiceImpl implements IOrderService {
             final UUID tenantGuid = order.getTenant().getGuid();
             final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
 
-            final Order actualOrder = transform(order, tenant);
+            OrderDetails actualDetails = IOrderDetailsMapper.INSTANCE.toOrderDetails(order.getOrderDetails());
+
+            Order actualOrder = IOrderMapper.INSTANCE.toOrder(order);
+            actualOrder.setOrderDetails(actualDetails);
+            actualOrder.setGuid(UUID.randomUUID());
+            actualOrder.setTenant(tenant);
+
+            actualDetails.setOrder(actualOrder);
 
             final Order insertedOrder = orderRepository.saveAndFlush(actualOrder);
 
@@ -223,25 +232,5 @@ public class OrderServiceImpl implements IOrderService {
         logger.debug("Order event was inserted into DB: order = {}, user = {}", insertedOrderEvent, customer);
 
         return insertedOrderEvent;
-    }
-
-    private Order transform(IOrder iOrder, Tenant tenant) {
-        final Order order = new Order();
-
-        OrderDetails actualDetails = new OrderDetails();
-
-        if (iOrder.getOrderDetails() != null) {
-            actualDetails.setPayload(iOrder.getOrderDetails().getPayload());
-            actualDetails.setImageUrl(iOrder.getOrderDetails().getImageUrl());
-        }
-
-        order.setOrderDetails(actualDetails);
-        order.setGuid(UUID.randomUUID());
-        order.setSummary(iOrder.getSummary());
-        order.setTenant(tenant);
-
-        actualDetails.setOrder(order);
-
-        return order;
     }
 }

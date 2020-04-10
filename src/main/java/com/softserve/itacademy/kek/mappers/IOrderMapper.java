@@ -34,10 +34,21 @@ public interface IOrderMapper {
     /**
      * Transform {@link IOrder} to {@link OrderDto}
      *
-     * @param order
+     * @param iOrder
      * @return orderDto
      */
     @Mapping(source = "tenant", target = "tenantGuid", qualifiedByName = "getTenantGuid")
-    OrderDto toOrderDto(IOrder order);
+    @Mapping(target = "orderDetails", qualifiedByName = "toDto")
+    OrderDto toOrderDto(IOrder iOrder);
+
+    /**
+     * Transform {@link IOrder} to {@link Order}
+     *
+     * @param iOrder
+     * @return order
+     */
+    @Mapping(target = "tenant", ignore = true)
+    @Mapping(target = "orderDetails", ignore = true)
+    Order toOrder(IOrder iOrder);
 
 }

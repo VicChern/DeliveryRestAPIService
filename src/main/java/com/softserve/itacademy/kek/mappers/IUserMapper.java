@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.mappers;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.softserve.itacademy.kek.dto.UserDto;
@@ -18,8 +19,18 @@ public interface IUserMapper {
     /**
      * Transform {@link IUser} to {@link UserDto}
      *
-     * @param user
+     * @param iUser
      * @return userDto
      */
-    UserDto toUserDto(IUser user);
+    @Mapping(target = "userDetails", qualifiedByName = "toDto")
+    UserDto toUserDto(IUser iUser);
+
+    /**
+     * Transform {@link IUser} to {@link User}
+     *
+     * @param iUser
+     * @return user
+     */
+    @Mapping(target = "userDetails", qualifiedByName = "toEntity")
+    User toUser(IUser iUser);
 }
