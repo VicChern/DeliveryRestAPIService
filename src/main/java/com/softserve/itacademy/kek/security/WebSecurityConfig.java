@@ -88,7 +88,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         new AntPathRequestMatcher("/api/v1/orders/**"),
                         new AntPathRequestMatcher("/api/v1/tenants/**"),
                         new AntPathRequestMatcher("/api/v1/users/**"),
-                        new AntPathRequestMatcher("/api/v1/profile")
+                        new AntPathRequestMatcher("/api/v1/profile"),
+                        new AntPathRequestMatcher("/api/v1/admin/**")
                 )
         );
         filter.setAuthenticationManager(authenticationManager());
@@ -98,9 +99,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-
-/*        http.authorizeRequests().anyRequest().authenticated()
-                .and().httpBasic();*/
 
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

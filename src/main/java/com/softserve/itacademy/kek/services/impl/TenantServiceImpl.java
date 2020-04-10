@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.exception.TenantServiceException;
 import com.softserve.itacademy.kek.mappers.ITenantMapper;
 import com.softserve.itacademy.kek.models.ITenant;
@@ -160,6 +161,22 @@ public class TenantServiceImpl implements ITenantService {
         } catch (Exception ex) {
             logger.error("Error while deleting tenant from DB: " + tenant, ex);
             throw new TenantServiceException("An error occurred while deleting tenant", ex);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteAll() throws TenantServiceException {
+        logger.info("Delete all tenants");
+
+        try {
+            tenantRepository.deleteAll();
+            tenantRepository.flush();
+
+            logger.debug("All tenants was deleted from DB");
+        } catch (Exception ex) {
+            logger.error("Error while deleting tenants from DB: ", ex);
+            throw new OrderServiceException("An error occurred while deleting tenants", ex);
         }
     }
 }

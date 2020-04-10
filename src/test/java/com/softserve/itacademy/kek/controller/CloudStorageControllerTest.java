@@ -39,7 +39,7 @@ public class CloudStorageControllerTest {
     private String image;
     private byte[] encodedByte;
     private String url;
-    private String guid = UUID.randomUUID().toString();
+    private final String guid = UUID.randomUUID().toString();
 
 
     @BeforeClass

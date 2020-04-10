@@ -67,4 +67,6 @@ public interface IOrderService {
      * @throws OrderServiceException if an error occurred
      */
     void deleteByGuid(UUID guid) throws OrderServiceException;
+
+    void deleteAll() throws OrderServiceException;
 }

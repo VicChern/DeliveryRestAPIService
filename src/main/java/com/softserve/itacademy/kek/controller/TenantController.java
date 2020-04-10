@@ -24,23 +24,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.controller.utils.KekPaths;
+import com.softserve.itacademy.kek.controller.utils.KekRoles;
+import com.softserve.itacademy.kek.dto.ActorDto;
 import com.softserve.itacademy.kek.dto.AddressDto;
 import com.softserve.itacademy.kek.dto.ListWrapperDto;
+import com.softserve.itacademy.kek.dto.OrderDto;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.dto.TenantPropertiesDto;
+import com.softserve.itacademy.kek.mappers.IActorMapper;
 import com.softserve.itacademy.kek.mappers.IAddressMapper;
+import com.softserve.itacademy.kek.mappers.IOrderMapper;
 import com.softserve.itacademy.kek.mappers.ITenantMapper;
 import com.softserve.itacademy.kek.mappers.ITenantPropertiesMapper;
+import com.softserve.itacademy.kek.models.IActor;
 import com.softserve.itacademy.kek.models.IAddress;
+import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantProperties;
+import com.softserve.itacademy.kek.services.IActorService;
 import com.softserve.itacademy.kek.services.IAddressService;
+import com.softserve.itacademy.kek.services.IOrderService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
 
 
 @RestController
-@RequestMapping(path = "/tenants")
+@RequestMapping(path = KekPaths.TENANTS)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TenantController extends DefaultController {
     private final static Logger logger = LoggerFactory.getLogger(TenantController.class);
@@ -48,12 +58,18 @@ public class TenantController extends DefaultController {
     private final ITenantService tenantService;
     private final ITenantPropertiesService tenantPropertiesService;
     private final IAddressService addressService;
+    private final IOrderService orderService;
+    private final IActorService actorService;
 
     @Autowired
-    public TenantController(ITenantService tenantService, ITenantPropertiesService tenantPropertiesService, IAddressService addressService) {
+    public TenantController(ITenantService tenantService, ITenantPropertiesService tenantPropertiesService,
+                            IAddressService addressService, IOrderService orderService,
+                            IActorService actorService) {
         this.tenantService = tenantService;
         this.tenantPropertiesService = tenantPropertiesService;
         this.addressService = addressService;
+        this.orderService = orderService;
+        this.actorService = actorService;
     }
 
     /**
@@ -62,7 +78,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
     @GetMapping(produces = KekMediaType.TENANT_LIST)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<TenantDto>> getTenantList() {
         logger.info("Client requested the list of all tenants");
 
@@ -85,7 +101,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @PostMapping(consumes = KekMediaType.TENANT, produces = KekMediaType.TENANT)
-//    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
     public ResponseEntity<TenantDto> addTenant(@RequestBody @Valid TenantDto tenantDto) {
         logger.info("Accepted requested to create a new tenant:\n{}", tenantDto);
 
@@ -103,7 +119,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with {@link TenantDto} object as a JSON
      */
     @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.TENANT)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<TenantDto> getTenant(@PathVariable String guid) {
         logger.info("Client requested the tenant {}", guid);
 
@@ -126,7 +142,7 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = KekMappingValues.GUID, consumes = KekMediaType.TENANT,
             produces = KekMediaType.TENANT)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<TenantDto> modifyTenant(@PathVariable String guid, @RequestBody @Valid TenantDto tenant) {
         logger.info("Accepted current tenant from the client:\n{}", tenant);
 
@@ -143,9 +159,10 @@ public class TenantController extends DefaultController {
      * Removes the specified tenant
      *
      * @param guid tenant ID from the URL
+     * @return HTTP.STATUS 202
      */
     @DeleteMapping(KekMappingValues.GUID)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity deleteTenant(@PathVariable String guid) {
         logger.info("Accepted request to delete the tenant {}", guid);
 
@@ -158,13 +175,56 @@ public class TenantController extends DefaultController {
     }
 
     /**
+     * Get list of orders for current Tenant
+     *
+     * @return Response entity with list of {@link OrderDto} objects as a JSON
+     */
+    @GetMapping(value = KekMappingValues.GUID, produces = KekMediaType.ORDER_LIST)
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
+    public ResponseEntity<ListWrapperDto<OrderDto>> getListOfOrdersForCurrentTenant(@PathVariable String guid) {
+        logger.debug("Client requested the list of all orders");
+
+        List<IOrder> orderList = orderService.getAllByTenantGuid(UUID.fromString(guid));
+        ListWrapperDto<OrderDto> orderListDto = new ListWrapperDto<>(orderList
+                .stream()
+                .map(IOrderMapper.INSTANCE::toOrderDto)
+                .collect(Collectors.toList()));
+
+        logger.info("Sending list of all orders to the client:\n{}", orderListDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(orderListDto);
+
+    }
+
+    /**
+     * Get list of Actors for current Tenant
+     *
+     * @return Response entity with list of {@link ActorDto} objects as a JSON
+     */
+    @GetMapping(value = KekMappingValues.ACTORS, produces = KekMediaType.ACTOR_LIST)
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
+    public ResponseEntity<ListWrapperDto<ActorDto>> getListOfActorsForCurrentTenant(@PathVariable String guid) {
+        logger.debug("Client requested the actorsList {}", guid);
+
+        List<IActor> actorList = actorService.getAllByTenantGuid(UUID.fromString(guid));
+        ListWrapperDto<ActorDto> actorListDto = new ListWrapperDto<>(actorList
+                .stream()
+                .map(IActorMapper.INSTANCE::toActorDto)
+                .collect(Collectors.toList()));
+        logger.debug("Sending the actorsList {} to the client", actorListDto);
+        return ResponseEntity.status(HttpStatus.OK).body(actorListDto);
+    }
+
+
+    /**
      * Find properties of the specific tenant
      *
      * @param guid tenant ID from URL
      * @return Response Entity with a List of {@link TenantPropertiesDto} objects as a JSON
      */
     @GetMapping(value = KekMappingValues.PROPERTIES, produces = KekMediaType.TENANT_PROPERTY)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<ListWrapperDto<TenantPropertiesDto>> getTenantProperties(@PathVariable String guid) {
         logger.info("Client requested all the properties of the tenant {}", guid);
 
@@ -189,7 +249,7 @@ public class TenantController extends DefaultController {
      */
     @PostMapping(value = KekMappingValues.PROPERTIES, consumes = KekMediaType.TENANT_PROPERTY_LIST,
             produces = KekMediaType.TENANT_PROPERTY_LIST)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<ListWrapperDto<TenantPropertiesDto>> addTenantProperties(@PathVariable String guid,
                                                                                    @RequestBody ListWrapperDto<TenantPropertiesDto> tenantPropertiesListDto) {
         logger.info("Accepted requested to create a new properties for tenant:{}}:\n{}", guid, tenantPropertiesListDto);
@@ -218,7 +278,7 @@ public class TenantController extends DefaultController {
      * @return Response entity with a specific tenant property {@link TenantPropertiesDto}
      */
     @GetMapping(value = KekMappingValues.PROP_GUID, produces = KekMediaType.TENANT_PROPERTY)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<TenantPropertiesDto> getTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Sending the tenant's({}) specific property({}) to the client", guid, propGuid);
 
@@ -241,7 +301,7 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = KekMappingValues.PROP_GUID, consumes = KekMediaType.TENANT_PROPERTY,
             produces = KekMediaType.TENANT_PROPERTY)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<TenantPropertiesDto> modifyTenantProperty(@PathVariable("guid") String guid,
                                                                     @PathVariable("propguid") String propGuid,
                                                                     @RequestBody @Valid TenantPropertiesDto tenantPropertiesDto) {
@@ -261,9 +321,10 @@ public class TenantController extends DefaultController {
      *
      * @param guid     tenant ID from the URN
      * @param propGuid address ID from the URN
+     * @return HTTP.STATUS 202
      */
     @DeleteMapping(KekMappingValues.PROP_GUID)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity deleteTenantProperty(@PathVariable("guid") String guid, @PathVariable("propguid") String propGuid) {
         logger.info("Accepted request to delete the property {} ot the tenant {}", propGuid, guid);
 
@@ -283,7 +344,7 @@ public class TenantController extends DefaultController {
      * @return Response entity with a list of {@link AddressDto} objects as a JSON
      */
     @GetMapping(value = KekMappingValues.ADDRESSES, produces = KekMediaType.ADDRESS_LIST)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<ListWrapperDto<AddressDto>> getTenantAddresses(@PathVariable String guid) {
         logger.info("Client requested all the addresses {}", guid);
 
@@ -308,7 +369,7 @@ public class TenantController extends DefaultController {
      */
     @PostMapping(value = KekMappingValues.ADDRESSES, consumes = KekMediaType.ADDRESS_LIST,
             produces = KekMediaType.ADDRESS_LIST)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<ListWrapperDto<AddressDto>> addTenantAddresses(@PathVariable String guid,
                                                                          @RequestBody @Valid ListWrapperDto<AddressDto> newAddressesDto) {
         logger.info("Accepted requested to create a new addresses for tenant:{}:\n", newAddressesDto);
@@ -335,7 +396,7 @@ public class TenantController extends DefaultController {
      * @return Response Entity with a specific tenant tenant property{@link TenantPropertiesDto}
      */
     @GetMapping(value = KekMappingValues.ADDR_GUID, produces = KekMediaType.ADDRESS)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<AddressDto> getTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Client requested the address {} of the tenant {}", addrGuid, guid);
 
@@ -358,7 +419,7 @@ public class TenantController extends DefaultController {
      */
     @PutMapping(value = KekMappingValues.ADDR_GUID, consumes = KekMediaType.ADDRESS,
             produces = KekMediaType.ADDRESS)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity<AddressDto> modifyTenantAddress(@PathVariable("guid") String guid,
                                                           @PathVariable("addrguid") String addrGuid,
                                                           @RequestBody @Valid AddressDto tenantAddressDto) {
@@ -378,9 +439,10 @@ public class TenantController extends DefaultController {
      *
      * @param guid     tenant ID from the URN
      * @param addrGuid specific address ID from the URN
+     * @return HTTP.STATUS 202
      */
     @DeleteMapping(KekMappingValues.ADDR_GUID)
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize(KekRoles.TENANT_ADMIN)
     public ResponseEntity deleteTenantAddress(@PathVariable("guid") String guid, @PathVariable("addrguid") String addrGuid) {
         logger.info("Accepted request to delete the address {} ot the tenant {}", addrGuid, guid);
 

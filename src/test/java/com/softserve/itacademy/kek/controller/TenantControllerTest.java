@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testng.annotations.BeforeTest;
@@ -15,10 +17,13 @@ import org.testng.annotations.Test;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.dto.TenantDto;
 import com.softserve.itacademy.kek.models.IAddress;
+import com.softserve.itacademy.kek.models.IOrder;
 import com.softserve.itacademy.kek.models.ITenant;
 import com.softserve.itacademy.kek.models.ITenantProperties;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.impl.Address;
+import com.softserve.itacademy.kek.models.impl.Order;
+import com.softserve.itacademy.kek.models.impl.OrderDetails;
 import com.softserve.itacademy.kek.models.impl.PropertyType;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.TenantDetails;
@@ -26,6 +31,7 @@ import com.softserve.itacademy.kek.models.impl.TenantProperties;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.models.impl.UserDetails;
 import com.softserve.itacademy.kek.services.IAddressService;
+import com.softserve.itacademy.kek.services.IOrderService;
 import com.softserve.itacademy.kek.services.ITenantPropertiesService;
 import com.softserve.itacademy.kek.services.ITenantService;
 
@@ -92,13 +98,19 @@ public class TenantControllerTest {
     @InjectMocks
     private TenantController controller;
     @Spy
+    private SecurityContext securityContext;
+    @Spy
     private ITenantService tenantService;
     @Spy
     private IAddressService addressService;
     @Spy
     ITenantPropertiesService tenantPropertiesService;
+    @Spy
+    private IOrderService orderService;
     private MockMvc mockMvc;
 
+    private Order order;
+    private List<IOrder> orderList;
     private User user;
     private List<IUser> userList;
     private Tenant tenant;
@@ -112,6 +124,11 @@ public class TenantControllerTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        SecurityContextHolder.setContext(securityContext);
+
+        OrderDetails orderDetails = new OrderDetails();
+        orderDetails.setPayload("some payload");
+        orderDetails.setImageUrl("https://mypicture");
 
         UserDetails userDetails = new UserDetails();
         userDetails.setImageUrl("pic url");
@@ -162,6 +179,15 @@ public class TenantControllerTest {
 
         addressList = new ArrayList<>();
         addressList.add(address);
+
+        order = new Order();
+        order.setTenant(tenant);
+        order.setGuid(UUID.fromString("820671c6-7e2c-4de3-aeb8-42e6f84e6371"));
+        order.setSummary("some summary");
+        order.setOrderDetails(orderDetails);
+
+        orderList = new ArrayList<>();
+        orderList.add(order);
     }
 
     @Test
@@ -187,20 +213,6 @@ public class TenantControllerTest {
                 .accept(KekMediaType.TENANT)
                 .content(tenantJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(jsonPath("$.owner").value("10241624-9ea7-4777-99b5-54ab6d591c44"))
-                .andExpect(jsonPath("$.name").value("Kek"))
-                .andExpect(jsonPath("$.details.payload").value("some payload"))
-                .andExpect(jsonPath("$.details.imageUrl").value("http://awesomepicture.com"));
-    }
-
-    @Test
-    public void getTenantTest() throws Exception {
-        when(tenantService.getByGuid(any(UUID.class))).thenReturn(tenant);
-
-        mockMvc.perform(get("/tenants/48c5db5c-af58-4350-874e-b99b33c6af86"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(KekMediaType.TENANT))
                 .andExpect(jsonPath("$.guid").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
                 .andExpect(jsonPath("$.owner").value("10241624-9ea7-4777-99b5-54ab6d591c44"))
                 .andExpect(jsonPath("$.name").value("Kek"))
@@ -243,6 +255,21 @@ public class TenantControllerTest {
                 .andExpect(jsonPath("$.list.[0].propertyType.name").value("string"))
                 .andExpect(jsonPath("$.list.[0].propertyType.schema").value("string"))
                 .andExpect(jsonPath("$.list.[0].value").value("string"));
+    }
+
+    @Test
+    public void getListOfOrdersForCurrentTenant() throws Exception {
+        when(orderService.getAllByTenantGuid(any(UUID.class))).thenReturn(orderList);
+
+        mockMvc.perform(get("/tenants/820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(KekMediaType.ORDER_LIST))
+                .andExpect(jsonPath("$.list[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
+                .andExpect(jsonPath("$.list[0].tenant").value("48c5db5c-af58-4350-874e-b99b33c6af86"))
+                .andExpect(jsonPath("$.list[0].summary").value("some summary"))
+                .andExpect(jsonPath("$.list[0].details.payload").value("some payload"))
+                .andExpect(jsonPath("$.list[0].details.imageUrl").value("https://mypicture"));
+
     }
 
     @Test

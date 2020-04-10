@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
+import com.softserve.itacademy.kek.controller.utils.KekPaths;
 import com.softserve.itacademy.kek.dto.SignInDto;
 import com.softserve.itacademy.kek.dto.TokenDto;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
@@ -33,7 +34,7 @@ public class SignInController extends DefaultController {
         this.getTokenService = getTokenService;
     }
 
-    @PostMapping(path = KekMappingValues.SIGNIN, consumes = KekMediaType.SIGNIN,
+    @PostMapping(path = KekPaths.SIGNIN, consumes = KekMediaType.SIGNIN,
             produces = KekMediaType.TOKEN)
     public ResponseEntity<TokenDto> signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
                                            HttpServletResponse response) throws Exception {
