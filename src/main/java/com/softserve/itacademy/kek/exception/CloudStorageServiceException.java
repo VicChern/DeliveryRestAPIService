@@ -1,6 +1,7 @@
 package com.softserve.itacademy.kek.exception;
 
 import com.softserve.itacademy.kek.services.impl.CloudStorageServiceImpl;
+
 /**
  * Exception for {@link  CloudStorageServiceImpl}
  */

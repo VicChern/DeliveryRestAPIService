@@ -31,6 +31,6 @@ public interface IUserMapper {
      * @param iUser
      * @return user
      */
-    @Mapping(target = "userDetails", qualifiedByName = "toEntity")
+    @Mapping(target = "userDetails", ignore = true)
     User toUser(IUser iUser);
 }
