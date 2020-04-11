@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.controller.utils.KekPaths;
-import com.softserve.itacademy.kek.dto.TokenDto;
-import com.softserve.itacademy.kek.controller.utils.KekPaths;
 import com.softserve.itacademy.kek.controller.utils.KekRoles;
+import com.softserve.itacademy.kek.dto.TokenDto;
 import com.softserve.itacademy.kek.dto.UserDto;
 import com.softserve.itacademy.kek.mappers.IUserMapper;
 import com.softserve.itacademy.kek.models.IUser;
