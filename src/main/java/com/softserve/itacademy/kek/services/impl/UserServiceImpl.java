@@ -105,7 +105,6 @@ public class UserServiceImpl implements IUserService {
         logger.info("Delete all users except admin");
         try {
             userRepository.deleteAll();
-            userRepository.flush();
 
             logger.debug("All users was deleted from DB");
         } catch (Exception ex) {

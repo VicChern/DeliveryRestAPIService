@@ -47,11 +47,11 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     @Value(value = "${redirect.on.success}")
     private String redirectOnSuccess;
 
-    private AuthenticationController controller;
-    private UserDetailsService userDetailsService;
-    private UserRepository userRepository;
-    private IdentityRepository identityRepository;
-    private PasswordEncoder passwordEncoder;
+    private final AuthenticationController controller;
+    private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
+    private final IdentityRepository identityRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthenticationServiceImpl(AuthenticationController controller,

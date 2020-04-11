@@ -171,7 +171,6 @@ public class TenantServiceImpl implements ITenantService {
 
         try {
             tenantRepository.deleteAll();
-            tenantRepository.flush();
 
             logger.debug("All tenants was deleted from DB");
         } catch (Exception ex) {
