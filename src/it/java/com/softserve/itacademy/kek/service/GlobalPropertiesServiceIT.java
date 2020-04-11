@@ -96,8 +96,6 @@ public class GlobalPropertiesServiceIT extends AbstractTestNGSpringContextTests 
         final IGlobalProperty foundGlobalProperties = globalPropertiesRepository.findByKey(savedGlobalProperty.getKey()).orElse(null);
 
         assertEquals(savedGlobalProperty, foundGlobalProperties);
-        assertEquals(savedGlobalProperty.getKey(), foundGlobalProperties.getKey());
-        assertEquals(savedGlobalProperty.getValue(), foundGlobalProperties.getValue());
         assertEquals(savedGlobalProperty.getPropertyType(), foundGlobalProperties.getPropertyType());
 
     }

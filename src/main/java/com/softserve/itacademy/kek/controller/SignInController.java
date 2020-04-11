@@ -1,7 +1,5 @@
 package com.softserve.itacademy.kek.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -18,30 +16,29 @@ import com.softserve.itacademy.kek.controller.utils.KekPaths;
 import com.softserve.itacademy.kek.dto.SignInDto;
 import com.softserve.itacademy.kek.dto.TokenDto;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
-import com.softserve.itacademy.kek.services.IGetTokenService;
+import com.softserve.itacademy.kek.services.ITokenService;
 
 @RestController
 public class SignInController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(SignInController.class);
 
     private final IAuthenticationService authenticationService;
-    private final IGetTokenService getTokenService;
+    private final ITokenService tokenService;
 
     @Autowired
-    public SignInController(IAuthenticationService authenticationService, IGetTokenService getTokenService) {
+    public SignInController(IAuthenticationService authenticationService, ITokenService getTokenService) {
         this.authenticationService = authenticationService;
-        this.getTokenService = getTokenService;
+        this.tokenService = getTokenService;
     }
 
     @PostMapping(path = KekPaths.SIGNIN, consumes = KekMediaType.SIGNIN,
             produces = KekMediaType.TOKEN)
-    public ResponseEntity<TokenDto> signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
-                                           HttpServletResponse response) throws Exception {
-        logger.info("{} trying to sign in", dto.getEmail());
+    public ResponseEntity<TokenDto> signIn(@RequestBody @Valid SignInDto dto) {
+        logger.info("Try to sign in: {}", dto.getEmail());
 
         authenticationService.authenticateKekUser(dto.getEmail(), dto.getPassword());
 
-        TokenDto token = new TokenDto(getTokenService.getToken(dto.getEmail()));
+        TokenDto token = new TokenDto(tokenService.getToken(dto.getEmail()));
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -2,6 +2,7 @@ package com.softserve.itacademy.kek.services.impl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,9 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +31,7 @@ import com.softserve.itacademy.kek.repositories.IdentityRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.security.TokenAuthentication;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
+import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
 @PropertySource("classpath:server.properties")
@@ -41,26 +42,20 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     @Value(value = "${redirect.from.auth0}")
     private String redirectAuth0URL;
 
-    @Value(value = "${redirect.on.fail}")
-    private String redirectOnFail;
-
-    @Value(value = "${redirect.on.success}")
-    private String redirectOnSuccess;
-
-    private final AuthenticationController controller;
-    private final UserDetailsService userDetailsService;
-    private final UserRepository userRepository;
-    private final IdentityRepository identityRepository;
-    private final PasswordEncoder passwordEncoder;
+    private AuthenticationController authController;
+    private IUserService userService;
+    private UserRepository userRepository;
+    private IdentityRepository identityRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthenticationServiceImpl(AuthenticationController controller,
-                                     UserDetailsService userDetailsService,
+                                     IUserService userService,
                                      UserRepository userRepository,
                                      IdentityRepository identityRepository,
                                      PasswordEncoder passwordEncoder) {
-        this.controller = controller;
-        this.userDetailsService = userDetailsService;
+        this.authController = controller;
+        this.userService = userService;
         this.userRepository = userRepository;
         this.identityRepository = identityRepository;
         this.passwordEncoder = passwordEncoder;
@@ -73,40 +68,49 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         final String returnTo = createRedirectUrl(request.getScheme(), request.getServerName(),
                 request.getServerPort());
 
-        final String authorizeUrl = controller.buildAuthorizeUrl(request, response, returnTo)
+        final String authorizeUrl = authController.buildAuthorizeUrl(request, response, returnTo)
                 .withScope("openid profile email")
                 .build();
 
         return authorizeUrl;
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response) {
-        logger.info("Set authentication info (Auth0)");
+    public String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationServiceException {
+        logger.info("Set authentication for Auth0 way");
 
         try {
-            final Tokens tokens = controller.handle(request, response);
+            final Tokens tokens = authController.handle(request, response);
             final TokenAuthentication tokenAuth = new TokenAuthentication(JWT.decode(tokens.getIdToken()));
 
             final String email = tokenAuth.getClaims().get("email").asString();
 
+            userRepository.findByEmail(email).orElseThrow(() -> {
+                logger.error("User authenticated by Auth0 was not found");
+                return new AuthenticationServiceException("User was not found", HttpStatus.FORBIDDEN.value());
+            });
+
             setAuthentication(email);
 
-            logger.info("User was authenticated successfully, redirectUrl - {}", redirectOnSuccess);
+            logger.debug("Authentication was set: {}", email);
 
-            return redirectOnSuccess;
-        } catch (Exception ex) {
-            logger.error("Error while authentication, redirect URL " + redirectOnFail, ex);
-
+            return email;
+        } catch (AuthenticationServiceException ex) {
             SecurityContextHolder.clearContext();
-            return redirectOnFail;
+            throw ex;
+        } catch (Exception ex) {
+            SecurityContextHolder.clearContext();
+            logger.error("Error while setting authentication", ex);
+            throw new AuthenticationServiceException("An error occurred while authentication", ex);
         }
     }
 
     @Transactional(readOnly = true)
     @Override
     public void authenticateKekUser(String email, String key) throws AuthenticationServiceException {
-        logger.info("Set authentication info: {}", email);
+        logger.info("Set authentication: {}", email);
 
         validateUser(email, key);
 
@@ -125,39 +129,15 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     }
 
     private void validateUser(String email, String key) {
-        final Optional<User> user;
-        String payload = "";
-
-        try {
-            user = userRepository.findByEmail(email);
-
-            logger.debug("User was read from DB by email: {}", email);
-
-            if (user.isPresent()) {
-                final UUID guid = user.get().getGuid();
-                final String type = IdentityTypeEnum.KEY.toString();
-
-                final Identity identity = identityRepository.findByUserGuidAndIdentityTypeName(guid, type).orElseThrow();
-
-                logger.debug("User identity was read from DB");
-
-                payload = identity.getPayload();
-
-                if (payload == null || payload.isEmpty()) {
-                    logger.error("User identity is not valid");
-                    throw new NoSuchElementException("User identity is empty");
-                }
-            }
-        } catch (Exception ex) {
-            logger.error("Error while authenticate user", ex);
-            throw new AuthenticationServiceException("An error occurred while authenticate user", ex);
-        }
+        final Optional<User> user = getUserByEmail(email);
 
         boolean valid = user.isPresent();
         if (valid) {
             logger.debug("User was found: {}", email);
 
-            valid = passwordEncoder.matches(key, payload);
+            final String userKey = getUserKey(user.get().getGuid());
+
+            valid = passwordEncoder.matches(key, userKey);
 
             if (valid) {
                 logger.debug("Password is valid for user {}", email);
@@ -171,10 +151,10 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     }
 
     private void setAuthentication(String email) {
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        Collection<? extends GrantedAuthority> authorities = userService.getAuthorities(email);
 
         final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                email, null, userDetails.getAuthorities());
+                email, null, authorities);
 
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
@@ -190,5 +170,44 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         returnTo += redirectAuth0URL;
 
         return returnTo;
+    }
+
+    private Optional<User> getUserByEmail(String email) {
+        logger.info("Get user from DB by email: {}", email);
+
+        try {
+            final Optional<User> user = userRepository.findByEmail(email);
+
+            logger.debug("User was read from DB by email: {}", email);
+
+            return user;
+        } catch (Exception ex) {
+            logger.error("Error while authenticate user", ex);
+            throw new AuthenticationServiceException("An error occurred while authenticate user", ex);
+        }
+    }
+
+    private String getUserKey(UUID userGuid) {
+        logger.info("Get user identity: userGuid = {}", userGuid);
+
+        try {
+            final String type = IdentityTypeEnum.KEY.toString();
+
+            final Identity identity = identityRepository.findByUserGuidAndIdentityTypeName(userGuid, type).orElseThrow();
+
+            logger.debug("User identity was read from DB");
+
+            final String payload = identity.getPayload();
+
+            if (payload == null || payload.isEmpty()) {
+                logger.error("User identity is not valid");
+                throw new NoSuchElementException("User identity is empty");
+            }
+
+            return payload;
+        } catch (Exception ex) {
+            logger.error("Error while authenticate user", ex);
+            throw new AuthenticationServiceException("An error occurred while authenticate user", ex);
+        }
     }
 }

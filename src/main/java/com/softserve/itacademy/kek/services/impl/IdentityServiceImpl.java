@@ -17,8 +17,8 @@ import com.softserve.itacademy.kek.models.impl.IdentityType;
 import com.softserve.itacademy.kek.models.impl.User;
 import com.softserve.itacademy.kek.repositories.IdentityRepository;
 import com.softserve.itacademy.kek.repositories.IdentityTypeRepository;
+import com.softserve.itacademy.kek.repositories.UserRepository;
 import com.softserve.itacademy.kek.services.IIdentityService;
-import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
 public class IdentityServiceImpl implements IIdentityService {
@@ -27,15 +27,15 @@ public class IdentityServiceImpl implements IIdentityService {
 
     private final IdentityRepository identityRepository;
     private final IdentityTypeRepository identityTypeRepository;
-    private final IUserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
     public IdentityServiceImpl(IdentityRepository identityRepository,
                                IdentityTypeRepository identityTypeRepository,
-                               IUserService userService) {
+                               UserRepository userRepository) {
         this.identityRepository = identityRepository;
         this.identityTypeRepository = identityTypeRepository;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -44,7 +44,8 @@ public class IdentityServiceImpl implements IIdentityService {
         logger.info("Insert identity into DB: userGuid = {}, type = {}", userGuid, type);
 
         try {
-            final User user = (User) userService.getByGuid(userGuid);
+            final User user = (User) userRepository.findByGuid(userGuid)
+                    .orElseThrow(() -> new NoSuchElementException("User was not found"));
 
             final IdentityType identityType = identityTypeRepository.findByName(type.toString())
                     .orElseThrow(() -> new NoSuchElementException("Identity type was not found"));

@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.mockito.ArgumentCaptor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -38,12 +39,17 @@ public class UserServiceTest {
 
     private ActorRepository actorRepository;
 
+    private IIdentityService identityService;
+
+    private PasswordEncoder passwordEncoder;
+
     @BeforeClass
     public void setUp() {
         userRepository = mock(UserRepository.class);
         tenantRepository = mock(TenantRepository.class);
         actorRepository = mock(ActorRepository.class);
-        userService = new UserServiceImpl(userRepository, tenantRepository, actorRepository);
+        userService = new UserServiceImpl(userRepository, tenantRepository, actorRepository, identityService,
+                passwordEncoder);
     }
 
     @AfterMethod
@@ -53,18 +59,18 @@ public class UserServiceTest {
 
     @Test
     public void createUserSuccess() throws Exception {
-        User testUser = createUserForTest(null, null);
+        final User testUser = createUserForTest(null, null);
 
         when(userRepository.saveAndFlush(any(User.class))).thenReturn(testUser);
 
-        IUser createdUser = userService.create(testUser);
+        final IUser createdUser = userService.create(testUser);
 
-        ArgumentCaptor<User> acUser = ArgumentCaptor.forClass(User.class);
+        final ArgumentCaptor<User> acUser = ArgumentCaptor.forClass(User.class);
 
         verify(userRepository, times(1)).saveAndFlush(any(User.class));
         verify(userRepository).saveAndFlush(acUser.capture());
 
-        User actualUser = acUser.getValue();
+        final User actualUser = acUser.getValue();
 
         Assert.assertNotNull(createdUser);
         Assert.assertNotNull(actualUser.getGuid());
@@ -73,22 +79,22 @@ public class UserServiceTest {
 
     @Test
     public void updateUserSuccess() throws Exception {
-        Long id = 1L;
-        UUID guid = UUID.randomUUID();
-        User testUser = createUserForTest(id, guid);
-        User foundUser = createUserForTest(id, guid);
+        final Long id = 1L;
+        final UUID guid = UUID.randomUUID();
+        final User testUser = createUserForTest(id, guid);
+        final User foundUser = createUserForTest(id, guid);
 
         when(userRepository.findByGuid(guid)).thenReturn(Optional.ofNullable(foundUser));
         when(userRepository.saveAndFlush(any(User.class))).thenReturn(testUser);
 
-        IUser updatedUser = userService.update(testUser);
+        final IUser updatedUser = userService.update(testUser);
 
-        ArgumentCaptor<User> acUser = ArgumentCaptor.forClass(User.class);
+        final ArgumentCaptor<User> acUser = ArgumentCaptor.forClass(User.class);
 
         verify(userRepository, times(1)).saveAndFlush(any(User.class));
         verify(userRepository).saveAndFlush(acUser.capture());
 
-        User actualUser = acUser.getValue();
+        final User actualUser = acUser.getValue();
 
         Assert.assertNotNull(updatedUser);
         Assert.assertNotNull(actualUser.getIdUser());
@@ -97,26 +103,26 @@ public class UserServiceTest {
 
     @Test
     public void deleteUserSuccess() throws Exception {
-        Long id = 1L;
-        UUID guid = UUID.randomUUID();
-        User foundUser = createUserForTest(id, guid);
+        final Long id = 1L;
+        final UUID guid = UUID.randomUUID();
+        final User foundUser = createUserForTest(id, guid);
 
         when(userRepository.findByGuid(guid)).thenReturn(Optional.ofNullable(foundUser));
 
         userService.deleteByGuid(guid);
 
-        ArgumentCaptor<Long> acUserID = ArgumentCaptor.forClass(Long.class);
+        final ArgumentCaptor<Long> acUserID = ArgumentCaptor.forClass(Long.class);
 
         verify(userRepository, times(1)).deleteById(any(Long.class));
         verify(userRepository).deleteById(acUserID.capture());
 
-        Long deletedUserID = acUserID.getValue();
+        final Long deletedUserID = acUserID.getValue();
 
         Assert.assertEquals(id, deletedUserID);
     }
 
     private User createUserForTest(Long id, UUID guid) {
-        User user = createOrdinaryUser(1);
+        final User user = createOrdinaryUser(1);
         user.setIdUser(id);
         user.setGuid(guid);
         return user;
