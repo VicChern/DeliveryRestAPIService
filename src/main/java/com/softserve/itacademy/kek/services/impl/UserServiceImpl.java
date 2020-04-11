@@ -245,7 +245,7 @@ public class UserServiceImpl implements IUserService {
     public Collection<? extends GrantedAuthority> getAuthorities(String email) throws UserServiceException {
         logger.info("Get user authorities by email: {}", email);
 
-        final IUser user = getByEmail(email);
+        final User user = (User) getByEmail(email);
 
         try {
             final List<GrantedAuthority> authorityList = new ArrayList<>();
@@ -268,13 +268,11 @@ public class UserServiceImpl implements IUserService {
 
             logger.debug("ACTOR role was checked");
 
-            final Optional<User> existUser = userRepository.findByGuid(user.get().getGuid());
-
-            if (existUser.isPresent() && existUser.get().getIdUser() == 1) {
+            if (user.getIdUser() == 1) {
                 authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-
-                logger.debug("ADMIN role was checked");
             }
+
+            logger.debug("ADMIN role was checked");
 
             return authorityList;
 
