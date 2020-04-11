@@ -14,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.softserve.itacademy.kek.exception.OrderServiceException;
 import com.softserve.itacademy.kek.exception.TenantServiceException;
+import com.softserve.itacademy.kek.mappers.ITenantDetailsMapper;
 import com.softserve.itacademy.kek.mappers.ITenantMapper;
 import com.softserve.itacademy.kek.models.ITenant;
+import com.softserve.itacademy.kek.models.ITenantDetails;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.TenantDetails;
 import com.softserve.itacademy.kek.models.impl.User;
@@ -49,6 +51,13 @@ public class TenantServiceImpl implements ITenantService {
         try {
             final Tenant tenantForSaving = ITenantMapper.INSTANCE.toTenant(tenant);
             tenantForSaving.setGuid(UUID.randomUUID());
+
+            TenantDetails actualDetails = new TenantDetails();
+            ITenantDetails details = tenant.getTenantDetails();
+
+            if (details != null) actualDetails = ITenantDetailsMapper.INSTANCE.toTenantDetails(details);
+
+            tenantForSaving.setTenantDetails(actualDetails);
 
             final UUID ownerGuid = tenant.getTenantOwner().getGuid();
             final User owner = userRepository.findByGuid(ownerGuid).orElseThrow(

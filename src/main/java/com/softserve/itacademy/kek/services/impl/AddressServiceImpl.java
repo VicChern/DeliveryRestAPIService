@@ -48,7 +48,7 @@ public class AddressServiceImpl implements IAddressService {
         logger.info("Insert tenant address into DB: tenantGuid = {}, address = {}", tenantGuid, address);
 
         try {
-            Address actualAddress = IAddressMapper.INSTANCE.toAddress(address);
+            final Address actualAddress = IAddressMapper.INSTANCE.toAddress(address);
             actualAddress.setGuid(UUID.randomUUID());
 
             final Tenant tenant = (Tenant) tenantService.getByGuid(tenantGuid);
