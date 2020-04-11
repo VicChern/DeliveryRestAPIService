@@ -75,10 +75,11 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         return authorizeUrl;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public String authenticateAuth0User(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationServiceException {
-        logger.info("Set authentication for Auth0 flow");
+        logger.info("Set authentication for Auth0 way");
 
         try {
             final Tokens tokens = authController.handle(request, response);
@@ -86,14 +87,21 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
             final String email = tokenAuth.getClaims().get("email").asString();
 
+            userRepository.findByEmail(email).orElseThrow(() -> {
+                logger.error("User authenticated by Auth0 was not found");
+                return new AuthenticationServiceException("User was not found", HttpStatus.FORBIDDEN.value());
+            });
+
             setAuthentication(email);
 
             logger.debug("Authentication was set: {}", email);
 
             return email;
+        } catch (AuthenticationServiceException ex) {
+            SecurityContextHolder.clearContext();
+            throw ex;
         } catch (Exception ex) {
             SecurityContextHolder.clearContext();
-
             logger.error("Error while setting authentication", ex);
             throw new AuthenticationServiceException("An error occurred while authentication", ex);
         }

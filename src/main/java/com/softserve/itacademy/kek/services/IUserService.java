@@ -25,6 +25,16 @@ public interface IUserService {
     IUser create(IUser user) throws UserServiceException;
 
     /**
+     * Register user
+     *
+     * @param user user data
+     * @param key  password
+     * @return created user
+     * @throws UserServiceException if an error occurred
+     */
+    IUser create(IUser user, String key) throws UserServiceException;
+
+    /**
      * Updates user
      *
      * @param user user data

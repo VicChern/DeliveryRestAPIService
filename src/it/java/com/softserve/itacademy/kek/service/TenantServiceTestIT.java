@@ -48,7 +48,7 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
         user = createOrdinaryUser(1);
         tenant = createOrdinaryTenant(1);
 
-        IUser savedUser = userService.create(user);
+        final IUser savedUser = userService.create(user);
         assertNotNull(savedUser);
 
         tenant.setTenantOwner(savedUser);
@@ -63,11 +63,11 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void createSuccess() {
         //when
-        ITenant savedTenant = tenantService.create(tenant);
+        final ITenant savedTenant = tenantService.create(tenant);
 
         //then
         assertNotNull(savedTenant);
-        ITenant foundTenant = tenantRepository.findByGuid(savedTenant.getGuid()).orElse(null);
+        final ITenant foundTenant = tenantRepository.findByGuid(savedTenant.getGuid()).orElse(null);
         assertNotNull(foundTenant);
         assertEquals(foundTenant, savedTenant);
     }
@@ -75,10 +75,10 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void getAllSuccess() {
         //given
-        ITenant savedTenant = tenantService.create(tenant);
+        final ITenant savedTenant = tenantService.create(tenant);
 
         //when
-        List<ITenant> tenants = tenantService.getAll();
+        final List<ITenant> tenants = tenantService.getAll();
 
         //then
         assertEquals(tenants.size(), 1);
@@ -88,11 +88,11 @@ public class TenantServiceTestIT extends AbstractTestNGSpringContextTests {
     @Test(groups = {"integration-tests"})
     public void getAllPageableSuccess() {
         //given
-        ITenant savedTenant = tenantService.create(tenant);
-        Pageable pageable = PageRequest.of(0, 1);
+        final ITenant savedTenant = tenantService.create(tenant);
+        final Pageable pageable = PageRequest.of(0, 1);
 
         //when
-        Page<ITenant> tenants = tenantService.getAllPageable(pageable);
+        final Page<ITenant> tenants = tenantService.getAllPageable(pageable);
 
         //then
         assertEquals(tenants.getTotalPages(), 1);

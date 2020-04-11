@@ -1,7 +1,5 @@
 package com.softserve.itacademy.kek.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -35,8 +33,7 @@ public class SignInController extends DefaultController {
 
     @PostMapping(path = KekPaths.SIGNIN, consumes = KekMediaType.SIGNIN,
             produces = KekMediaType.TOKEN)
-    public ResponseEntity<TokenDto> signIn(@RequestBody @Valid SignInDto dto, HttpServletRequest request,
-                                           HttpServletResponse response) throws Exception {
+    public ResponseEntity<TokenDto> signIn(@RequestBody @Valid SignInDto dto) {
         logger.info("Try to sign in: {}", dto.getEmail());
 
         authenticationService.authenticateKekUser(dto.getEmail(), dto.getPassword());

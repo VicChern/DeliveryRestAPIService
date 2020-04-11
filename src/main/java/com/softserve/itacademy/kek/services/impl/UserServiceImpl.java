@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ import com.softserve.itacademy.kek.mappers.IUserDetailsMapper;
 import com.softserve.itacademy.kek.mappers.IUserMapper;
 import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.models.IUserDetails;
+import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
 import com.softserve.itacademy.kek.models.impl.Actor;
 import com.softserve.itacademy.kek.models.impl.Tenant;
 import com.softserve.itacademy.kek.models.impl.User;
@@ -30,6 +33,7 @@ import com.softserve.itacademy.kek.models.impl.UserDetails;
 import com.softserve.itacademy.kek.repositories.ActorRepository;
 import com.softserve.itacademy.kek.repositories.TenantRepository;
 import com.softserve.itacademy.kek.repositories.UserRepository;
+import com.softserve.itacademy.kek.services.IIdentityService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
@@ -40,12 +44,20 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final TenantRepository tenantRepository;
     private final ActorRepository actorRepository;
+    private final IIdentityService identityService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, TenantRepository tenantRepository, ActorRepository actorRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+                           TenantRepository tenantRepository,
+                           ActorRepository actorRepository,
+                           IIdentityService identityService,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.tenantRepository = tenantRepository;
         this.actorRepository = actorRepository;
+        this.identityService = identityService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -73,6 +85,34 @@ public class UserServiceImpl implements IUserService {
             logger.error("Error while inserting user into DB: " + user, ex);
             throw new UserServiceException("An error occurred while inserting user", ex);
         }
+    }
+
+    @Transactional
+    @Override
+    public IUser create(IUser user, String key) throws UserServiceException {
+        logger.info("User registration: email = {}", user);
+
+        final Optional<User> userFromDb = internalGetByEmail(user.getEmail());
+
+        if (userFromDb.isPresent()) {
+            logger.error("User already exists in DB: email = {}", user.getEmail());
+            throw new UserServiceException("User already exists", HttpStatus.FORBIDDEN.value());
+        }
+
+        final IUser createdUser = create(user);
+
+        try {
+            identityService.create(createdUser.getGuid(), IdentityTypeEnum.KEY, passwordEncoder.encode(key));
+
+            logger.debug("Identity was inserted into DB for user: {}", createdUser.getEmail());
+        } catch (Exception ex) {
+            logger.error("Error while register user", ex);
+            throw new UserServiceException("An error occurred while register user", ex);
+        }
+
+        logger.info("User was added into DB: {}", createdUser);
+
+        return createdUser;
     }
 
     @Transactional
@@ -161,17 +201,9 @@ public class UserServiceImpl implements IUserService {
     public IUser getByEmail(String email) throws UserServiceException {
         logger.info("Get user from DB by email: {}", email);
 
-        try {
-            final User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new NoSuchElementException("User was not found"));
+        final Optional<User> userFromDb = internalGetByEmail(email);
 
-            logger.debug("User was gotten from DB by email: {}", user);
-
-            return user;
-        } catch (Exception ex) {
-            logger.error("Error while getting user from DB by email: " + email, ex);
-            throw new UserServiceException("An error occurred while getting user", ex);
-        }
+        return userFromDb.orElseThrow(() -> new UserServiceException("User was not found"));
     }
 
     @Transactional(readOnly = true)
@@ -250,5 +282,19 @@ public class UserServiceImpl implements IUserService {
             logger.error("Error while getting user authorities", ex);
             throw new UserServiceException("An error occurred while getting user data", ex);
         }
+    }
+
+    private Optional<User> internalGetByEmail(String email) {
+        try {
+            final Optional<User> userFromDb = userRepository.findByEmail(email);
+
+            logger.debug("User was gotten from DB by email: {}", userFromDb);
+
+            return userFromDb;
+        } catch (Exception ex) {
+            logger.error("Error while getting user from DB by email: " + email, ex);
+            throw new UserServiceException("An error occurred while getting user", ex);
+        }
+
     }
 }
