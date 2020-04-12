@@ -8,8 +8,8 @@ build:
   image: maven:latest
   stage: build
   script:
-    - mvn clean install -B
-    # - mvn -Pmaster clean install -B
+    #    - mvn clean install -B
+    - mvn -Pmaster clean install
   artifacts:
     expire_in: 1 days
     paths:
@@ -19,14 +19,19 @@ build:
 deploy:
   stage: deploy
   script:
+    - echo "env_variables:" > env-vars.yaml
+    - echo "  KekId:" ${KekId} >> env-vars.yaml
+    - echo "  KekDomain:" ${KekDomain} >> env-vars.yaml
+    - echo "  KekWord:" ${KekWord} >> env-vars.yaml
+    - echo "  KekSecurityKey:" ${KekSecurityKey} >> env-vars.yaml
+    - echo "  KEK_DB_USER:" ${KEK_DB_USER} >> env-vars.yaml
+    - echo "  KEK_DB_URL:" ${KEK_DB_URL} >> env-vars.yaml
+    - echo "  KEK_DB_PASS:" ${KEK_DB_PASS} >> env-vars.yaml
+
     - gcloud auth activate-service-account --key-file $GOOGLE_SERVICE_ACCOUNT_FILE
-
-    # update and install yarn
-    - apk update && apk add yarn nodejs npm
-
-    # populate app.yaml file from app.template.yaml and env variables defined in gitlab CI/CD
-    - npx gae-ayaml-env
-
     - gcloud app deploy app.yaml --quiet --project $GOOGLE_PROJECT_ID
+
+    - rm env-vars.yaml
   only:
     - master
+#    - develop
