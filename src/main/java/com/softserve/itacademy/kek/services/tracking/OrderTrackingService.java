@@ -71,6 +71,7 @@ public class OrderTrackingService {
 
         //remove emitters, that were closed by timeout or completed
         deadEmitters.forEach((key, list) -> ACTIVE_EMITTERS.get(key).removeAll(list));
+        ACTIVE_EMITTERS.values().removeIf(List::isEmpty);
         logger.debug("Removed all emitters from tracking map that were closed by timeout or completion");
     }
 

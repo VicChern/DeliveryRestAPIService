@@ -23,6 +23,8 @@ import com.softserve.itacademy.kek.services.tracking.OrderTrackingService;
 @RestController
 public class SseController {
     private static final Logger logger = LoggerFactory.getLogger(SseController.class);
+    public static final long TIMEOUT = 180_000L;
+
     @Autowired
     OrderTrackingService trackingService;
     @Autowired
@@ -41,13 +43,10 @@ public class SseController {
             throw new TrackingException(String.format("Order %s is not delivering now", orderGuid));
         }
 
-        final SseEmitter emitter = new SseEmitter(180_000L);
+        final SseEmitter emitter = new SseEmitter(TIMEOUT);
 
         try {
-            final String payload = lastAddedEvent.getPayload();
-            emitter.send(trackingService.formatForApacheClient(payload));
-            logger.debug("Send payload {} for order guid={}", payload, orderGuid);
-
+            sendPayload(orderGuid, lastAddedEvent, emitter);
             trackingService.addEmitter(OrderTrackingService.getActiveEmitters(), orderGuid, emitter);
             logger.debug("Emitter for order guid={} was added for tracking", orderGuid);
 
@@ -68,6 +67,15 @@ public class SseController {
         return ResponseEntity.ok()
                 .headers(responseHeaders)
                 .body(emitter);
+    }
+
+
+    private void sendPayload(final UUID orderGuid,
+                             final IOrderEvent lastAddedEvent,
+                             final SseEmitter emitter) throws IOException {
+        final String payload = lastAddedEvent.getPayload();
+        emitter.send(trackingService.formatForApacheClient(payload));
+        logger.debug("Send payload {} for order guid={}", payload, orderGuid);
     }
 
     private boolean hasStartedType(IOrderEvent lastAddedEvent) {
