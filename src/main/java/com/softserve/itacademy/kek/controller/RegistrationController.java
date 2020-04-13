@@ -15,9 +15,7 @@ import com.softserve.itacademy.kek.controller.utils.KekMediaType;
 import com.softserve.itacademy.kek.controller.utils.KekPaths;
 import com.softserve.itacademy.kek.dto.RegistrationDto;
 import com.softserve.itacademy.kek.dto.TokenDto;
-import com.softserve.itacademy.kek.models.IUser;
 import com.softserve.itacademy.kek.services.IAuthenticationService;
-import com.softserve.itacademy.kek.services.ITokenService;
 import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
@@ -26,27 +24,21 @@ public class RegistrationController extends DefaultController {
 
     private final IAuthenticationService authenticationService;
     private final IUserService userService;
-    private final ITokenService tokenService;
 
     @Autowired
-    public RegistrationController(IAuthenticationService authenticationService,
-                                  IUserService userService,
-                                  ITokenService tokenService) {
+    public RegistrationController(IAuthenticationService authenticationService, IUserService userService) {
         this.authenticationService = authenticationService;
         this.userService = userService;
-        this.tokenService = tokenService;
     }
 
-    @PostMapping(path = KekPaths.REGISTRATION, consumes = KekMediaType.REGISTRATION_USER,
-            produces = KekMediaType.TOKEN)
+    @PostMapping(path = KekPaths.REGISTRATION, consumes = KekMediaType.REGISTRATION_USER)
     public ResponseEntity<TokenDto> userRegistration(@RequestBody @Valid RegistrationDto userData) {
         logger.info("Creating request for user registration: {}", userData);
 
-        IUser createdUser = userService.create(userData, userData.getPassword());
-        TokenDto token = new TokenDto(tokenService.getToken(createdUser.getEmail()));
+        userService.create(userData, userData.getPassword());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(token);
+                .build();
     }
 }
