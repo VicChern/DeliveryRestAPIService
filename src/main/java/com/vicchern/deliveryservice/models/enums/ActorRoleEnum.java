@@ -1,7 +1,9 @@
-package com.softserve.itacademy.kek.models.enums;
+package com.vicchern.deliveryservice.models.enums;
+
+import com.vicchern.deliveryservice.models.impl.ActorRole;
 
 /**
- * Enum of actor roles for {@link com.softserve.itacademy.kek.models.impl.ActorRole}
+ * Enum of actor roles for {@link ActorRole}
  */
 public enum ActorRoleEnum {
 

@@ -1,10 +1,8 @@
-package com.softserve.itacademy.kek.repositories;
+package com.vicchern.deliveryservice.repositories;
 
-import java.util.Optional;
-
+import com.vicchern.deliveryservice.models.impl.ActorRole;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.softserve.itacademy.kek.models.impl.ActorRole;
+import java.util.Optional;
 
 /**
  * Repository for work with Actor role

@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.models.impl;
+package com.vicchern.deliveryservice.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
-import com.softserve.itacademy.kek.models.IActorRole;
+import com.vicchern.deliveryservice.models.IActorRole;
 
 @Entity
 @Table(name = "def_actor_role")

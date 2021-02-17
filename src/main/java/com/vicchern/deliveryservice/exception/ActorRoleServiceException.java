@@ -1,6 +1,6 @@
-package com.softserve.itacademy.kek.exception;
+package com.vicchern.deliveryservice.exception;
 
-import com.softserve.itacademy.kek.services.impl.ActorRoleServiceImpl;
+import com.vicchern.deliveryservice.services.impl.ActorRoleServiceImpl;
 
 /**
  * Exception for {@link ActorRoleServiceImpl}
