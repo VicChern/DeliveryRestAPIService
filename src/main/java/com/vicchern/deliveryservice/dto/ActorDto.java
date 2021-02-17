@@ -1,10 +1,10 @@
-package com.softserve.itacademy.kek.dto;
+package com.vicchern.deliveryservice.dto;
 
 import java.beans.Transient;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.softserve.itacademy.kek.models.IActor;
+import com.vicchern.deliveryservice.models.IActor;
 
 public class ActorDto implements IActor {
     private UUID guid;

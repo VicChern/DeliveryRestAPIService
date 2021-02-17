@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.services;
+package com.vicchern.deliveryservice.services;
 
 import org.springframework.stereotype.Component;
 

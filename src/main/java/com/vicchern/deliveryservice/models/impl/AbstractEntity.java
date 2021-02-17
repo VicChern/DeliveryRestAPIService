@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.models.impl;
+package com.vicchern.deliveryservice.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;

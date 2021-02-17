@@ -1,13 +1,12 @@
-package com.softserve.itacademy.kek.repositories;
+package com.vicchern.deliveryservice.repositories;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.vicchern.deliveryservice.models.IUser;
+import com.vicchern.deliveryservice.models.impl.Actor;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.impl.Actor;
 
 /**
  * Repository for work with Actor role

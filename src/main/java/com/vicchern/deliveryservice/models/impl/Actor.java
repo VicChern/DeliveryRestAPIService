@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.models.impl;
+package com.vicchern.deliveryservice.models.impl;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,12 +19,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.vicchern.deliveryservice.models.IActor;
+import com.vicchern.deliveryservice.models.ITenant;
+import com.vicchern.deliveryservice.models.IUser;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.IUser;
 
 @Entity
 @Table(name = "obj_actor")
