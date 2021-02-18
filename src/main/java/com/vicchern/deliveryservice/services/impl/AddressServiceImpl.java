@@ -1,26 +1,25 @@
-package com.softserve.itacademy.kek.services.impl;
+package com.vicchern.deliveryservice.services.impl;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+import com.vicchern.deliveryservice.exception.AddressServiceException;
+import com.vicchern.deliveryservice.mappers.IAddressMapper;
+import com.vicchern.deliveryservice.models.IAddress;
+import com.vicchern.deliveryservice.models.impl.Address;
+import com.vicchern.deliveryservice.models.impl.Tenant;
+import com.vicchern.deliveryservice.models.impl.User;
+import com.vicchern.deliveryservice.repositories.AddressRepository;
+import com.vicchern.deliveryservice.services.IAddressService;
+import com.vicchern.deliveryservice.services.ITenantService;
+import com.vicchern.deliveryservice.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.softserve.itacademy.kek.exception.AddressServiceException;
-import com.softserve.itacademy.kek.mappers.IAddressMapper;
-import com.softserve.itacademy.kek.models.IAddress;
-import com.softserve.itacademy.kek.models.impl.Address;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.AddressRepository;
-import com.softserve.itacademy.kek.services.IAddressService;
-import com.softserve.itacademy.kek.services.ITenantService;
-import com.softserve.itacademy.kek.services.IUserService;
 
 /**
  * Service implementation for {@link IAddressService}

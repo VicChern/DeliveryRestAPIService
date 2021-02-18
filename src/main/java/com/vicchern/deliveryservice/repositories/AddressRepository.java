@@ -1,12 +1,10 @@
-package com.softserve.itacademy.kek.repositories;
+package com.vicchern.deliveryservice.repositories;
 
+import com.vicchern.deliveryservice.models.impl.Address;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.softserve.itacademy.kek.models.impl.Address;
 
 /**
  * Repository for work with Address

@@ -1,10 +1,18 @@
-package com.softserve.itacademy.kek.models;
+package com.vicchern.deliveryservice.models;
 
 
 import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 import java.util.Random;
 
+import com.vicchern.deliveryservice.configuration.PersistenceTestConfig;
+import com.vicchern.deliveryservice.models.impl.Address;
+import com.vicchern.deliveryservice.models.impl.Tenant;
+import com.vicchern.deliveryservice.models.impl.User;
+import com.vicchern.deliveryservice.repositories.AddressRepository;
+import com.vicchern.deliveryservice.repositories.TenantRepository;
+import com.vicchern.deliveryservice.repositories.UserRepository;
+import com.vicchern.deliveryservice.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,21 +21,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.impl.Address;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.AddressRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_1024;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_512;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryAddress;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -52,9 +45,9 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
     @BeforeMethod(groups = {"integration-tests"})
     void setUp() {
 
-        address = createOrdinaryAddress(1);
-        user = createOrdinaryUser(1);
-        tenant = createOrdinaryTenant(1);
+        address = ITCreateEntitiesUtils.createOrdinaryAddress(1);
+        user = ITCreateEntitiesUtils.createOrdinaryUser(1);
+        tenant = ITCreateEntitiesUtils.createOrdinaryTenant(1);
 
         //given
         userRepository.save(user);
@@ -111,7 +104,7 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
     public void testAddressIsSavedWithUniqueGuid() {
         //given
         Address address1 = address;
-        Address address2 = createOrdinaryAddress(2);
+        Address address2 = ITCreateEntitiesUtils.createOrdinaryAddress(2);
 
         address2.setGuid(address1.getGuid());
         assertEquals(address1.getGuid(), address2.getGuid());
@@ -149,12 +142,12 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test(groups = {"integration-tests"},
-            description = "Test Address_06. Should throw ConstraintViolationException when saves address with address field length more than " + MAX_LENGTH_512,
+            description = "Test Address_06. Should throw ConstraintViolationException when saves address with address field length more than " + ITCreateEntitiesUtils.MAX_LENGTH_512,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithAddressValueMoreThanMaxLength() {
         //given
-        String addressValue = createRandomLetterString(MAX_LENGTH_512 + 1 + new Random().nextInt(50));
+        String addressValue = ITCreateEntitiesUtils.createRandomLetterString(ITCreateEntitiesUtils.MAX_LENGTH_512 + 1 + new Random().nextInt(50));
         address.setAddress(addressValue);
 
         //when
@@ -164,12 +157,12 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
 
     //====================================================== notes ======================================================
     @Test(groups = {"integration-tests"},
-            description = "Test Address_07. Should throw ConstraintViolationException when saves address with notes field length more than " + MAX_LENGTH_512,
+            description = "Test Address_07. Should throw ConstraintViolationException when saves address with notes field length more than " + ITCreateEntitiesUtils.MAX_LENGTH_512,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithNotesMoreThanMaxLength() {
         //given
-        String notes = createRandomLetterString(MAX_LENGTH_1024 + 1 + new Random().nextInt(50));
+        String notes = ITCreateEntitiesUtils.createRandomLetterString(ITCreateEntitiesUtils.MAX_LENGTH_1024 + 1 + new Random().nextInt(50));
         address.setAddress(notes);
 
         //when
@@ -203,12 +196,12 @@ public class AddressTestIT extends AbstractTestNGSpringContextTests {
     }
 
     @Test(groups = {"integration-tests"},
-            description = "Test Address_10. Should throw ConstraintViolationException when saves address with alias field length more than " + MAX_LENGTH_256,
+            description = "Test Address_10. Should throw ConstraintViolationException when saves address with alias field length more than " + ITCreateEntitiesUtils.MAX_LENGTH_256,
             expectedExceptions = ConstraintViolationException.class,
             expectedExceptionsMessageRegExp = "Validation failed .*")
     public void testAddressIsNotSavedWithAliasMoreThanMaxLength() {
         //given
-        String alias = createRandomLetterString(MAX_LENGTH_256 + 1 + new Random().nextInt(50));
+        String alias = ITCreateEntitiesUtils.createRandomLetterString(ITCreateEntitiesUtils.MAX_LENGTH_256 + 1 + new Random().nextInt(50));
         address.setAlias(alias);
 
         //when
