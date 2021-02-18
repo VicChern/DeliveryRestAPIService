@@ -1,7 +1,11 @@
-package com.softserve.itacademy.kek.models;
+package com.vicchern.deliveryservice.models;
 
 import javax.validation.ConstraintViolationException;
 
+import com.vicchern.deliveryservice.configuration.PersistenceTestConfig;
+import com.vicchern.deliveryservice.models.impl.ActorRole;
+import com.vicchern.deliveryservice.repositories.ActorRoleRepository;
+import com.vicchern.deliveryservice.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
@@ -10,14 +14,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.impl.ActorRole;
-import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
-
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getActorRole;
 
 @Rollback
 @ContextConfiguration(classes = {PersistenceTestConfig.class})
@@ -31,8 +27,8 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
-        actorRole1 = getActorRole("actorRole1");
-        actorRole2 = getActorRole("actorRole2");
+        actorRole1 = ITCreateEntitiesUtils.getActorRole("actorRole1");
+        actorRole2 = ITCreateEntitiesUtils.getActorRole("actorRole2");
     }
 
     @AfterMethod(groups = {"integration-tests"})
@@ -43,7 +39,7 @@ public class ActorRoleTestIT extends AbstractTestNGSpringContextTests {
     @Rollback
     @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testActorRoleIsNotSavedWithNameMoreThanMaxLength() {
-        actorRole1.setName(createRandomLetterString(MAX_LENGTH_256 + 1));
+        actorRole1.setName(ITCreateEntitiesUtils.createRandomLetterString(ITCreateEntitiesUtils.MAX_LENGTH_256 + 1));
 
         actorRoleRepository.save(actorRole1);
     }

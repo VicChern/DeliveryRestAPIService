@@ -1,6 +1,6 @@
-package com.softserve.itacademy.kek.exception;
+package com.vicchern.deliveryservice.exception;
 
-import com.softserve.itacademy.kek.services.impl.ActorServiceImpl;
+import com.vicchern.deliveryservice.services.impl.ActorServiceImpl;
 
 /**
  * Exception for {@link ActorServiceImpl}

@@ -1,4 +1,17 @@
-package com.softserve.itacademy.kek.service;
+package com.vicchern.deliveryservice.service;
+
+import com.vicchern.deliveryservice.configuration.PersistenceTestConfig;
+import com.vicchern.deliveryservice.models.enums.ActorRoleEnum;
+import com.vicchern.deliveryservice.models.impl.Actor;
+import com.vicchern.deliveryservice.models.impl.ActorRole;
+import com.vicchern.deliveryservice.models.impl.Tenant;
+import com.vicchern.deliveryservice.models.impl.User;
+import com.vicchern.deliveryservice.repositories.ActorRepository;
+import com.vicchern.deliveryservice.repositories.ActorRoleRepository;
+import com.vicchern.deliveryservice.repositories.TenantRepository;
+import com.vicchern.deliveryservice.repositories.UserRepository;
+import com.vicchern.deliveryservice.services.IActorService;
+import com.vicchern.deliveryservice.utils.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -8,20 +21,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
-import com.softserve.itacademy.kek.models.impl.Actor;
-import com.softserve.itacademy.kek.models.impl.ActorRole;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.ActorRepository;
-import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.services.IActorService;
-
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryTenant;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -61,9 +60,9 @@ public class ActorServiceTestIT extends AbstractTestNGSpringContextTests {
         actorRoleRepository.save(actorRole1);
         actorRoleRepository.save(actorRole2);
 
-        user = createOrdinaryUser(1);
-        customer = createOrdinaryUser(2);
-        tenant = createOrdinaryTenant(1);
+        user = ITCreateEntitiesUtils.createOrdinaryUser(1);
+        customer = ITCreateEntitiesUtils.createOrdinaryUser(2);
+        tenant = ITCreateEntitiesUtils.createOrdinaryTenant(1);
 
         User savedUser = userRepository.save(user);
         assertNotNull(savedUser);

@@ -1,18 +1,17 @@
-package com.softserve.itacademy.kek.services.impl;
+package com.vicchern.deliveryservice.services.impl;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import com.vicchern.deliveryservice.exception.ActorRoleServiceException;
+import com.vicchern.deliveryservice.models.IActorRole;
+import com.vicchern.deliveryservice.models.impl.ActorRole;
+import com.vicchern.deliveryservice.repositories.ActorRoleRepository;
+import com.vicchern.deliveryservice.services.IActorRoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.softserve.itacademy.kek.exception.ActorRoleServiceException;
-import com.softserve.itacademy.kek.models.IActorRole;
-import com.softserve.itacademy.kek.models.impl.ActorRole;
-import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
-import com.softserve.itacademy.kek.services.IActorRoleService;
 
 @Service
 public class ActorRoleServiceImpl implements IActorRoleService {

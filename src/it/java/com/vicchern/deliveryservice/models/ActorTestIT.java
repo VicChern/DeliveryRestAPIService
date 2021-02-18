@@ -1,8 +1,18 @@
-package com.softserve.itacademy.kek.models;
+package com.vicchern.deliveryservice.models;
 
 import javax.validation.ConstraintViolationException;
 import java.util.UUID;
 
+import com.vicchern.deliveryservice.configuration.PersistenceTestConfig;
+import com.vicchern.deliveryservice.models.impl.Actor;
+import com.vicchern.deliveryservice.models.impl.ActorRole;
+import com.vicchern.deliveryservice.models.impl.Tenant;
+import com.vicchern.deliveryservice.models.impl.User;
+import com.vicchern.deliveryservice.repositories.ActorRepository;
+import com.vicchern.deliveryservice.repositories.ActorRoleRepository;
+import com.vicchern.deliveryservice.repositories.TenantRepository;
+import com.vicchern.deliveryservice.repositories.UserRepository;
+import com.vicchern.deliveryservice.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
@@ -11,23 +21,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import com.softserve.itacademy.kek.configuration.PersistenceTestConfig;
-import com.softserve.itacademy.kek.models.impl.Actor;
-import com.softserve.itacademy.kek.models.impl.ActorRole;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.ActorRepository;
-import com.softserve.itacademy.kek.repositories.ActorRoleRepository;
-import com.softserve.itacademy.kek.repositories.TenantRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.MAX_LENGTH_256;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createOrdinaryUser;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.createRandomLetterString;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getActor;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getActorRole;
-import static com.softserve.itacademy.kek.utils.ITCreateEntitiesUtils.getTenant;
 
 
 @Rollback
@@ -51,11 +44,11 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
 
     @BeforeMethod(groups = {"integration-tests"})
     public void setUp() {
-        actorRole = getActorRole("actorRole");
+        actorRole = ITCreateEntitiesUtils.getActorRole("actorRole");
         actorRoleRepository.save(actorRole);
 
         Tenant tenant1 = getTenantForActor(1);
-        actor1 = getActor((User) tenant1.getTenantOwner(), tenant1, actorRole);
+        actor1 = ITCreateEntitiesUtils.getActor((User) tenant1.getTenantOwner(), tenant1, actorRole);
     }
 
     @AfterMethod(groups = {"integration-tests"})
@@ -72,7 +65,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
         actorRepository.save(actor1);
 
         Tenant tenant2 = getTenantForActor(2);
-        actor2 = getActor((User) tenant2.getTenantOwner(), tenant2);
+        actor2 = ITCreateEntitiesUtils.getActor((User) tenant2.getTenantOwner(), tenant2);
 
         UUID guid = actor1.getGuid();
         actor2.setGuid(guid);
@@ -91,7 +84,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     @Rollback
     @Test(groups = {"integration-tests"}, expectedExceptions = ConstraintViolationException.class)
     public void testActorIsNotSavedWithAliasMoreThanMaxLength() {
-        actor1.setAlias(createRandomLetterString(MAX_LENGTH_256 + 1));
+        actor1.setAlias(ITCreateEntitiesUtils.createRandomLetterString(ITCreateEntitiesUtils.MAX_LENGTH_256 + 1));
 
         actorRepository.save(actor1);
     }
@@ -113,7 +106,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     }
 
     private Tenant getTenantForActor(int i) {
-        Tenant tenant = getTenant(getUserForActor(i));
+        Tenant tenant = ITCreateEntitiesUtils.getTenant(getUserForActor(i));
 
         tenantRepository.save(tenant);
 
@@ -121,7 +114,7 @@ public class ActorTestIT extends AbstractTestNGSpringContextTests {
     }
 
     private User getUserForActor(int i) {
-        User user = createOrdinaryUser(i);
+        User user = ITCreateEntitiesUtils.createOrdinaryUser(i);
 
         userRepository.save(user);
 

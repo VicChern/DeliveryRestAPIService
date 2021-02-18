@@ -1,30 +1,29 @@
-package com.softserve.itacademy.kek.services.impl;
+package com.vicchern.deliveryservice.services.impl;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+import com.vicchern.deliveryservice.exception.ActorServiceException;
+import com.vicchern.deliveryservice.models.IActor;
+import com.vicchern.deliveryservice.models.ITenant;
+import com.vicchern.deliveryservice.models.IUser;
+import com.vicchern.deliveryservice.models.enums.ActorRoleEnum;
+import com.vicchern.deliveryservice.models.impl.Actor;
+import com.vicchern.deliveryservice.models.impl.ActorRole;
+import com.vicchern.deliveryservice.models.impl.Tenant;
+import com.vicchern.deliveryservice.models.impl.User;
+import com.vicchern.deliveryservice.repositories.ActorRepository;
+import com.vicchern.deliveryservice.services.IActorRoleService;
+import com.vicchern.deliveryservice.services.IActorService;
+import com.vicchern.deliveryservice.services.ITenantService;
+import com.vicchern.deliveryservice.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.softserve.itacademy.kek.exception.ActorServiceException;
-import com.softserve.itacademy.kek.models.IActor;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.enums.ActorRoleEnum;
-import com.softserve.itacademy.kek.models.impl.Actor;
-import com.softserve.itacademy.kek.models.impl.ActorRole;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.ActorRepository;
-import com.softserve.itacademy.kek.services.IActorRoleService;
-import com.softserve.itacademy.kek.services.IActorService;
-import com.softserve.itacademy.kek.services.ITenantService;
-import com.softserve.itacademy.kek.services.IUserService;
 
 
 /**
