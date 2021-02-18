@@ -1,9 +1,13 @@
-package com.softserve.itacademy.kek.controller;
+package com.vicchern.deliveryservice.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import com.vicchern.deliveryservice.controller.utils.KekMediaType;
+import com.vicchern.deliveryservice.models.IOrder;
+import com.vicchern.deliveryservice.models.ITenant;
+import com.vicchern.deliveryservice.models.IUser;
+import com.vicchern.deliveryservice.models.impl.*;
+import com.vicchern.deliveryservice.services.IOrderService;
+import com.vicchern.deliveryservice.services.ITenantService;
+import com.vicchern.deliveryservice.services.IUserService;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
@@ -13,27 +17,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import com.softserve.itacademy.kek.controller.utils.KekMediaType;
-import com.softserve.itacademy.kek.models.IOrder;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.models.impl.Order;
-import com.softserve.itacademy.kek.models.impl.OrderDetails;
-import com.softserve.itacademy.kek.models.impl.Tenant;
-import com.softserve.itacademy.kek.models.impl.TenantDetails;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.models.impl.UserDetails;
-import com.softserve.itacademy.kek.services.IOrderService;
-import com.softserve.itacademy.kek.services.ITenantService;
-import com.softserve.itacademy.kek.services.IUserService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class AdminControllerTest {
 

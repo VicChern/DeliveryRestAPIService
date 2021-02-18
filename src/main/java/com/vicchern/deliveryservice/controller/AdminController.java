@@ -1,8 +1,23 @@
-package com.softserve.itacademy.kek.controller;
+package com.vicchern.deliveryservice.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.vicchern.deliveryservice.controller.utils.KekMappingValues;
+import com.vicchern.deliveryservice.controller.utils.KekMediaType;
+import com.vicchern.deliveryservice.controller.utils.KekPaths;
+import com.vicchern.deliveryservice.controller.utils.KekRoles;
+import com.vicchern.deliveryservice.dto.ListWrapperDto;
+import com.vicchern.deliveryservice.dto.OrderDto;
+import com.vicchern.deliveryservice.dto.TenantDto;
+import com.vicchern.deliveryservice.dto.UserDto;
+import com.vicchern.deliveryservice.mappers.ITenantMapper;
+import com.vicchern.deliveryservice.mappers.IUserMapper;
+import com.vicchern.deliveryservice.models.ITenant;
+import com.vicchern.deliveryservice.models.IUser;
+import com.vicchern.deliveryservice.services.IOrderService;
+import com.vicchern.deliveryservice.services.ITenantService;
+import com.vicchern.deliveryservice.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,22 +29,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
-import com.softserve.itacademy.kek.controller.utils.KekMediaType;
-import com.softserve.itacademy.kek.controller.utils.KekPaths;
-import com.softserve.itacademy.kek.controller.utils.KekRoles;
-import com.softserve.itacademy.kek.dto.ListWrapperDto;
-import com.softserve.itacademy.kek.dto.OrderDto;
-import com.softserve.itacademy.kek.dto.TenantDto;
-import com.softserve.itacademy.kek.dto.UserDto;
-import com.softserve.itacademy.kek.mappers.ITenantMapper;
-import com.softserve.itacademy.kek.mappers.IUserMapper;
-import com.softserve.itacademy.kek.models.ITenant;
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.services.IOrderService;
-import com.softserve.itacademy.kek.services.ITenantService;
-import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
 @RequestMapping(path = KekPaths.ADMIN)
