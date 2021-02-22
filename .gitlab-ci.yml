@@ -20,10 +20,10 @@ deploy:
   stage: deploy
   script:
     - echo "env_variables:" > env-vars.yaml
-    - echo "  KekId:" ${KekId} >> env-vars.yaml
-    - echo "  KekDomain:" ${KekDomain} >> env-vars.yaml
-    - echo "  KekWord:" ${KekWord} >> env-vars.yaml
-    - echo "  KekSecurityKey:" ${KekSecurityKey} >> env-vars.yaml
+    - echo "  DeliveryServiceId:" ${DeliveryServiceId} >> env-vars.yaml
+    - echo "  DeliveryServiceDomain:" ${DeliveryServiceDomain} >> env-vars.yaml
+    - echo "  DeliveryServiceWord:" ${DeliveryServiceWord} >> env-vars.yaml
+    - echo "  DeliveryServiceSecurityKey:" ${DeliveryServiceSecurityKey} >> env-vars.yaml
     - echo "  KEK_DB_USER:" ${KEK_DB_USER} >> env-vars.yaml
     - echo "  KEK_DB_URL:" ${KEK_DB_URL} >> env-vars.yaml
     - echo "  KEK_DB_PASS:" ${KEK_DB_PASS} >> env-vars.yaml

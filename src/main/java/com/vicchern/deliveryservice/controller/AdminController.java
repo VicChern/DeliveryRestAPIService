@@ -3,10 +3,10 @@ package com.vicchern.deliveryservice.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.vicchern.deliveryservice.controller.utils.KekMappingValues;
-import com.vicchern.deliveryservice.controller.utils.KekMediaType;
-import com.vicchern.deliveryservice.controller.utils.KekPaths;
-import com.vicchern.deliveryservice.controller.utils.KekRoles;
+import com.vicchern.deliveryservice.controller.utils.DeliveryServiceMappingValues;
+import com.vicchern.deliveryservice.controller.utils.DeliveryServiceMediaType;
+import com.vicchern.deliveryservice.controller.utils.DeliveryServicePaths;
+import com.vicchern.deliveryservice.controller.utils.DeliveryServiceRoles;
 import com.vicchern.deliveryservice.dto.ListWrapperDto;
 import com.vicchern.deliveryservice.dto.OrderDto;
 import com.vicchern.deliveryservice.dto.TenantDto;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = KekPaths.ADMIN)
+@RequestMapping(path = DeliveryServicePaths.ADMIN)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AdminController extends DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
@@ -52,8 +52,8 @@ public class AdminController extends DefaultController {
      *
      * @return Response Entity with a list of {@link TenantDto} objects as a JSON
      */
-    @GetMapping(produces = KekMediaType.TENANT_LIST)
-    @PreAuthorize(KekRoles.ADMIN)
+    @GetMapping(produces = DeliveryServiceMediaType.TENANT_LIST)
+    @PreAuthorize(DeliveryServiceRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<TenantDto>> getTenantList() {
         logger.info("Admin requested the list of all tenants");
 
@@ -74,8 +74,8 @@ public class AdminController extends DefaultController {
      *
      * @return Response entity with list of {@link UserDto} objects as a JSON
      */
-    @GetMapping(produces = KekMediaType.USER_LIST)
-    @PreAuthorize(KekRoles.ADMIN)
+    @GetMapping(produces = DeliveryServiceMediaType.USER_LIST)
+    @PreAuthorize(DeliveryServiceRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<UserDto>> getUserList() {
         logger.info("Admin requested the list of all users");
 
@@ -96,8 +96,8 @@ public class AdminController extends DefaultController {
      *
      * @return Response HTTP.STATUS 202
      */
-    @DeleteMapping(value = KekMappingValues.USERS)
-    @PreAuthorize(KekRoles.ADMIN)
+    @DeleteMapping(value = DeliveryServiceMappingValues.USERS)
+    @PreAuthorize(DeliveryServiceRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<UserDto>> deleteAllUsers() {
         logger.info("Admin requested the delete all users");
 
@@ -115,8 +115,8 @@ public class AdminController extends DefaultController {
      *
      * @return Response HTTP.STATUS 202
      */
-    @DeleteMapping(value = KekMappingValues.TENANTS)
-    @PreAuthorize(KekRoles.ADMIN)
+    @DeleteMapping(value = DeliveryServiceMappingValues.TENANTS)
+    @PreAuthorize(DeliveryServiceRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<TenantDto>> deleteAllTenants() {
         logger.info("Admin requested the delete all orders");
         tenantService.deleteAll();
@@ -133,8 +133,8 @@ public class AdminController extends DefaultController {
      *
      * @return Response HTTP.STATUS 202
      */
-    @DeleteMapping(value = KekMappingValues.ORDERS)
-    @PreAuthorize(KekRoles.ADMIN)
+    @DeleteMapping(value = DeliveryServiceMappingValues.ORDERS)
+    @PreAuthorize(DeliveryServiceRoles.ADMIN)
     public ResponseEntity<ListWrapperDto<OrderDto>> deleteAllOrders() {
         logger.info("Admin requested the delete all orders");
 

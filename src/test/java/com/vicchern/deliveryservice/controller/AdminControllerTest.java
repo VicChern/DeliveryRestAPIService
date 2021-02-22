@@ -1,6 +1,6 @@
 package com.vicchern.deliveryservice.controller;
 
-import com.vicchern.deliveryservice.controller.utils.KekMediaType;
+import com.vicchern.deliveryservice.controller.utils.DeliveryServiceMediaType;
 import com.vicchern.deliveryservice.models.IOrder;
 import com.vicchern.deliveryservice.models.ITenant;
 import com.vicchern.deliveryservice.models.IUser;
@@ -124,7 +124,7 @@ public class AdminControllerTest {
 
         mockMvc.perform(get("/admin"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(KekMediaType.TENANT_LIST))
+                .andExpect(content().contentType(DeliveryServiceMediaType.TENANT_LIST))
                 .andExpect(jsonPath("$.list[0].guid").value("820671c6-7e2c-4de3-aeb8-42e6f84e6371"))
                 .andExpect(jsonPath("$.list[0].owner").value("10241624-9ea7-4777-99b5-54ab6d591c44"))
                 .andExpect(jsonPath("$.list[0].name").value("TenantName"))
@@ -137,8 +137,8 @@ public class AdminControllerTest {
         when(userService.getAll()).thenReturn(userList);
 
         mockMvc.perform(get("/admin")
-                .contentType(KekMediaType.USER_LIST)
-                .accept(KekMediaType.USER_LIST))
+                .contentType(DeliveryServiceMediaType.USER_LIST)
+                .accept(DeliveryServiceMediaType.USER_LIST))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.list[0].guid").value("10241624-9ea7-4777-99b5-54ab6d591c44"))
                 .andExpect(jsonPath("$.list[0].name").value("name"))

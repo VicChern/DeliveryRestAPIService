@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.configuration;
+package com.vicchern.deliveryservice.configuration;
 
 import java.util.Optional;
 
@@ -12,6 +12,6 @@ public class AuditorAwareImpl implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
 
-        return Optional.of("Kek");
+        return Optional.of("DeliveryService");
     }
 }

@@ -1,9 +1,19 @@
-package com.softserve.itacademy.kek.controller;
+package com.vicchern.deliveryservice.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import com.vicchern.deliveryservice.controller.utils.DeliveryServiceMediaType;
+import com.vicchern.deliveryservice.controller.utils.DeliveryServicePaths;
+import com.vicchern.deliveryservice.controller.utils.DeliveryServiceRoles;
+import com.vicchern.deliveryservice.dto.TokenDto;
+import com.vicchern.deliveryservice.dto.UserDto;
+import com.vicchern.deliveryservice.mappers.IUserMapper;
+import com.vicchern.deliveryservice.models.IUser;
+import com.vicchern.deliveryservice.services.IAuthenticationService;
+import com.vicchern.deliveryservice.services.ITokenService;
+import com.vicchern.deliveryservice.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.softserve.itacademy.kek.controller.utils.KekMediaType;
-import com.softserve.itacademy.kek.controller.utils.KekPaths;
-import com.softserve.itacademy.kek.controller.utils.KekRoles;
-import com.softserve.itacademy.kek.dto.TokenDto;
-import com.softserve.itacademy.kek.dto.UserDto;
-import com.softserve.itacademy.kek.mappers.IUserMapper;
-import com.softserve.itacademy.kek.models.IUser;
-import com.softserve.itacademy.kek.services.IAuthenticationService;
-import com.softserve.itacademy.kek.services.ITokenService;
-import com.softserve.itacademy.kek.services.IUserService;
 
 @RestController
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -41,7 +40,7 @@ public class AuthController extends DefaultController {
     @Autowired
     private ITokenService tokenService;
 
-    @GetMapping(path = KekPaths.LOGIN)
+    @GetMapping(path = DeliveryServicePaths.LOGIN)
     protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("Performing login: request = {}", request);
 
@@ -51,7 +50,7 @@ public class AuthController extends DefaultController {
         response.sendRedirect(authorizeUrl);
     }
 
-    @RequestMapping(path = KekPaths.CALLBACK)
+    @RequestMapping(path = DeliveryServicePaths.CALLBACK)
     protected ResponseEntity<TokenDto> getCallback(HttpServletRequest request, HttpServletResponse response) {
         logger.info("Entered to callback for Auth0: request = {}", request);
 
@@ -69,8 +68,8 @@ public class AuthController extends DefaultController {
                 .body(tokenDto);
     }
 
-    @GetMapping(path = KekPaths.PROFILE, produces = KekMediaType.USER)
-    @PreAuthorize(KekRoles.ANY_ROLE)
+    @GetMapping(path = DeliveryServicePaths.PROFILE, produces = DeliveryServiceMediaType.USER)
+    @PreAuthorize(DeliveryServiceRoles.ANY_ROLE)
     protected ResponseEntity<UserDto> profile() {
         final String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         logger.info("Performing profile request for: {}", email);
