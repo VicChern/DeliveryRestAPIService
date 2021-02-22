@@ -1,7 +1,10 @@
-package com.softserve.itacademy.kek.controller;
+package com.vicchern.deliveryservice.controller;
 
 import java.util.UUID;
 
+import com.vicchern.deliveryservice.models.services.ICloudStorageObject;
+import com.vicchern.deliveryservice.models.services.impl.CloudStorageObject;
+import com.vicchern.deliveryservice.services.ICloudStorageService;
 import org.apache.commons.codec.binary.Base64;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
@@ -11,10 +14,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import com.softserve.itacademy.kek.models.services.ICloudStorageObject;
-import com.softserve.itacademy.kek.models.services.impl.CloudStorageObject;
-import com.softserve.itacademy.kek.services.ICloudStorageService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

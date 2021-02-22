@@ -1,9 +1,9 @@
-package com.softserve.itacademy.kek.models.services.impl;
+package com.vicchern.deliveryservice.models.services.impl;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-import com.softserve.itacademy.kek.models.services.ICloudStorageObject;
+import com.vicchern.deliveryservice.models.services.ICloudStorageObject;
 
 public class CloudStorageObject implements ICloudStorageObject {
     private final String url;

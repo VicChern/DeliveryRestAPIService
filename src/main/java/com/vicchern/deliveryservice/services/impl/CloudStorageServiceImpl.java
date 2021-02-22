@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.services.impl;
+package com.vicchern.deliveryservice.services.impl;
 
 
 import java.io.FileInputStream;
@@ -16,17 +16,16 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.vicchern.deliveryservice.exception.CloudStorageServiceException;
+import com.vicchern.deliveryservice.models.services.ICloudStorageObject;
+import com.vicchern.deliveryservice.models.services.impl.CloudStorageObject;
+import com.vicchern.deliveryservice.services.AbstractService;
+import com.vicchern.deliveryservice.services.ICloudStorageService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.softserve.itacademy.kek.exception.CloudStorageServiceException;
-import com.softserve.itacademy.kek.models.services.ICloudStorageObject;
-import com.softserve.itacademy.kek.models.services.impl.CloudStorageObject;
-import com.softserve.itacademy.kek.services.AbstractService;
-import com.softserve.itacademy.kek.services.ICloudStorageService;
 
 @Component
 public class CloudStorageServiceImpl extends AbstractService implements ICloudStorageService {

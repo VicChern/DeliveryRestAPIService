@@ -1,11 +1,11 @@
-package com.softserve.itacademy.kek.exception;
+package com.vicchern.deliveryservice.exception;
 
-import com.softserve.itacademy.kek.services.impl.CloudStorageServiceImpl;
+import com.vicchern.deliveryservice.services.impl.CloudStorageServiceImpl;
 
 /**
  * Exception for {@link  CloudStorageServiceImpl}
  */
-public class CloudStorageServiceException extends KekException {
+public class CloudStorageServiceException extends DeliveryServiceException {
 
     public CloudStorageServiceException(String message) {
         super(message);
