@@ -1,3 +1,30 @@
 .idea/
 target/
+target-frontend/
 *.iml
+
+# db credentials
+/src/main/resources/dbCredentials.properties
+
+# compiled output
+/src/main/frontend/dist
+/src/main/frontend/tmp
+/src/main/frontend/out-tsc
+/src/main/resources/static
+/tomcat.8080
+
+
+# dependencies
+/src/main/frontend/node_modules
+/src/main/frontend/node
+
+
+# profiling files
+/src/main/frontend/chrome-profiler-events.json
+/src/main/frontend/speed-measure-plugin.json
+
+
+
+
+
+

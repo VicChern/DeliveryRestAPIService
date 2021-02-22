@@ -1,0 +1,37 @@
+image: google/cloud-sdk:alpine
+
+stages:
+  - build
+  - deploy
+
+build:
+  image: maven:latest
+  stage: build
+  script:
+    #    - mvn clean install -B
+    - mvn -Pmaster clean install
+  artifacts:
+    expire_in: 1 days
+    paths:
+      - target
+      - target-frontend
+
+deploy:
+  stage: deploy
+  script:
+    - echo "env_variables:" > env-vars.yaml
+    - echo "  DeliveryServiceId:" ${DeliveryServiceId} >> env-vars.yaml
+    - echo "  DeliveryServiceDomain:" ${DeliveryServiceDomain} >> env-vars.yaml
+    - echo "  DeliveryServiceWord:" ${DeliveryServiceWord} >> env-vars.yaml
+    - echo "  DeliveryServiceSecurityKey:" ${DeliveryServiceSecurityKey} >> env-vars.yaml
+    - echo "  KEK_DB_USER:" ${KEK_DB_USER} >> env-vars.yaml
+    - echo "  KEK_DB_URL:" ${KEK_DB_URL} >> env-vars.yaml
+    - echo "  KEK_DB_PASS:" ${KEK_DB_PASS} >> env-vars.yaml
+
+    - gcloud auth activate-service-account --key-file $GOOGLE_SERVICE_ACCOUNT_FILE
+    - gcloud app deploy app.yaml --quiet --project $GOOGLE_PROJECT_ID
+
+    - rm env-vars.yaml
+  only:
+    - master
+#    - develop

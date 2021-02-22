@@ -1,0 +1,12 @@
+<p>sse-controller works!</p>
+
+
+<br>
+
+<div class="row justify-content-center">
+  <div class="col-10">
+    <agm-map [latitude]="sseData.lat" [longitude]="sseData.lon" [zoom]=18 class="agm-map">
+      <agm-marker [latitude]="sseData.lat" [longitude]="sseData.lon"></agm-marker>
+    </agm-map>
+  </div>
+</div>
