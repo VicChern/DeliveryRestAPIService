@@ -1,5 +1,10 @@
-package com.softserve.itacademy.kek.controller;
+package com.vicchern.deliveryservice.controller;
 
+import com.vicchern.deliveryservice.controller.utils.DeliveryServiceMappingValues;
+import com.vicchern.deliveryservice.controller.utils.DeliveryServicePaths;
+import com.vicchern.deliveryservice.controller.utils.DeliveryServiceRoles;
+import com.vicchern.deliveryservice.models.services.ICloudStorageObject;
+import com.vicchern.deliveryservice.services.ICloudStorageService;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,22 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.softserve.itacademy.kek.controller.utils.KekMappingValues;
-import com.softserve.itacademy.kek.controller.utils.KekPaths;
-import com.softserve.itacademy.kek.controller.utils.KekRoles;
-import com.softserve.itacademy.kek.models.services.ICloudStorageObject;
-import com.softserve.itacademy.kek.services.ICloudStorageService;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = KekPaths.USER_CLOUD)
+@RequestMapping(path = DeliveryServicePaths.USER_CLOUD)
 public class CloudStorageController {
     private final static Logger logger = LoggerFactory.getLogger(CloudStorageController.class);
 
@@ -40,7 +33,7 @@ public class CloudStorageController {
      * @return url to uploaded data in Cloud Storage
      */
     @PostMapping
-    @PreAuthorize(KekRoles.USER_ADMIN)
+    @PreAuthorize(DeliveryServiceRoles.USER_ADMIN)
     public ResponseEntity<String> addData(@RequestBody String image) {
         logger.info("Accepted requested to upload data to Cloud Storage for user");
 
@@ -63,8 +56,8 @@ public class CloudStorageController {
      * @param image from user
      * @return url to modified data in Cloud Storage
      */
-    @PutMapping(value = KekMappingValues.GUID)
-    @PreAuthorize(KekRoles.USER_ADMIN)
+    @PutMapping(value = DeliveryServiceMappingValues.GUID)
+    @PreAuthorize(DeliveryServiceRoles.USER_ADMIN)
     public ResponseEntity<String> modifyData(@PathVariable String guid, @RequestBody String image) {
         logger.info("Accepted modified data from the client ");
 
@@ -85,8 +78,8 @@ public class CloudStorageController {
      *
      * @param guid blob guid from the URN
      */
-    @DeleteMapping(KekMappingValues.GUID)
-    @PreAuthorize(KekRoles.TENANT_USER_ADMIN)
+    @DeleteMapping(DeliveryServiceMappingValues.GUID)
+    @PreAuthorize(DeliveryServiceRoles.TENANT_USER_ADMIN)
     public ResponseEntity deleteData(@PathVariable String guid) {
         logger.info("Accepted request to delete the data from Google Cloud Storage bucket by guid {}", guid);
 

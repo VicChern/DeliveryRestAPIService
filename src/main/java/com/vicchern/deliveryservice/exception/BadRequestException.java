@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.exception;
+package com.vicchern.deliveryservice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

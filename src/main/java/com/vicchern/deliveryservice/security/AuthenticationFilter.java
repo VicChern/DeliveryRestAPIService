@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.security;
+package com.vicchern.deliveryservice.security;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -38,7 +38,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
         List<GrantedAuthority> roles = new ArrayList<>();
 
         Claims claims = Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary(System.getenv("KekSecurityKey")))
+                .setSigningKey(DatatypeConverter.parseBase64Binary(System.getenv("DeliveryServiceSecurityKey")))
                 .parseClaimsJws(token).getBody();
 
         String authorities = claims.get("authorities").toString();

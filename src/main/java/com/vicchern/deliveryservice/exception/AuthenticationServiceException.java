@@ -1,7 +1,7 @@
-package com.softserve.itacademy.kek.exception;
+package com.vicchern.deliveryservice.exception;
 
 
-import com.softserve.itacademy.kek.services.impl.AuthenticationServiceImpl;
+import com.vicchern.deliveryservice.services.impl.AuthenticationServiceImpl;
 
 /**
  * Exception for {@link AuthenticationServiceImpl }

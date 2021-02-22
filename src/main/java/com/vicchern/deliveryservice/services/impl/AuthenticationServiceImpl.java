@@ -1,4 +1,4 @@
-package com.softserve.itacademy.kek.services.impl;
+package com.vicchern.deliveryservice.services.impl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +10,15 @@ import java.util.UUID;
 import com.auth0.AuthenticationController;
 import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
+import com.vicchern.deliveryservice.exception.AuthenticationServiceException;
+import com.vicchern.deliveryservice.models.enums.IdentityTypeEnum;
+import com.vicchern.deliveryservice.models.impl.Identity;
+import com.vicchern.deliveryservice.models.impl.User;
+import com.vicchern.deliveryservice.repositories.IdentityRepository;
+import com.vicchern.deliveryservice.repositories.UserRepository;
+import com.vicchern.deliveryservice.security.TokenAuthentication;
+import com.vicchern.deliveryservice.services.IAuthenticationService;
+import com.vicchern.deliveryservice.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +31,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.softserve.itacademy.kek.exception.AuthenticationServiceException;
-import com.softserve.itacademy.kek.models.enums.IdentityTypeEnum;
-import com.softserve.itacademy.kek.models.impl.Identity;
-import com.softserve.itacademy.kek.models.impl.User;
-import com.softserve.itacademy.kek.repositories.IdentityRepository;
-import com.softserve.itacademy.kek.repositories.UserRepository;
-import com.softserve.itacademy.kek.security.TokenAuthentication;
-import com.softserve.itacademy.kek.services.IAuthenticationService;
-import com.softserve.itacademy.kek.services.IUserService;
 
 @Service
 @PropertySource("classpath:server.properties")
@@ -109,7 +108,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
     @Transactional(readOnly = true)
     @Override
-    public void authenticateKekUser(String email, String key) throws AuthenticationServiceException {
+    public void authenticateDeliveryServiceUser(String email, String key) throws AuthenticationServiceException {
         logger.info("Set authentication: {}", email);
 
         validateUser(email, key);
